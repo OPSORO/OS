@@ -10,48 +10,58 @@ OnoSW is the software framework for [social robot Ono](http://www.industrialdesi
 # Installation
 1. Start with a fresh Raspbian install
 2. Copy the contents the folder /OnoSW/ to /home/pi/OnoSW/
-3. Update your system  
-```
-sudo apt-get update
-sudo apt-get upgrade
-```
-4. Install PIP:  
-```
-sudo apt-get install python-setuptools
-sudo easy_install pip
-```
+3. Update your system
+
+    ```
+    sudo apt-get update
+    sudo apt-get upgrade
+    ```
+
+4. Install PIP:
+
+    ```
+    sudo apt-get install python-setuptools
+    sudo easy_install pip
+    ```
+
 5. [Compile and install LibYAML](http://pyyaml.org/wiki/LibYAML)  
 This step is not strictly necessary, but will result in a massive speedup when parsing config files. The python version of PyYAML takes well over 3 seconds to parse the configs, the C version takes only a fraction of that.
-6. Install flask, flask-login, pyyaml, pluginbase  
-```
-sudo pip install flask flask-login pyyaml pluginbase
-```
+6. Install flask, flask-login, pyyaml, pluginbase
+
+    ```
+    sudo pip install flask flask-login pyyaml pluginbase
+    ```
+
 7. [Enable the I2C port](https://learn.adafruit.com/adafruits-raspberry-pi-lesson-4-gpio-setup/configuring-i2c)
 8. [Install PicoTTS](http://emanon.jimdo.com/tutorials/)
 9. [Setup and configure the WiFi dongle](http://elinux.org/RPI-Wireless-Hotspot)  
-Use the following configuration for /etc/hostapd/hostapd.conf:  
-```
-interface=wlan0
-driver=nl80211
-ssid=Ono_AP
-hw_mode=g
-channel=6
-macaddr_acl=0
-auth_algs=1
-ignore_broadcast_ssid=0
-wpa=2
-wpa_passphrase=RobotOno
-wpa_key_mgmt=WPA-PSK
-wpa_pairwise=TKIP
-rsn_pairwise=CCMP
-```
+Use the following configuration for /etc/hostapd/hostapd.conf:
+
+    ```
+    interface=wlan0
+    driver=nl80211
+    ssid=Ono_AP
+    hw_mode=g
+    channel=6
+    macaddr_acl=0
+    auth_algs=1
+    ignore_broadcast_ssid=0
+    wpa=2
+    wpa_passphrase=RobotOno
+    wpa_key_mgmt=WPA-PSK
+    wpa_pairwise=TKIP
+    rsn_pairwise=CCMP
+    ```
+
 10. [Change the host name to "ono"](http://www.raspians.com/Knowledgebase/how-to-change-hostname-on-raspberrypi/)
 11. [Setup a daemon for Ono](http://blog.scphillips.com/2013/07/getting-a-python-script-to-run-in-the-background-as-a-service-on-boot/)  
 The script for the daemon can be found in /Scripts/onosw.sh.  
-Make sure the main OnoSW python script is executable!  
-```
-sudo chmod 755 /home/pi/OnoSW/main.py  
-```
+Make sure the main OnoSW python script is executable!
+
+    ```
+    sudo chmod 755 /home/pi/OnoSW/main.py  
+    ```
+
 OnoSW and its dependencies should now all be installed and working. Reboot the Raspberry Pi to test. Please let me know if any steps are missing!
 
 # Use
