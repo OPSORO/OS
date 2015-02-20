@@ -1,0 +1,18 @@
+{% extends "base_toolbar.html" %}
+{% block base_toolbar_body %}
+	<div class="row">
+		<div class="small-12 columns">
+			<div class="page">
+				<div class="titlebar">
+					{% block closebutton %}{% endblock %}
+					<span class="fa {{ page_icon }}"></span> {{ page_caption }}
+				</div>
+				<div class="content">
+					{% block page_content %}
+						{{ page_content }}
+					{% endblock %}
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}

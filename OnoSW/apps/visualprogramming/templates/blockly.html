@@ -1,0 +1,78 @@
+{% extends "apppage.html" %}
+
+{% block head %}
+{{ super() }}
+<style>
+#errors .alert-box:first-child {
+	margin-top: 2rem;
+}
+</style>
+{% endblock %}
+
+{% block page_content %}
+<div class="actionbar">
+	<a href="#" id="btnStartStop" class="action">
+		<span class="fa fa-play"></span><br/>
+		<span class="text">Run</span>
+	</a>
+	<a href="#"  id="btnClear" class="action">
+		<span class="fa fa-magic"></span><br/>
+		<span class="text">Clear log</span>
+	</a>
+	<!--div class="spacer"></div>
+	<a href="#"  id="btnSave" class="action">
+		<span class="fa fa-save"></span><br/>
+		<span class="text">Save</span>
+	</a>
+	<a href="#" id="btnOpen" class="action">
+		<span class="fa fa-folder-open"></span><br/>
+		<span class="text">Load</span>
+	</a>
+	<div class="spacer"></div-->
+</div>
+<div id="errors" style="margin-top: -1rem;"></div>
+<div id="blocklyDiv" style="margin: 0 -1rem -1rem -1rem; height: calc(100vh - 18rem);">
+	<iframe id="blocklyFrame" src="blockly_inner" style="width: 100%; height: 100%; border: 0; margin: 0; border-bottom-left-radius: 0.75rem; border-bottom-right-radius: 0.75rem;"></iframe>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+
+<script>
+function blocklyLoaded(blockly) {
+	// Called once Blockly is fully loaded.
+	window.Blockly = blockly;
+}
+function addError(msg){
+	$("#errors").prepend("<div data-alert class=\"alert-box alert\">" + msg + "<a href=\"#\" class=\"close\">&times;</a></div>");
+	$(document).foundation("alert", "reflow");
+}
+
+function addMessage(msg){
+	$("#errors").prepend("<div data-alert class=\"alert-box success\">" + msg + "<a href=\"#\" class=\"close\">&times;</a></div>");
+	$(document).foundation("alert", "reflow");
+}
+</script>
+<script src="static/acorn/acorn_interpreter.js"></script>
+<script src="static/onoapi.js"></script>
+<script>
+$(document).ready(function(){
+	$("#btnStartStop").click(function(){
+		env_StartStop();
+	});
+	$("#btnClear").click(function(){
+		$("#errors").html("");
+		$(document).foundation("alert", "reflow");
+	});
+	$(document).keydown(function(e) {
+		var keycode = (e.keyCode ? e.keyCode : e.which);
+		env_KeyDown(keycode);
+	});
+	$(document).keyup(function(e) {
+		var keycode = (e.keyCode ? e.keyCode : e.which);
+		env_KeyUp(keycode);
+	});
+});
+</script>
+{% endblock %}

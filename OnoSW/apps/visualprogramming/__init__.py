@@ -1,0 +1,209 @@
+from functools import partial
+import os
+import glob
+import threading
+import time
+
+from flask import Blueprint, render_template, request
+import pygame
+
+from stoppable_thread import StoppableThread
+from expression_manager import ExpressionManager
+
+config = {"full_name": "Visual Programming", "icon": "fa-puzzle-piece"}
+
+em = None
+em_lock = threading.Lock()
+
+get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
+
+constrain = lambda n, minn, maxn: max(min(maxn, n), minn)
+
+def setup_pages(onoapp):
+	vp_bp = Blueprint("visualprogramming", __name__, template_folder="templates", static_folder="static")
+
+	@vp_bp.route("/")
+	@onoapp.app_view
+	def index():
+		data = {
+			"page_icon":		config["icon"],
+			"page_caption":		config["full_name"],
+			"page_content":		"Hello from app: %s Index" % config["full_name"],
+			"title":			"Ono web interface - %s" % config["full_name"],
+		}
+
+		return onoapp.render_template("blockly.html", **data)
+
+	@vp_bp.route("/blockly_inner")
+	@onoapp.app_view
+	def blockly_inner():
+		data = {
+			"soundfiles":		[],
+			"dofnames":			[]
+		}
+
+		filenames = []
+
+		filenames.extend(glob.glob(get_path("../sounds/soundfiles/*.wav")))
+		filenames.extend(glob.glob(get_path("../sounds/soundfiles/*.mp3")))
+		filenames.extend(glob.glob(get_path("../sounds/soundfiles/*.ogg")))
+
+		for filename in filenames:
+			data["soundfiles"].append(os.path.split(filename)[1])
+
+		global em
+		global em_lock
+		with em_lock:
+			for dofname in em.pinmap:
+				if dofname is not None:
+					data["dofnames"].append(dofname)
+
+		return onoapp.render_template("blockly_inner.html", **data)
+
+	@vp_bp.route("/savecode", methods=["POST"])
+	@onoapp.app_api
+	def savecode():
+		file = request.form.get("file", type=str, default="")
+
+		backup_filename = "Blockly_Run__%s.xml" % time.strftime("%Y-%m-%d_%H-%M-%S")
+		backup_full_path = get_path("../../../OnoSW_backups/%s" % backup_filename)
+
+		print "Saved XML as /OnoSW_backups/%s" % backup_filename
+		print file
+		
+		with open(backup_full_path, "w") as f:
+			f.write(file)
+
+		return {"status": "success"}
+
+	@vp_bp.route("/api/playsound/<soundfile>", methods=["GET"])
+	@onoapp.app_api
+	def api_playsound(soundfile):
+		#print "api playsound", soundfile
+
+		soundfiles = []
+		filenames = []
+
+		filenames.extend(glob.glob(get_path("../sounds/soundfiles/*.wav")))
+		filenames.extend(glob.glob(get_path("../sounds/soundfiles/*.mp3")))
+		filenames.extend(glob.glob(get_path("../sounds/soundfiles/*.ogg")))
+
+		for filename in filenames:
+			soundfiles.append(os.path.split(filename)[1])
+
+		if soundfile in soundfiles:
+			pygame.mixer.music.load(os.path.join(get_path("../sounds/soundfiles/"), soundfile))
+			pygame.mixer.music.play()
+			return {"status": "success"}
+		else:
+			return {"status": "error", "message": "Unknown sound file."}
+		return {"status": "success"}
+
+	@vp_bp.route("/api/saytts", methods=["GET"])
+	@onoapp.app_api
+	def api_saytts():
+		text = request.args.get("text", None)
+		if text is not None:
+			print "api saytts", text
+			onoapp.hw.say_tts(text)
+		return {"status": "success"}
+
+	@vp_bp.route("/api/servoson")
+	@onoapp.app_api
+	def api_servoson():
+		onoapp.hw.servo_power_on()
+		return {"status": "success"}
+
+	@vp_bp.route("/api/servosoff")
+	@onoapp.app_api
+	def api_servosoff():
+		onoapp.hw.servo_power_off()
+		return {"status": "success"}
+
+	@vp_bp.route("/api/updateservos")
+	@onoapp.app_api
+	def api_updateservos():
+		with em_lock:
+			em.update_servos()
+		return {"status": "success"}
+
+	@vp_bp.route("/api/setposition", methods=["GET"])
+	@onoapp.app_api
+	def api_setposition():
+		dofs = request.args.get("dofs", default=None)
+		if dofs == "":
+			dofs = None
+		if dofs is not None:
+			if "," in dofs:
+				dofs = dofs.split(",")
+
+		pos = request.args.get("pos", type=int, default=0)
+		pos = constrain(pos, -100, 100)
+
+		global em
+		global em_lock
+		with em_lock:
+			em.set_target_pos(pos, steps=0, which=dofs)
+
+		return {"status": "success"}
+
+	@vp_bp.route("/api/setemotion", methods=["GET"])
+	@onoapp.app_api
+	def api_setemotion():
+		dofs = request.args.get("dofs", default=None)
+		if dofs == "":
+			dofs = None
+		if dofs is not None:
+			if "," in dofs:
+				dofs = dofs.split(",")
+
+		valence = request.args.get("valence", type=float, default=None)
+		arousal = request.args.get("valence", type=float, default=None)
+
+		alpha = request.args.get("alpha", type=float, default=None)
+		length = request.args.get("length", type=float, default=None)
+
+		print "V: %s A: %s A: %s L: %s" % (valence, arousal, alpha, length)
+		if alpha is not None and length is not None:
+			global em
+			global em_lock
+			with em_lock:
+				em.set_target_alpha_length(alpha, length, steps=0, which=dofs)
+		elif valence is not None and arousal is not None:
+			global em
+			global em_lock
+			with em_lock:
+				em.set_target_valence_arousal(valence, arousal, steps=0, which=dofs)
+		else:
+			return {"status": "error", "message": "Not enough parameters for setemotion."}
+
+		#def set_target_valence_arousal(self, valence, arousal, steps=0, which=None):
+		#def set_target_alpha_length(self, alpha, length, steps=0, which=None):
+
+		#global em
+		#global em_lock
+		#with em_lock:
+		#	em.set_target_pos(pos, steps=0, which=dofs)
+
+		return {"status": "success"}
+
+	onoapp.register_app_blueprint(vp_bp)
+
+def setup(onoapp):
+	global em
+	global em_lock
+	with em_lock:
+		em = ExpressionManager(onoapp.hw)
+		em.all_servos_mid()
+
+def start(onoapp):
+	pygame.mixer.init()
+	with em_lock:
+		em.all_servos_mid()
+	print "\033[95m" + "Started %s" % config["full_name"] + "\033[0m"
+
+def stop(onoapp):
+	pygame.mixer.stop()
+	pygame.mixer.quit()
+	onoapp.hw.servo_power_off()
+	print "\033[95m" + "Stopped %s" % config["full_name"] + "\033[0m"

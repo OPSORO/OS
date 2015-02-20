@@ -1,0 +1,126 @@
+{% extends "apppage.html" %}
+
+{% block head %}
+{{ super() }}
+<style>
+.filename {
+	background: rgba(178, 175, 161, 0.5);
+	padding: 0.5rem 1rem;
+	border-radius: 0.25rem;
+	font-weight: bold;
+	color: #545454;
+}
+.btnDelSnd, .btnPlaySnd {
+	width: 3rem; margin-right: 0.75rem;
+}
+</style>
+{% endblock %}
+
+{% block page_content %}
+<div id="errors">
+	{% with messages = get_flashed_messages(category_filter=["message"]) %}
+		{% if messages %}
+			{% for message in messages %}
+				<div data-alert class="alert-box secondary radius">
+					{{ message }}
+					<a href="#" class="close">&times;</a>
+				</div>
+			{% endfor %}
+		{% endif %}
+	{% endwith %}
+	{% with messages = get_flashed_messages(category_filter=["error"]) %}
+		{% if messages %}
+			{% for message in messages %}
+				<div data-alert class="alert-box alert radius">
+					{{ message }}
+					<a href="#" class="close">&times;</a>
+				</div>
+			{% endfor %}
+		{% endif %}
+	{% endwith %}
+	{% with messages = get_flashed_messages(category_filter=["success"]) %}
+		{% if messages %}
+			{% for message in messages %}
+				<div data-alert class="alert-box success radius">
+					{{ message }}
+					<a href="#" class="close">&times;</a>
+				</div>
+			{% endfor %}
+		{% endif %}
+	{% endwith %}
+</div>
+
+<form action="upload" method="post" enctype="multipart/form-data">
+	<div class="row">
+		<div class="large-9 medium-8 small-12 columns">
+			<input type="file" name="soundfile" style="margin-bottom: 0.25rem;"><br>
+			<span class="note"><strong>Note:</strong> Only .wav, .ogg and .mp3 files are allowed.</span>
+		</div>
+		<div class="large-3 medium-4 small-12 columns">
+			<button type="send" class="button" style="width: 100%;"><span class="fa fa-upload"></span> Upload</button>
+		</div>
+	</div>
+</form>
+
+{% if soundfiles %}
+	<hr>
+	{% for soundfile in soundfiles %}
+		<span class="file" data-soundfile="{{ soundfile }}">
+			<a href="#" class="button btnDelSnd"><span class="fa fa-trash"></span></a>
+			<a href="#" class="button btnPlaySnd"><span class="fa fa-play"></span></a>
+			<span class="filename">{{ soundfile }}</span><br>
+		</span>
+	{% endfor %}
+{% endif %}
+
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+
+<script>
+	function addError(msg){
+		$("#errors").append("<div data-alert class=\"alert-box alert\">" + msg + "<a href=\"#\" class=\"close\">&times;</a></div>");
+		$(document).foundation("alert", "reflow");
+	}
+
+	function addMessage(msg){
+		$("#errors").append("<div data-alert class=\"alert-box success\">" + msg + "<a href=\"#\" class=\"close\">&times;</a></div>");
+		$(document).foundation("alert", "reflow");
+	}
+
+	$(document).ready(function(){
+		$("a.btnDelSnd").click(function(){
+			//$(this).attr("href", "delete/"+ $(this).closest("span.file").data("soundfile"));
+			filename = $(this).closest("span.file").data("soundfile");
+			fileElem = $(this).closest("span.file")
+			$.ajax({
+				dataType: "json",
+				type: "POST",
+				url: "delete/" + filename,
+				success: function(data){
+					if(data.status == "error"){
+						addError(data.message);
+					}else{
+						addMessage(data.message);
+						fileElem.hide();
+					}
+				}
+			});
+		});
+		$("a.btnPlaySnd").click(function(){
+			filename = $(this).closest("span.file").data("soundfile");
+			$.ajax({
+				dataType: "json",
+				type: "GET",
+				url: "play/" + filename,
+				success: function(data){
+					if(data.status == "error"){
+						addError(data.message);
+					}
+				}
+			});
+		});
+	});
+</script>
+{% endblock %}

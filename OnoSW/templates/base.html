@@ -1,0 +1,30 @@
+<!doctype html>
+<html class="no-js" lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>{{ title }}</title>
+	<link rel="stylesheet" href="/static/css/foundation.css" />
+	<link rel="stylesheet" href="/static/css/font-awesome.min.css" />
+	<link rel="stylesheet" href="/static/css/roboto.css" />
+	<link rel="stylesheet" href="/static/css/ono.css" />
+	<script src="/static/js/vendor/modernizr.js"></script>
+	{% block head %}
+	{% endblock %}
+</head>
+<body>
+	{% block body %}
+	{% endblock %}
+	{% block modals %}{% endblock %}
+	&nbsp;
+	<div class="reveal-modal-bg" style="position: fixed;"></div>
+
+	<script src="/static/js/vendor/jquery.js"></script>
+	<script src="/static/js/foundation.min.js"></script>
+	<script>
+		$(document).foundation();
+	</script>
+	{% block scripts %}
+	{% endblock %}
+</body>
+</html>

@@ -1,0 +1,195 @@
+{% extends "apppage.html" %}
+
+{% block page_content %}
+<div class="actionbar">
+	<a href="#" id="btnPinmap" class="action active">
+		<span class="fa fa-file-text"></span><br/>
+		<span class="text">Pinmap</span>
+	</a>
+	<a href="#" id="btnLimits" class="action">
+		<span class="fa fa-file-text"></span><br/>
+		<span class="text">Limits</span>
+	</a>
+	<a href="#" id="btnFunctions" class="action">
+		<span class="fa fa-file-text"></span><br/>
+		<span class="text">Functions</span>
+	</a>
+</div>
+<div id="errors"></div>
+<div class="row">
+	<span id="pnlPinmap">
+		<div class="small-12 columns">
+			<form>
+				<textarea name="txtPinmap" id="txtPinmap" style="height: calc(100vh - 24rem); font-family: 'Lucida Console', Monaco, monospace;">{{ file_pinmap }}</textarea>
+			</form>
+		</div>
+		<div class="small-8 columns">
+			<a href="#" id="btnSavePinmap" class="button" style="width: 100%;"><span class="fa fa-check"></span> Save Pinmap</a>
+		</div>
+		<div class="small-4 columns">
+			<a href="#" id="btnRestorePinmap" class="button" style="width: 100%;"><span class="fa fa-undo"></span> Load default</a>
+		</div>
+	</span>
+	<span id="pnlLimits" style="display: none;">
+		<div class="small-12 columns">
+			<form>
+				<textarea name="txtLimits" id="txtLimits" style="height: calc(100vh - 24rem); font-family: 'Lucida Console', Monaco, monospace;">{{ file_limits }}</textarea>
+			</form>
+		</div>
+		<div class="small-8 columns">
+			<a href="#" id="btnSaveLimits" class="button" style="width: 100%;"><span class="fa fa-check"></span> Save Limits</a>
+		</div>
+		<div class="small-4 columns">
+			<a href="#" id="btnRestoreLimits" class="button" style="width: 100%;"><span class="fa fa-undo"></span> Load default</a>
+		</div>
+	</span>
+	<span id="pnlFunctions" style="display: none;">
+		<div class="small-12 columns">
+			<form>
+				<textarea name="txtFunctions" id="txtFunctions" style="height: calc(100vh - 24rem); font-family: 'Lucida Console', Monaco, monospace;">{{ file_functions }}</textarea>
+			</form>
+		</div>
+		<div class="small-8 columns">
+			<a href="#" id="btnSaveFunctions" class="button" style="width: 100%;"><span class="fa fa-check"></span> Save Functions</a>
+		</div>
+		<div class="small-4 columns">
+			<a href="#" id="btnRestoreFunctions" class="button" style="width: 100%;"><span class="fa fa-undo"></span> Load default</a>
+		</div>
+	</span>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+
+<script>
+function addError(msg){
+	$("#errors").append("<div data-alert class=\"alert-box alert\">" + msg + "<a href=\"#\" class=\"close\">&times;</a></div>");
+	$(document).foundation("alert", "reflow");
+}
+
+function addMessage(msg){
+	$("#errors").append("<div data-alert class=\"alert-box success\">" + msg + "<a href=\"#\" class=\"close\">&times;</a></div>");
+	$(document).foundation("alert", "reflow");
+}
+
+$(document).ready(function(){
+	$("#btnPinmap").click(function(){
+		$("#btnPinmap").addClass("active");
+		$("#btnLimits").removeClass("active");
+		$("#btnFunctions").removeClass("active");
+
+		$("#pnlPinmap").show();
+		$("#pnlLimits").hide();
+		$("#pnlFunctions").hide();
+	});
+	$("#btnLimits").click(function(){
+		$("#btnPinmap").removeClass("active");
+		$("#btnLimits").addClass("active");
+		$("#btnFunctions").removeClass("active");
+
+		$("#pnlPinmap").hide();
+		$("#pnlLimits").show();
+		$("#pnlFunctions").hide();
+	});
+	$("#btnFunctions").click(function(){
+		$("#btnPinmap").removeClass("active");
+		$("#btnLimits").removeClass("active");
+		$("#btnFunctions").addClass("active");
+
+		$("#pnlPinmap").hide();
+		$("#pnlLimits").hide();
+		$("#pnlFunctions").show();
+	});
+
+	$("#btnRestorePinmap").click(function(){
+		$.ajax({
+			dataType: "json",
+			type: "GET",
+			url: "getdefault/pinmap",
+			success: function(data){
+				if(data.status == "error"){
+					addError(data.message);
+				}else{
+					$("#txtPinmap").val(data.file)
+				}
+			}
+		});
+	});
+	$("#btnRestoreLimits").click(function(){
+		$.ajax({
+			dataType: "json",
+			type: "GET",
+			url: "getdefault/limits",
+			success: function(data){
+				if(data.status == "error"){
+					addError(data.message);
+				}else{
+					$("#txtLimits").val(data.file)
+				}
+			}
+		});
+	});
+	$("#btnRestoreFunctions").click(function(){
+		$.ajax({
+			dataType: "json",
+			type: "GET",
+			url: "getdefault/functions",
+			success: function(data){
+				if(data.status == "error"){
+					addError(data.message);
+				}else{
+					$("#txtFunctions").val(data.file)
+				}
+			}
+		});
+	});
+
+	$("#btnSavePinmap").click(function(){
+		$.ajax({
+			dataType: "json",
+			data: {"file": $("#txtPinmap").val()},
+			type: "POST",
+			url: "saveconfig/pinmap",
+			success: function(data){
+				if(data.status == "error"){
+					addError(data.message);
+				}else{
+					addMessage(data.message);
+				}
+			}
+		});
+	});
+	$("#btnSaveLimits").click(function(){
+		$.ajax({
+			dataType: "json",
+			data: {"file": $("#txtLimits").val()},
+			type: "POST",
+			url: "saveconfig/limits",
+			success: function(data){
+				if(data.status == "error"){
+					addError(data.message);
+				}else{
+					addMessage(data.message);
+				}
+			}
+		});
+	});
+	$("#btnSaveFunctions").click(function(){
+		$.ajax({
+			dataType: "json",
+			data: {"file": $("#txtFunctions").val()},
+			type: "POST",
+			url: "saveconfig/functions",
+			success: function(data){
+				if(data.status == "error"){
+					addError(data.message);
+				}else{
+					addMessage($.message);
+				}
+			}
+		});
+	});
+});
+</script>
+{% endblock %}

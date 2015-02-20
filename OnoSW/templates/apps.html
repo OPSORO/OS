@@ -1,0 +1,91 @@
+{% extends "base_toolbar.html" %}
+{% block base_toolbar_body %}
+<div class="row">
+	<div class="small-12 columns">
+		<ul class="small-block-grid-2 medium-block-grid-3 large-block-grid-4">
+			{% for app in apps -%}
+				<li>
+					{% if app.active %}
+						<div class="appbutton selected">
+							<a href="#" data-reveal-id="CloseAppModal" class="closebutton"><span class="fa fa-close"></span></a>
+							<a href="/app/{{ app.name }}/">
+								<div class="icon {{ app.icon }}"></div>
+								<div class="applabel">{{ app.full_name }}</div>
+							</a>
+						</div>
+					{% else %}
+						{% if activeapp %}
+							<a href="#" class="appbutton" id="AppBtn_{{ app.name }}">
+								<div class="icon {{ app.icon }}"></div>
+								<div class="applabel">{{ app.full_name }}</div>
+							</a>
+						{% else %}
+							<a href="/openapp/{{ app.name }}" class="appbutton">
+								<div class="icon {{ app.icon }}"></div>
+								<div class="applabel">{{ app.full_name }}</div>
+							</a>
+						{% endif %}
+					{% endif %}
+				</li>
+			{%- endfor %}
+		</ul>
+	</div>
+</div>
+{% endblock %}
+
+{% block modals %}
+{{ super() }}
+
+{% if activeapp %}
+<div id="CloseAppModal" class="reveal-modal small" data-reveal>
+	<div class="titlebar">
+		<a class="close-reveal-modal"><span class="fa fa-close"></span></a>
+		<span class="fa fa-power-off"></span> Confirm
+	</div>
+	<div class="content">
+		<p>
+			Are you sure you wish to close <span class="fa {{ activeapp.icon }}"></span> {{ activeapp.full_name }}?
+		</p>
+		<div class="text-center">
+			<a href="/closeapp" class="button"><span class="fa fa-close"></span> Yes, close app.</a>
+		</div>
+	</div>
+</div>
+<div id="SwitchAppModal" class="reveal-modal small" data-reveal>
+	<div class="titlebar">
+		<a class="close-reveal-modal"><span class="fa fa-close"></span></a>
+			<span class="fa fa-power-off"></span> Confirm
+	</div>
+	<div class="content">
+		<p>
+			Are you sure you wish to open <span class="" id="SwitchAppIcon"></span> <span id="SwitchAppName"></span>?<br/>
+			Doing so will close the current app, <span class="fa {{ activeapp.icon }}"></i> {{ activeapp.full_name }}.
+		</p>
+		<div class="text-center">
+			<a href="#" class="button" id="SwitchAppLink"><span class="fa fa-check"></span> Yes, switch app.</a>
+		</div>
+	</div>
+</div>
+{% endif %}
+{% endblock %}
+
+
+{% block scripts %}
+{{ super() }}
+
+{% if activeapp %}
+	<script>
+	function showSwitchAppModal(icon, name, link){
+		$("#SwitchAppIcon").attr("class", "fa " + icon);
+		$("#SwitchAppName").html(name);
+		$("#SwitchAppLink").attr("href", link);
+		$("#SwitchAppModal").foundation("reveal", "open");
+	}
+	$(document).ready(function() {
+		{% for app in apps -%}
+			$("#AppBtn_{{ app.name }}").click(function(){ showSwitchAppModal("{{ app.icon }}", "{{ app.full_name }}", "/openapp/{{ app.name }}"); });
+		{%- endfor %}
+	});
+	</script>
+{% endif %}
+{% endblock %}
