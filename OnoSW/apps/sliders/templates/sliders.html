@@ -1,0 +1,207 @@
+{% extends "apppage.html" %}
+
+{% block head %}
+{{ super() }}
+<style>
+.sliderrow {
+	margin-bottom: 1rem !important;
+}
+
+.sliderrow:last-child{
+	margin-bottom: 0 !important;
+}
+
+.sliderrow .range-slider{
+	margin: 0;
+}
+
+.sliderrow .numberstop {
+	font-size: 0.75rem;
+	line-height: 1rem;
+	font-weight: bold;
+	padding: 0 0 0.5rem 0;
+}
+
+.sliderrow .numbersbottom {
+	font-size: 0.75rem;
+	line-height: 1rem;
+	font-weight: 300;
+	padding: 0.5rem 0 0 0;
+}
+</style>
+{% endblock %}
+
+{% block page_content %}
+<div id="errors">
+	{% with messages = get_flashed_messages(category_filter=["message"]) %}
+		{% if messages %}
+			{% for message in messages %}
+				<div data-alert class="alert-box secondary radius">
+					{{ message }}
+					<a href="#" class="close">&times;</a>
+				</div>
+			{% endfor %}
+		{% endif %}
+	{% endwith %}
+	{% with messages = get_flashed_messages(category_filter=["error"]) %}
+		{% if messages %}
+			{% for message in messages %}
+				<div data-alert class="alert-box alert radius">
+					{{ message }}
+					<a href="#" class="close">&times;</a>
+				</div>
+			{% endfor %}
+		{% endif %}
+	{% endwith %}
+	{% with messages = get_flashed_messages(category_filter=["success"]) %}
+		{% if messages %}
+			{% for message in messages %}
+				<div data-alert class="alert-box success radius">
+					{{ message }}
+					<a href="#" class="close">&times;</a>
+				</div>
+			{% endfor %}
+		{% endif %}
+	{% endwith %}
+</div>
+
+<div class="row">
+	<div class="small-6 columns">
+		<a href="#" id="btnEnable" class="button" style="width: 100%;"><span class="fa fa-check"></span> Enable Servos</a>
+	</div>
+	<div class="small-6 columns">
+		<a href="#" id="btnDisable" class="button" style="width: 100%;"><span class="fa fa-close"></span> Disable Servos</a>
+	</div>
+</div>
+
+{% if dofs %}
+	{% for dof in dofs %}
+		<div class="sliderrow row">
+			<div class="small-12 columns hide-for-medium-up"><strong>{{ dof.name|upper }}</strong></div>
+			<div class="medium-3 large-2 show-for-medium-up columns">
+				<strong>{{ dof.name|upper }}</strong><br>
+				<span class="note" style="padding: 0;">
+					<strong>Pin:</strong> {{ dof.pin }}<br>
+					<strong>DOF:</strong> <span data-dof>0</span><br>
+					<strong>Servo:</strong> <span data-us>0</span> &micro;s<br>
+				</span>
+			</div>
+			<div class="small-12 medium-9 large-10 columns">
+				<div class="row numberstop">
+					<div class="small-3 text-left columns">-100</div>
+					<div class="small-6 text-center columns">0</div>
+					<div class="small-3 text-right columns">+100</div>
+				</div>
+				<div class="range-slider" data-slider="{{ dof.current }}" data-options="start: -100; end: 100;" data-dofname="{{ dof.name }}" data-dofmin="{{ dof.min }}" data-dofmid="{{ dof.mid }}" data-dofmax="{{ dof.max }}">
+					<span class="range-slider-handle" role="slider" tabindex="0"></span>
+					<span class="range-slider-active-segment"></span>
+					<input type="hidden">
+				</div>
+				<div class="row numbersbottom">
+					<div class="small-3 text-left columns">{{ dof.min }} &micro;s</div>
+					<div class="small-6 text-center columns">{{ dof.mid }} &micro;s</div>
+					<div class="small-3 text-right columns">{{ dof.max }} &micro;s</div>
+				</div>
+			</div>
+		</div>
+
+	{% endfor %}
+{% endif %}
+
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+
+<script src="/static/js/numeral.min.js"></script>
+<script>
+	function addError(msg){
+		$("#errors").append("<div data-alert class=\"alert-box alert\">" + msg + "<a href=\"#\" class=\"close\">&times;</a></div>");
+		$(document).foundation("alert", "reflow");
+	}
+
+	function addMessage(msg){
+		$("#errors").append("<div data-alert class=\"alert-box success\">" + msg + "<a href=\"#\" class=\"close\">&times;</a></div>");
+		$(document).foundation("alert", "reflow");
+	}
+
+	function updateServer(sliderElem){
+		// Send DOF values to the server via AJAX requests
+		// Only one request is active per DOF slider
+		// sliderElem.data("busy") --> Is there an active AJAX request?
+		// sliderElem.data("dirty") --> Has the value of the slider changed since the last AJAX request?
+
+		if(sliderElem.data("busy") == true){
+			// Call to server in progress, set flag to update
+			sliderElem.data("dirty", true);
+			return;
+		}else{
+			// No calls active, make new AJAX request
+			sliderElem.data("busy", true);
+			sliderElem.data("dirty", false);
+			$.ajax({
+				dataType: "json",
+				data: {"dof": sliderElem.data("dofname"), "pos": sliderElem.attr("data-slider")},
+				type: "POST",
+				url: "setdofpos",
+				success: function(data){
+					if(data.status == "error"){
+						addError(data.message);
+					}
+					sliderElem.data("busy", false);
+					if(sliderElem.data("dirty") == true){
+						updateServer(sliderElem);
+					}
+				}
+			});
+		}
+	}
+
+	$(document).ready(function(){
+		$("[data-slider]").on("change.fndtn.slider", function(){
+			if( $(this).attr("data-slider") != $(this).data("lastpos") ){
+				var dofpos = $(this).attr("data-slider");
+				var dofmin = $(this).data("dofmin");
+				var dofmid = $(this).data("dofmid");
+				var dofmax = $(this).data("dofmax");
+				var dofus = dofmid;
+
+				$(this).closest(".sliderrow").find("[data-dof]").html(numeral(dofpos).format("+0"));
+
+				if(dofpos < 0){
+					dofus += (-dofpos / 100) * dofmin
+				}else if(dofpos > 0){
+					dofus += (dofpos / 100) * dofmax
+				}
+				$(this).closest(".sliderrow").find("[data-us]").html(numeral(dofus).format("0"));
+
+				updateServer($(this));
+
+				$(this).data("lastpos", dofpos);
+			}
+		});
+		$("#btnEnable").click(function(){
+			$.ajax({
+				dataType: "json",
+				url: "servos/enable",
+				success: function(data){
+					if(data.status == "error"){
+						addError(data.message);
+					}
+				}
+			});
+		});
+		$("#btnDisable").click(function(){
+			$.ajax({
+				dataType: "json",
+				url: "servos/disable",
+				success: function(data){
+					if(data.status == "error"){
+						addError(data.message);
+					}
+				}
+			});
+		});
+	});
+</script>
+{% endblock %}
