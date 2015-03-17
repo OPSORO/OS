@@ -68,7 +68,6 @@ def setup_pages(onoapp):
 	def servosdisable():
 		print "\033[95m" + "Servos now off" + "\033[0m"
 		onoapp.hw.servo_power_off()
-		#return {"status": "error", "message": "blah blah blah"}
 
 	@circumplex_bp.route("/setalphalength", methods=["POST"])
 	@onoapp.app_api

@@ -28,8 +28,7 @@ def setup_pages(onoapp):
 		data = {
 			"page_icon":		config["icon"],
 			"page_caption":		config["full_name"],
-			"page_content":		"Hello from app: %s Index" % config["full_name"],
-			"title":			"Ono web interface - %s" % config["full_name"],
+			"title":			"Ono web interface - %s" % config["full_name"]
 		}
 
 		return onoapp.render_template("blockly.html", **data)
@@ -70,7 +69,7 @@ def setup_pages(onoapp):
 
 		print "Saved XML as /OnoSW_backups/%s" % backup_filename
 		print file
-		
+
 		with open(backup_full_path, "w") as f:
 			f.write(file)
 
