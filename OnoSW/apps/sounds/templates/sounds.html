@@ -50,7 +50,7 @@
 	{% endwith %}
 </div>
 
-<form action="upload" method="post" enctype="multipart/form-data">
+<form action="upload" method="post" enctype="multipart/form-data" style="margin-bottom: 1rem;">
 	<div class="row">
 		<div class="large-9 medium-8 small-12 columns">
 			<input type="file" name="soundfile" style="margin-bottom: 0.25rem;"><br>
@@ -62,8 +62,18 @@
 	</div>
 </form>
 
+<form id="formTTS">
+	<div class="row">
+		<div class="large-9 medium-8 small-12 columns">
+			<input type="text" name="txtTTS" id="txtTTS" style="width: 100%;" placeholder="Hello World!">
+		</div>
+		<div class="large-3 medium-4 small-12 columns">
+			<a href="#" id="btnTTS" class="button" style="width: 100%;"><span class="fa fa-volume-up"></span> Say it!</a>
+		</div>
+	</div>
+</form>
+
 {% if soundfiles %}
-	<hr>
 	{% for soundfile in soundfiles %}
 		<span class="file" data-soundfile="{{ soundfile }}">
 			<a href="#" class="button btnDelSnd"><span class="fa fa-trash"></span></a>
@@ -87,6 +97,16 @@
 	function addMessage(msg){
 		$("#errors").append("<div data-alert class=\"alert-box success\">" + msg + "<a href=\"#\" class=\"close\">&times;</a></div>");
 		$(document).foundation("alert", "reflow");
+	}
+
+	function doTTS(){
+		//alert($("#txtTTS").val());
+		$.ajax({
+			dataType: "json",
+			type: "GET",
+			url: "saytts",
+			data: {text: $("#txtTTS").val()}
+		});
 	}
 
 	$(document).ready(function(){
@@ -120,6 +140,15 @@
 					}
 				}
 			});
+		});
+		$("#formTTS").submit(function(e){
+			e.preventDefault();
+		});
+		$("#btnTTS").click(doTTS);
+		$("#txtTTS").bind("keydown", function(e) {
+			if (e.keyCode == 13) {
+				doTTS();
+			}
 		});
 	});
 </script>

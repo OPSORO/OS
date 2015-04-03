@@ -92,6 +92,14 @@ def setup_pages(onoapp):
 		else:
 			return {"status": "error", "message": "Unknown file."}
 
+	@sounds_bp.route("/saytts", methods=["GET"])
+	@onoapp.app_api
+	def saytts():
+		text = request.args.get("text", None)
+		if text is not None:
+			onoapp.hw.say_tts(text)
+		return {"status": "success"}
+
 	onoapp.register_app_blueprint(sounds_bp)
 
 def setup(onoapp):
