@@ -4,7 +4,7 @@ import os
 import subprocess
 
 import RPi.GPIO as GPIO
-import tpa2016
+from tpa2016 import TPA2016, TPA2016_AGC_OFF
 from Adafruit_PWM_Servo_Driver import PWM
 
 class Hardware:
@@ -23,10 +23,10 @@ class Hardware:
 		GPIO.output(self.PIN_LED_ACTIVE, GPIO.HIGH)
 
 		#Audio setup
-		self.tpa = tpa2016.TPA2016(addr=self.ADDR_TPA2016)
-		self.tpa.enableChannel(r=True, l=True)
-		self.tpa.setGain(13)
-		self.tpa.setAGCCompression(tpa2016.TPA2016_AGC_OFF)
+		self.tpa = TPA2016(addr=self.ADDR_TPA2016)
+		self.tpa.enable_channel(r=True, l=True)
+		self.tpa.set_gain(13)
+		self.tpa.set_agc_compression(TPA2016_AGC_OFF)
 		#os.system("amixer sset PCM,0 95%")
 		subprocess.Popen("amixer sset PCM,0 95%", shell=True)
 

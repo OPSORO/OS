@@ -130,8 +130,7 @@ class OnoApplication(object):
 		return render_template(template, **kwargs)
 
 	def run(self):
-		# TODO: remove debug when ready
-		self.flaskapp.run(host="0.0.0.0", port=80, threaded=True, debug=True)
+		self.flaskapp.run(host="0.0.0.0", port=80, threaded=True)
 
 	def shutdown_server(self):
 		func = request.environ.get("werkzeug.server.shutdown")

@@ -1,4 +1,4 @@
-import smbus
+from onoi2cdevice import OnoI2CDevice
 
 TPA2016_SETUP           = 0x1
 TPA2016_SETUP_R_EN      = 0x80
@@ -20,98 +20,92 @@ TPA2016_AGC_2           = 0x01
 TPA2016_AGC_4           = 0x02
 TPA2016_AGC_8           = 0x03
 
-class TPA2016:
-	i2c = smbus.SMBus(1)
-
+class TPA2016(OnoI2CDevice):
 	def __init__(self, addr=0x58):
-		self.__addr = addr
+		super(TPA2016, self).__init__(addr=addr)
 
-	def __write(self, reg, data):
-		return self.i2c.write_byte_data(self.__addr, reg, data)
+	def enable_channel(self, r, l):
+		setup = self._read8(TPA2016_SETUP)
 
-	def __read(self, reg):
-		return self.i2c.read_byte_data(self.__addr, reg)
-
-	def enableChannel(self, r, l):
-		setup = self.__read(TPA2016_SETUP)
 		if r:
-				setup |= TPA2016_SETUP_R_EN
+			setup |= TPA2016_SETUP_R_EN
 		else:
-				setup &= ~TPA2016_SETUP_R_EN
+			setup &= ~TPA2016_SETUP_R_EN
 		if l:
-				setup |= TPA2016_SETUP_L_EN
+			setup |= TPA2016_SETUP_L_EN
 		else:
-				setup &= ~TPA2016_SETUP_L_EN
-		self.__write(TPA2016_SETUP, setup)
+			setup &= ~TPA2016_SETUP_L_EN
+
+		self._write8(TPA2016_SETUP, setup)
 
 
-	def setGain(self, gain):
+	def set_gain(self, gain):
 		g = gain
 		if g > 30:
 				g = 30
 		elif g < -28:
 				g = -28
 
-		self.__write(TPA2016_GAIN, g)
+		self._write8(TPA2016_GAIN, g)
 		pass
 
-	def getGain(self):
-		return self.__read(TPA2016_GAIN)
+	def get_gain(self):
+		return self._read8(TPA2016_GAIN)
 
-	def setReleaseControl(self, release):
+	def set_release_control(self, release):
 		# only 6 bits!
 		if release > 0x3F:
 				return
 
-		self.__write(TPA2016_REL, release)
+		self._write8(TPA2016_REL, release)
 
-	def setAttackControl(self, attack):
+	def set_attack_control(self, attack):
 		# only 6 bits!
 		if attack > 0x3F:
 				return
 
-		self.__write(TPA2016_ATK, attack)
+		self._write8(TPA2016_ATK, attack)
 
-	def setHoldControl(self, hold):
+	def set_hold_control(self, hold):
 		# only 6 bits!
 		if hold > 0x3F:
 				return
 
-		self.__write(TPA2016_HOLD, hold)
+		self._write8(TPA2016_HOLD, hold)
 
-	def setLimitLevelOn(self):
-		agc = self.__read(TPA2016_AGCLIMIT)
+	def set_limit_level_on(self):
+		agc = self._read8(TPA2016_AGCLIMIT)
 		agc &= ~(0x80)
-		self.__write(TPA2016_AGCLIMIT, agc)
+		self._write8(TPA2016_AGCLIMIT, agc)
 
-	def setLimitLevelOff(self):
-		agc = self.__read(TPA2016_AGCLIMIT)
+	def set_limit_level_off(self):
+		agc = self._read8(TPA2016_AGCLIMIT)
 		agc |= 0x80
-		self.__write(TPA2016_AGCLIMIT, agc)
+		self._write8(TPA2016_AGCLIMIT, agc)
 
-	def setLimitLevel(self, limit):
+	def set_limit_level(self, limit):
 		if limit > 31:
 				return
 
-		agc = self.__read(TPA2016_AGCLIMIT)
-		agc &= ~(0x1F);
-		agc |= limit;
-		self.__write(TPA2016_AGCLIMIT, agc)
+		agc = self._read8(TPA2016_AGCLIMIT)
+		agc &= ~(0x1F)
+		agc |= limit
+		self._write8(TPA2016_AGCLIMIT, agc)
 
-	def setAGCCompression(self, x):
+	def set_agc_compression(self, x):
 		if x > 3:
 				return # only 2 bits!
 
-		agc = self.__read(TPA2016_AGC);
+		agc = self._read8(TPA2016_AGC)
 		agc &= ~(0x03)
 		agc |= x # set the compression ratio.
-		self.__write(TPA2016_AGC, agc);
+		self._write8(TPA2016_AGC, agc)
 
-	def setAGCMaxGain(self, x):
+	def set_agc_max_gain(self, x):
 		if x > 12:
 				return # max gain max is 12 (30dB)
 
-		agc = self.__read(TPA2016_AGC)
+		agc = self._read8(TPA2016_AGC)
 		agc &= ~(0xF0) # mask off top 4 bits
 		agc |= (x << 4) # set the max gain
-		self.__write(TPA2016_AGC, agc);
+		self._write8(TPA2016_AGC, agc)

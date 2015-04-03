@@ -88,7 +88,6 @@ def setup_pages(onoapp):
 		if soundfile in soundfiles:
 			pygame.mixer.music.load(os.path.join(get_path("soundfiles/"), soundfile))
 			pygame.mixer.music.play()
-			print "Gain:", onoapp.hw.tpa.getGain()
 			return {"status": "success"}
 		else:
 			return {"status": "error", "message": "Unknown file."}
