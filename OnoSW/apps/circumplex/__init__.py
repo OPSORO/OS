@@ -24,7 +24,6 @@ def CircumplexLoop():
 		with em_lock:
 			em.step()
 			em.update_servos()
-			#print em.dof.keys()
 		circumplex_t.sleep(0.01)
 
 circumplex_t = None
@@ -51,7 +50,7 @@ def setup_pages(onoapp):
 	@circumplex_bp.route("/servos/enable")
 	@onoapp.app_api
 	def servosenable():
-		print "\033[95m" + "Servos now on" + "\033[0m"
+		print "\033[93m" + "Servos now on" + "\033[0m"
 
 		global em
 		global em_lock
@@ -66,7 +65,7 @@ def setup_pages(onoapp):
 	@circumplex_bp.route("/servos/disable")
 	@onoapp.app_api
 	def servosdisable():
-		print "\033[95m" + "Servos now off" + "\033[0m"
+		print "\033[93m" + "Servos now off" + "\033[0m"
 		onoapp.hw.servo_power_off()
 
 	@circumplex_bp.route("/setalphalength", methods=["POST"])
@@ -89,8 +88,6 @@ def setup_pages(onoapp):
 			em.set_target_alpha_length(alpha, length, steps=25)
 			em.update_servos()
 
-		print "\033[95m" + "alpha=%0.2f length=%0.2f" % (alpha, length) + "\033[0m"
-
 	onoapp.register_app_blueprint(circumplex_bp)
 
 
@@ -104,11 +101,8 @@ def setup(onoapp):
 def start(onoapp):
 	global circumplex_t
 	circumplex_t = StoppableThread(target=CircumplexLoop)
-	print "\033[95m" + "Started %s" % config["full_name"] + "\033[0m"
 	circumplex_t.start();
 
 def stop(onoapp):
 	global circumplex_t
 	circumplex_t.stop()
-	#circumplex_t.join()
-	print "\033[95m" + "Stopped %s" % config["full_name"] + "\033[0m"

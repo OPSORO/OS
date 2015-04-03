@@ -8,9 +8,9 @@ import math
 import yaml
 try:
 	from yaml import CLoader as Loader
-	print "Using YAML CLoader"
+	print "\033[1m[\033[96m INFO \033[0m\033[1m]\033[0m Using YAML CLoader"
 except ImportError:
-	print "YAML CLoader not available"
+	print "\033[1m[\033[96m INFO \033[0m\033[1m]\033[0m YAML CLoader not available, falling back on python implementation"
 	from yaml import Loader
 
 from dof import DOF, EyeHorDOF, EyeVerDOF, MapDOF
@@ -215,84 +215,3 @@ class ExpressionManager(object):
 				self.hw.set_servo_us(i, self.dof[name].max())
 			else:
 				self.hw.set_servo_us(i, 1500)
-
-
-#if __name__ == "__main__":
-	#em = ExpressionManager()
-
-	#name = em.pinmap[0]
-
-	#print "tweening", name, "from pos=0 to pos=100 in 20 steps"
-
-	#dof = em.dof[name]
-	#em.set_target_pos(pos=100, steps=20, which=None)
-	#em.set_target_valence_arousal(valence=0.5, arousal=-0.5, steps=20, which=None)
-	#em.set_target_alpha_length(alpha=30, length=0.75, steps=20, which=None)
-
-	#for i in range(30):
-	#	em.step()
-	#	print i, "->", int(dof), dof.pos_current
-	#em.update_servos()
-	#print "set eyes"
-	#em.set_eyes(0, 50, steps=10)
-
-	#print "all dofs"
-	#print em.get_dof_list()
-	#print "-----------------"
-
-	#print "one dof by number"
-	#print em.get_dof_list(5)
-	#print "-----------------"
-
-	#print "one dof by name"
-	#print em.get_dof_list("r_eb_inner")
-	#print "-----------------"
-
-	#print "multiple dofs by number"
-	#print em.get_dof_list([3, 5, 13])
-	#print "-----------------"
-
-	#print "multiple dofs by name"
-	#print em.get_dof_list(["r_eb_inner", "r_eb_outer", "m_l"])
-	#print "-----------------"
-
-	#print "multiple dofs mixed"
-	#print em.get_dof_list(["r_eb_inner", 5, "m_l"])
-	#print "-----------------"
-
-
-	#print "--------"
-	#dof.set_target_pos(pos=50, steps=10)
-
-	#for i in range(5):
-	#	dof.step()
-	#	print i, "->", int(dof), dof.pos_current
-	#print "--------"
-	#dof.set_target_pos(pos=-100, steps=20)
-	#for i in range(20):
-	#	dof.step()
-	#	print i, "->", int(dof), dof.pos_current
-
-
-	#print em.pinmap
-	#print("IDX\tNAME        \tMIN\tMID\tMAX\tFUNCTION")
-	#for i in range(16):
-	#	name = em.pinmap[i]
-
-	#	if name is not None:
-	#		min_ = em.dof[name].min()
-	#		mid = em.dof[name].mid()
-	#		max_ = em.dof[name].max()
-	#		function = em.dof[name].__class__.__name__
-	#	else:
-	#		min_ = 0
-	#		mid = 0
-	#		max_ = 0
-	#		function = ""
-	#	print("%d\t%12s\t%d\t%d\t%d\t%s" % (i, name, min_, mid, max_, function))
-
-	#name = em.pinmap[0]
-	#print "poly for ", name
-	#print "ALPHA\tPOS"
-	#for alpha in range(360):
-	#	print "%d\t%.2f" % (alpha, em.dof[name].alpha_to_pos(alpha))

@@ -47,13 +47,13 @@ def setup_pages(onoapp):
 	@sliders_bp.route("/servos/enable")
 	@onoapp.app_api
 	def servosenable():
-		print "\033[95m" + "Servos now on" + "\033[0m"
+		print "\033[93m" + "Servos now on" + "\033[0m"
 		onoapp.hw.servo_power_on()
 
 	@sliders_bp.route("/servos/disable")
 	@onoapp.app_api
 	def servosdisable():
-		print "\033[95m" + "Servos now off" + "\033[0m"
+		print "\033[93m" + "Servos now off" + "\033[0m"
 		onoapp.hw.servo_power_off()
 
 	@sliders_bp.route("/setdofpos", methods=["POST"])
@@ -73,7 +73,6 @@ def setup_pages(onoapp):
 		with em_lock:
 			em.dof[dofname].set_target_pos(pos=pos, steps=0)
 			em.update_servos()
-			print "\033[95m" + "T=%0.1f     dof=%s pos=%d" % (time.time(), dofname, pos) + "\033[0m"
 
 	onoapp.register_app_blueprint(sliders_bp)
 
@@ -85,8 +84,7 @@ def setup(onoapp):
 		em.all_servos_mid()
 
 def start(onoapp):
-	print "\033[95m" + "Started %s" % config["full_name"] + "\033[0m"
+	pass
 
 def stop(onoapp):
 	onoapp.hw.servo_power_off()
-	print "\033[95m" + "Stopped %s" % config["full_name"] + "\033[0m"

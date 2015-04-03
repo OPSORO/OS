@@ -68,7 +68,6 @@ def setup_pages(onoapp):
 		backup_full_path = get_path("../../../OnoSW_backups/%s" % backup_filename)
 
 		print "Saved XML as /OnoSW_backups/%s" % backup_filename
-		print file
 
 		with open(backup_full_path, "w") as f:
 			f.write(file)
@@ -78,8 +77,6 @@ def setup_pages(onoapp):
 	@vp_bp.route("/api/playsound/<soundfile>", methods=["GET"])
 	@onoapp.app_api
 	def api_playsound(soundfile):
-		#print "api playsound", soundfile
-
 		soundfiles = []
 		filenames = []
 
@@ -103,7 +100,6 @@ def setup_pages(onoapp):
 	def api_saytts():
 		text = request.args.get("text", None)
 		if text is not None:
-			print "api saytts", text
 			onoapp.hw.say_tts(text)
 		return {"status": "success"}
 
@@ -162,7 +158,6 @@ def setup_pages(onoapp):
 		alpha = request.args.get("alpha", type=float, default=None)
 		length = request.args.get("length", type=float, default=None)
 
-		print "V: %s A: %s A: %s L: %s" % (valence, arousal, alpha, length)
 		if alpha is not None and length is not None:
 			global em
 			global em_lock
@@ -175,14 +170,6 @@ def setup_pages(onoapp):
 				em.set_target_valence_arousal(valence, arousal, steps=0, which=dofs)
 		else:
 			return {"status": "error", "message": "Not enough parameters for setemotion."}
-
-		#def set_target_valence_arousal(self, valence, arousal, steps=0, which=None):
-		#def set_target_alpha_length(self, alpha, length, steps=0, which=None):
-
-		#global em
-		#global em_lock
-		#with em_lock:
-		#	em.set_target_pos(pos, steps=0, which=dofs)
 
 		return {"status": "success"}
 
@@ -199,10 +186,8 @@ def start(onoapp):
 	pygame.mixer.init()
 	with em_lock:
 		em.all_servos_mid()
-	print "\033[95m" + "Started %s" % config["full_name"] + "\033[0m"
 
 def stop(onoapp):
 	pygame.mixer.stop()
 	pygame.mixer.quit()
 	onoapp.hw.servo_power_off()
-	print "\033[95m" + "Stopped %s" % config["full_name"] + "\033[0m"

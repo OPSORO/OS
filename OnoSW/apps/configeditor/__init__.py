@@ -77,7 +77,7 @@ def setup(onoapp):
 	pass
 
 def start(onoapp):
-	print "\033[95m" + "Started %s" % config["full_name"] + "\033[0m"
+	pass
 
 def stop(onoapp):
-	print "\033[95m" + "Stopped %s" % config["full_name"] + "\033[0m"
+	pass

@@ -99,9 +99,7 @@ def setup(onoapp):
 
 def start(onoapp):
 	pygame.mixer.init()
-	print "\033[95m" + "Started %s" % config["full_name"] + "\033[0m"
 
 def stop(onoapp):
 	pygame.mixer.stop()
 	pygame.mixer.quit()
-	print "\033[95m" + "Stopped %s" % config["full_name"] + "\033[0m"

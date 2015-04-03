@@ -50,7 +50,7 @@ class OnoApplication(object):
 			self.current_bp_app = plugin_name
 
 			plugin = self.plugin_source.load_plugin(plugin_name)
-			print "Loaded app: ", plugin_name
+			print "\033[1m[\033[92m APP LOADED \033[0m\033[1m]\033[0m %s" % plugin_name
 
 			if not hasattr(plugin, "config"):
 				plugin.config = {"full_name": "No name", "icon": "fa-warning"}
@@ -65,12 +65,12 @@ class OnoApplication(object):
 			try:
 				plugin.setup(self)
 			except AttributeError:
-				print "%s has no setup function" % plugin_name
+				print "\033[1m[\033[96m INFO \033[0m\033[1m]\033[0m %s has no setup function" % plugin_name
 
 			try:
 				plugin.setup_pages(self)
 			except AttributeError:
-				print "%s has no setup_pages function" % plugin_name
+				print "\033[1m[\033[96m INFO \033[0m\033[1m]\033[0m %s has no setup_pages function" % plugin_name
 
 		self.current_bp_app = ""
 		self.apps_can_register_bp = False
@@ -94,10 +94,11 @@ class OnoApplication(object):
 				except AttributeError:
 					pass
 		if self.activeapp in self.apps:
+			print "\033[1m[\033[91m APP STOPPED \033[0m\033[1m]\033[0m %s" % self.activeapp
 			try:
 				self.apps[self.activeapp].stop(self)
 			except AttributeError:
-				print "%s has no stop function" % self.activeapp
+				print "\033[1m[\033[96m INFO \033[0m\033[1m]\033[0m %s has no stop function" % self.activeapp
 
 	def setup_user_loader(self):
 		@self.login_manager.user_loader
@@ -300,10 +301,11 @@ class OnoApplication(object):
 		"""
 		# Check if another app is running, if so, run its stop function
 		if self.activeapp in self.apps:
+			print "\033[1m[\033[91m APP STOPPED \033[0m\033[1m]\033[0m %s" % self.activeapp
 			try:
 				self.apps[self.activeapp].stop(self)
 			except AttributeError:
-				print "%s has no stop function" % self.activeapp
+				print "\033[1m[\033[96m INFO \033[0m\033[1m]\033[0m %s has no stop function" % self.activeapp
 
 		# Run shutdown command with 5 second delay, returns immediately
 		subprocess.Popen("sleep 5 && sudo halt", shell=True)
@@ -312,10 +314,11 @@ class OnoApplication(object):
 
 	def page_closeapp(self):
 		if self.activeapp in self.apps:
+			print "\033[1m[\033[91m APP STOPPED \033[0m\033[1m]\033[0m %s" % self.activeapp
 			try:
 				self.apps[self.activeapp].stop(self)
 			except AttributeError:
-				print "%s has no stop function" % self.activeapp
+				print "\033[1m[\033[96m INFO \033[0m\033[1m]\033[0m %s has no stop function" % self.activeapp
 
 		self.activeapp = None
 		return redirect(url_for("index"))
@@ -323,19 +326,21 @@ class OnoApplication(object):
 	def page_openapp(self, appname):
 		# Check if another app is running, if so, run its stop function
 		if self.activeapp in self.apps:
+			print "\033[1m[\033[91m APP STOPPED \033[0m\033[1m]\033[0m %s" % self.activeapp
 			try:
 				self.apps[self.activeapp].stop(self)
 			except AttributeError:
-				print "%s has no stop function" % self.activeapp
+				print "\033[1m[\033[96m INFO \033[0m\033[1m]\033[0m %s has no stop function" % self.activeapp
 
 
 		if appname in self.apps:
 			self.activeapp = appname
 
 			try:
+				print "\033[1m[\033[92m APP STARTED \033[0m\033[1m]\033[0m %s" % appname
 				self.apps[appname].start(self)
 			except AttributeError:
-				print "%s has no start function" % appname
+				print "\033[1m[\033[96m INFO \033[0m\033[1m]\033[0m %s has no start function" % self.activeapp
 
 			return redirect("/app/%s/" % appname)
 		else:
