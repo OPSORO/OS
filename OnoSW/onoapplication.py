@@ -1,5 +1,6 @@
 from flask import Flask, request, render_template, redirect, url_for, flash, session, jsonify
 from flask.ext.login import LoginManager, login_user, logout_user, current_user, login_required
+from flask.ext.socketio import SocketIO
 
 from functools import wraps, partial
 
@@ -27,6 +28,9 @@ class OnoApplication(object):
 
 		# Setup key for sessions
 		self.flaskapp.secret_key = "5\x075y\xfe$\x1aV\x1c<A\xf4\xc1\xcfst0\xa49\x9e@\x0b\xb2\x17"
+
+		# Setup SocketIO
+		self.socketio = SocketIO(self.flaskapp)
 
 		# Setup login manager
 		self.login_manager = LoginManager()
@@ -83,9 +87,7 @@ class OnoApplication(object):
 
 	def at_exit(self):
 		# Check if another app is running, if so, run its stop function
-		print "at_exit active app:", self.activeapp
 		if threading.activeCount() > 0:
-			print "Active threads:", threading.activeCount()
 			threads = threading.enumerate()
 			for thread in threads:
 				try:
@@ -131,7 +133,7 @@ class OnoApplication(object):
 		return render_template(template, **kwargs)
 
 	def run(self):
-		self.flaskapp.run(host="0.0.0.0", port=80, threaded=True)
+		self.socketio.run(self.flaskapp, host="0.0.0.0", port=80)
 
 	def shutdown_server(self):
 		func = request.environ.get("werkzeug.server.shutdown")
