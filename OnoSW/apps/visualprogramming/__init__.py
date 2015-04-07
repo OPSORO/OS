@@ -22,6 +22,9 @@ constrain = lambda n, minn, maxn: max(min(maxn, n), minn)
 def setup_pages(onoapp):
 	vp_bp = Blueprint("visualprogramming", __name__, template_folder="templates", static_folder="static")
 
+	global em
+	global em_lock
+
 	@vp_bp.route("/")
 	@onoapp.app_view
 	def index():
@@ -50,8 +53,6 @@ def setup_pages(onoapp):
 		for filename in filenames:
 			data["soundfiles"].append(os.path.split(filename)[1])
 
-		global em
-		global em_lock
 		with em_lock:
 			for dofname in em.pinmap:
 				if dofname is not None:
@@ -135,8 +136,6 @@ def setup_pages(onoapp):
 		pos = request.args.get("pos", type=int, default=0)
 		pos = constrain(pos, -100, 100)
 
-		global em
-		global em_lock
 		with em_lock:
 			em.set_target_pos(pos, steps=0, which=dofs)
 
@@ -159,13 +158,9 @@ def setup_pages(onoapp):
 		length = request.args.get("length", type=float, default=None)
 
 		if alpha is not None and length is not None:
-			global em
-			global em_lock
 			with em_lock:
 				em.set_target_alpha_length(alpha, length, steps=0, which=dofs)
 		elif valence is not None and arousal is not None:
-			global em
-			global em_lock
 			with em_lock:
 				em.set_target_valence_arousal(valence, arousal, steps=0, which=dofs)
 		else:

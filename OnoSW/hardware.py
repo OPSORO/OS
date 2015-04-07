@@ -16,6 +16,7 @@ class Hardware:
 	def __init__(self, hwversion = 1):
 		#GPIO setup
 		GPIO.setmode(GPIO.BCM)
+		GPIO.setwarnings(False)
 
 		GPIO.setup(self.PIN_MOSFET, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 

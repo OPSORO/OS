@@ -36,6 +36,12 @@ length = 0.0
 def setup_pages(onoapp):
 	circumplex_bp = Blueprint("circumplex", __name__, template_folder="templates", static_folder="static")
 
+	global em
+	global em_lock
+
+	global alpha
+	global length
+
 	@circumplex_bp.route("/")
 	@onoapp.app_view
 	def index():
@@ -52,12 +58,8 @@ def setup_pages(onoapp):
 	def servosenable():
 		print "\033[93m" + "Servos now on" + "\033[0m"
 
-		global em
-		global em_lock
 		with em_lock:
 			em.parse_configs()
-			global alpha
-			global length
 			em.set_target_alpha_length(alpha, length)
 
 		onoapp.hw.servo_power_on()
@@ -77,13 +79,9 @@ def setup_pages(onoapp):
 		alpha_new = constrain(alpha_new, 0.0, 360.0)
 		length_new = constrain(length_new, 0.0, 1.0)
 
-		global alpha
-		global length
 		alpha = alpha_new
 		length = length_new
 
-		global em
-		global em_lock
 		with em_lock:
 			em.set_target_alpha_length(alpha, length, steps=25)
 			em.update_servos()

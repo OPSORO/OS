@@ -19,6 +19,9 @@ em_lock = threading.Lock()
 def setup_pages(onoapp):
 	sliders_bp = Blueprint("sliders", __name__, template_folder="templates")
 
+	global em
+	global em_lock
+
 	@sliders_bp.route("/")
 	@onoapp.app_view
 	def index():
@@ -28,8 +31,6 @@ def setup_pages(onoapp):
 			"title":			"Ono web interface - %s" % config["full_name"],
 			"dofs":				[]
 		}
-
-		global em
 
 		for pin, pinname in enumerate(em.pinmap):
 			if pinname is not None:
@@ -66,9 +67,6 @@ def setup_pages(onoapp):
 			return {"status": "error", "message": "No DOF name given."}
 		if dofname not in em.pinmap:
 			return {"status": "error", "message": "Unknown DOF name."}
-
-		global em
-		global em_lock
 
 		with em_lock:
 			em.dof[dofname].set_target_pos(pos=pos, steps=0)
