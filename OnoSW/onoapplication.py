@@ -15,6 +15,8 @@ import subprocess
 import atexit
 import threading
 import base64
+import time
+import logging
 try:
 	import simplejson as json
 	print "\033[1m[\033[96m INFO \033[0m\033[1m]\033[0m Using simplejson"
@@ -227,11 +229,9 @@ class OnoApplication(object):
 		self.activeapp = None
 
 	def shutdown_server(self):
-		# TODO: Fix for SockJS --> use correct method
-		func = request.environ.get("werkzeug.server.shutdown")
-		if func is None:
-			raise RuntimeError("Not running with the Werkzeug Server")
-		func()
+		logging.info("Stopping http server")
+		io_loop = IOLoop.instance()
+		io_loop.stop()
 
 	def protected_view(self, f):
 		@wraps(f)
