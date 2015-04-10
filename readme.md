@@ -26,10 +26,10 @@ OnoSW is the software framework for [social robot Ono](http://www.industrialdesi
 
 5. [Compile and install LibYAML](http://pyyaml.org/wiki/LibYAML)  
 This step is not strictly necessary, but will result in a massive speedup when parsing config files. The python version of PyYAML takes well over 3 seconds to parse the configs, the C version takes only a fraction of that.
-6. Install flask, flask-login, pyyaml, pluginbase
+6. Install flask, flask-login, pyyaml, pluginbase, sockjs-tornado, simplejson
 
     ```
-    sudo pip install flask flask-login pyyaml pluginbase
+    sudo pip install flask flask-login pyyaml pluginbase sockjs-tornado simplejson
     ```
 
 7. [Enable the I2C port](https://learn.adafruit.com/adafruits-raspberry-pi-lesson-4-gpio-setup/configuring-i2c)

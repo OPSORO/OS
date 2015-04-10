@@ -6,6 +6,7 @@ import logging
 import logging.handlers
 import random
 import os
+import tornado.log
 import onoapplication
 
 # Handle SIGTERM for graceful shutdown of daemon
@@ -15,29 +16,30 @@ def sigterm_handler(_signo, _stack_frame):
 
 # Setup logging
 LOG_FILENAME = "/tmp/OnoSW.log"
-LOG_LEVEL = logging.INFO
+LOG_LEVEL = logging.DEBUG
 
-logger = logging.getLogger(__name__)
+tornado.log.enable_pretty_logging()
+logger = logging.getLogger()
 logger.setLevel(LOG_LEVEL)
 handler = logging.handlers.TimedRotatingFileHandler(LOG_FILENAME, when="midnight", backupCount=3)
 formatter = logging.Formatter("%(asctime)s %(levelname)-8s %(message)s")
 handler.setFormatter(formatter)
 logger.addHandler(handler)
 
-class OnoLogger(object):
-	def __init__(self, logger, level, oldstream=None):
-		self.logger = logger
-		self.level = level
-		self.oldstream = oldstream
+# class OnoLogger(object):
+# 	def __init__(self, logger, level, oldstream=None):
+# 		self.logger = logger
+# 		self.level = level
+# 		self.oldstream = oldstream
+#
+# 	def write(self, message):
+# 		if self.oldstream:
+# 			self.oldstream.write(message)
+# 		if message.rstrip() != "":
+# 			self.logger.log(self.level, message.rstrip())
 
-	def write(self, message):
-		if self.oldstream:
-			self.oldstream.write(message)
-		if message.rstrip() != "":
-			self.logger.log(self.level, message.rstrip())
-
-sys.stdout = OnoLogger(logger, logging.INFO, sys.stdout)
-sys.stderr = OnoLogger(logger, logging.ERROR, sys.stderr)
+#sys.stdout = OnoLogger(logger, logging.INFO, sys.stdout)
+#sys.stderr = OnoLogger(logger, logging.ERROR, sys.stderr)
 
 # Initialization
 if __name__ == '__main__':

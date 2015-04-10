@@ -1,12 +1,12 @@
 from flask import Flask, request, render_template, redirect, url_for, flash, session, jsonify
 from flask.ext.login import LoginManager, login_user, logout_user, current_user, login_required
-from flask.ext.socketio import SocketIO
-
-from functools import wraps, partial
-
+from tornado.wsgi import WSGIContainer
+from tornado.ioloop import IOLoop
+import tornado.web
+from sockjs.tornado import SockJSRouter, SockJSConnection
 from onoadminuser import OnoAdminUser
 from hardware import Hardware
-
+from functools import wraps, partial
 import yaml
 import pluginbase
 import random
@@ -14,6 +14,13 @@ import os
 import subprocess
 import atexit
 import threading
+import base64
+try:
+	import simplejson as json
+	print "\033[1m[\033[96m INFO \033[0m\033[1m]\033[0m Using simplejson"
+except ImportError:
+	print "\033[1m[\033[96m INFO \033[0m\033[1m]\033[0m Simplejson not available, falling back on json"
+	import json
 
 # Helper function
 get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
@@ -29,9 +36,6 @@ class OnoApplication(object):
 		# Setup key for sessions
 		self.flaskapp.secret_key = "5\x075y\xfe$\x1aV\x1c<A\xf4\xc1\xcfst0\xa49\x9e@\x0b\xb2\x17"
 
-		# Setup SocketIO
-		self.socketio = SocketIO(self.flaskapp)
-
 		# Setup login manager
 		self.login_manager = LoginManager()
 		self.login_manager.init_app(self.flaskapp)
@@ -41,6 +45,11 @@ class OnoApplication(object):
 		# Variable to keep track of the active user
 		self.active_session_key = None
 
+		# Token to authenticate socket connections
+		# Client requests token via AJAX, server generates token if session is valid
+		# Client then sends the token to the server via SockJS, validating the connection
+		self.sockjs_token = None
+
 		# Setup app system
 		self.plugin_base = pluginbase.PluginBase(package="onoapplication.apps")
 		self.plugin_source = self.plugin_base.make_plugin_source(searchpath=[get_path("./apps")])
@@ -49,6 +58,11 @@ class OnoApplication(object):
 		self.activeapp = None
 		self.apps_can_register_bp = True # Make sure apps are only registered during setup
 		self.current_bp_app = "" # Keep track of current app for blueprint setup
+
+		# Socket callback dicts
+		self.sockjs_connect_cb = {}
+		self.sockjs_disconnect_cb = {}
+		self.sockjs_message_cb = {}
 
 		for plugin_name in self.plugin_source.list_plugins():
 			self.current_bp_app = plugin_name
@@ -86,7 +100,8 @@ class OnoApplication(object):
 		atexit.register(self.at_exit)
 
 	def at_exit(self):
-		# Check if another app is running, if so, run its stop function
+		self.stop_current_app()
+
 		if threading.activeCount() > 0:
 			threads = threading.enumerate()
 			for thread in threads:
@@ -95,12 +110,6 @@ class OnoApplication(object):
 					thread.join()
 				except AttributeError:
 					pass
-		if self.activeapp in self.apps:
-			print "\033[1m[\033[91m APP STOPPED \033[0m\033[1m]\033[0m %s" % self.activeapp
-			try:
-				self.apps[self.activeapp].stop(self)
-			except AttributeError:
-				print "\033[1m[\033[96m INFO \033[0m\033[1m]\033[0m %s has no stop function" % self.activeapp
 
 	def setup_user_loader(self):
 		@self.login_manager.user_loader
@@ -133,9 +142,92 @@ class OnoApplication(object):
 		return render_template(template, **kwargs)
 
 	def run(self):
-		self.socketio.run(self.flaskapp, host="0.0.0.0", port=80)
+		# Setup SockJS
+		class OnoSocketConnection(SockJSConnection):
+			def __init__(conn, *args, **kwargs):
+				super(OnoSocketConnection, conn).__init__(*args, **kwargs)
+				conn._authenticated = False
+				conn._activeapp = self.activeapp
+
+			def on_message(conn, msg):
+				# Attempt to decode JSON
+				try:
+					message = json.loads(msg)
+				except ValueError:
+					conn.send_error("Invalid JSON")
+					return
+
+				if not conn._authenticated:
+					# Attempt to authenticate the socket
+					try:
+						if message["action"] == "authenticate":
+							token = base64.b64decode(message["token"])
+							if token == self.sockjs_token and self.sockjs_token is not None:
+								# Auth succeeded
+								conn._authenticated = True
+
+								# Trigger connect callback
+								if conn._activeapp in self.sockjs_connect_cb:
+									self.sockjs_connect_cb[conn._activeapp](conn)
+
+								return
+
+						# Auth failed
+						return
+					except KeyError:
+						# Auth failed
+						return
+				else:
+					# Decode action and trigger callback, if it exists.
+					action = message.pop("action", "")
+					if conn._activeapp in self.sockjs_message_cb:
+						if action in self.sockjs_message_cb[conn._activeapp]:
+							self.sockjs_message_cb[conn._activeapp][action](conn, message)
+
+			def on_open(conn, info):
+				# Connect callback is triggered when socket is authenticated.
+				pass
+
+			def on_close(conn):
+				if conn._authenticated:
+					if conn._activeapp in self.sockjs_disconnect_cb:
+						self.sockjs_disconnect_cb[conn._activeapp](conn)
+
+			def send_error(conn, message):
+				return conn.send(json.dumps({
+					"action": "error",
+					"status": "error",
+					"message": message
+				}))
+
+			def send_data(conn, action, data):
+				msg = {"action": action, "status": "success"}
+				msg.update(data)
+				return conn.send(json.dumps(msg))
+
+		flaskwsgi = WSGIContainer(self.flaskapp)
+		socketrouter = SockJSRouter(OnoSocketConnection, "/sockjs")
+
+		tornado_app = tornado.web.Application(socketrouter.urls + [(r".*", tornado.web.FallbackHandler, {"fallback": flaskwsgi})] )
+		tornado_app.listen(80)
+
+		try:
+			IOLoop.instance().start()
+		except KeyboardInterrupt:
+			self.stop_current_app()
+			print "Goodbye!"
+
+	def stop_current_app(self):
+		if self.activeapp in self.apps:
+			print "\033[1m[\033[91m APP STOPPED \033[0m\033[1m]\033[0m %s" % self.activeapp
+			try:
+				self.apps[self.activeapp].stop(self)
+			except AttributeError:
+				print "\033[1m[\033[96m INFO \033[0m\033[1m]\033[0m %s has no stop function" % self.activeapp
+		self.activeapp = None
 
 	def shutdown_server(self):
+		# TODO: Fix for SockJS --> use correct method
 		func = request.environ.get("werkzeug.server.shutdown")
 		if func is None:
 			raise RuntimeError("Not running with the Werkzeug Server")
@@ -244,17 +336,43 @@ class OnoApplication(object):
 				return jsonify(status="error", message="This app is not active.")
 		return wrapper
 
+	def app_socket_connected(self, f):
+		appname = f.__module__.split(".")[-1]
+
+		self.sockjs_connect_cb[appname] = f
+
+		return f
+
+	def app_socket_disconnected(self, f):
+		appname = f.__module__.split(".")[-1]
+
+		self.sockjs_disconnect_cb[appname] = f
+
+		return f
+
+	def app_socket_message(self, action=""):
+		def inner(f):
+			appname = f.__module__.split(".")[-1]
+
+			# Create new dict for app if necessary
+			if appname not in self.sockjs_message_cb:
+				self.sockjs_message_cb[appname] = {}
+
+			self.sockjs_message_cb[appname][action] = f
+
+			return f
+
+		return inner
+
 	def setup_urls(self):
 		protect = self.protected_view
-		self.flaskapp.add_url_rule("/",					"index",	protect(self.page_index))
-		self.flaskapp.add_url_rule("/login",			"login",	self.page_login, methods=["GET", "POST"])
-		self.flaskapp.add_url_rule("/logout",			"logout",	self.page_logout)
-		self.flaskapp.add_url_rule("/shutdown",			"shutdown",	protect(self.page_shutdown))
-		self.flaskapp.add_url_rule("/closeapp",			"closeapp",	protect(self.page_closeapp))
-		self.flaskapp.add_url_rule("/openapp/<appname>","openapp",	protect(self.page_openapp))
-
-	#def page_random(self):
-	#	return "Hello World! %d" % random.randrange(0, 100, 1)
+		self.flaskapp.add_url_rule("/",					"index",		protect(self.page_index))
+		self.flaskapp.add_url_rule("/login",			"login",		self.page_login, methods=["GET", "POST"])
+		self.flaskapp.add_url_rule("/logout",			"logout",		self.page_logout)
+		self.flaskapp.add_url_rule("/sockjstoken",		"sockjstoken",	self.page_sockjstoken)
+		self.flaskapp.add_url_rule("/shutdown",			"shutdown",		protect(self.page_shutdown))
+		self.flaskapp.add_url_rule("/closeapp",			"closeapp",		protect(self.page_closeapp))
+		self.flaskapp.add_url_rule("/openapp/<appname>","openapp",		protect(self.page_openapp))
 
 	def page_index(self):
 		data = {
@@ -293,6 +411,18 @@ class OnoApplication(object):
 		flash("You have been logged out.")
 		return redirect(url_for("login"))
 
+	def page_sockjstoken(self):
+		if current_user.is_authenticated():
+			if current_user.is_admin():
+				if session["active_session_key"] == self.active_session_key:
+					# Valid user, generate a token
+					self.sockjs_token = os.urandom(24)
+					return base64.b64encode(self.sockjs_token)
+				else:
+					logout_user()
+					session.pop("active_session_key", None)
+		return "" # Not a valid user, return nothing!
+
 	def page_shutdown(self):
 		message = """
 		<p>
@@ -301,13 +431,7 @@ class OnoApplication(object):
 			<strong>Note:</strong> Never power off Ono without completely shutting down first! Cutting power without properly shutting down the operating system can result in a corrupt file system.
 		</span>
 		"""
-		# Check if another app is running, if so, run its stop function
-		if self.activeapp in self.apps:
-			print "\033[1m[\033[91m APP STOPPED \033[0m\033[1m]\033[0m %s" % self.activeapp
-			try:
-				self.apps[self.activeapp].stop(self)
-			except AttributeError:
-				print "\033[1m[\033[96m INFO \033[0m\033[1m]\033[0m %s has no stop function" % self.activeapp
+		self.stop_current_app()
 
 		# Run shutdown command with 5 second delay, returns immediately
 		subprocess.Popen("sleep 5 && sudo halt", shell=True)
@@ -315,25 +439,12 @@ class OnoApplication(object):
 		return message
 
 	def page_closeapp(self):
-		if self.activeapp in self.apps:
-			print "\033[1m[\033[91m APP STOPPED \033[0m\033[1m]\033[0m %s" % self.activeapp
-			try:
-				self.apps[self.activeapp].stop(self)
-			except AttributeError:
-				print "\033[1m[\033[96m INFO \033[0m\033[1m]\033[0m %s has no stop function" % self.activeapp
-
-		self.activeapp = None
+		self.stop_current_app()
 		return redirect(url_for("index"))
 
 	def page_openapp(self, appname):
 		# Check if another app is running, if so, run its stop function
-		if self.activeapp in self.apps:
-			print "\033[1m[\033[91m APP STOPPED \033[0m\033[1m]\033[0m %s" % self.activeapp
-			try:
-				self.apps[self.activeapp].stop(self)
-			except AttributeError:
-				print "\033[1m[\033[96m INFO \033[0m\033[1m]\033[0m %s has no stop function" % self.activeapp
-
+		self.stop_current_app()
 
 		if appname in self.apps:
 			self.activeapp = appname
