@@ -6,11 +6,71 @@
 #errors .alert-box:first-child {
 	margin-top: 2rem;
 }
+
+#blocklyDiv {
+	margin: 0 -1rem -1rem -1rem;
+	height: calc(100vh - 18rem);
+}
+
+#blocklyFrame {
+	width: 100%;
+	height: 100%;
+	border: 0;
+	margin: 0;
+	border-bottom-left-radius: 0.75rem;
+	border-bottom-right-radius: 0.75rem;
+}
+
+.fullscreen {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+}
+
+.fullscreen #blocklyDiv {
+	height: calc(100vh - 4rem);
+}
+
+.actionbar .filebox {
+	color: #fff;
+	display: inline-block;
+}
+
+.actionbar .filebox .filename {
+	font-weight: bold;
+	text-transform: uppercase;
+}
+
+.actionbar .filebox .status {
+	font-size: 0.75rem;
+	font-weight: bold;
+	text-transform: uppercase;
+}
 </style>
 {% endblock %}
 
 {% block page_content %}
 <div class="actionbar">
+	<div class="filebox">
+		<span class="filename">Untitled script</span><br>
+		<span class="fa fa-stop" style="font-size: 0.75rem;"></span> <span class="status">Stopped</span>
+	</div>
+	<div class="spacer"></div>
+	<a href="#"  id="btnSave" class="action">
+		<span class="fa fa-save"></span><br/>
+		<span class="text">Save</span>
+	</a>
+	<a href="#"  id="btnFiles" class="action">
+		<span class="fa fa-folder"></span><br/>
+		<span class="text">All files</span>
+	</a>
+	<a href="#"  id="btnClear" class="action">
+		<span class="fa fa-trash"></span><br/>
+		<span class="text">Clear</span>
+	</a>
+	<div class="spacer"></div>
 	<a href="#" id="btnStartStop" class="action">
 		<span class="fa fa-play"></span><br/>
 		<span class="text">Run</span>
@@ -19,20 +79,14 @@
 		<span class="fa fa-magic"></span><br/>
 		<span class="text">Clear log</span>
 	</a>
-	<!--div class="spacer"></div>
-	<a href="#"  id="btnSave" class="action">
-		<span class="fa fa-save"></span><br/>
-		<span class="text">Save</span>
+	<a href="#"  id="btnExpandCollapse" class="action">
+		<span class="fa fa-expand"></span><br/>
+		<span class="text">Expand view</span>
 	</a>
-	<a href="#" id="btnOpen" class="action">
-		<span class="fa fa-folder-open"></span><br/>
-		<span class="text">Load</span>
-	</a>
-	<div class="spacer"></div-->
 </div>
 <div id="errors" style="margin-top: -1rem;"></div>
-<div id="blocklyDiv" style="margin: 0 -1rem -1rem -1rem; height: calc(100vh - 18rem);">
-	<iframe id="blocklyFrame" src="blockly_inner" style="width: 100%; height: 100%; border: 0; margin: 0; border-bottom-left-radius: 0.75rem; border-bottom-right-radius: 0.75rem;"></iframe>
+<div id="blocklyDiv">
+	<iframe id="blocklyFrame" src="blockly_inner"></iframe>
 </div>
 {% endblock %}
 
@@ -58,13 +112,32 @@ function addMessage(msg){
 <script src="static/onoapi.js"></script>
 <script>
 $(document).ready(function(){
+	var isFullscreen = false
+
 	$("#btnStartStop").click(function(){
 		env_StartStop();
 	});
+
 	$("#btnClear").click(function(){
 		$("#errors").html("");
 		$(document).foundation("alert", "reflow");
 	});
+
+	$("#btnExpandCollapse").click(function(){
+		if(isFullscreen){
+			$("#btnExpandCollapse .fa").removeClass("fa-compress");
+			$("#btnExpandCollapse .fa").addClass("fa-expand");
+			$("#btnExpandCollapse .text").html("Expand view");
+			$(".content").removeClass("fullscreen");
+		}else{
+			$("#btnExpandCollapse .fa").removeClass("fa-expand");
+			$("#btnExpandCollapse .fa").addClass("fa-compress");
+			$("#btnExpandCollapse .text").html("Collapse view");
+			$(".content").addClass("fullscreen");
+		}
+		isFullscreen = !isFullscreen;
+	});
+
 	$(document).keydown(function(e) {
 		var keycode = (e.keyCode ? e.keyCode : e.which);
 		env_KeyDown(keycode);
