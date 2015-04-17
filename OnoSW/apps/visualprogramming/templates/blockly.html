@@ -48,6 +48,29 @@
 	font-weight: bold;
 	text-transform: uppercase;
 }
+
+.reveal-modal .file:last-child {
+	margin-bottom: -0.75rem;
+}
+
+.reveal-modal .filename {
+	background: rgba(178, 175, 161, 0.5);
+	padding: 0.5rem 1rem;
+	border-radius: 0.25rem;
+	font-weight: bold;
+	color: #545454;
+	display: inline-block;
+	width: calc(100% - 8rem);
+}
+.reveal-modal .btnDeleteFile, .reveal-modal .btnOpenFile {
+	width: 3rem;
+	margin-right: 0.75rem;
+}
+
+#FilesModal .content {
+	overflow-y: scroll;
+	max-height: 70vh;
+}
 </style>
 {% endblock %}
 
@@ -83,6 +106,17 @@
 		<span class="fa fa-expand"></span><br/>
 		<span class="text">Expand view</span>
 	</a>
+
+
+
+	<div class="spacer"></div>
+	<a href="#"  id="btnTest" class="action">
+		<span class="fa fa-lightbulb-o"></span><br/>
+		<span class="text">FOO!</span>
+	</a>
+
+
+
 </div>
 <div id="errors" style="margin-top: -1rem;"></div>
 <div id="blocklyDiv">
@@ -112,7 +146,8 @@ function addMessage(msg){
 <script src="static/onoapi.js"></script>
 <script>
 $(document).ready(function(){
-	var isFullscreen = false
+	var isFullscreen = false;
+	var scriptname = null;
 
 	$("#btnStartStop").click(function(){
 		env_StartStop();
@@ -128,24 +163,184 @@ $(document).ready(function(){
 			$("#btnExpandCollapse .fa").removeClass("fa-compress");
 			$("#btnExpandCollapse .fa").addClass("fa-expand");
 			$("#btnExpandCollapse .text").html("Expand view");
-			$(".content").removeClass("fullscreen");
+			$("#content").removeClass("fullscreen");
 		}else{
 			$("#btnExpandCollapse .fa").removeClass("fa-expand");
 			$("#btnExpandCollapse .fa").addClass("fa-compress");
 			$("#btnExpandCollapse .text").html("Collapse view");
-			$(".content").addClass("fullscreen");
+			$("#content").addClass("fullscreen");
 		}
 		isFullscreen = !isFullscreen;
+	});
+
+	$("#btnSave").click(function(){
+		$("#txtFilename").val("");
+		$("#SaveAsModal").foundation("reveal", "open");
+	});
+
+	$("#btnFiles").click(function(){
+		$("#FilesModal").foundation("reveal", "open");
+	});
+
+	$("#btnClear").click(function(){
+		$("#ConfirmClearModal").foundation("reveal", "open");
+	});
+
+	$(".btnDeleteFile").click(function(){
+		$("#ConfirmDeleteModal").foundation("reveal", "open");
+	});
+
+	$(".btnOpenFile").click(function(){
+		$("#ConfirmLoadModal").foundation("reveal", "open");
+	});
+
+	$("#btnTest").click(function(){
+		//$("#ConfirmLoadModal").foundation("reveal", "open");
 	});
 
 	$(document).keydown(function(e) {
 		var keycode = (e.keyCode ? e.keyCode : e.which);
 		env_KeyDown(keycode);
 	});
+
 	$(document).keyup(function(e) {
 		var keycode = (e.keyCode ? e.keyCode : e.which);
 		env_KeyUp(keycode);
 	});
 });
 </script>
+{% endblock %}
+
+{% block modals %}
+{{ super() }}
+
+<div id="SaveAsModal" class="reveal-modal tiny" data-reveal>
+	<div class="titlebar">
+		<a class="close-reveal-modal"><span class="fa fa-close"></span></a>
+		<span class="fa fa-save"></span> Save as
+	</div>
+	<div class="content">
+		<p>Please enter a name for this script.</p>
+		<form>
+			<div class="row collapse">
+				<div class="small-9 columns">
+					<input type="text" pattern="alpha_numeric" name="txtFilename" id="txtFilename" class="error" style="width: 100%;">
+					<small class="error hide"></small>
+				</div>
+				<div class="small-3 columns">
+					<a href="#" class="button" id="btnSaveAsModalSave" style="width: 100%;"><span class="fa fa-save"></span> Save</a>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+
+<div id="FilesModal" class="reveal-modal small" data-reveal>
+	<div class="titlebar">
+		<a class="close-reveal-modal"><span class="fa fa-close"></span></a>
+		<span class="fa fa-folder"></span> All files
+	</div>
+	<div class="content">
+		<div class="file">
+			<a href="#" class="button btnDeleteFile"><span class="fa fa-trash"></span></a>
+			<a href="#" class="button btnOpenFile"><span class="fa fa-folder-open"></span></a>
+			<span class="filename">Hello World</span>
+		</div>
+		<div class="file">
+			<a href="#" class="button btnDeleteFile"><span class="fa fa-trash"></span></a>
+			<a href="#" class="button btnOpenFile"><span class="fa fa-folder-open"></span></a>
+			<span class="filename">Say something</span>
+		</div>
+		<div class="file">
+			<a href="#" class="button btnDeleteFile"><span class="fa fa-trash"></span></a>
+			<a href="#" class="button btnOpenFile"><span class="fa fa-folder-open"></span></a>
+			<span class="filename">Button test 3</span>
+		</div>
+		<div class="file">
+			<a href="#" class="button btnDeleteFile"><span class="fa fa-trash"></span></a>
+			<a href="#" class="button btnOpenFile"><span class="fa fa-folder-open"></span></a>
+			<span class="filename">Experiment 5</span>
+		</div>
+		<div class="file">
+			<a href="#" class="button btnDeleteFile"><span class="fa fa-trash"></span></a>
+			<a href="#" class="button btnOpenFile"><span class="fa fa-folder-open"></span></a>
+			<span class="filename">Hello World</span>
+		</div>
+		<div class="file">
+			<a href="#" class="button btnDeleteFile"><span class="fa fa-trash"></span></a>
+			<a href="#" class="button btnOpenFile"><span class="fa fa-folder-open"></span></a>
+			<span class="filename">Say something</span>
+		</div>
+		<div class="file">
+			<a href="#" class="button btnDeleteFile"><span class="fa fa-trash"></span></a>
+			<a href="#" class="button btnOpenFile"><span class="fa fa-folder-open"></span></a>
+			<span class="filename">Button test 3</span>
+		</div>
+		<div class="file">
+			<a href="#" class="button btnDeleteFile"><span class="fa fa-trash"></span></a>
+			<a href="#" class="button btnOpenFile"><span class="fa fa-folder-open"></span></a>
+			<span class="filename">Experiment 5</span>
+		</div>
+		<div class="file">
+			<a href="#" class="button btnDeleteFile"><span class="fa fa-trash"></span></a>
+			<a href="#" class="button btnOpenFile"><span class="fa fa-folder-open"></span></a>
+			<span class="filename">Hello World</span>
+		</div>
+		<div class="file">
+			<a href="#" class="button btnDeleteFile"><span class="fa fa-trash"></span></a>
+			<a href="#" class="button btnOpenFile"><span class="fa fa-folder-open"></span></a>
+			<span class="filename">Say something</span>
+		</div>
+		<div class="file">
+			<a href="#" class="button btnDeleteFile"><span class="fa fa-trash"></span></a>
+			<a href="#" class="button btnOpenFile"><span class="fa fa-folder-open"></span></a>
+			<span class="filename">Button test 3</span>
+		</div>
+		<div class="file">
+			<a href="#" class="button btnDeleteFile"><span class="fa fa-trash"></span></a>
+			<a href="#" class="button btnOpenFile"><span class="fa fa-folder-open"></span></a>
+			<span class="filename">Experiment 5</span>
+		</div>
+	</div>
+</div>
+
+<div id="ConfirmClearModal" class="reveal-modal tiny" data-reveal>
+	<div class="titlebar">
+		<a class="close-reveal-modal"><span class="fa fa-close"></span></a>
+		<span class="fa fa-trash"></span> Clear
+	</div>
+	<div class="content">
+		<p>The workspace was modified, are you sure you wish clear the workspace without saving?</p>
+		<div class="text-center">
+			<a href="#" class="button"><span class="fa fa-trash"></span> Yes, clear workspace</a>
+		</div>
+	</div>
+</div>
+
+<div id="ConfirmDeleteModal" class="reveal-modal tiny" data-reveal>
+	<div class="titlebar">
+		<a class="close-reveal-modal"><span class="fa fa-close"></span></a>
+		<span class="fa fa-trash"></span> Delete
+	</div>
+	<div class="content">
+		<p>Are you sure you wish to delete this file?</p>
+		<div class="text-center">
+			<a href="#" class="button"><span class="fa fa-trash"></span> Yes, delete file</a>
+		</div>
+	</div>
+</div>
+
+<div id="ConfirmLoadModal" class="reveal-modal tiny" data-reveal>
+	<div class="titlebar">
+		<a class="close-reveal-modal"><span class="fa fa-close"></span></a>
+		<span class="fa fa-folder-open"></span> Load
+	</div>
+	<div class="content">
+		<p>The workspace was modified, unsaved changes will be lost. Are you sure you wish to continue?</p>
+		<div class="text-center">
+			<a href="#" class="button"><span class="fa fa-folder-open"></span> Yes, load file</a>
+		</div>
+	</div>
+</div>
+
 {% endblock %}
