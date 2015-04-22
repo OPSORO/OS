@@ -3,10 +3,9 @@ import os
 import glob
 import threading
 import time
-
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, request, send_from_directory
+from werkzeug import secure_filename
 import pygame
-
 from stoppable_thread import StoppableThread
 from expression_manager import ExpressionManager
 
@@ -60,6 +59,68 @@ def setup_pages(onoapp):
 
 		return onoapp.render_template("blockly_inner.html", **data)
 
+	@vp_bp.route("/filelist")
+	@onoapp.app_view
+	def filelist():
+		data = {
+			"savefiles":	[]
+		}
+
+		filenames = []
+		filenames.extend(glob.glob(get_path("saves/*.xml")))
+
+		for filename in filenames:
+			data["savefiles"].append(os.path.split(filename)[1])
+
+		return onoapp.render_template("filelist.html", **data)
+
+	@vp_bp.route("/save", methods=["POST"])
+	@onoapp.app_api
+	def save():
+		file = request.form.get("file", type=str, default="")
+		filename = request.form.get("filename", type=str, default="")
+		overwrite = request.form.get("overwrite", type=int, default=0)
+
+		if filename == "":
+			return {"status": "error", "message": "No filename given."}
+
+		if filename[-4:] != ".xml":
+			filename = filename + ".xml"
+		filename = secure_filename(filename)
+
+		full_path = os.path.join(get_path("saves/"), filename)
+
+		if overwrite == 0:
+			if os.path.isfile(full_path):
+				return {"status": "error", "message": "File already exists."}
+
+		with open(full_path, "w") as f:
+			f.write(file)
+
+		return {"status": "success", "filename": filename}
+
+	@vp_bp.route("/delete/<savefile>", methods=["POST"])
+	@onoapp.app_api
+	def delete(savefile):
+		savefiles = []
+		filenames = []
+		filenames.extend(glob.glob(get_path("saves/*.xml")))
+
+		for filename in filenames:
+			savefiles.append(os.path.split(filename)[1])
+
+		if savefile in savefiles:
+			os.remove(os.path.join(get_path("saves/"), savefile))
+			return {"status": "success", "message": "File %s deleted." % savefile}
+		else:
+			return {"status": "error", "message": "Unknown file."}
+
+	@vp_bp.route("/saves/<savefile>")
+	@onoapp.app_view
+	def saves(savefile):
+		return send_from_directory(get_path("saves/"), savefile)
+
+	# This function is used for temp saves
 	@vp_bp.route("/savecode", methods=["POST"])
 	@onoapp.app_api
 	def savecode():

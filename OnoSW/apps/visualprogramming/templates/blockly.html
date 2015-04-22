@@ -77,7 +77,7 @@
 {% block page_content %}
 <div class="actionbar">
 	<div class="filebox">
-		<span class="filename">Untitled script</span><br>
+		<span class="filename">Untitled script</span> <span class="fa fa-asterisk hide"></span><br>
 		<span class="fa fa-stop" style="font-size: 0.75rem;"></span> <span class="status">Stopped</span>
 	</div>
 	<div class="spacer"></div>
@@ -98,7 +98,7 @@
 		<span class="fa fa-play"></span><br/>
 		<span class="text">Run</span>
 	</a>
-	<a href="#"  id="btnClear" class="action">
+	<a href="#"  id="btnClearLog" class="action">
 		<span class="fa fa-magic"></span><br/>
 		<span class="text">Clear log</span>
 	</a>
@@ -106,17 +106,6 @@
 		<span class="fa fa-expand"></span><br/>
 		<span class="text">Expand view</span>
 	</a>
-
-
-
-	<div class="spacer"></div>
-	<a href="#"  id="btnTest" class="action">
-		<span class="fa fa-lightbulb-o"></span><br/>
-		<span class="text">FOO!</span>
-	</a>
-
-
-
 </div>
 <div id="errors" style="margin-top: -1rem;"></div>
 <div id="blocklyDiv">
@@ -127,11 +116,28 @@
 {% block scripts %}
 {{ super() }}
 
+<script src="static/acorn/acorn_interpreter.js"></script>
+<script src="static/onoapi.js"></script>
 <script>
+var isFullscreen = false;
+var scriptname = null;
+var isWorkspaceModified = false;
+var ignoreNextChangeEvt = true;
+
 function blocklyLoaded(blockly) {
 	// Called once Blockly is fully loaded.
 	window.Blockly = blockly;
+
+	Blockly.addChangeListener(function(){
+		// Change listener gets called on load, use bool as workaround
+		if(!ignoreNextChangeEvt){
+			isWorkspaceModified = true;
+			$(".filebox .fa-asterisk").removeClass("hide");
+		}
+		ignoreNextChangeEvt = false;
+	});
 }
+
 function addError(msg){
 	$("#errors").prepend("<div data-alert class=\"alert-box alert\">" + msg + "<a href=\"#\" class=\"close\">&times;</a></div>");
 	$(document).foundation("alert", "reflow");
@@ -141,19 +147,18 @@ function addMessage(msg){
 	$("#errors").prepend("<div data-alert class=\"alert-box success\">" + msg + "<a href=\"#\" class=\"close\">&times;</a></div>");
 	$(document).foundation("alert", "reflow");
 }
-</script>
-<script src="static/acorn/acorn_interpreter.js"></script>
-<script src="static/onoapi.js"></script>
-<script>
+
 $(document).ready(function(){
-	var isFullscreen = false;
-	var scriptname = null;
+	// Don't submit form on enter
+	$("input,select").keypress(function(evt){
+		return evt.keyCode != 13;
+	});
 
 	$("#btnStartStop").click(function(){
 		env_StartStop();
 	});
 
-	$("#btnClear").click(function(){
+	$("#btnClearLog").click(function(){
 		$("#errors").html("");
 		$(document).foundation("alert", "reflow");
 	});
@@ -174,28 +179,189 @@ $(document).ready(function(){
 	});
 
 	$("#btnSave").click(function(){
-		$("#txtFilename").val("");
-		$("#SaveAsModal").foundation("reveal", "open");
+		if(scriptname == null){
+			// Untitled script
+			$("#txtFilename").val("");
+			$("#SaveAsModal small.error").addClass("hide");
+			$("#SaveAsModal").foundation("reveal", "open");
+		}else{
+			// Don't show modal, overwrite save file
+			var xml = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
+			var xml_text = Blockly.Xml.domToPrettyText(xml);
+
+			$.ajax({
+				dataType: "json",
+				data: {
+					file: xml_text,
+					filename: scriptname,
+					overwrite: 1
+				},
+				type: "POST",
+				url: "save",
+				success: function(data){
+					if(data.status == "error"){
+						addError(data.message);
+					}else if(data.status == "success"){
+						scriptname = data.filename;
+						isWorkspaceModified = false;
+
+						var filename_no_ext = data.filename;
+						if(filename_no_ext.slice(-4) == ".xml" || filename_no_ext.slice(-4) == ".XML"){
+							filename_no_ext = filename_no_ext.slice(0, -4);
+						}
+
+						$(".filebox .fa-asterisk").addClass("hide");
+						$(".filebox .filename").html(filename_no_ext);
+					}
+				}
+			});
+		}
+	});
+
+	$("#btnSaveAsModalSave").click(function(){
+		var filename = $("#txtFilename").val();
+
+		$("#SaveAsModal small.error").addClass("hide");
+
+		var xml = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
+		var xml_text = Blockly.Xml.domToPrettyText(xml);
+
+		$.ajax({
+			dataType: "json",
+			data: {
+				file: xml_text,
+				filename: filename,
+				overwrite: 0
+			},
+			type: "POST",
+			url: "save",
+			success: function(data){
+				if(data.status == "error"){
+					$("#SaveAsModal small.error").html(data.message).removeClass("hide");
+				}else if(data.status == "success"){
+					scriptname = data.filename;
+					isWorkspaceModified = false;
+
+					var filename_no_ext = data.filename;
+					if(filename_no_ext.slice(-4) == ".xml" || filename_no_ext.slice(-4) == ".XML"){
+						filename_no_ext = filename_no_ext.slice(0, -4);
+					}
+
+					$(".filebox .fa-asterisk").addClass("hide");
+					$(".filebox .filename").html(filename_no_ext);
+
+					$("#SaveAsModal").foundation("reveal", "close");
+				}
+			}
+		});
+
+		return 0;
+
 	});
 
 	$("#btnFiles").click(function(){
+		$("#FilesModalSpinner").removeClass("hide");
+		$("#FilesModalFilelist").html("");
+		$("#FilesModalFilelist").load("filelist", function(){
+			$("#FilesModalSpinner").addClass("hide");
+
+			// Delete and Open button events need to be rebound here
+			// because filelist is loaded via AJAX
+			$(".btnDeleteFile").off("click");
+			$(".btnDeleteFile").on("click", function(){
+				filename = $(this).closest("div.file").data("savefile");
+				$("#ConfirmDeleteModal").foundation("reveal", "open");
+
+				$("#btnConfirmDelete").off("click");
+				$("#btnConfirmDelete").on("click", function(){
+					$.ajax({
+						dataType: "json",
+						type: "POST",
+						url: "delete/" + filename,
+						success: function(data){
+							$("#ConfirmDeleteModal").foundation("reveal", "close");
+							if(data.status == "error"){
+								addError(data.message);
+							}else{
+								addMessage(data.message);
+							}
+						}
+					});
+				});
+			});
+
+			$(".btnOpenFile").off("click");
+			$(".btnOpenFile").on("click", function(){
+				filename = $(this).closest("div.file").data("savefile");
+
+				var do_load = function(){
+					$.ajax({
+						url: "saves/" + filename,
+						dataType: "text",
+						cache: false,
+						success: function(data){
+							// Load blocks
+							ignoreNextChangeEvt = true;
+							Blockly.mainWorkspace.clear();
+							var xml = Blockly.Xml.textToDom(data);
+							Blockly.Xml.domToWorkspace(Blockly.mainWorkspace, xml);
+
+							// Update filename and asterisk
+							var filename_no_ext = filename;
+							if(filename_no_ext.slice(-4) == ".xml" || filename_no_ext.slice(-4) == ".XML"){
+								filename_no_ext = filename_no_ext.slice(0, -4);
+							}
+							$(".filebox .filename").text(filename_no_ext);
+							$(".filebox .fa-asterisk").addClass("hide");
+							isWorkspaceModified = false;
+							scriptname = filename;
+
+							$("#FilesModal").foundation("reveal", "close");
+						}
+					});
+				}
+
+				if(isWorkspaceModified){
+					$("#btnConfirmLoad").off("click");
+					$("#btnConfirmLoad").on("click", do_load);
+					$("#ConfirmLoadModal").foundation("reveal", "open");
+
+				}else{
+					do_load();
+				}
+
+			});
+		});
+
 		$("#FilesModal").foundation("reveal", "open");
 	});
 
 	$("#btnClear").click(function(){
-		$("#ConfirmClearModal").foundation("reveal", "open");
+		if(isWorkspaceModified){
+			$("#ConfirmClearModal").foundation("reveal", "open");
+		}else{
+			if(scriptname != null){
+				ignoreNextChangeEvt = true;
+				scriptname = null;
+				Blockly.mainWorkspace.clear();
+
+				$(".filebox .filename").html("Untitled script");
+				$(".filebox .fa-asterisk").addClass("hide");
+			}
+		}
 	});
 
-	$(".btnDeleteFile").click(function(){
-		$("#ConfirmDeleteModal").foundation("reveal", "open");
-	});
+	$("#btnConfirmClear").click(function(){
+		ignoreNextChangeEvt = true;
+		Blockly.mainWorkspace.clear();
 
-	$(".btnOpenFile").click(function(){
-		$("#ConfirmLoadModal").foundation("reveal", "open");
-	});
+		isWorkspaceModified = false;
+		scriptname = null;
 
-	$("#btnTest").click(function(){
-		//$("#ConfirmLoadModal").foundation("reveal", "open");
+		$(".filebox .filename").html("Untitled script");
+		$(".filebox .fa-asterisk").addClass("hide");
+
+		$("#ConfirmClearModal").foundation("reveal", "close");
 	});
 
 	$(document).keydown(function(e) {
@@ -224,7 +390,7 @@ $(document).ready(function(){
 		<form>
 			<div class="row collapse">
 				<div class="small-9 columns">
-					<input type="text" pattern="alpha_numeric" name="txtFilename" id="txtFilename" class="error" style="width: 100%;">
+					<input type="text" name="txtFilename" id="txtFilename" class="error" style="width: 100%;">
 					<small class="error hide"></small>
 				</div>
 				<div class="small-3 columns">
@@ -241,66 +407,10 @@ $(document).ready(function(){
 		<span class="fa fa-folder"></span> All files
 	</div>
 	<div class="content">
-		<div class="file">
-			<a href="#" class="button btnDeleteFile"><span class="fa fa-trash"></span></a>
-			<a href="#" class="button btnOpenFile"><span class="fa fa-folder-open"></span></a>
-			<span class="filename">Hello World</span>
+		<div id="FilesModalSpinner" style="text-align: center;">
+			<span class="fa fa-circle-o-notch fa-spin fa-2x"></span>
 		</div>
-		<div class="file">
-			<a href="#" class="button btnDeleteFile"><span class="fa fa-trash"></span></a>
-			<a href="#" class="button btnOpenFile"><span class="fa fa-folder-open"></span></a>
-			<span class="filename">Say something</span>
-		</div>
-		<div class="file">
-			<a href="#" class="button btnDeleteFile"><span class="fa fa-trash"></span></a>
-			<a href="#" class="button btnOpenFile"><span class="fa fa-folder-open"></span></a>
-			<span class="filename">Button test 3</span>
-		</div>
-		<div class="file">
-			<a href="#" class="button btnDeleteFile"><span class="fa fa-trash"></span></a>
-			<a href="#" class="button btnOpenFile"><span class="fa fa-folder-open"></span></a>
-			<span class="filename">Experiment 5</span>
-		</div>
-		<div class="file">
-			<a href="#" class="button btnDeleteFile"><span class="fa fa-trash"></span></a>
-			<a href="#" class="button btnOpenFile"><span class="fa fa-folder-open"></span></a>
-			<span class="filename">Hello World</span>
-		</div>
-		<div class="file">
-			<a href="#" class="button btnDeleteFile"><span class="fa fa-trash"></span></a>
-			<a href="#" class="button btnOpenFile"><span class="fa fa-folder-open"></span></a>
-			<span class="filename">Say something</span>
-		</div>
-		<div class="file">
-			<a href="#" class="button btnDeleteFile"><span class="fa fa-trash"></span></a>
-			<a href="#" class="button btnOpenFile"><span class="fa fa-folder-open"></span></a>
-			<span class="filename">Button test 3</span>
-		</div>
-		<div class="file">
-			<a href="#" class="button btnDeleteFile"><span class="fa fa-trash"></span></a>
-			<a href="#" class="button btnOpenFile"><span class="fa fa-folder-open"></span></a>
-			<span class="filename">Experiment 5</span>
-		</div>
-		<div class="file">
-			<a href="#" class="button btnDeleteFile"><span class="fa fa-trash"></span></a>
-			<a href="#" class="button btnOpenFile"><span class="fa fa-folder-open"></span></a>
-			<span class="filename">Hello World</span>
-		</div>
-		<div class="file">
-			<a href="#" class="button btnDeleteFile"><span class="fa fa-trash"></span></a>
-			<a href="#" class="button btnOpenFile"><span class="fa fa-folder-open"></span></a>
-			<span class="filename">Say something</span>
-		</div>
-		<div class="file">
-			<a href="#" class="button btnDeleteFile"><span class="fa fa-trash"></span></a>
-			<a href="#" class="button btnOpenFile"><span class="fa fa-folder-open"></span></a>
-			<span class="filename">Button test 3</span>
-		</div>
-		<div class="file">
-			<a href="#" class="button btnDeleteFile"><span class="fa fa-trash"></span></a>
-			<a href="#" class="button btnOpenFile"><span class="fa fa-folder-open"></span></a>
-			<span class="filename">Experiment 5</span>
-		</div>
+		<div id="FilesModalFilelist"></div>
 	</div>
 </div>
 
@@ -310,9 +420,9 @@ $(document).ready(function(){
 		<span class="fa fa-trash"></span> Clear
 	</div>
 	<div class="content">
-		<p>The workspace was modified, are you sure you wish clear the workspace without saving?</p>
+		<p>The workspace was modified. Are you sure you wish clear the workspace without saving?</p>
 		<div class="text-center">
-			<a href="#" class="button"><span class="fa fa-trash"></span> Yes, clear workspace</a>
+			<a href="#" id="btnConfirmClear" class="button"><span class="fa fa-trash"></span> Yes, clear workspace</a>
 		</div>
 	</div>
 </div>
@@ -325,7 +435,7 @@ $(document).ready(function(){
 	<div class="content">
 		<p>Are you sure you wish to delete this file?</p>
 		<div class="text-center">
-			<a href="#" class="button"><span class="fa fa-trash"></span> Yes, delete file</a>
+			<a href="#" id="btnConfirmDelete" class="button"><span class="fa fa-trash"></span> Yes, delete file</a>
 		</div>
 	</div>
 </div>
@@ -338,7 +448,7 @@ $(document).ready(function(){
 	<div class="content">
 		<p>The workspace was modified, unsaved changes will be lost. Are you sure you wish to continue?</p>
 		<div class="text-center">
-			<a href="#" class="button"><span class="fa fa-folder-open"></span> Yes, load file</a>
+			<a href="#" id="btnConfirmLoad" class="button"><span class="fa fa-folder-open"></span> Yes, load file</a>
 		</div>
 	</div>
 </div>

@@ -16,7 +16,6 @@
 	}
 	</style>
 </head>
-<!--body onload="init()"-->
 <body>
 	<xml id="toolbox" style="display: none">
 		<hr>
@@ -277,9 +276,7 @@
 	<script>
 		$(document).ready(function(){
 			Blockly.inject(document.body, {toolbox: document.getElementById("toolbox")});
-			window.setTimeout(BlocklyStorage.restoreBlocks, 0);
-			window.parent.blocklyLoaded(Blockly); // Let the top-level application know that Blockly is ready.
-			BlocklyStorage.backupOnUnload();
+			window.parent.blocklyLoaded(Blockly); // Let the top-level application know that Blockly is ready
 		});
 	</script>
 </body>

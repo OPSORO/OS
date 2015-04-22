@@ -445,14 +445,25 @@ function env_KeyUp(key){
 }
 
 function env_SetButtonToStart(){
+	// Button
 	$("#btnStartStop .fa").removeClass("fa-stop");
 	$("#btnStartStop .fa").addClass("fa-play");
 	$("#btnStartStop .text").html("Run");
+
+	// Filename bar
+	$(".filebox .status").html("Stopped");
+	$(".filebox .fa-circle-o-notch").removeClass("fa-circle-o-notch fa-spin").addClass("fa-stop");
 }
+
 function env_SetButtonToStop(){
+	// Button
 	$("#btnStartStop .fa").removeClass("fa-play");
 	$("#btnStartStop .fa").addClass("fa-stop");
 	$("#btnStartStop .text").html("Stop");
+
+	// Filename bar
+	$(".filebox .status").html("Running");
+	$(".filebox .fa-stop").removeClass("fa-stop").addClass("fa-circle-o-notch fa-spin");
 }
 
 function env_StartStop(){
