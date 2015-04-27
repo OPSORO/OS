@@ -9,32 +9,42 @@ OnoSW is the software framework for [social robot Ono](http://www.industrialdesi
 
 # Installation
 1. Start with a fresh Raspbian install
-2. Copy the contents the folder /OnoSW/ to /home/pi/OnoSW/
-3. Update your system
+2. Downgrade kernel to pre-3.18. This workaround is needed because more recent kernels use device tree, which causes timeout errors on the I2C bus. I have not found a better solution yet, unfortunately.
+
+    ```
+    sudo rpi-update f74b92120e0d469fc5c2dc85b2b5718d877e1cbb
+    ```
+3. Copy the contents the folder /OnoSW/ to /home/pi/OnoSW/
+4. Update your system
 
     ```
     sudo apt-get update
     sudo apt-get upgrade
     ```
+5. Install Python development files, Avahi daemon
 
-4. Install PIP:
+    ```
+    sudo apt-get install python2.7-dev avahi-daemon
+    ```
+
+6. Install PIP:
 
     ```
     sudo apt-get install python-setuptools
     sudo easy_install pip
     ```
 
-5. [Compile and install LibYAML](http://pyyaml.org/wiki/LibYAML)  
+7. [Compile and install LibYAML](http://pyyaml.org/wiki/LibYAML)  
 This step is not strictly necessary, but will result in a massive speedup when parsing config files. The python version of PyYAML takes well over 3 seconds to parse the configs, the C version takes only a fraction of that.
-6. Install flask, flask-login, pyyaml, pluginbase, sockjs-tornado, simplejson
+8. Install flask, flask-login, pyyaml, pluginbase, sockjs-tornado, simplejson
 
     ```
     sudo pip install flask flask-login pyyaml pluginbase sockjs-tornado simplejson
     ```
 
-7. [Enable the I2C port](https://learn.adafruit.com/adafruits-raspberry-pi-lesson-4-gpio-setup/configuring-i2c)
-8. [Install PicoTTS](http://emanon.jimdo.com/tutorials/)
-9. [Setup and configure the WiFi dongle](http://elinux.org/RPI-Wireless-Hotspot)  
+9. [Enable the I2C port](https://learn.adafruit.com/adafruits-raspberry-pi-lesson-4-gpio-setup/configuring-i2c)
+10. [Install PicoTTS](http://rpihome.blogspot.be/2015/02/installing-pico-tts.html)
+11. [Setup and configure the WiFi dongle](http://elinux.org/RPI-Wireless-Hotspot)  
 Use the following configuration for /etc/hostapd/hostapd.conf:
 
     ```
@@ -53,8 +63,8 @@ Use the following configuration for /etc/hostapd/hostapd.conf:
     rsn_pairwise=CCMP
     ```
 
-10. [Change the host name to "ono"](http://www.raspians.com/Knowledgebase/how-to-change-hostname-on-raspberrypi/)
-11. [Setup a daemon for Ono](http://blog.scphillips.com/2013/07/getting-a-python-script-to-run-in-the-background-as-a-service-on-boot/)  
+12. [Change the host name to "ono"](http://www.raspians.com/Knowledgebase/how-to-change-hostname-on-raspberrypi/)
+13. [Setup a daemon for Ono](http://blog.scphillips.com/2013/07/getting-a-python-script-to-run-in-the-background-as-a-service-on-boot/)  
 The script for the daemon can be found in /Scripts/onosw.sh.  
 Make sure the main OnoSW python script is executable!
 
