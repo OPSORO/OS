@@ -1,3 +1,6 @@
+# OLD OLD OLD
+# TODO: remove and replace completely by hardware2
+
 from onoi2cdevice import OnoI2CDevice
 
 MPR121_I2CADDR_DEFAULT = 0x5A
@@ -109,10 +112,10 @@ class MPR121Ext(OnoI2CDevice):
 		self._write8(MPR121_DEBOUNCE, 0x00)
 
 		# response time = SFI(10) X ESI(8ms) = 80ms
-		self._write8(MPR121_DEBOUNCE, 0x13);
+		self._write8(MPR121_CONFIG2, 0x13)
 
 		# FFI=18
-		self._write8(MPR121_CONFIG1, 0x80);
+		self._write8(MPR121_CONFIG1, 0x80)
 
 		#Auto configuration
 		if autoconfig:

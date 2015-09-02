@@ -88,9 +88,9 @@
 			</div>
 			<div class="small-12 medium-9 large-10 columns">
 				<div class="row numberstop">
-					<div class="small-3 text-left columns">-100</div>
-					<div class="small-6 text-center columns">0</div>
-					<div class="small-3 text-right columns">+100</div>
+					<div class="small-3 text-left columns">-1.0</div>
+					<div class="small-6 text-center columns">0.0</div>
+					<div class="small-3 text-right columns">+1.0</div>
 				</div>
 				<div class="range-slider" data-slider="{{ dof.current }}" data-options="start: -100; end: 100;" data-dofname="{{ dof.name }}" data-dofmin="{{ dof.min }}" data-dofmid="{{ dof.mid }}" data-dofmax="{{ dof.max }}">
 					<span class="range-slider-handle" role="slider" tabindex="0"></span>
@@ -98,9 +98,9 @@
 					<input type="hidden">
 				</div>
 				<div class="row numbersbottom">
-					<div class="small-3 text-left columns">{{ dof.min }} &micro;s</div>
+					<div class="small-3 text-left columns">{{ dof.mid + dof.min }} &micro;s</div>
 					<div class="small-6 text-center columns">{{ dof.mid }} &micro;s</div>
-					<div class="small-3 text-right columns">{{ dof.max }} &micro;s</div>
+					<div class="small-3 text-right columns">{{ dof.mid + dof.max }} &micro;s</div>
 				</div>
 			</div>
 		</div>
@@ -113,8 +113,10 @@
 {% block scripts %}
 {{ super() }}
 
+<script src="/static/js/sockjs.min.js"></script>
 <script src="/static/js/numeral.min.js"></script>
 <script>
+
 	function addError(msg){
 		$("#errors").append("<div data-alert class=\"alert-box alert\">" + msg + "<a href=\"#\" class=\"close\">&times;</a></div>");
 		$(document).foundation("alert", "reflow");
@@ -125,39 +127,41 @@
 		$(document).foundation("alert", "reflow");
 	}
 
-	function updateServer(sliderElem){
-		// Send DOF values to the server via AJAX requests
-		// Only one request is active per DOF slider
-		// sliderElem.data("busy") --> Is there an active AJAX request?
-		// sliderElem.data("dirty") --> Has the value of the slider changed since the last AJAX request?
-
-		if(sliderElem.data("busy") == true){
-			// Call to server in progress, set flag to update
-			sliderElem.data("dirty", true);
-			return;
-		}else{
-			// No calls active, make new AJAX request
-			sliderElem.data("busy", true);
-			sliderElem.data("dirty", false);
-			$.ajax({
-				dataType: "json",
-				data: {"dof": sliderElem.data("dofname"), "pos": sliderElem.attr("data-slider")},
-				type: "POST",
-				url: "setdofpos",
-				success: function(data){
-					if(data.status == "error"){
-						addError(data.message);
-					}
-					sliderElem.data("busy", false);
-					if(sliderElem.data("dirty") == true){
-						updateServer(sliderElem);
-					}
-				}
-			});
-		}
-	}
-
 	$(document).ready(function(){
+		// Setup websocket connection.
+		var conn = null;
+		var connReady = false;
+		conn = new SockJS("http://" + window.location.host + "/sockjs");
+
+		conn.onopen = function(){
+			console.log("SockJS connected.");
+			$.ajax({
+				url: "/sockjstoken",
+				cache: false
+			})
+			.done(function(data) {
+				conn.send(JSON.stringify({action: "authenticate", token: data}));
+				connReady = true;
+				console.log("SockJS authenticated.");
+			});
+		};
+
+		conn.onmessage = function(e){
+			var msg = $.parseJSON(e.data);
+
+			switch(msg.action){
+				case "error":
+					addError(msg.message);
+					break;
+			}
+		};
+
+		conn.onclose = function(){
+			console.log("SockJS disconnected.");
+			conn = null;
+			connReady = false;
+		};
+
 		$("[data-slider]").on("change.fndtn.slider", function(){
 			if( $(this).attr("data-slider") != $(this).data("lastpos") ){
 				var dofpos = $(this).attr("data-slider");
@@ -166,7 +170,7 @@
 				var dofmax = $(this).data("dofmax");
 				var dofus = dofmid;
 
-				$(this).closest(".sliderrow").find("[data-dof]").html(numeral(dofpos).format("+0"));
+				$(this).closest(".sliderrow").find("[data-dof]").html(numeral(dofpos/100).format("+0.00"));
 
 				if(dofpos < 0){
 					dofus += (-dofpos / 100) * dofmin
@@ -175,32 +179,27 @@
 				}
 				$(this).closest(".sliderrow").find("[data-us]").html(numeral(dofus).format("0"));
 
-				updateServer($(this));
+				if(connReady){
+					console.log("SET " + $(this).data("dofname") + " TO POS " + $(this).attr("data-slider")/100);
+					conn.send(JSON.stringify({
+						action: "setDofPos",
+						dofname: $(this).data("dofname"),
+						pos: $(this).attr("data-slider") / 100
+					}));
+				}
 
 				$(this).data("lastpos", dofpos);
 			}
 		});
 		$("#btnEnable").click(function(){
-			$.ajax({
-				dataType: "json",
-				url: "servos/enable",
-				success: function(data){
-					if(data.status == "error"){
-						addError(data.message);
-					}
-				}
-			});
+			if(connReady){
+				conn.send(JSON.stringify({action: "servosEnable"}));
+			}
 		});
 		$("#btnDisable").click(function(){
-			$.ajax({
-				dataType: "json",
-				url: "servos/disable",
-				success: function(data){
-					if(data.status == "error"){
-						addError(data.message);
-					}
-				}
-			});
+			if(connReady){
+				conn.send(JSON.stringify({action: "servosDisable"}));
+			}
 		});
 	});
 </script>

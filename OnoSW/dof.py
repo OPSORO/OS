@@ -1,3 +1,6 @@
+# OLD OLD OLD
+# TODO: remove and replace completely by hardware2
+
 from __future__ import division
 
 from bisect import bisect_right

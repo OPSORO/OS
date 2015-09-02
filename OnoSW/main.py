@@ -8,6 +8,7 @@ import random
 import os
 import tornado.log
 import onoapplication
+from consolemsg import *
 
 # Handle SIGTERM for graceful shutdown of daemon
 def sigterm_handler(_signo, _stack_frame):
@@ -42,10 +43,10 @@ logger.addHandler(handler)
 #sys.stderr = OnoLogger(logger, logging.ERROR, sys.stderr)
 
 # Initialization
-if __name__ == '__main__':
+if __name__ == "__main__":
 	signal.signal(signal.SIGTERM, sigterm_handler)
 	#signal.signal(signal.SIGPIPE, signal.SIG_DFL)  # Fix for "IOError: [Errno 32] Broken pipe"
 
-	print "Ono SW started..."
+	print_info("OnoSW started...")
 	app = onoapplication.OnoApplication()
 	app.run()

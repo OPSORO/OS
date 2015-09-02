@@ -7,7 +7,9 @@ from sockjs.tornado import SockJSRouter, SockJSConnection
 from onoadminuser import OnoAdminUser
 from hardware import Hardware
 from functools import wraps, partial
-import yaml
+#import yaml
+import hardware2 #NEW NEW NEW
+import expression #NEW NEW NEW
 import pluginbase
 import random
 import os
@@ -17,12 +19,14 @@ import threading
 import base64
 import time
 import logging
+from consolemsg import *
 try:
 	import simplejson as json
-	print "\033[1m[\033[96m INFO \033[0m\033[1m]\033[0m Using simplejson"
+	print_info("Using simplejson")
 except ImportError:
-	print "\033[1m[\033[96m INFO \033[0m\033[1m]\033[0m Simplejson not available, falling back on json"
 	import json
+	print_info("Simplejson not available, falling back on json")
+
 
 # Helper function
 get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
@@ -70,7 +74,7 @@ class OnoApplication(object):
 			self.current_bp_app = plugin_name
 
 			plugin = self.plugin_source.load_plugin(plugin_name)
-			print "\033[1m[\033[92m APP LOADED \033[0m\033[1m]\033[0m %s" % plugin_name
+			print_apploaded(plugin_name)
 
 			if not hasattr(plugin, "config"):
 				plugin.config = {"full_name": "No name", "icon": "fa-warning"}
@@ -85,12 +89,12 @@ class OnoApplication(object):
 			try:
 				plugin.setup(self)
 			except AttributeError:
-				print "\033[1m[\033[96m INFO \033[0m\033[1m]\033[0m %s has no setup function" % plugin_name
+				print_info("%s has no setup function" % plugin_name)
 
 			try:
 				plugin.setup_pages(self)
 			except AttributeError:
-				print "\033[1m[\033[96m INFO \033[0m\033[1m]\033[0m %s has no setup_pages function" % plugin_name
+				print_info("%s has no setup_pages function" % plugin_name)
 
 		self.current_bp_app = ""
 		self.apps_can_register_bp = False
@@ -221,11 +225,11 @@ class OnoApplication(object):
 
 	def stop_current_app(self):
 		if self.activeapp in self.apps:
-			print "\033[1m[\033[91m APP STOPPED \033[0m\033[1m]\033[0m %s" % self.activeapp
+			print_appstopped(self.activeapp)
 			try:
 				self.apps[self.activeapp].stop(self)
 			except AttributeError:
-				print "\033[1m[\033[96m INFO \033[0m\033[1m]\033[0m %s has no stop function" % self.activeapp
+				print_info("%s has no stop function" % self.activeapp)
 		self.activeapp = None
 
 	def shutdown_server(self):
@@ -450,10 +454,10 @@ class OnoApplication(object):
 			self.activeapp = appname
 
 			try:
-				print "\033[1m[\033[92m APP STARTED \033[0m\033[1m]\033[0m %s" % appname
+				print_appstarted(appname)
 				self.apps[appname].start(self)
 			except AttributeError:
-				print "\033[1m[\033[96m INFO \033[0m\033[1m]\033[0m %s has no start function" % self.activeapp
+				print_info("%s has no start function" % self.activeapp)
 
 			return redirect("/app/%s/" % appname)
 		else:

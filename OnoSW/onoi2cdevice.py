@@ -1,3 +1,6 @@
+# OLD OLD OLD
+# TODO: remove and replace completely by hardware2
+
 import smbus
 import subprocess
 

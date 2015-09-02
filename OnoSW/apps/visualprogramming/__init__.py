@@ -77,7 +77,7 @@ def setup_pages(onoapp):
 	@vp_bp.route("/save", methods=["POST"])
 	@onoapp.app_api
 	def save():
-		file = request.form.get("file", type=str, default="")
+		filecontents = request.form.get("file", type=str, default="")
 		filename = request.form.get("filename", type=str, default="")
 		overwrite = request.form.get("overwrite", type=int, default=0)
 
@@ -95,7 +95,7 @@ def setup_pages(onoapp):
 				return {"status": "error", "message": "File already exists."}
 
 		with open(full_path, "w") as f:
-			f.write(file)
+			f.write(filecontents)
 
 		return {"status": "success", "filename": filename}
 
@@ -124,7 +124,7 @@ def setup_pages(onoapp):
 	@vp_bp.route("/savecode", methods=["POST"])
 	@onoapp.app_api
 	def savecode():
-		file = request.form.get("file", type=str, default="")
+		filecontents = request.form.get("file", type=str, default="")
 
 		backup_filename = "Blockly_Run__%s.xml" % time.strftime("%Y-%m-%d_%H-%M-%S")
 		backup_full_path = get_path("../../../OnoSW_backups/%s" % backup_filename)
@@ -132,7 +132,7 @@ def setup_pages(onoapp):
 		print "Saved XML as /OnoSW_backups/%s" % backup_filename
 
 		with open(backup_full_path, "w") as f:
-			f.write(file)
+			f.write(filecontents)
 
 		return {"status": "success"}
 

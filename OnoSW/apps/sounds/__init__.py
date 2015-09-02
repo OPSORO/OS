@@ -3,10 +3,9 @@ from __future__ import with_statement
 from functools import partial
 import os
 import glob
-
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from werkzeug import secure_filename
-import pygame
+from sound import Sound
 
 config = {"full_name": "Sounds", "icon": "fa-volume-up"}
 
@@ -86,8 +85,7 @@ def setup_pages(onoapp):
 			soundfiles.append(os.path.split(filename)[1])
 
 		if soundfile in soundfiles:
-			pygame.mixer.music.load(os.path.join(get_path("soundfiles/"), soundfile))
-			pygame.mixer.music.play()
+			Sound.play_file(soundfile)
 			return {"status": "success"}
 		else:
 			return {"status": "error", "message": "Unknown file."}
@@ -97,7 +95,8 @@ def setup_pages(onoapp):
 	def saytts():
 		text = request.args.get("text", None)
 		if text is not None:
-			onoapp.hw.say_tts(text)
+			# onoapp.hw.say_tts(text)
+			Sound.say_tts(text)
 		return {"status": "success"}
 
 	onoapp.register_app_blueprint(sounds_bp)
@@ -106,8 +105,7 @@ def setup(onoapp):
 	pass
 
 def start(onoapp):
-	pygame.mixer.init()
+	pass
 
 def stop(onoapp):
-	pygame.mixer.stop()
-	pygame.mixer.quit()
+	pass

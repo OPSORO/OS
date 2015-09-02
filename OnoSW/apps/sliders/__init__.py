@@ -1,26 +1,22 @@
 from __future__ import with_statement
 
-import os
-import threading
-import time
-from functools import partial
-from stoppable_thread import StoppableThread
-from expression_manager import ExpressionManager
+from consolemsg import *
+from expression import Expression
+from hardware2 import Hardware
 
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 
+constrain = lambda n, minn, maxn: max(min(maxn, n), minn)
+
 config = {"full_name": "Sliders", "icon": "fa-sliders"}
 
-get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
-
-em = None
-em_lock = threading.Lock()
+clientconn = None
+dof_positions = {}
 
 def setup_pages(onoapp):
 	sliders_bp = Blueprint("sliders", __name__, template_folder="templates")
 
-	global em
-	global em_lock
+	global clientconn
 
 	@sliders_bp.route("/")
 	@onoapp.app_view
@@ -32,57 +28,116 @@ def setup_pages(onoapp):
 			"dofs":				[]
 		}
 
-		for pin, pinname in enumerate(em.pinmap):
-			if pinname is not None:
+		global dof_positions
+
+		for servo in Expression.servos:
+			if servo.pin >= 0 and servo.pin < 16:
+				# Pin is valid, add to the page
 				data["dofs"].append({
-					"name":		pinname,
-					"pin":		pin,
-					"min":		em.dof[pinname].min_range,
-					"mid":		em.dof[pinname].mid_pos,
-					"max":		em.dof[pinname].max_range,
-					"current":	em.dof[pinname].pos_current
+					"name":		servo.dofname,
+					"pin":		servo.pin,
+					"min":		servo.min_range,
+					"mid":		servo.mid_pos,
+					"max":		servo.max_range,
+					"current":	dof_positions[servo.dofname]
 				})
 
 		return onoapp.render_template("sliders.html", **data)
 
-	@sliders_bp.route("/servos/enable")
-	@onoapp.app_api
-	def servosenable():
-		print "\033[93m" + "Servos now on" + "\033[0m"
-		onoapp.hw.servo_power_on()
+	@onoapp.app_socket_connected
+	def s_connected(conn):
+		global clientconn
+		clientconn = conn
 
-	@sliders_bp.route("/servos/disable")
-	@onoapp.app_api
-	def servosdisable():
-		print "\033[93m" + "Servos now off" + "\033[0m"
-		onoapp.hw.servo_power_off()
+	@onoapp.app_socket_disconnected
+	def s_disconnected(conn):
+		global clientconn
+		clientconn = None
 
-	@sliders_bp.route("/setdofpos", methods=["POST"])
-	@onoapp.app_api
-	def setdofpos():
-		dofname = request.form.get("dof", type=str, default=None)
-		pos = request.form.get("pos", type=int, default=0)
+	@onoapp.app_socket_message("servosEnable")
+	def s_servosenable(conn, data):
+		print_info("Servos enabled")
+		with Hardware.lock:
+			Hardware.servo_enable()
+
+	@onoapp.app_socket_message("servosDisable")
+	def s_servosdisable(conn, data):
+		print_info("Servos disabled")
+		with Hardware.lock:
+			Hardware.servo_disable()
+
+	@onoapp.app_socket_message("setDofPos")
+	def s_setdofpos(conn, data):
+		dofname = str(data.pop("dofname", None))
+		pos = float(data.pop("pos", 0.0))
 
 		if dofname is None:
-			return {"status": "error", "message": "No DOF name given."}
-		if dofname not in em.pinmap:
-			return {"status": "error", "message": "Unknown DOF name."}
+			conn.send_data("error", {"message": "No DOF name given."})
 
-		with em_lock:
-			em.dof[dofname].set_target_pos(pos=pos, steps=0)
-			em.update_servos()
+		global dof_positions
+		if dofname not in dof_positions:
+			conn.send_data("error", {"message": "Unknown DOF name."})
+		else:
+			pos = constrain(pos, -1.0, 1.0)
+			dof_positions[dofname] = pos
+
+			with Expression.lock:
+				Expression.update()
 
 	onoapp.register_app_blueprint(sliders_bp)
 
-def setup(onoapp):
-	global em
-	global em_lock
-	with em_lock:
-		em = ExpressionManager(onoapp.hw)
-		em.all_servos_mid()
+def overlay_fn(dof_pos, dof):
+	# Overwrite all DOFs to use the ones from the slider app
+	global dof_positions
 
-def start(onoapp):
+	if dof.name in dof_positions:
+		return dof_positions[dof.name]
+	else:
+		return dof_pos
+
+def setup(onoapp):
+	# global em
+	# global em_lock
+	# with em_lock:
+	# 	em = ExpressionManager(onoapp.hw)
+	# 	em.all_servos_mid()
+	### do servos off
 	pass
 
+def start(onoapp):
+	global dof_positions
+	dof_positions = {}
+
+	# Apply overlay function
+	for servo in Expression.servos:
+		if servo.pin < 0 or servo.pin > 15:
+			continue # Skip invalid pins
+		dof_positions[servo.dofname] = 0.0
+		if servo.dofname in Expression.dofs:
+			Expression.dofs[servo.dofname].overlays.append(overlay_fn)
+
+	# Turn servo power off, init servos, update expression
+	with Hardware.lock:
+		Hardware.servo_disable()
+		Hardware.servo_init()
+		Hardware.servo_neutral()
+
+	with Expression.lock:
+		Expression.update()
+
 def stop(onoapp):
-	onoapp.hw.servo_power_off()
+	with Hardware.lock:
+		Hardware.servo_disable()
+
+	# Remove all overlay functions
+	for dofname, dof in Expression.dofs.iteritems():
+		if overlay_fn in dof.overlays:
+			dof.overlays.remove(overlay_fn)
+
+	# onoapp.hw.servo_power_off()
+	# global dof_positions
+	#
+	# for dofname in dof_positions:
+	# 	if dofname in Expression.dofs:
+	# 		Expression.dofs[dofname].overlays.remove(overlay_fn)
+	# 		print "Removed overlay_fn from %s" % dofname

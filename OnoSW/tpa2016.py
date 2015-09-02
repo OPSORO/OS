@@ -1,3 +1,6 @@
+# OLD OLD OLD
+# TODO: remove and replace completely by hardware2
+
 from onoi2cdevice import OnoI2CDevice
 
 TPA2016_SETUP           = 0x1

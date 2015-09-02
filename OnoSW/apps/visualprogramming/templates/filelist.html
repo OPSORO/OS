@@ -1,5 +1,5 @@
 {% if savefiles %}
-	{% for savefile in savefiles %}
+	{% for savefile in savefiles|sort %}
 		<div class="file" data-savefile="{{ savefile }}">
 			<a href="#" class="button btnDeleteFile"><span class="fa fa-trash"></span></a>
 			<a href="#" class="button btnOpenFile"><span class="fa fa-folder-open"></span></a>

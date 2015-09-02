@@ -1,0 +1,11 @@
+{% if scriptfiles %}
+	{% for scriptfile in scriptfiles|sort %}
+		<div class="file" data-scriptfile="{{ scriptfile }}">
+			<a href="#" class="button btnDeleteFile"><span class="fa fa-trash"></span></a>
+			<a href="#" class="button btnOpenFile"><span class="fa fa-folder-open"></span></a>
+			<span class="filename">{{ scriptfile }}</span>
+		</div>
+	{% endfor %}
+{% else %}
+	No files found.
+{% endif %}

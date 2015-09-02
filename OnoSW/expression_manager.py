@@ -1,3 +1,6 @@
+# OLD OLD OLD
+# TODO: remove and replace completely by hardware2
+
 from __future__ import division
 from __future__ import with_statement
 
@@ -6,12 +9,13 @@ from exceptions import RuntimeError
 import os
 import math
 import yaml
+from consolemsg import print_info
 try:
 	from yaml import CLoader as Loader
-	print "\033[1m[\033[96m INFO \033[0m\033[1m]\033[0m Using YAML CLoader"
+	print_info("Using YAML CLoader")
 except ImportError:
-	print "\033[1m[\033[96m INFO \033[0m\033[1m]\033[0m YAML CLoader not available, falling back on python implementation"
 	from yaml import Loader
+	print_info("YAML CLoader not available, falling back on python implementation")
 
 from dof import DOF, EyeHorDOF, EyeVerDOF, MapDOF
 

@@ -1,47 +1,45 @@
 from __future__ import with_statement
+from __future__ import division
 
 import threading
 import random
 import time
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from stoppable_thread import StoppableThread
-from mpr121ext import MPR121Ext
+from hardware2 import Hardware
 
 config = {"full_name": "Touch Graph", "icon": "fa-hand-o-down"}
 
 touch_t = None
 clientconn = None
-captouch = None
-captouch_lock = threading.Lock()
 running = False
 numelectrodes = 0
 
 def TouchLoop():
-	global captouch
-	global captouch_lock
 	global running
 	global clientconn
 
 	while not touch_t.stopped():
-		if running and captouch is not None:
+		if running:
 			data = {}
-			with captouch_lock:
-				for i in range(numelectrodes):
-					data[i] = captouch.filtered_data(i)
+
+			with Hardware.lock:
+				ret = Hardware.cap_get_filtered_data()
+
+			for i in range(numelectrodes):
+				data[i] = ret[i]
+
 			if clientconn:
 				clientconn.send_data("updateelectrodes", {"electrodedata": data})
 
 		touch_t.sleep(0.1)
 
 def startcap(electrodes):
-	global captouch
-	global captouch_lock
 	global running
 	global numelectrodes
 
-	with captouch_lock:
-		captouch = MPR121Ext(electrodes=electrodes)
-		numelectrodes = electrodes
+	Hardware.cap_init(electrodes=electrodes, gpios=0, autoconfig=True)
+	numelectrodes = electrodes
 
 	running = True
 

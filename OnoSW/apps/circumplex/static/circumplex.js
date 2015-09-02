@@ -125,41 +125,41 @@ function updateUINumbers(){
 	var val = (knobx - 0.5)/r_factor;
 	var ar = -1*(knoby - 0.5)/r_factor;
 
-	var len = Math.sqrt(val*val + ar*ar);
-	var alpha = Math.atan2(ar, val);
-	if(isNaN(alpha)){
-		alpha = 0;
+	var r = Math.sqrt(val*val + ar*ar);
+	var phi = Math.atan2(ar, val);
+	if(isNaN(phi)){
+		phi = 0;
 	}
-	if(alpha < 0){
-		alpha += 2*Math.PI;
+	if(phi < 0){
+		phi += 2*Math.PI;
 	}
-	alpha = alpha*(180/Math.PI);
+	phi = phi*(180/Math.PI);
 
 	$("#lblVal").html(numeral(val).format("+0.000"));
 	$("#lblAr").html(numeral(ar).format("+0.000"));
-	$("#lblAlpha").html(numeral(alpha).format("0.0") + " °");
-	$("#lblLen").html(numeral(len).format("0.000"));
+	$("#lblPhi").html(numeral(phi).format("0.0") + " °");
+	$("#lblR").html(numeral(r).format("0.000"));
 }
 
 function sendToServer(){
 	var val = (knobx - 0.5)/r_factor;
 	var ar = -1*(knoby - 0.5)/r_factor;
 
-	var len = Math.sqrt(val*val + ar*ar);
-	var alpha = Math.atan2(ar, val);
-	if(isNaN(alpha)){
-		alpha = 0;
+	var r = Math.sqrt(val*val + ar*ar);
+	var phi = Math.atan2(ar, val);
+	if(isNaN(phi)){
+		phi = 0;
 	}
-	if(alpha < 0){
-		alpha += 2*Math.PI;
+	if(phi < 0){
+		phi += 2*Math.PI;
 	}
-	alpha = alpha*(180/Math.PI);
+	phi = phi*(180/Math.PI);
 
 	$.ajax({
 		dataType: "json",
-		data: {"alpha": alpha, "length": len},
+		data: {"phi": phi, "r": r},
 		type: "POST",
-		url: "setalphalength",
+		url: "setemotion",
 		success: function(data){
 			if(data.status == "error"){
 				addError(data.message);
