@@ -21,10 +21,10 @@ OnoSW is the software framework for [social robot Ono](http://www.industrialdesi
     sudo apt-get update
     sudo apt-get upgrade
     ```
-5. Install Python development files, Avahi daemon
+5. Install Python development files, Avahi daemon, LuaJIT
 
     ```
-    sudo apt-get install python2.7-dev avahi-daemon
+    sudo apt-get install python2.7-dev avahi-daemon libluajit-5.1-dev
     ```
 
 6. Install PIP:
@@ -36,15 +36,92 @@ OnoSW is the software framework for [social robot Ono](http://www.industrialdesi
 
 7. [Compile and install LibYAML](http://pyyaml.org/wiki/LibYAML)  
 This step is not strictly necessary, but will result in a massive speedup when parsing config files. The python version of PyYAML takes well over 3 seconds to parse the configs, the C version takes only a fraction of that.
-8. Install flask, flask-login, pyyaml, pluginbase, sockjs-tornado, simplejson
+8. Install Python packages (flask, flask-login, pyyaml, pluginbase, sockjs-tornado, simplejson, lupa, numpy, scipy, spidev)
 
     ```
-    sudo pip install flask flask-login pyyaml pluginbase sockjs-tornado simplejson
+    sudo pip install flask flask-login pyyaml pluginbase sockjs-tornado simplejson lupa numpy scipy spidev
     ```
 
-9. [Enable the I2C port](https://learn.adafruit.com/adafruits-raspberry-pi-lesson-4-gpio-setup/configuring-i2c)
-10. [Install PicoTTS](http://rpihome.blogspot.be/2015/02/installing-pico-tts.html)
-11. [Setup and configure the WiFi dongle](http://elinux.org/RPI-Wireless-Hotspot)  
+9. Disable Device Tree, enable SPI and I2C.
+
+    ```
+    sudo raspi-config
+    ```
+    
+    Go to advanced, A5 Device Tree --> Disable, A6 SPI --> Enable, A7 --> I2C enable.
+
+10. Edit /etc/modules:
+
+    ```
+    sudo nano /etc/modules
+    ```
+    
+    Enter the following configuration:
+    
+    ```
+    # /etc/modules: kernel modules to load at boot time.
+    #
+    # This file contains the names of kernel modules that should be loaded
+    # at boot time, one per line. Lines beginning with "#" are ignored.
+    # Parameters can be specified after the module name.
+
+    #snd-bcm2835
+    i2c-bcm2708
+    i2c-dev
+    snd_soc_core
+    snd_soc_bcm2708_i2s
+    bcm2708_dmaengine
+    snd_soc_pcm1794a
+    snd_soc_rpi_dac
+    ```
+    Edit /etc/modprobe.d/raspi-blacklist.conf and make the file is empty. (no modules blacklisted)  
+    
+    ```
+    sudo nano /etc/modprobe.d/raspi-blacklist.conf
+    ```
+11. Configure ALSA:
+    
+    ```
+    sudo nano /etc/asound.conf
+    ```
+    
+    Enter the following configuration:
+    
+    ```
+    pcm.!default {
+      type        softvol
+      slave.pcm   dac
+      control {
+        name      "Master"
+        card      0
+      }
+    }
+
+    pcm.dac {
+      type plug
+      slave {
+        pcm       "hw:0,0"
+        format     S16_LE
+        channels   2
+        rate       48000
+      }
+    }
+    ```
+    
+    Reboot the Raspberry Pi:
+    
+    ```
+    sudo reboot
+    ```
+    
+    Lower the master sound volume to something reasonable (limits 0-255):
+    
+    ```
+    amixer set Master 128
+    ```
+    
+12. [Install PicoTTS](http://rpihome.blogspot.be/2015/02/installing-pico-tts.html)
+13. [Setup and configure the WiFi dongle](http://elinux.org/RPI-Wireless-Hotspot)  
 Use the following configuration for /etc/hostapd/hostapd.conf:
 
     ```
@@ -63,8 +140,8 @@ Use the following configuration for /etc/hostapd/hostapd.conf:
     rsn_pairwise=CCMP
     ```
 
-12. [Change the host name to "ono"](http://www.raspians.com/Knowledgebase/how-to-change-hostname-on-raspberrypi/)
-13. [Setup a daemon for Ono](http://blog.scphillips.com/2013/07/getting-a-python-script-to-run-in-the-background-as-a-service-on-boot/)  
+14. [Change the host name to "ono"](http://www.raspians.com/Knowledgebase/how-to-change-hostname-on-raspberrypi/)
+15. [Setup a daemon for Ono](http://blog.scphillips.com/2013/07/getting-a-python-script-to-run-in-the-background-as-a-service-on-boot/)  
 The script for the daemon can be found in /Scripts/onosw.sh.  
 Make sure the main OnoSW python script is executable!
 

@@ -54,17 +54,14 @@ class _Sound(object):
 			# Sound file already exists, play it
 			if generate_only:
 				return
-			# subprocess.Popen(["aplay", full_path], stdout=FNULL, stderr=subprocess.STDOUT)
-			subprocess.Popen(["ecasound", "-i", full_path, "-o", "alsahw,0,0"], stdout=FNULL, stderr=subprocess.STDOUT)
+			subprocess.Popen(["aplay", full_path], stdout=FNULL, stderr=subprocess.STDOUT)
 		else:
 			# Sound file does not exist yet, generate it and then play it
 			if generate_only:
 				subprocess.Popen(["pico2wave", "-w", full_path, text])
 			else:
 				subprocess.call(["pico2wave", "-w", full_path, text]) # Waits for process to return
-				# subprocess.Popen(["aplay", full_path], stdout=FNULL, stderr=subprocess.STDOUT)
-
-				subprocess.Popen(["ecasound", "-i", full_path, "-o", "alsahw,0,0"], stdout=FNULL, stderr=subprocess.STDOUT)
+				subprocess.Popen(["aplay", full_path], stdout=FNULL, stderr=subprocess.STDOUT)
 
 	def play_file(self, filename):
 		path = None
@@ -77,8 +74,7 @@ class _Sound(object):
 			raise ValueError("Could not find soundfile \"%s\"." % filename)
 		# print "PLAY SOUND %s" % path
 		FNULL = open(os.devnull, "w")
-		#subprocess.Popen(["aplay", path], stdout=FNULL, stderr=subprocess.STDOUT)
-		subprocess.Popen(["ecasound", "-i", path, "-o", "alsahw,0,0"], stdout=FNULL, stderr=subprocess.STDOUT)
+		subprocess.Popen(["aplay", path], stdout=FNULL, stderr=subprocess.STDOUT)
 
 # Global instance that can be accessed by apps and scripts
 Sound = _Sound()
