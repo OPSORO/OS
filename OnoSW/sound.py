@@ -72,7 +72,6 @@ class _Sound(object):
 				break
 		if path is None:
 			raise ValueError("Could not find soundfile \"%s\"." % filename)
-		# print "PLAY SOUND %s" % path
 		FNULL = open(os.devnull, "w")
 		subprocess.Popen(["aplay", path], stdout=FNULL, stderr=subprocess.STDOUT)
 

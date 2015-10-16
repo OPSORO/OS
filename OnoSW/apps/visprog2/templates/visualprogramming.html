@@ -256,6 +256,21 @@ div.page {
 	var Blockly = null;
 	var workspace = null;
 
+	function dropdown_test(){
+		return [["alpha", "OPTIONNAME1"], ["bravo", "OPTIONNAME2"], ["charlie", "OPTIONNAME2"]]
+	}
+
+	function find_block_values(block_type, field_name){
+		var all_xml = $(Blockly.Xml.workspaceToDom(workspace));
+		var fields = all_xml.find("block[type='" + block_type + "'] > field[name='" + field_name + "']");
+
+		var ret = [];
+		fields.each(function(idx, elem){
+			ret.push($(elem).text());
+		});
+		return ret;
+	}
+
 	function addError(msg){
 		$("#console").append("<span style=\"color: #ab3226;\">" + msg + "</span><br>");
 		$("#console").scrollTop($("#console").prop("scrollHeight"));
@@ -427,7 +442,8 @@ div.page {
 		});
 
 		function generate_code(){
-			var code = Blockly.JavaScript.workspaceToCode(workspace);
+			//var code = Blockly.JavaScript.workspaceToCode(workspace);
+			var code = Blockly.Lua.workspaceToCode(workspace);
 			return code;
 		}
 
@@ -776,7 +792,6 @@ div.page {
 			var elem = $(this);
 			if(connReady && !elem.hasClass("toggled")){
 				conn.send(JSON.stringify({action: "buttonDown", button: elem.data("buttonname")}));
-				console.log("button down");
 			}
 		});
 
@@ -788,7 +803,6 @@ div.page {
 				if(elem.hasClass("toggled")){
 					if(connReady){
 						conn.send(JSON.stringify({action: "buttonUp", button: elem.data("buttonname")}));
-						console.log("button up");
 					}
 				}
 				elem.toggleClass("toggled");

@@ -1,8 +1,13 @@
 from __future__ import with_statement
 
+from functools import partial
+import os
+import glob
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 
 config = {"full_name": "VisProg2", "icon": "fa-puzzle-piece"}
+
+get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 
 def setup_pages(onoapp):
 	visprog2_bp = Blueprint("visprog2", __name__, template_folder="templates", static_folder="static")
@@ -22,9 +27,13 @@ def setup_pages(onoapp):
 	@onoapp.app_view
 	def blockly_inner():
 		data = {
-			"soundfiles":		[],
-			"dofnames":			[]
+			"soundfiles":		[]
 		}
+
+		filenames = glob.glob(get_path("../sounds/soundfiles/*.wav"))
+
+		for filename in filenames:
+			data["soundfiles"].append(os.path.split(filename)[1])
 
 		return onoapp.render_template("blockly.html", **data)
 

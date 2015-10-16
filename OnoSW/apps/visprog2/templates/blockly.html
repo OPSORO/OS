@@ -39,6 +39,8 @@
 			<block type="interface_addkey2"></block>
 			<block type="interface_buttonpress"></block>
 			<block type="interface_keypress"></block>
+			<block type="interface_is_key_pressed"></block>
+			<block type="interface_is_button_pressed"></block>
 		</category>
 		<category name="Sound" id="catSound">
 			<block type="sound_saytts"></block>
@@ -74,7 +76,7 @@
 					</block>
 				</value>
 			</block>
-			<block type="expression_setphir">
+			<block type="expression_setrphi">
 				<value name="PHI">
 					<block type="math_number">
 						<field name="NUM">90</field>
@@ -100,72 +102,29 @@
 					</block>
 				</value>
 			</block>
+			<block type="neo_update"></block>
+			<block type="neo_setpixel">
+				<value name="PIXEL">
+					<block type="math_number">
+						<field name="NUM">5</field>
+					</block>
+				</value>
+			</block>
+			<block type="neo_setrange">
+				<value name="START">
+					<block type="math_number">
+						<field name="NUM">3</field>
+					</block>
+				</value>
+				<value name="END">
+					<block type="math_number">
+						<field name="NUM">8</field>
+					</block>
+				</value>
+			</block>
+			<block type="neo_setall"></block>
 		</category>
-
-
 		<sep></sep>
-
-		<category name="Ono Events" id="catOnoEvents">
-			<block type="ono_onsetup"></block>
-			<block type="ono_onloop"></block>
-			<block type="ono_onkeypress"></block>
-			<block type="ono_onkeyrelease"></block>
-		</category>
-		<category name="Ono Emotions" id="catOnoEmotions">
-			<block type="ono_emotion_basic"></block>
-			<block type="ono_emotion_val_ar">
-				<value name="VALENCE">
-					<block type="math_number">
-						<field name="NUM">1.0</field>
-					</block>
-				</value>
-				<value name="AROUSAL">
-					<block type="math_number">
-						<field name="NUM">0.0</field>
-					</block>
-				</value>
-			</block>
-			<block type="ono_emotion_alpha_len">
-				<value name="ALPHA">
-					<block type="math_number">
-						<field name="NUM">90</field>
-					</block>
-				</value>
-				<value name="LENGTH">
-					<block type="math_number">
-						<field name="NUM">0.75</field>
-					</block>
-				</value>
-			</block>
-			<block type="ono_dof"></block>
-			<block type="ono_alldofs"></block>
-			<block type="ono_setposition">
-				<value name="POSITION">
-					<block type="math_number">
-						<field name="NUM">50</field>
-					</block>
-				</value>
-			</block>
-			<block type="ono_setemotion"></block>
-		</category>
-		<category name="Ono Misc." id="catOnoEvents">
-			<block type="ono_wait">
-				<value name="TIME">
-					<block type="math_number">
-						<field name="NUM">1</field>
-					</block>
-				</value>
-			</block>
-			<block type="ono_elapsedtime"></block>
-			<block type="ono_showmessage"></block>
-			<block type="ono_playsound"></block>
-			<block type="ono_saytts"></block>
-			<block type="ono_servoson"></block>
-			<block type="ono_servosoff"></block>
-			<block type="ono_updateservos"></block>
-		</category>
-		<hr>
-
 		<category name="Logic" id="catLogic">
 			<block type="controls_if"></block>
 			<block type="logic_compare"></block>
@@ -334,7 +293,7 @@
 
 	<script src="/static/js/vendor/jquery.js"></script>
 	<script>
-		var api_soundlist = [
+		var soundlist = [
 			{% if soundfiles %}
 				{% for soundfile in soundfiles %}
 					["{{ soundfile }}", "{{ soundfile }}"]{% if not loop.last %},{% endif %}
@@ -343,23 +302,12 @@
 				["No sounds found!", "NOSOUND"]
 			{% endif %}
 		];
-		var api_doflist = [
-			{% if dofnames %}
-				{% for dofname in dofnames %}
-					["{{ dofname }}", "{{ dofname }}"]{% if not loop.last %},{% endif %}
-				{% endfor %}
-			{% else %}
-				["No DOFs found!", "NODOF"]
-			{% endif %}
-		];
 	</script>
 	<script src="static/blockly/blockly_compressed.js"></script>
-	<script src="static/blockly/javascript_compressed.js"></script>
 	<script src="static/blockly/blocks_compressed.js"></script>
 	<script src="static/blockly/msg/js/en.js"></script>
-	<script src="static/blockly/appengine/storage.js"></script>
+	<script src="static/blockly/lua_compressed.js"></script>
 
-	<script src="static/onoblockly.js"></script>
 
   <script src="static/custom_blocks/general.js"></script>
 	<script src="static/custom_blocks/interface.js"></script>

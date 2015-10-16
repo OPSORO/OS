@@ -26,7 +26,7 @@ var OnoLuaHighlightRules = function() {
 		"say_tts|play_file|"+
 
 		// Expression class methods
-		"get_emotion_complex|set_emotion|update|empty_config|load_config|"+
+		"get_emotion_complex|set_emotion_r_phi|set_emotion_val_ar|update|empty_config|load_config|"+
 
 		// Animate class methods
 		"has_ended"

@@ -6,13 +6,12 @@ Blockly.Blocks['servo_init'] = {
     this.setPreviousStatement(true);
     this.setNextStatement(true);
     this.setColour(345);
-    this.setTooltip('');
-    this.setHelpUrl('http://www.example.com/');
+    this.setTooltip('Initialize the servo control chip.\nThis must be done before servos can be used.');
   }
 };
-Blockly.JavaScript['servo_init'] = function(block) {
-  // TODO: Assemble JavaScript into code variable.
-  var code = '...';
+Blockly.Lua['servo_init'] = function(block) {
+  // TODO: Assemble Lua into code variable.
+  var code = 'Hardware:servo_init()\n';
   return code;
 };
 
@@ -21,18 +20,21 @@ Blockly.Blocks['servo_enabledisable'] = {
     this.appendDummyInput()
         .appendField(new Blockly.FieldImage("static/icons/fa-gears.png", 16, 18, ""))
         .appendField("Turn all servos")
-        .appendField(new Blockly.FieldDropdown([["on", "ON"], ["off", "OFF"]]), "NAME");
+        .appendField(new Blockly.FieldDropdown([["on", "ON"], ["off", "OFF"]]), "ONOFF");
     this.setPreviousStatement(true);
     this.setNextStatement(true);
     this.setColour(345);
-    this.setTooltip('');
-    this.setHelpUrl('http://www.example.com/');
+    this.setTooltip('Enables or disables all servos.');
   }
 };
-Blockly.JavaScript['servo_enabledisable'] = function(block) {
-  var dropdown_name = block.getFieldValue('NAME');
-  // TODO: Assemble JavaScript into code variable.
-  var code = '...';
+Blockly.Lua['servo_enabledisable'] = function(block) {
+  var dropdown_onoff = block.getFieldValue('ONOFF');
+  var code = '';
+  if(dropdown_onoff == "ON"){
+    code = "Hardware:servo_enable()\n"
+  }else{
+    code = "Hardware:servo_disable()\n"
+  }
   return code;
 };
 
@@ -55,14 +57,12 @@ Blockly.Blocks['servo_set'] = {
     this.setPreviousStatement(true);
     this.setNextStatement(true);
     this.setColour(345);
-    this.setTooltip('');
-    this.setHelpUrl('http://www.example.com/');
+    this.setTooltip('Sets the position of one servo. Position should be between 500 and 2500.');
   }
 };
-Blockly.JavaScript['servo_set'] = function(block) {
+Blockly.Lua['servo_set'] = function(block) {
   var dropdown_channel = block.getFieldValue('CHANNEL');
-  var value_pos = Blockly.JavaScript.valueToCode(block, 'POS', Blockly.JavaScript.ORDER_ATOMIC);
-  // TODO: Assemble JavaScript into code variable.
-  var code = '...';
+  var value_pos = Blockly.Lua.valueToCode(block, 'POS', Blockly.Lua.ORDER_ATOMIC);
+  var code = 'Hardware:servo_set(' + dropdown_channel + ', ' + value_pos + ')\n';
   return code;
 };

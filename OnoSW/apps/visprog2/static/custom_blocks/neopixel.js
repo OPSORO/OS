@@ -8,14 +8,12 @@ Blockly.Blocks['neo_init'] = {
     this.setPreviousStatement(true);
     this.setNextStatement(true);
     this.setColour(20);
-    this.setTooltip('');
-    this.setHelpUrl('http://www.example.com/');
+    this.setTooltip('Initialize the NeoPixel port with a specified number of pixels.');
   }
 };
-Blockly.JavaScript['neo_init'] = function(block) {
+Blockly.Lua['neo_init'] = function(block) {
   var text_numpixels = block.getFieldValue('NUMPIXELS');
-  // TODO: Assemble JavaScript into code variable.
-  var code = '...';
+  var code = 'Hardware:neo_init(' + text_numpixels + ')\n';
   return code;
 };
 
@@ -28,14 +26,12 @@ Blockly.Blocks['neo_brightness'] = {
     this.setPreviousStatement(true);
     this.setNextStatement(true);
     this.setColour(20);
-    this.setTooltip('');
-    this.setHelpUrl('http://www.example.com/');
+    this.setTooltip('Set the global brightness of the pixels. Value between 0 to 255.');
   }
 };
-Blockly.JavaScript['neo_brightness'] = function(block) {
-  var value_name = Blockly.JavaScript.valueToCode(block, 'BRIGHTNESS', Blockly.JavaScript.ORDER_ATOMIC);
-  // TODO: Assemble JavaScript into code variable.
-  var code = '...';
+Blockly.Lua['neo_brightness'] = function(block) {
+  var value_brightness = Blockly.Lua.valueToCode(block, 'BRIGHTNESS', Blockly.Lua.ORDER_ATOMIC);
+  var code = 'Hardware:neo_set_brightness(' + value_brightness + ')\n';
   return code;
 };
 
@@ -47,13 +43,11 @@ Blockly.Blocks['neo_update'] = {
     this.setPreviousStatement(true);
     this.setNextStatement(true);
     this.setColour(20);
-    this.setTooltip('');
-    this.setHelpUrl('http://www.example.com/');
+    this.setTooltip('Send pixel data to the NeoPixels.');
   }
 };
-Blockly.JavaScript['neo_update'] = function(block) {
-  // TODO: Assemble JavaScript into code variable.
-  var code = '...';
+Blockly.Lua['neo_update'] = function(block) {
+  var code = 'Hardware:neo_show()\n';
   return code;
 };
 
@@ -69,15 +63,19 @@ Blockly.Blocks['neo_setpixel'] = {
     this.setPreviousStatement(true);
     this.setNextStatement(true);
     this.setColour(20);
-    this.setTooltip('');
-    this.setHelpUrl('http://www.example.com/');
+    this.setTooltip('Set the color of a single pixel.');
   }
 };
-Blockly.JavaScript['neo_setpixel'] = function(block) {
-  var value_pixel = Blockly.JavaScript.valueToCode(block, 'PIXEL', Blockly.JavaScript.ORDER_ATOMIC);
+Blockly.Lua['neo_setpixel'] = function(block) {
+  var value_pixel = Blockly.Lua.valueToCode(block, 'PIXEL', Blockly.Lua.ORDER_ATOMIC);
   var colour_color = block.getFieldValue('COLOR');
-  // TODO: Assemble JavaScript into code variable.
-  var code = '...';
+
+  var hex = parseInt(colour_color.substring(1), 16);
+  var r = (hex & 0xff0000) >> 16;
+  var g = (hex & 0x00ff00) >> 8;
+  var b = hex & 0x0000ff;
+
+  var code = 'Hardware:neo_set_pixel(' + value_pixel + ', ' + r + ', ' + g  + ', ' + b + ')\n';
   return code;
 };
 
@@ -96,16 +94,20 @@ Blockly.Blocks['neo_setrange'] = {
     this.setPreviousStatement(true);
     this.setNextStatement(true);
     this.setColour(20);
-    this.setTooltip('');
-    this.setHelpUrl('http://www.example.com/');
+    this.setTooltip('Set the color of a range of pixels.');
   }
 };
-Blockly.JavaScript['neo_setrange'] = function(block) {
-  var value_start = Blockly.JavaScript.valueToCode(block, 'START', Blockly.JavaScript.ORDER_ATOMIC);
-  var value_end = Blockly.JavaScript.valueToCode(block, 'END', Blockly.JavaScript.ORDER_ATOMIC);
+Blockly.Lua['neo_setrange'] = function(block) {
+  var value_start = Blockly.Lua.valueToCode(block, 'START', Blockly.Lua.ORDER_ATOMIC);
+  var value_end = Blockly.Lua.valueToCode(block, 'END', Blockly.Lua.ORDER_ATOMIC);
   var colour_color = block.getFieldValue('COLOR');
-  // TODO: Assemble JavaScript into code variable.
-  var code = '...';
+
+  var hex = parseInt(colour_color.substring(1), 16);
+  var r = (hex & 0xff0000) >> 16;
+  var g = (hex & 0x00ff00) >> 8;
+  var b = hex & 0x0000ff;
+
+  var code = 'Hardware:neo_set_range(' + value_start + ', ' + value_end + ', ' + r + ', ' + g  + ', ' + b + ')\n';
   return code;
 };
 
@@ -118,13 +120,17 @@ Blockly.Blocks['neo_setall'] = {
     this.setPreviousStatement(true);
     this.setNextStatement(true);
     this.setColour(20);
-    this.setTooltip('');
-    this.setHelpUrl('http://www.example.com/');
+    this.setTooltip('Set the color of all pixels.');
   }
 };
-Blockly.JavaScript['neo_setall'] = function(block) {
+Blockly.Lua['neo_setall'] = function(block) {
   var colour_color = block.getFieldValue('COLOR');
-  // TODO: Assemble JavaScript into code variable.
-  var code = '...';
+
+  var hex = parseInt(colour_color.substring(1), 16);
+  var r = (hex & 0xff0000) >> 16;
+  var g = (hex & 0x00ff00) >> 8;
+  var b = hex & 0x0000ff;
+
+  var code = 'Hardware:neo_set_all(' + r + ', ' + g  + ', ' + b + ')\n';
   return code;
 };

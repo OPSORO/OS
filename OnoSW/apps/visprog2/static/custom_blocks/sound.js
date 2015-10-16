@@ -1,3 +1,5 @@
+Blockly.Lua.addReservedWords("Sound");
+
 Blockly.Blocks['sound_saytts'] = {
   init: function() {
     this.appendDummyInput()
@@ -7,14 +9,12 @@ Blockly.Blocks['sound_saytts'] = {
     this.setPreviousStatement(true);
     this.setNextStatement(true);
     this.setColour(300);
-    this.setTooltip('');
-    this.setHelpUrl('http://www.example.com/');
+    this.setTooltip('Say something using the text-to-speech function.');
   }
 };
-Blockly.JavaScript['sound_saytts'] = function(block) {
+Blockly.Lua['sound_saytts'] = function(block) {
   var text_text = block.getFieldValue('TEXT');
-  // TODO: Assemble JavaScript into code variable.
-  var code = '...';
+  var code = 'Sound:say_tts("' + text_text + '")\n';
   return code;
 };
 
@@ -23,17 +23,15 @@ Blockly.Blocks['sound_play'] = {
     this.appendDummyInput()
         .appendField(new Blockly.FieldImage("static/icons/fa-volume-down.png", 16, 18, ""))
         .appendField("Play")
-        .appendField(new Blockly.FieldDropdown([["option", "OPTIONNAME"], ["option", "OPTIONNAME"], ["option", "OPTIONNAME"]]), "NAME");
+        .appendField(new Blockly.FieldDropdown(soundlist), "FILENAME");
     this.setPreviousStatement(true);
     this.setNextStatement(true);
     this.setColour(300);
-    this.setTooltip('');
-    this.setHelpUrl('http://www.example.com/');
+    this.setTooltip('Play a sound sample.');
   }
 };
-Blockly.JavaScript['sound_play'] = function(block) {
-  var dropdown_name = block.getFieldValue('NAME');
-  // TODO: Assemble JavaScript into code variable.
-  var code = '...';
+Blockly.Lua['sound_play'] = function(block) {
+  var dropdown_filename = block.getFieldValue('FILENAME');
+  var code = 'Sound:play_file("' + dropdown_filename + '")\n';
   return code;
 };

@@ -1,3 +1,5 @@
+Blockly.Lua.addReservedWords("Hardware");
+
 Blockly.Blocks['hardware_ledonoff'] = {
   init: function() {
     this.appendDummyInput()
@@ -7,14 +9,17 @@ Blockly.Blocks['hardware_ledonoff'] = {
     this.setPreviousStatement(true);
     this.setNextStatement(true);
     this.setColour(270);
-    this.setTooltip('');
-    this.setHelpUrl('http://www.example.com/');
+    this.setTooltip('Turn the red status LED on or off.');
   }
 };
-Blockly.JavaScript['hardware_ledonoff'] = function(block) {
+Blockly.Lua['hardware_ledonoff'] = function(block) {
   var dropdown_onoff = block.getFieldValue('ONOFF');
-  // TODO: Assemble JavaScript into code variable.
-  var code = '...';
+  var code = '';
+  if(dropdown_onoff == "ON"){
+    code = "Hardware:led_on()\n"
+  }else{
+    code = "Hardware:led_off()\n"
+  }
   return code;
 };
 
@@ -26,14 +31,11 @@ Blockly.Blocks['hardware_readanalog'] = {
         .appendField(new Blockly.FieldDropdown([["A0", "0"], ["A1", "1"], ["A2", "2"], ["A3", "3"]]), "CHANNEL");
     this.setOutput(true);
     this.setColour(270);
-    this.setTooltip('');
-    this.setHelpUrl('http://www.example.com/');
+    this.setTooltip('Read the value of an analog sensor.\nValue ranges from 0 at 0V to 1023 at 3.3V.');
   }
 };
-Blockly.JavaScript['hardware_ledonoff'] = function(block) {
+Blockly.Lua['hardware_readanalog'] = function(block) {
   var dropdown_channel = block.getFieldValue('CHANNEL');
-  // TODO: Assemble JavaScript into code variable.
-  var code = '...';
-  // TODO: Change ORDER_NONE to the correct strength.
-  return [code, Blockly.JavaScript.ORDER_NONE];
+  var code = 'Hardware:ana_read_channel(' + dropdown_channel + ')';
+  return [code, Blockly.Lua.ORDER_FUNCTION_CALL];
 };
