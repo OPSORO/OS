@@ -6,7 +6,7 @@ import tornado.web
 from sockjs.tornado import SockJSRouter, SockJSConnection
 from onoadminuser import OnoAdminUser
 from functools import wraps, partial
-import hardware2
+import hardware
 import expression
 import pluginbase
 import random

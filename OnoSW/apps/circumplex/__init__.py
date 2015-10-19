@@ -4,7 +4,7 @@ import time
 
 from consolemsg import *
 from expression import Expression
-from hardware2 import Hardware
+from hardware import Hardware
 from stoppable_thread import StoppableThread
 
 from flask import Blueprint, render_template, request

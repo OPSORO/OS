@@ -11,7 +11,7 @@ import numpy as np
 from scipy import interpolate
 
 from animate import Animate
-from hardware2 import Hardware
+from hardware import Hardware
 from consolemsg import *
 
 import yaml

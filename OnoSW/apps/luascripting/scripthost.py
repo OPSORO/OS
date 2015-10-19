@@ -5,9 +5,8 @@ import sys
 import traceback
 import lupa
 
-# import hardware2
-from hardware2 import Hardware
-from expression import Expression ####
+from hardware import Hardware
+from expression import Expression
 from animate import Animate, AnimatePeriodic
 from sound import Sound
 from stoppable_thread import StoppableThread

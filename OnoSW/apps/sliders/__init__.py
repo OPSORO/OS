@@ -2,7 +2,7 @@ from __future__ import with_statement
 
 from consolemsg import *
 from expression import Expression
-from hardware2 import Hardware
+from hardware import Hardware
 
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 

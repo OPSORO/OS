@@ -6,7 +6,7 @@ import random
 import time
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from stoppable_thread import StoppableThread
-from hardware2 import Hardware
+from hardware import Hardware
 
 config = {"full_name": "Touch Graph", "icon": "fa-hand-o-down"}
 
