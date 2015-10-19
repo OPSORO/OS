@@ -228,7 +228,7 @@ div.page {
 	{% endwith %}
 </div>
 <div id="pnlCode" class="hide">
-	<pre id="editor">Blah blah test test</pre>
+	<pre id="editor"></pre>
 </div>
 <div id="pnlBlockly">
 	<iframe id="blocklyFrame" src="blockly"></iframe>
@@ -239,6 +239,7 @@ div.page {
 
 {% block scripts %}
 {{ super() }}
+
 <script src="/static/js/sockjs.min.js"></script>
 
 <script src="/static/js/ace/ace.js" type="text/javascript" charset="utf-8"></script>
@@ -251,14 +252,10 @@ div.page {
 	var scriptname = {% if script_name %}"{{ script_name }}"{% else %}null{% endif %};
 	var isScriptModified = {{ "true" if script_modified else "false" }};
 	var isScriptRunning = {{ "true" if script_running else "false" }};
+	var ignoreNextChangeEvt = true;
 	var monitorKeypresses = false;
-	var boilerplate = "";
 	var Blockly = null;
 	var workspace = null;
-
-	function dropdown_test(){
-		return [["alpha", "OPTIONNAME1"], ["bravo", "OPTIONNAME2"], ["charlie", "OPTIONNAME2"]]
-	}
 
 	function find_block_values(block_type, field_name){
 		var all_xml = $(Blockly.Xml.workspaceToDom(workspace));
@@ -304,14 +301,42 @@ div.page {
 		Blockly = blockly;
 		workspace = ws;
 
-		// Blockly.addChangeListener(function(){
-		// 	// Change listener gets called on load, use bool as workaround
-		// 	// if(!ignoreNextChangeEvt){
-		// 	// 	isWorkspaceModified = true;
-		// 	// 	$(".filebox .fa-asterisk").removeClass("hide");
-		// 	// }
-		// 	// ignoreNextChangeEvt = false;
-		// });
+		{% if script_running %}
+		// Load current script into workspace
+		$.ajax({
+			url: "scripts/currentscript.xml.tmp",
+			dataType: "text",
+			cache: false,
+			success: function(data){
+				// Load script
+				ignoreNextChangeEvt = true;
+				Blockly.mainWorkspace.clear();
+				var xml = Blockly.Xml.textToDom(data);
+				Blockly.Xml.domToWorkspace(workspace, xml);
+			}
+		});
+
+		{% endif %}
+
+		ws.addChangeListener(function(){
+			// Change listener gets called on load, use bool as workaround
+			if(!ignoreNextChangeEvt){
+				isWorkspaceModified = true;
+				$(".filebox .fa-asterisk").removeClass("hide");
+			}
+			ignoreNextChangeEvt = false;
+		});
+	}
+
+	function generateLua(){
+		var code = Blockly.Lua.workspaceToCode(workspace);
+		return code;
+	}
+
+	function generateXml(){
+		var xml = Blockly.Xml.workspaceToDom(workspace);
+		var xml_text = Blockly.Xml.domToText(xml);
+		return xml_text;
 	}
 
 	$(document).ready(function(){
@@ -441,12 +466,6 @@ div.page {
 			return evt.keyCode != 13;
 		});
 
-		function generate_code(){
-			//var code = Blockly.JavaScript.workspaceToCode(workspace);
-			var code = Blockly.Lua.workspaceToCode(workspace);
-			return code;
-		}
-
 		// Toolbar buttons
 		// Save
 		function doSave(){
@@ -457,12 +476,12 @@ div.page {
 				$("#SaveAsModal").foundation("reveal", "open");
 			}else{
 				// Don't show modal, overwrite script file
-				var luacode = editor.getValue();
+				var xmlcode = generateXml();
 
 				$.ajax({
 					dataType: "json",
 					data: {
-						file: luacode,
+						file: xmlcode,
 						filename: scriptname,
 						overwrite: 1
 					},
@@ -476,7 +495,7 @@ div.page {
 							isScriptModified = false;
 
 							var filename_no_ext = data.filename;
-							if(filename_no_ext.slice(-4) == ".lua" || filename_no_ext.slice(-4) == ".LUA"){
+							if(filename_no_ext.slice(-4) == ".xml" || filename_no_ext.slice(-4) == ".XML"){
 								filename_no_ext = filename_no_ext.slice(0, -4);
 							}
 
@@ -494,12 +513,12 @@ div.page {
 
 			$("#SaveAsModal small.error").addClass("hide");
 
-			var luacode = editor.getValue();
+			var xmlcode = generateXml();
 
 			$.ajax({
 				dataType: "json",
 				data: {
-					file: luacode,
+					file: xmlcode,
 					filename: filename,
 					overwrite: 0
 				},
@@ -513,7 +532,7 @@ div.page {
 						isScriptModified = false;
 
 						var filename_no_ext = data.filename;
-						if(filename_no_ext.slice(-4) == ".lua" || filename_no_ext.slice(-4) == ".LUA"){
+						if(filename_no_ext.slice(-4) == ".xml" || filename_no_ext.slice(-4) == ".XML"){
 							filename_no_ext = filename_no_ext.slice(0, -4);
 						}
 
@@ -570,12 +589,14 @@ div.page {
 							cache: false,
 							success: function(data){
 								// Load script
-								editor.setValue(data);
-								editor.gotoLine(1, 0, false);
+								ignoreNextChangeEvt = true;
+								Blockly.mainWorkspace.clear();
+								var xml = Blockly.Xml.textToDom(data);
+								Blockly.Xml.domToWorkspace(workspace, xml);
 
 								// Update filename and asterisk
 								var filename_no_ext = filename;
-								if(filename_no_ext.slice(-4) == ".lua" || filename_no_ext.slice(-4) == ".LUA"){
+								if(filename_no_ext.slice(-4) == ".xml" || filename_no_ext.slice(-4) == ".XML"){
 									filename_no_ext = filename_no_ext.slice(0, -4);
 								}
 								$(".filebox .filename").text(filename_no_ext);
@@ -603,20 +624,18 @@ div.page {
 		});
 
 		// New
-		// Load boilerplate from server
-		/*$.get("static/boilerplate.lua", function(data){
-			boilerplate = data;
-		});*/
-
 		$("#btnNew").click(function(){
 			if(isScriptModified){
 				$("#ConfirmNewModal").foundation("reveal", "open");
+				console.log("scriptmod");
 			}else{
+				console.log("scriptnotmod");
 				if(scriptname != null){
+					console.log("scriptname not null");
 					scriptname = null;
 
-					editor.setValue(boilerplate);
-					editor.gotoLine(1, 0, false);
+					ignoreNextChangeEvt = true;
+					Blockly.mainWorkspace.clear();
 
 					$(".filebox .filename").html("Untitled script");
 					$(".filebox .fa-asterisk").addClass("hide");
@@ -625,8 +644,8 @@ div.page {
 		});
 
 		$("#btnConfirmNew").click(function(){
-			editor.setValue(boilerplate);
-			editor.gotoLine(1, 0, false);
+			ignoreNextChangeEvt = true;
+			Blockly.mainWorkspace.clear();
 
 			isScriptModified = false;
 			scriptname = null;
@@ -663,12 +682,14 @@ div.page {
 		$("#btnStartStop").click(function(){
 			if(!isScriptRunning){
 				// Start the script
-				var luacode = editor.getValue();
+				var luacode = generateLua();
+				var xmlcode = generateXml();
 
 				$.ajax({
 					dataType: "json",
 					data: {
-						file: luacode,
+						luacode: luacode,
+						xmlcode: xmlcode,
 						name: scriptname,
 						modified: isScriptModified ? 1 : 0
 					},
@@ -710,17 +731,15 @@ div.page {
 				$("#btnCodeView").removeClass("active");
 			}else{
 				// Switch to code
-				var code = generate_code();
+				var code = generateLua();
 				editor.setValue(code);
 				editor.gotoLine(1, 0, false);
 
 				$("#pnlCode").removeClass("hide");
 				$("#pnlBlockly").addClass("hide");
-
-				// TODO: generate lua code
-				editor.resize();
-
 				$("#btnCodeView").addClass("active");
+
+				editor.resize();
 			}
 			codeViewOn = !codeViewOn;
 		});
