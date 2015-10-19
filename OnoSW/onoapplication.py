@@ -5,11 +5,9 @@ from tornado.ioloop import IOLoop
 import tornado.web
 from sockjs.tornado import SockJSRouter, SockJSConnection
 from onoadminuser import OnoAdminUser
-from hardware import Hardware
 from functools import wraps, partial
-#import yaml
-import hardware2 #NEW NEW NEW
-import expression #NEW NEW NEW
+import hardware2
+import expression
 import pluginbase
 import random
 import os
@@ -33,9 +31,6 @@ get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 
 class OnoApplication(object):
 	def __init__(self):
-		# Initialize hardware
-		self.hw = Hardware()
-
 		# Create flask instance for webserver
 		self.flaskapp = Flask(__name__)
 
