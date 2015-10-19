@@ -31,7 +31,6 @@ class ScriptHost(object):
 		self._script = ""
 		self.is_running = False
 
-		#self.hardware = Hardware()
 		self.ui = ScriptUI()
 
 		# Rising/falling edge dict
@@ -76,23 +75,7 @@ class ScriptHost(object):
 		g["Animate"] = LuaAnimate
 		g["AnimatePeriodic"] = LuaAnimatePeriodic
 
-		# def test(*args, **kwargs):
-		# 	print "args:", args
-		# 	print "kwargs", kwargs
-		# g["test"] = test
-		# def test(a):
-		# 	b = 1234
-		# 	print "from lua: %s" % str(lupa.lua_type(a))
-		# 	print "from lua: %s" % str(lupa.lua_type(b))
-		# g["test"] = test
-
-		# def test2(*args, **kwargs):
-		# 	for arg in args:
-		# 		print list(arg)
-		# g["test2"] = test2
-
 		# TODO: remove lua overlays from DOFs
-		#############
 
 		g["UI"] = self.ui
 

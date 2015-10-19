@@ -206,7 +206,6 @@ def setup_pages(onoapp):
 		global sh
 
 		key = str(data.pop("key", ""))
-		#sh.ui._keys[key] = True
 		sh.ui.set_key_status(key, True)
 
 	@onoapp.app_socket_message("keyUp")
@@ -214,7 +213,6 @@ def setup_pages(onoapp):
 		global sh
 
 		key = str(data.pop("key", ""))
-		# sh.ui._keys[key] = False
 		sh.ui.set_key_status(key, False)
 
 	@onoapp.app_socket_message("buttonDown")

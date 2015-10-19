@@ -10,7 +10,6 @@ Blockly.Blocks['servo_init'] = {
   }
 };
 Blockly.Lua['servo_init'] = function(block) {
-  // TODO: Assemble Lua into code variable.
   var code = 'Hardware:servo_init()\n';
   return code;
 };

@@ -42,7 +42,6 @@ Blockly.Blocks['general_onquit'] = {
 };
 Blockly.Lua['general_onquit'] = function(block) {
   var statements_body = Blockly.Lua.statementToCode(block, 'BODY');
-  // TODO: Assemble Lua into code variable.
   var code = "function quit()\n" + statements_body + "end\n";
   return code;
 };

@@ -111,7 +111,6 @@
 
 	$(document).ready(function(){
 		$("a.btnDelSnd").click(function(){
-			//$(this).attr("href", "delete/"+ $(this).closest("span.file").data("soundfile"));
 			filename = $(this).closest("span.file").data("soundfile");
 			fileElem = $(this).closest("span.file")
 			$.ajax({

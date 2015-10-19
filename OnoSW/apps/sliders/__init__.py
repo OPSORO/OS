@@ -96,12 +96,6 @@ def overlay_fn(dof_pos, dof):
 		return dof_pos
 
 def setup(onoapp):
-	# global em
-	# global em_lock
-	# with em_lock:
-	# 	em = ExpressionManager(onoapp.hw)
-	# 	em.all_servos_mid()
-	### do servos off
 	pass
 
 def start(onoapp):
@@ -133,11 +127,3 @@ def stop(onoapp):
 	for dofname, dof in Expression.dofs.iteritems():
 		if overlay_fn in dof.overlays:
 			dof.overlays.remove(overlay_fn)
-
-	# onoapp.hw.servo_power_off()
-	# global dof_positions
-	#
-	# for dofname in dof_positions:
-	# 	if dofname in Expression.dofs:
-	# 		Expression.dofs[dofname].overlays.remove(overlay_fn)
-	# 		print "Removed overlay_fn from %s" % dofname

@@ -95,7 +95,6 @@ def setup_pages(onoapp):
 	def saytts():
 		text = request.args.get("text", None)
 		if text is not None:
-			# onoapp.hw.say_tts(text)
 			Sound.say_tts(text)
 		return {"status": "success"}
 

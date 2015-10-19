@@ -22,10 +22,6 @@ div.page {
 #errors {
 	margin: -1rem -1rem -1rem -1rem;
 }
-
-#errors .alert-box:first-child {
-	/*margin-top: 1rem;*/
-}
 </style>
 {% endblock %}
 
@@ -133,7 +129,6 @@ $(document).ready(function(){
 	});
 
 	$("#btnDefaults").click(function(){
-		// addError("defaults clicked");
 		$.get("default/pinmap.yaml", function(data){
 			editor_pinmap.setValue(data);
 			editor_pinmap.gotoLine(1, 0, false);
@@ -149,11 +144,9 @@ $(document).ready(function(){
 			editor_functions.gotoLine(1, 0, false);
 			editor_limits.resize();
 		});
-		// TODO: update editors
 	});
 
 	$("#btnSave").click(function(){
-		// addMessage("save clicked");
 		var pinmap_yaml = editor_pinmap.getValue();
 		var limits_yaml = editor_limits.getValue();
 		var functions_yaml = editor_functions.getValue();
@@ -176,95 +169,6 @@ $(document).ready(function(){
 				}
 			});
 	});
-
-	// $("#btnRestorePinmap").click(function(){
-	// 	$.ajax({
-	// 		dataType: "json",
-	// 		type: "GET",
-	// 		url: "getdefault/pinmap",
-	// 		success: function(data){
-	// 			if(data.status == "error"){
-	// 				addError(data.message);
-	// 			}else{
-	// 				$("#txtPinmap").val(data.file)
-	// 			}
-	// 		}
-	// 	});
-	// });
-	// $("#btnRestoreLimits").click(function(){
-	// 	$.ajax({
-	// 		dataType: "json",
-	// 		type: "GET",
-	// 		url: "getdefault/limits",
-	// 		success: function(data){
-	// 			if(data.status == "error"){
-	// 				addError(data.message);
-	// 			}else{
-	// 				$("#txtLimits").val(data.file)
-	// 			}
-	// 		}
-	// 	});
-	// });
-	// $("#btnRestoreFunctions").click(function(){
-	// 	$.ajax({
-	// 		dataType: "json",
-	// 		type: "GET",
-	// 		url: "getdefault/functions",
-	// 		success: function(data){
-	// 			if(data.status == "error"){
-	// 				addError(data.message);
-	// 			}else{
-	// 				$("#txtFunctions").val(data.file)
-	// 			}
-	// 		}
-	// 	});
-	// });
-	//
-	// $("#btnSavePinmap").click(function(){
-	// 	$.ajax({
-	// 		dataType: "json",
-	// 		data: {"file": $("#txtPinmap").val()},
-	// 		type: "POST",
-	// 		url: "saveconfig/pinmap",
-	// 		success: function(data){
-	// 			if(data.status == "error"){
-	// 				addError(data.message);
-	// 			}else{
-	// 				addMessage(data.message);
-	// 			}
-	// 		}
-	// 	});
-	// });
-	// $("#btnSaveLimits").click(function(){
-	// 	$.ajax({
-	// 		dataType: "json",
-	// 		data: {"file": $("#txtLimits").val()},
-	// 		type: "POST",
-	// 		url: "saveconfig/limits",
-	// 		success: function(data){
-	// 			if(data.status == "error"){
-	// 				addError(data.message);
-	// 			}else{
-	// 				addMessage(data.message);
-	// 			}
-	// 		}
-	// 	});
-	// });
-	// $("#btnSaveFunctions").click(function(){
-	// 	$.ajax({
-	// 		dataType: "json",
-	// 		data: {"file": $("#txtFunctions").val()},
-	// 		type: "POST",
-	// 		url: "saveconfig/functions",
-	// 		success: function(data){
-	// 			if(data.status == "error"){
-	// 				addError(data.message);
-	// 			}else{
-	// 				addMessage($.message);
-	// 			}
-	// 		}
-	// 	});
-	// });
 });
 </script>
 {% endblock %}

@@ -203,7 +203,6 @@ class _Hardware(object):
 	def cap_set_threshold(self, electrode, touch, release):
 		"""Set an electrode's touch and release threshold."""
 		self.spi_command(CMD_CAP_SETTH, params=[electrode, touch, release])
-		pass #CMD_CAP_SETTH       =  61  # 3   0    Set pin touch/release threshold
 
 	def cap_get_filtered_data(self):
 		"""Get list of electrode filtered data (10 bits per electrode)."""

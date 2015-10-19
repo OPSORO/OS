@@ -13,7 +13,6 @@ Blockly.Blocks['touch_init'] = {
 };
 Blockly.Lua['touch_init'] = function(block) {
   var dropdown_electrode = block.getFieldValue('ELECTRODE');
-  // TODO: Assemble Lua into code variable.
   var code = 'Hardware:cap_init(' + dropdown_electrode + ')\n';
   return code;
 };
