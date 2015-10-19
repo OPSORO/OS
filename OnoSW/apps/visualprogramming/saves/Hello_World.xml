@@ -1,9 +1,0 @@
-<xml xmlns="http://www.w3.org/1999/xhtml">
-  <block type="ono_onsetup" id="5" x="202" y="111">
-    <statement name="BODY">
-      <block type="ono_saytts" id="27">
-        <field name="SAY">Hello, I am social robot Ono!</field>
-      </block>
-    </statement>
-  </block>
-</xml>
