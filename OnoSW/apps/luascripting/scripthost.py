@@ -75,8 +75,6 @@ class ScriptHost(object):
 		g["Animate"] = LuaAnimate
 		g["AnimatePeriodic"] = LuaAnimatePeriodic
 
-		# TODO: remove lua overlays from DOFs
-
 		g["UI"] = self.ui
 
 		g["print"] = callback(self.on_print)

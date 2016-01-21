@@ -26,7 +26,7 @@ var OnoLuaHighlightRules = function() {
 		"say_tts|play_file|"+
 
 		// Expression class methods
-		"get_emotion_complex|set_emotion_r_phi|set_emotion_val_ar|update|empty_config|load_config|"+
+		"get_emotion_complex|set_emotion_r_phi|set_emotion_val_ar|update|empty_config|load_config|dofs|add_overlay|remove_overlay|clear_overlays|"+
 
 		// Animate class methods
 		"has_ended"
@@ -44,7 +44,7 @@ var OnoLuaHighlightRules = function() {
 		},
 		{
 			token: "constant.library",
-			regex: "UI|Hardware|Sound|Expression|Animate|AnimatePeriodic|Serial"
+			regex: "UI|Hardware|Sound|Expression|AnimatePeriodic|Animate|Serial"
 		}
 	);
 

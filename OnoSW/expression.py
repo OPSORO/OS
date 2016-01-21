@@ -122,6 +122,16 @@ class DOF(object):
 
 		return self.cached_pos
 
+	def add_overlay(self, fn):
+		self.overlays.append(fn)
+
+	def remove_overlay(self, fn):
+		self.overlays.remove(fn)
+
+	def clear_overlays(self):
+		self.overlays = []
+
+
 class Servo(object):
 	def __init__(self, pin=None, min_range=0, mid_pos=1500, max_range=0, dofname=None):
 		"""
