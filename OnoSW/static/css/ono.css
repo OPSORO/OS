@@ -21,6 +21,13 @@ body {
 	}
 }
 
+#logo {
+	opacity: 0.75;
+	width: 8rem;
+	margin: 1rem auto 1rem auto;
+	display: block;
+}
+
 #topbar {
 	background: #FCD017;
 	border-radius: 0.75rem;
