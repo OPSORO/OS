@@ -29,7 +29,7 @@ except ImportError:
 get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 
 # Helper class to deal with login
-class OnoAdminUser(object):
+class AdminUser(object):
 	def is_authenticated(self):
 		return True
 
@@ -132,7 +132,7 @@ class OnoApplication(object):
 		@self.login_manager.user_loader
 		def load_user(id):
 			if id == "admin":
-				return OnoAdminUser()
+				return AdminUser()
 			else:
 				return None
 
@@ -413,7 +413,7 @@ class OnoApplication(object):
 		password = request.form["password"]
 		# TODO: Bad practice, fix it
 		if password == "RobotOno":
-			login_user(OnoAdminUser())
+			login_user(AdminUser())
 			self.active_session_key = os.urandom(24)
 			session["active_session_key"] = self.active_session_key
 			return redirect(url_for("index"))
