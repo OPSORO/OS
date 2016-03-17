@@ -7,7 +7,7 @@ import logging.handlers
 import random
 import os
 import tornado.log
-import onoapplication
+import server
 from consolemsg import *
 
 # Handle SIGTERM for graceful shutdown of daemon
@@ -32,5 +32,5 @@ if __name__ == "__main__":
 	signal.signal(signal.SIGTERM, sigterm_handler)
 
 	print_info("OnoSW started...")
-	app = onoapplication.OnoApplication()
+	app = server.OnoApplication()
 	app.run()

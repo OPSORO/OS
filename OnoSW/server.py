@@ -68,7 +68,7 @@ class OnoApplication(object):
 		self.sockjs_token = None
 
 		# Setup app system
-		self.plugin_base = pluginbase.PluginBase(package="onoapplication.apps")
+		self.plugin_base = pluginbase.PluginBase(package="server.apps")
 		self.plugin_source = self.plugin_base.make_plugin_source(searchpath=[get_path("./apps")])
 
 		self.apps = {}
