@@ -31,6 +31,6 @@ logger.addHandler(handler)
 if __name__ == "__main__":
 	signal.signal(signal.SIGTERM, sigterm_handler)
 
-	print_info("OnoSW started...")
+	print_info("OpsoroOS started...")
 	app = server.OnoApplication()
 	app.run()
