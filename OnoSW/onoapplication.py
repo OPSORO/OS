@@ -4,7 +4,6 @@ from tornado.wsgi import WSGIContainer
 from tornado.ioloop import IOLoop
 import tornado.web
 from sockjs.tornado import SockJSRouter, SockJSConnection
-from onoadminuser import OnoAdminUser
 from functools import wraps, partial
 import hardware
 import expression
@@ -28,6 +27,23 @@ except ImportError:
 
 # Helper function
 get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
+
+# Helper class to deal with login
+class OnoAdminUser(object):
+	def is_authenticated(self):
+		return True
+
+	def is_active(self):
+		return True
+
+	def is_anonymous(self):
+		return False
+
+	def get_id(self):
+		return "admin"
+
+	def is_admin(self):
+		return True
 
 class OnoApplication(object):
 	def __init__(self):
@@ -298,7 +314,7 @@ class OnoApplication(object):
 					data["toolbar"]["active"] = False
 					data["title"] = "Ono Web Interface"
 
-				return render_template("appnotactive.html", **data)
+				return render_template("app_not_active.html", **data)
 		return wrapper
 
 	def app_api(self, f):
