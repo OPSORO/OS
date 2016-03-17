@@ -2,7 +2,7 @@ import math
 import cmath
 import time
 
-from consolemsg import *
+from console_msg import *
 from expression import Expression
 from hardware import Hardware
 from stoppable_thread import StoppableThread

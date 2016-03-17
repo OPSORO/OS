@@ -1,6 +1,6 @@
 from __future__ import with_statement
 
-from consolemsg import *
+from console_msg import *
 from expression import Expression
 from hardware import Hardware
 

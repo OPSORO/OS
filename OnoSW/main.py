@@ -8,7 +8,7 @@ import random
 import os
 import tornado.log
 import server
-from consolemsg import *
+from console_msg import *
 
 # Handle SIGTERM for graceful shutdown of daemon
 def sigterm_handler(_signo, _stack_frame):

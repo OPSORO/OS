@@ -16,7 +16,7 @@ import threading
 import base64
 import time
 import logging
-from consolemsg import *
+from console_msg import *
 from preferences import Preferences
 try:
 	import simplejson as json

@@ -12,7 +12,7 @@ from scipy import interpolate
 
 from animate import Animate
 from hardware import Hardware
-from consolemsg import *
+from console_msg import *
 
 import yaml
 try:

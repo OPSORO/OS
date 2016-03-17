@@ -12,7 +12,7 @@ try:
 except ImportError:
 	from yaml import Loader, Dumper
 
-from consolemsg import *
+from console_msg import *
 
 get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 constrain = lambda n, minn, maxn: max(min(maxn, n), minn)
