@@ -408,3 +408,8 @@ body {
 	top: -0.45rem;
 	margin-left: -0.2rem;
 }
+
+fieldset legend{
+	text-transform: uppercase;
+	color: #4D4D4D;
+}

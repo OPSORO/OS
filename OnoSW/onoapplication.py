@@ -368,6 +368,7 @@ class OnoApplication(object):
 		self.flaskapp.add_url_rule("/",					"index",		protect(self.page_index))
 		self.flaskapp.add_url_rule("/login",			"login",		self.page_login, methods=["GET", "POST"])
 		self.flaskapp.add_url_rule("/logout",			"logout",		self.page_logout)
+		self.flaskapp.add_url_rule("/preferences",		"preferences",	protect(self.page_preferences))
 		self.flaskapp.add_url_rule("/sockjstoken",		"sockjstoken",	self.page_sockjstoken)
 		self.flaskapp.add_url_rule("/shutdown",			"shutdown",		protect(self.page_shutdown))
 		self.flaskapp.add_url_rule("/closeapp",			"closeapp",		protect(self.page_closeapp))
@@ -409,6 +410,24 @@ class OnoApplication(object):
 		session.pop("active_session_key", None)
 		flash("You have been logged out.")
 		return redirect(url_for("login"))
+
+	def page_preferences(self):
+		# return render_template("preferences.html", title="Ono Web Interface - Preferences")
+		# data = {
+		# 	"toolbar": {
+		# 		"active":
+		# 	}
+		# }
+		# if self.activeapp in self.apps:
+		# 	kwargs["toolbar"]["active"] = True
+		# 	kwargs["toolbar"]["full_name"] = self.apps[self.activeapp].config["full_name"]
+		# 	kwargs["toolbar"]["icon"] = self.apps[self.activeapp].config["icon"]
+		# else:
+		# 	kwargs["toolbar"]["active"] = False
+
+		# if "closebutton" not in kwargs:
+		# 	kwargs["closebutton"] = True
+		return self.render_template("preferences.html", title="Ono Web Interface - Preferences", page_caption="Preferences", page_icon="fa-cog", closebutton=False)
 
 	def page_sockjstoken(self):
 		if current_user.is_authenticated():
