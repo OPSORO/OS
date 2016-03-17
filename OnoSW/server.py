@@ -17,6 +17,7 @@ import base64
 import time
 import logging
 from consolemsg import *
+from preferences import Preferences
 try:
 	import simplejson as json
 	print_info("Using simplejson")
@@ -412,7 +413,7 @@ class OnoApplication(object):
 
 		password = request.form["password"]
 		# TODO: Bad practice, fix it
-		if password == "RobotOno":
+		if password == Preferences.get("general", "password", default="RobotOno"):
 			login_user(AdminUser())
 			self.active_session_key = os.urandom(24)
 			session["active_session_key"] = self.active_session_key

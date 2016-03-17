@@ -1,5 +1,5 @@
 general:
-  robot_name: ono
+  robot_name: Ono
   password: RobotOno
 
 audio:
@@ -9,4 +9,4 @@ audio:
 wireless:
   ssid: Cesar's Ono
   password: RobotOno
-  channel: auto
+  channel: 6
