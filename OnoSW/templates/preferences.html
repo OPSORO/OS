@@ -7,16 +7,6 @@
 {% endblock %}
 
 {% block page_content %}
-<!-- <div data-alert class="alert-box alert">
-	<span class="fa fa-exclamation-triangle"></span> Hello there! This page is a work-in-progress preview, expect things to be buggy, broken and completely non-functional.
-	<a href="#" class="close">&times;</a>
-</div> -->
-<!-- <div data-alert class="alert-box success">
-	Preferences have been saved.
-	<a href="#" class="close">&times;</a>
-</div> -->
-
-
 {% with messages = get_flashed_messages(category_filter=["message"]) %}
 	{% if messages %}
 		{% for message in messages %}
@@ -81,7 +71,6 @@
 				</span>
 			</div>
 		</div>
-		<input type="hidden" id="robotPasswordChanged" name="robotPasswordChanged" data-bind="value: passwordChanged">
 	</fieldset>
 
 	<fieldset data-bind="with: audio">
@@ -172,11 +161,7 @@
 				</select>
 			</div>
 		</div>
-		<input type="hidden" id="wirelessPasswordChanged" name="wirelessPasswordChanged" data-bind="value: passwordChanged">
 	</fieldset>
-
-	<input type="hidden" id="json" name="json" data-bind="value: jsonData">
-	<pre data-bind="text: jsonData"></pre>
 
 	<div class="text-center">
 		<button type="submit" class="button success" style="margin-right: 2rem; padding-left: 2rem; padding-right: 2rem;"><span class="fa fa-check-circle"></span> Submit</button>
@@ -197,14 +182,6 @@ $(document).ready(function(){
 		self.robotName = ko.observable("");
 		self.password = ko.observable("");
 		self.passwordConfirm = ko.observable("");
-
-		self.passwordChanged = ko.pureComputed(function(){
-			if(self.password() == self.passwordConfirm() && self.password()){
-				return true;
-			}else{
-				return false;
-			}
-		});
 	};
 
 	var AudioSettings = function(){
@@ -221,23 +198,13 @@ $(document).ready(function(){
 
 		self.password = ko.observable("");
 		self.passwordConfirm = ko.observable("");
-
 		self.samePassword = ko.observable(true);
 		self.channel = ko.observable("0");
-
 		self.settingsChanged = ko.observable(false);
-
-		self.passwordChanged = ko.pureComputed(function(){
-			if(self.password() == self.passwordConfirm() && self.password()){
-				return true;
-			}else{
-				return false;
-			}
-		});
 
 		var changed_fn = function(){ self.settingsChanged(true); };
 		self.ssid.subscribe(changed_fn);
-		self.passwordChanged.subscribe(changed_fn);
+		self.password.subscribe(changed_fn);
 		self.samePassword.subscribe(changed_fn);
 		self.channel.subscribe(changed_fn);
 		self.settingsChanged(false);
@@ -249,20 +216,6 @@ $(document).ready(function(){
 		self.general = ko.observable(new GeneralSettings());
 		self.audio = ko.observable(new AudioSettings());
 		self.wireless = ko.observable(new WirelessSettings());
-
-		self.jsonData = ko.pureComputed(function(){
-			var ret = {};
-			ret.general = ko.toJS(self.general);
-			ret.general.passwordConfirm = undefined;
-
-			ret.audio = ko.toJS(self.audio);
-
-			ret.wireless = ko.toJS(self.wireless);
-			ret.wireless.passwordConfirm = undefined;
-			ret.wireless.settingsChanged = undefined;
-
-			return ko.toJSON(ret, null, 2);
-		});
 	};
 
 	var viewmodel = new SettingsModel();

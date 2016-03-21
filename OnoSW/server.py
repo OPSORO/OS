@@ -435,7 +435,6 @@ class OnoApplication(object):
 
 			if request.form["robotPassword"] == request.form["robotPasswordConfirm"]:
 				if request.form["robotPassword"] != "":
-					print "updated general passwd"
 					Preferences.set("general", "password", request.form["robotPassword"])
 
 			Preferences.set("audio", "master_volume", request.form.get("volume", type=int))
@@ -447,17 +446,12 @@ class OnoApplication(object):
 			if request.form.get("wirelessSamePass", None) == "on":
 				# Set to same password
 				Preferences.set("wireless", "password", Preferences.get("general", "password", "RobotOno"))
-				print "updated wireless pwd, same pwd"
 			else:
 				if request.form["wirelessPassword"] == request.form["wirelessPasswordConfirm"]:
 					if request.form["wirelessPassword"] != "":
 						Preferences.set("wireless", "password", request.form["wirelessPassword"])
-						print "updated wireless pwd"
-					pass
 
 			flash("Preferences have been saved.", "success")
-			# flash(repr(Preferences.data))
-			# TODO: do save etc
 			Preferences.save_prefs()
 			Preferences.apply_prefs(update_audio=True, update_wireless=True, restart_wireless=False)
 
@@ -477,22 +471,7 @@ class OnoApplication(object):
 			}
 		})
 
-		#if request.method == "GET":
 		return self.render_template("preferences.html", title="Ono Web Interface - Preferences", page_caption="Preferences", page_icon="fa-cog", closebutton=False, prefs=prefs)
-
-		# print "-------------------------"
-		# print "robotName:", request.form["robotName"]
-		# print "robotPassword:", request.form["robotPassword"]
-		# print "robotPasswordConfirm:", request.form["robotPasswordConfirm"]
-		# print "volume:", request.form["volume"]
-		# print "ttsEngine:", request.form["ttsEngine"]
-		# print "wirelessSsid:", request.form["wirelessSsid"]
-		# print "wirelessPassword:", request.form["wirelessPassword"]
-		# print "wirelessPasswordConfirm:", request.form["wirelessPasswordConfirm"]
-		# print "wirelessSamePass:", request.form["wirelessSamePass"] # on off
-		# print "wirelessChannel:", request.form["wirelessChannel"]
-		# print "-------------------------"
-		# return "testtest"
 
 	def page_sockjstoken(self):
 		if current_user.is_authenticated():
