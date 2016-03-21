@@ -382,6 +382,7 @@ class OnoApplication(object):
 
 	def setup_urls(self):
 		protect = self.protected_view
+
 		self.flaskapp.add_url_rule("/",					"index",		protect(self.page_index))
 		self.flaskapp.add_url_rule("/login",			"login",		self.page_login, methods=["GET", "POST"])
 		self.flaskapp.add_url_rule("/logout",			"logout",		self.page_logout)
@@ -390,6 +391,8 @@ class OnoApplication(object):
 		self.flaskapp.add_url_rule("/shutdown",			"shutdown",		protect(self.page_shutdown))
 		self.flaskapp.add_url_rule("/closeapp",			"closeapp",		protect(self.page_closeapp))
 		self.flaskapp.add_url_rule("/openapp/<appname>","openapp",		protect(self.page_openapp))
+
+		self.flaskapp.context_processor(self.inject_opsoro_vars)
 
 	def page_index(self):
 		data = {
@@ -520,3 +523,7 @@ class OnoApplication(object):
 			return redirect("/app/%s/" % appname)
 		else:
 			return redirect(url_for("index"))
+
+	def inject_opsoro_vars(self):
+		opsoro = {"robot_name": Preferences.get("general", "robot_name", "Ono")}
+		return dict(opsoro=opsoro)
