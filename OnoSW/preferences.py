@@ -48,7 +48,7 @@ class _Preferences(object):
 		except IOError:
 			print_warning("Could not save config/preferences.yaml")
 
-	def apply_prefs(self, update_audio=False, update_wireless=False):
+	def apply_prefs(self, update_audio=False, update_wireless=False, restart_wireless=False):
 		def change_conf_setting(txt, name, val):
 			pattern = "^%s([ \t]*)=([ \t]*).*$" % name
 			new = "%s=%s" % (name, val)
@@ -84,7 +84,8 @@ class _Preferences(object):
 				f.write(lines)
 				f.truncate()
 
-			subprocess.Popen(["service", "hostapd", "restart"], stdout=FNULL, stderr=subprocess.STDOUT)
+			if restart_wireless:
+				subprocess.Popen(["service", "hostapd", "restart"], stdout=FNULL, stderr=subprocess.STDOUT)
 
 # Create singleton-ish Preferences instance
 Preferences = _Preferences()

@@ -385,7 +385,7 @@ class OnoApplication(object):
 		self.flaskapp.add_url_rule("/",					"index",		protect(self.page_index))
 		self.flaskapp.add_url_rule("/login",			"login",		self.page_login, methods=["GET", "POST"])
 		self.flaskapp.add_url_rule("/logout",			"logout",		self.page_logout)
-		self.flaskapp.add_url_rule("/preferences",		"preferences",	protect(self.page_preferences))
+		self.flaskapp.add_url_rule("/preferences",		"preferences",	protect(self.page_preferences), methods=["GET", "POST"])
 		self.flaskapp.add_url_rule("/sockjstoken",		"sockjstoken",	self.page_sockjstoken)
 		self.flaskapp.add_url_rule("/shutdown",			"shutdown",		protect(self.page_shutdown))
 		self.flaskapp.add_url_rule("/closeapp",			"closeapp",		protect(self.page_closeapp))
@@ -412,7 +412,7 @@ class OnoApplication(object):
 			return render_template("login.html", title="Ono Web Interface - Login")
 
 		password = request.form["password"]
-		# TODO: Bad practice, fix it
+
 		if password == Preferences.get("general", "password", default="RobotOno"):
 			login_user(AdminUser())
 			self.active_session_key = os.urandom(24)
@@ -429,22 +429,70 @@ class OnoApplication(object):
 		return redirect(url_for("login"))
 
 	def page_preferences(self):
-		# return render_template("preferences.html", title="Ono Web Interface - Preferences")
-		# data = {
-		# 	"toolbar": {
-		# 		"active":
-		# 	}
-		# }
-		# if self.activeapp in self.apps:
-		# 	kwargs["toolbar"]["active"] = True
-		# 	kwargs["toolbar"]["full_name"] = self.apps[self.activeapp].config["full_name"]
-		# 	kwargs["toolbar"]["icon"] = self.apps[self.activeapp].config["icon"]
-		# else:
-		# 	kwargs["toolbar"]["active"] = False
+		if request.method == "POST":
+			# Update preferences
+			Preferences.set("general", "robot_name", request.form["robotName"])
 
-		# if "closebutton" not in kwargs:
-		# 	kwargs["closebutton"] = True
-		return self.render_template("preferences.html", title="Ono Web Interface - Preferences", page_caption="Preferences", page_icon="fa-cog", closebutton=False)
+			if request.form["robotPassword"] == request.form["robotPasswordConfirm"]:
+				if request.form["robotPassword"] != "":
+					print "updated general passwd"
+					Preferences.set("general", "password", request.form["robotPassword"])
+
+			Preferences.set("audio", "master_volume", request.form.get("volume", type=int))
+			Preferences.set("audio", "tts_engine", request.form["ttsEngine"])
+
+			Preferences.set("wireless", "ssid", request.form["wirelessSsid"])
+			Preferences.set("wireless", "channel", request.form.get("wirelessChannel", type=int))
+
+			if request.form.get("wirelessSamePass", None) == "on":
+				# Set to same password
+				Preferences.set("wireless", "password", Preferences.get("general", "password", "RobotOno"))
+				print "updated wireless pwd, same pwd"
+			else:
+				if request.form["wirelessPassword"] == request.form["wirelessPasswordConfirm"]:
+					if request.form["wirelessPassword"] != "":
+						Preferences.set("wireless", "password", request.form["wirelessPassword"])
+						print "updated wireless pwd"
+					pass
+
+			flash("Preferences have been saved.", "success")
+			# flash(repr(Preferences.data))
+			# TODO: do save etc
+			Preferences.save_prefs()
+			Preferences.apply_prefs(update_audio=True, update_wireless=True, restart_wireless=False)
+
+		# Prepare json string with prefs data
+		prefs = json.dumps({
+			"general": {
+				"robotName": Preferences.get("general", "robot_name", "Ono")
+			},
+			"audio": {
+				"volume": Preferences.get("audio", "master_volume", 66),
+				"ttsEngine": Preferences.get("audio", "tts_engine", "picotts")
+			},
+			"wireless": {
+				"ssid": Preferences.get("wireless", "ssid", "Ono_AP"),
+				"samePassword": Preferences.get("general", "password", "RobotOno") == Preferences.get("wireless", "password", "RobotOno"),
+				"channel": Preferences.get("wireless", "channel", "1")
+			}
+		})
+
+		#if request.method == "GET":
+		return self.render_template("preferences.html", title="Ono Web Interface - Preferences", page_caption="Preferences", page_icon="fa-cog", closebutton=False, prefs=prefs)
+
+		# print "-------------------------"
+		# print "robotName:", request.form["robotName"]
+		# print "robotPassword:", request.form["robotPassword"]
+		# print "robotPasswordConfirm:", request.form["robotPasswordConfirm"]
+		# print "volume:", request.form["volume"]
+		# print "ttsEngine:", request.form["ttsEngine"]
+		# print "wirelessSsid:", request.form["wirelessSsid"]
+		# print "wirelessPassword:", request.form["wirelessPassword"]
+		# print "wirelessPasswordConfirm:", request.form["wirelessPasswordConfirm"]
+		# print "wirelessSamePass:", request.form["wirelessSamePass"] # on off
+		# print "wirelessChannel:", request.form["wirelessChannel"]
+		# print "-------------------------"
+		# return "testtest"
 
 	def page_sockjstoken(self):
 		if current_user.is_authenticated():

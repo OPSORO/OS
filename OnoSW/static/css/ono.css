@@ -412,4 +412,5 @@ body {
 fieldset legend{
 	text-transform: uppercase;
 	color: #4D4D4D;
+	margin-top: 0;
 }
