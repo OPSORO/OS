@@ -83,14 +83,16 @@
 <script>
 var emotions_data = [
 	{name: "Happy",     image: "happy"},
-	{name: "Surprised", image: "surprise"},
+	{name: "Sad",       image: "sad"},
 	{name: "Angry",     image: "angry"},
-	{name: "Happy2",    image: "happy"},
-	{name: "Surpr 2",   image: "surprise"},
-	{name: "Angry2",    image: "angry"}
+	{name: "Surprised", image: "surprised"},
+	{name: "Afraid",    image: "afraid"},
+	{name: "Disgusted", image: "disgusted"}
+	// TODO: Neutral emotion
 ];
 var soundFiles_data = ["Oooh.wav", "Burp.wav", "Greeting.wav"];
-
+</script>
+<script>
 $(document).ready(function(){
 	$("#btnShutdown").click(function(){
 		$("#ShutdownModal .content").load("/shutdown");
