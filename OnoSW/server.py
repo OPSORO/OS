@@ -459,7 +459,7 @@ class OnoApplication(object):
 			Preferences.apply_prefs(update_audio=True, update_wireless=True, restart_wireless=False)
 
 		# Prepare json string with prefs data
-		prefs = json.dumps({
+		prefs = {
 			"general": {
 				"robotName": Preferences.get("general", "robot_name", "Ono")
 			},
@@ -472,7 +472,7 @@ class OnoApplication(object):
 				"samePassword": Preferences.get("general", "password", "RobotOno") == Preferences.get("wireless", "password", "RobotOno"),
 				"channel": Preferences.get("wireless", "channel", "1")
 			}
-		})
+		}
 
 		return self.render_template("preferences.html", title="Ono Web Interface - Preferences", page_caption="Preferences", page_icon="fa-cog", closebutton=False, prefs=prefs)
 

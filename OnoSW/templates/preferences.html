@@ -172,7 +172,7 @@
 
 {% block scripts %}
 {{ super() }}
-<script>var prefsJson = {{ prefs|safe }};</script>
+<script>var prefsJson = {{ prefs|tojson|safe }};</script>
 <script src="/static/js/knockout-slider-binding.js"></script>
 <script>
 $(document).ready(function(){
