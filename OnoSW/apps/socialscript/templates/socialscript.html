@@ -51,7 +51,7 @@
 			<span class="bubble" data-bind="html: contentPreview"></span>
 		</div>
 		<form>
-			<select data-bind="visible: output() != 'tts', options: $root.soundFiles, value: wav">
+			<select data-bind="visible: output() != 'tts', options: $root.sounds, value: wav">
 			<input type="text" placeholder="Enter text to be spoken..." data-bind="value: tts, visible: output() == 'tts' "></input>
 			<div class="leftcontrols">
 				<div class="switch round tts-switch">
@@ -81,18 +81,8 @@
 <script src="static/jquery-ui-sortable/jquery-ui.js"></script>
 <script src="static/knockout-sortable.min.js"></script>
 <script>
-/*var emotions_data = [
-	{name: "Happy",     image: "happy"},
-	{name: "Sad",       image: "sad"},
-	{name: "Angry",     image: "angry"},
-	{name: "Surprised", image: "surprised"},
-	{name: "Afraid",    image: "afraid"},
-	{name: "Disgusted", image: "disgusted"}
-	// TODO: Neutral emotion
-];*/
-var emotions_data = {{ emotions_data|tojson|safe }};
-
-var soundFiles_data = ["Oooh.wav", "Burp.wav", "Greeting.wav"];
+var emotions_data = {{ emotions|tojson|safe }};
+var sounds_data = {{ sounds|tojson|safe }};
 </script>
 <script>
 $(document).ready(function(){
@@ -136,7 +126,7 @@ $(document).ready(function(){
 
 		self.output = ko.observable(output || "tts");
 		self.tts = ko.observable(tts || "");
-		self.wav = ko.observable(wav || soundFiles_data[0]);
+		self.wav = ko.observable(wav || sounds_data[0]);
 
 		self.isPlaying = ko.observable(false);
 		self.hasPlayed = ko.observable(false);
@@ -191,7 +181,7 @@ $(document).ready(function(){
 		self.fileIsModified = ko.observable(false);
 		self.fileName = ko.observable("Untitled");
 
-		self.soundFiles = soundFiles_data;
+		self.sounds = sounds_data;
 		self.emotions = emotions_data;
 
 		self.selectedVoiceLine = ko.observable();

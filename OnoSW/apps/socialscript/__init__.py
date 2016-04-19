@@ -3,6 +3,7 @@ from __future__ import with_statement
 from functools import partial
 from exceptions import RuntimeError
 import os
+import glob
 import shutil
 import time
 import yaml
@@ -28,11 +29,19 @@ def setup_pages(onoapp):
 		data = {
 			"page_icon":		config["icon"],
 			"page_caption":		config["full_name"],
-			"title":			"Ono web interface - %s" % config["full_name"]
+			"title":			"Ono web interface - %s" % config["full_name"],
+			"emotions":			[],
+			"sounds":			[]
 		}
 
 		with open(get_path("emotions.yaml")) as f:
-			data["emotions_data"] = yaml.load(f, Loader=Loader)
+			data["emotions"] = yaml.load(f, Loader=Loader)
+
+		filenames = glob.glob(get_path("../sounds/soundfiles/*.wav"))
+
+		for filename in filenames:
+			data["sounds"].append(os.path.split(filename)[1])
+		data["sounds"].sort()
 
 		return onoapp.render_template("socialscript.html", **data)
 
