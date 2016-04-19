@@ -5,6 +5,11 @@ from exceptions import RuntimeError
 import os
 import shutil
 import time
+import yaml
+try:
+	from yaml import CLoader as Loader
+except ImportError:
+	from yaml import Loader
 
 from flask import Blueprint, render_template, request, send_from_directory
 
@@ -25,6 +30,9 @@ def setup_pages(onoapp):
 			"page_caption":		config["full_name"],
 			"title":			"Ono web interface - %s" % config["full_name"]
 		}
+
+		with open(get_path("emotions.yaml")) as f:
+			data["emotions_data"] = yaml.load(f, Loader=Loader)
 
 		return onoapp.render_template("socialscript.html", **data)
 

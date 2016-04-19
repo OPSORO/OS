@@ -1,0 +1,32 @@
+# List of emotions available inside social script app
+# TODO: Neutral emotion!
+
+- name:  Happy
+  image: happy.png
+  r:     1.0
+  phi:   18.0
+
+- name:  Sad
+  image: sad.png
+  r:     1.0
+  phi:   200.0
+
+- name:  Angry
+  image: angry.png
+  r:     1.0
+  phi:   153.0
+
+- name:  Surprised
+  image: surprised.png
+  r:     1.0
+  phi:   90.0
+
+- name:  Afraid
+  image: afraid.png
+  r:     1.0
+  phi:   125.0
+
+- name:  Disgusted
+  image: disgusted.png
+  r:     1.0
+  phi:   172.0

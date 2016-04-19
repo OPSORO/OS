@@ -81,7 +81,7 @@
 <script src="static/jquery-ui-sortable/jquery-ui.js"></script>
 <script src="static/knockout-sortable.min.js"></script>
 <script>
-var emotions_data = [
+/*var emotions_data = [
 	{name: "Happy",     image: "happy"},
 	{name: "Sad",       image: "sad"},
 	{name: "Angry",     image: "angry"},
@@ -89,7 +89,9 @@ var emotions_data = [
 	{name: "Afraid",    image: "afraid"},
 	{name: "Disgusted", image: "disgusted"}
 	// TODO: Neutral emotion
-];
+];*/
+var emotions_data = {{ emotions_data|tojson|safe }};
+
 var soundFiles_data = ["Oooh.wav", "Burp.wav", "Greeting.wav"];
 </script>
 <script>
@@ -102,7 +104,7 @@ $(document).ready(function(){
 		update: function(element, valueAccessor, allBindings) {
 			var value = valueAccessor();
 			var valueUnwrapped = ko.unwrap(value);
-			$(element).css("background", "url('static/avatars/" + valueUnwrapped + ".png')")
+			$(element).css("background", "url('static/avatars/" + valueUnwrapped + "')")
 		}
 	};
 
