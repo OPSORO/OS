@@ -41,18 +41,6 @@
 	pointer-events: none;
 }
 
-/* sortable begin*/
-body.dragging, body.dragging * {
-	cursor: move !important;
-}
-
-.dragged {
-	position: absolute;
-	opacity: 0.75;
-	z-index: 2000;
-}
-/* sortable end*/
-
 /*Speech bubble*/
 .bubble {
 	display: inline-block;
@@ -114,10 +102,10 @@ body.dragging, body.dragging * {
 	background: #fff;
 }
 
-.voiceline .avatar {
+.voiceline .avatar,
+#PickEmotionModal .avatar {
 	border: 2px solid #dddddd;
 	padding: 0.25rem;
-	/*display: inline-block;*/
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -126,11 +114,28 @@ body.dragging, body.dragging * {
 	height: 5.5rem;
 }
 
-.voiceline .avatar:hover {
+#PickEmotionModal .avatar {
+	position: relative;
+}
+#PickEmotionModal .avatarcaption{
+	margin-top: 0.25rem;
+	padding: 0 0.5rem;
+	background: #4d4d4d;
+	border-radius: 1rem;
+	color: #fff;
+	font-size: 0.8rem;
+	font-weight: bold;
+	text-transform: uppercase;
+	text-align: center;
+}
+
+.voiceline .avatar:hover,
+#PickEmotionModal .avatar:hover {
 	background: rgba(34, 181, 115, 0.41);
 }
 
-.voiceline .avatar > div {
+.voiceline .avatar > div,
+#PickEmotionModal .avatar > div {
 	width: 4.75rem;
 	height: 4.75rem;
 	background-size: 100% !important;
@@ -138,8 +143,6 @@ body.dragging, body.dragging * {
 }
 
 .voiceline .playbutton {
-	/*width: 5.5rem;
-	height: 5.5rem;*/
 	width: 4.5rem;
 	height: 4.5rem;
 	position: absolute;

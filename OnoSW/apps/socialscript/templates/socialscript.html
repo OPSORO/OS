@@ -41,11 +41,11 @@
 	<a href="#" class="close">&times;</a>
 </div>
 
-<div id="voicelines" data-bind="foreach: voiceLines">
+<div id="voicelines" data-bind="sortable: { data: voiceLines, options: {handle: '.gripper'} }">
 	<div class="voiceline" data-bind="css: {locked: $root.fileLocked(), unlocked: !$root.fileLocked()}">
 		<div class="gripper"></div>
 		<div class="avatar">
-				<div data-bind="avatar: emotion"></div>
+				<div data-bind="avatar: avatar, click: pickEmotion"></div>
 		</div>
 		<div class="content">
 			<span class="bubble" data-bind="html: contentPreview"></span>
@@ -78,25 +78,29 @@
 
 {% block scripts %}
 {{ super() }}
-<script src="static/jquery-sortable-min.js"></script>
+<script src="static/jquery-ui-sortable/jquery-ui.js"></script>
+<script src="static/knockout-sortable.min.js"></script>
 <script>
-$(document).ready(function() {
+var emotions_data = [
+	{name: "Happy",     image: "happy"},
+	{name: "Surprised", image: "surprise"},
+	{name: "Angry",     image: "angry"},
+	{name: "Happy2",    image: "happy"},
+	{name: "Surpr 2",   image: "surprise"},
+	{name: "Angry2",    image: "angry"}
+];
+var soundFiles_data = ["Oooh.wav", "Burp.wav", "Greeting.wav"];
+
+$(document).ready(function(){
 	$("#btnShutdown").click(function(){
 		$("#ShutdownModal .content").load("/shutdown");
-	});
-
-	$("#voicelines").sortable({
-		containerSelector: "#voicelines",
-		itemSelector: "div.voiceline",
-		placeholder: "<hr>",
-		handle: "div.voiceline .gripper"
 	});
 
 	ko.bindingHandlers.avatar = {
 		update: function(element, valueAccessor, allBindings) {
 			var value = valueAccessor();
 			var valueUnwrapped = ko.unwrap(value);
-			$(element).css("background", "url(static/" + valueUnwrapped + ".png)")
+			$(element).css("background", "url('static/avatars/" + valueUnwrapped + ".png')")
 		}
 	};
 
@@ -124,11 +128,11 @@ $(document).ready(function() {
 	var VoiceLine = function(emotion, output, tts, wav){
 		var self = this;
 
-		self.emotion = ko.observable(emotion);
+		self.emotion = ko.observable(emotion || emotions_data[0]);
 
-		self.output = ko.observable(output);
-		self.tts = ko.observable(tts);
-		self.wav = ko.observable(wav);
+		self.output = ko.observable(output || "tts");
+		self.tts = ko.observable(tts || "");
+		self.wav = ko.observable(wav || soundFiles_data[0]);
 
 		self.isPlaying = ko.observable(false);
 		self.hasPlayed = ko.observable(false);
@@ -143,6 +147,10 @@ $(document).ready(function() {
 				// Generate wav preview html
 				return "<span class='fa fa-music'></span> " + self.wav();
 			}
+		});
+
+		self.avatar = ko.pureComputed(function(){
+			return self.emotion().image;
 		});
 
 		self.toggleOutput = function(){
@@ -160,7 +168,16 @@ $(document).ready(function() {
 			}else{
 					self.isPlaying(true)
 			}
-		}
+		};
+
+		self.pickEmotion = function(){
+			if(model.fileLocked()){
+				return;
+			}
+
+			model.selectedVoiceLine(self);
+			$("#PickEmotionModal").foundation("reveal", "open");
+		};
 	}
 
 	var SocialScriptModel = function(){
@@ -169,20 +186,25 @@ $(document).ready(function() {
 		self.fileLocked = ko.observable(false);
 		self.fileIsModified = ko.observable(false);
 		self.fileName = ko.observable("Untitled");
-		self.soundFiles = ["Oooh.wav", "Burp.wav", "Greeting.wav"];
+
+		self.soundFiles = soundFiles_data;
+		self.emotions = emotions_data;
+
+		self.selectedVoiceLine = ko.observable();
 
 		self.voiceLines = ko.observableArray([
-			new VoiceLine("happy",    "tts", "Hello", ""),
-			new VoiceLine("surprise", "wav", "",      "Oooh.wav"),
-			new VoiceLine("angry",    "tts", "Ouch!", "")
+			new VoiceLine(self.emotions[0], "tts", "Hello", ""),
+			new VoiceLine(self.emotions[1], "wav", "",      "Oooh.wav"),
+			new VoiceLine(self.emotions[2], "tts", "Ouch!", "")
 		]);
+
 
 		self.toggleLocked = function(){
 			self.fileLocked( !self.fileLocked() );
 		};
 
 		self.addLine = function(){
-			self.voiceLines.push( new VoiceLine("happy", "tts", "", "") );
+			self.voiceLines.push( new VoiceLine(self.emotions[0], "tts", "", "") );
 		};
 
 		self.removeLine = function(line){
@@ -190,12 +212,54 @@ $(document).ready(function() {
 		};
 
 		self.saveFile = function(){
-			var jsonData = ko.toJSON(self, null, 2);
-			alert(jsonData);
+			var file_data = {voice_lines: []};
+
+			$.each(self.voiceLines(), function(idx, item){
+				var line = {};
+				line.emotion = item.emotion().name;
+				line.output = {};
+
+				if(item.output() == "tts"){
+					line.output.type = "tts";
+					line.output.data = item.tts();
+				}else if(item.output() == "wav"){
+					line.output.type = "wav";
+					line.output.data = item.wav();
+				}else{
+					line.output.type = "tts";
+					line.output.data = "";
+				}
+
+				file_data.voice_lines.push(line);
+			});
+
+			//console.log(file_data);
+			var json_data = ko.toJSON(file_data, null, 2);
+			alert(json_data);
+		};
+
+		self.changeEmotion = function(emotion){
+			self.selectedVoiceLine().emotion(emotion);
+			$("#PickEmotionModal").foundation("reveal", "close");
 		};
 	};
 	// This makes Knockout get to work
-	ko.applyBindings(new SocialScriptModel());
+	var model = new SocialScriptModel();
+	ko.applyBindings(model);
 });
 </script>
+{% endblock %}
+
+{% block modals %}
+{{ super() }}
+<div id="PickEmotionModal" class="reveal-modal tiny" data-reveal>
+	<div class="content">
+		<ul class="small-block-grid-4" data-bind="foreach: emotions">
+			<li>
+				<div class="avatar" data-bind="click: $root.changeEmotion"><div data-bind="avatar: image"></div></div>
+				<div class="avatarcaption" data-bind="text: name"></div>
+			</li>
+		</ul>
+	</div>
+</div>
 {% endblock %}
