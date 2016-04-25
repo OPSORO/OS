@@ -1,5 +1,9 @@
 # List of emotions available inside social script app
-# TODO: Neutral emotion!
+- name:  Neutral
+  image: neutral.png
+  r:     0.0
+  phi:   0.0
+
 
 - name:  Happy
   image: happy.png
