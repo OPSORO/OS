@@ -47,51 +47,48 @@ def stopcap():
 	global running
 	running = False
 
-def setup_pages(onoapp):
-	touch_bp = Blueprint("touch", __name__, template_folder="templates")
+def setup_pages(opsoroapp):
+	touch_bp = Blueprint("touch", __name__, template_folder="templates", static_folder="static")
 
 	@touch_bp.route("/")
-	@onoapp.app_view
+	@opsoroapp.app_view
 	def index():
 		data = {
-			"page_icon":		config["icon"],
-			"page_caption":		config["full_name"],
-			"title":			"Ono web interface - %s" % config["full_name"],
 		}
 
-		return onoapp.render_template("touch.html", **data)
+		return opsoroapp.render_template("touch.html", **data)
 
-	@onoapp.app_socket_connected
+	@opsoroapp.app_socket_connected
 	def s_connected(conn):
 		global clientconn
 		clientconn = conn
 
-	@onoapp.app_socket_disconnected
+	@opsoroapp.app_socket_disconnected
 	def s_disconnected(conn):
 		global clientconn
 		clientconn = None
 
-	@onoapp.app_socket_message("startcapture")
+	@opsoroapp.app_socket_message("startcapture")
 	def s_startcapture(conn, data):
 		electrodes = int(data.pop("electrodes", 0))
 		startcap(electrodes)
 
-	@onoapp.app_socket_message("stopcapture")
+	@opsoroapp.app_socket_message("stopcapture")
 	def s_stopcapture(conn, data):
 		stopcap()
 
-	onoapp.register_app_blueprint(touch_bp)
+	opsoroapp.register_app_blueprint(touch_bp)
 
-def setup(onoapp):
+def setup(opsoroapp):
 	pass
 
-def start(onoapp):
+def start(opsoroapp):
 	global touch_t
 
 	touch_t = StoppableThread(target=TouchLoop)
 	touch_t.start();
 
-def stop(onoapp):
+def stop(opsoroapp):
 	global touch_t
 	global running
 

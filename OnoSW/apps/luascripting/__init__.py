@@ -53,11 +53,11 @@ def ui_add_key(key):
 		else:
 			sh.generate_lua_error("Invalid key: %s" % key)
 
-def setup_pages(onoapp):
+def setup_pages(opsoroapp):
 	luascripting_bp = Blueprint("luascripting", __name__, template_folder="templates", static_folder="static")
 
 	@luascripting_bp.route("/")
-	@onoapp.app_view
+	@opsoroapp.app_view
 	def index():
 		global sh
 		global script
@@ -65,9 +65,6 @@ def setup_pages(onoapp):
 		global script_modified
 
 		data = {
-			"page_icon":		config["icon"],
-			"page_caption":		config["full_name"],
-			"title":			"Ono web interface - %s" % config["full_name"],
 			"script_name":		script_name,
 			"script_modified":	script_modified,
 			"script_running":	sh.is_running
@@ -85,10 +82,10 @@ def setup_pages(onoapp):
 			else:
 				data["script_name_noext"] = script_name
 
-		return onoapp.render_template("luascripting.html", **data)
+		return opsoroapp.render_template("luascripting.html", **data)
 
 	@luascripting_bp.route("/filelist")
-	@onoapp.app_view
+	@opsoroapp.app_view
 	def filelist():
 		data = {
 			"scriptfiles":	[]
@@ -100,10 +97,10 @@ def setup_pages(onoapp):
 		for filename in filenames:
 			data["scriptfiles"].append(os.path.split(filename)[1])
 
-		return onoapp.render_template("filelist.html", **data)
+		return opsoroapp.render_template("filelist.html", **data)
 
 	@luascripting_bp.route("/save", methods=["POST"])
-	@onoapp.app_api
+	@opsoroapp.app_api
 	def save():
 		luafile = request.form.get("file", type=str, default="")
 		filename = request.form.get("filename", type=str, default="")
@@ -128,7 +125,7 @@ def setup_pages(onoapp):
 		return {"status": "success", "filename": filename}
 
 	@luascripting_bp.route("/delete/<scriptfile>", methods=["POST"])
-	@onoapp.app_api
+	@opsoroapp.app_api
 	def delete(scriptfile):
 		scriptfiles = []
 		filenames = []
@@ -144,12 +141,12 @@ def setup_pages(onoapp):
 			return {"status": "error", "message": "Unknown file."}
 
 	@luascripting_bp.route("/scripts/<scriptfile>")
-	@onoapp.app_view
+	@opsoroapp.app_view
 	def scripts(scriptfile):
 		return send_from_directory(get_path("scripts/"), scriptfile)
 
 	@luascripting_bp.route("/startscript", methods=["POST"])
-	@onoapp.app_api
+	@opsoroapp.app_api
 	def startscript():
 		global sh
 		global script
@@ -168,7 +165,7 @@ def setup_pages(onoapp):
 		return {"status": "success"}
 
 	@luascripting_bp.route("/stopscript", methods=["POST"])
-	@onoapp.app_api
+	@opsoroapp.app_api
 	def stopscript():
 		global sh
 
@@ -178,17 +175,17 @@ def setup_pages(onoapp):
 		else:
 			return {"status": "error", "message": "There is no active script to stop."}
 
-	@onoapp.app_socket_connected
+	@opsoroapp.app_socket_connected
 	def s_connected(conn):
 		global clientconn
 		clientconn = conn
 
-	@onoapp.app_socket_disconnected
+	@opsoroapp.app_socket_disconnected
 	def s_disconnected(conn):
 		global clientconn
 		clientconn = None
 
-	@onoapp.app_socket_message("keyDown")
+	@opsoroapp.app_socket_message("keyDown")
 	def s_key_down(conn, data):
 		global sh
 
@@ -196,7 +193,7 @@ def setup_pages(onoapp):
 		#sh.ui._keys[key] = True
 		sh.ui.set_key_status(key, True)
 
-	@onoapp.app_socket_message("keyUp")
+	@opsoroapp.app_socket_message("keyUp")
 	def s_key_up(conn, data):
 		global sh
 
@@ -204,26 +201,26 @@ def setup_pages(onoapp):
 		# sh.ui._keys[key] = False
 		sh.ui.set_key_status(key, False)
 
-	@onoapp.app_socket_message("buttonDown")
+	@opsoroapp.app_socket_message("buttonDown")
 	def s_button_down(conn, data):
 		global sh
 
 		button = str(data.pop("button", ""))
 		sh.ui.set_button_status(button, True)
 
-	@onoapp.app_socket_message("buttonUp")
+	@opsoroapp.app_socket_message("buttonUp")
 	def s_button_up(conn, data):
 		global sh
 
 		button = str(data.pop("button", ""))
 		sh.ui.set_button_status(button, False)
 
-	onoapp.register_app_blueprint(luascripting_bp)
+	opsoroapp.register_app_blueprint(luascripting_bp)
 
-def setup(onoapp):
+def setup(opsoroapp):
 	pass
 
-def start(onoapp):
+def start(opsoroapp):
 	global sh
 	global script
 	global script_name
@@ -244,6 +241,6 @@ def start(onoapp):
 	script_name = None
 	script_modified = False
 
-def stop(onoapp):
+def stop(opsoroapp):
 	global sh
 	sh.stop_script()

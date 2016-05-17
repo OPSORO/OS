@@ -7,23 +7,29 @@
 	<link rel="stylesheet" href="/static/css/foundation.css" />
 	<link rel="stylesheet" href="/static/css/font-awesome.min.css" />
 	<link rel="stylesheet" href="/static/css/roboto.css" />
-	<link rel="stylesheet" href="/static/css/ono.css" />
+	<link rel="stylesheet" href="/static/css/opsoro.css" />
 	<script src="/static/js/vendor/modernizr.js"></script>
 	{% block head %}
 	{% endblock %}
 </head>
 <body>
+
+	<div class="row">
+		<div class="small-12 columns" id="error_list"></div>
+	</div>
+
 	{% block body %}
 	{% endblock %}
-	{% block modals %}{% endblock %}
+	{% block modals %}
+	{% endblock %}
 	<img src="/static/img/opsoro-logo-full.png" id="logo">
 
-	&nbsp;
 	<div class="reveal-modal-bg" style="position: fixed;"></div>
 
 	<script src="/static/js/vendor/jquery.js"></script>
 	<script src="/static/js/foundation.min.js"></script>
 	<script src="/static/js/knockout-3.4.0.js"></script>
+	<script src="/static/js/opsoro.js"></script>
 	<script>
 		$(document).foundation();
 	</script>

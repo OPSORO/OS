@@ -42,16 +42,13 @@ def SocialscriptLoop():
 
 socialscript_t = None
 
-def setup_pages(onoapp):
+def setup_pages(opsoroapp):
 	socialscript_bp = Blueprint("socialscript", __name__, template_folder="templates", static_folder="static")
 
 	@socialscript_bp.route("/")
-	@onoapp.app_view
+	@opsoroapp.app_view
 	def index():
 		data = {
-			"page_icon":		config["icon"],
-			"page_caption":		config["full_name"],
-			"title":			"Ono web interface - %s" % config["full_name"],
 			"emotions":			[],
 			"sounds":			[]
 		}
@@ -65,10 +62,10 @@ def setup_pages(onoapp):
 			data["sounds"].append(os.path.split(filename)[1])
 		data["sounds"].sort()
 
-		return onoapp.render_template("socialscript.html", **data)
+		return opsoroapp.render_template("socialscript.html", **data)
 
 	@socialscript_bp.route("/filelist")
-	@onoapp.app_view
+	@opsoroapp.app_view
 	def filelist():
 		data = {
 			"scriptfiles":	[]
@@ -80,10 +77,10 @@ def setup_pages(onoapp):
 		for filename in filenames:
 			data["scriptfiles"].append(os.path.split(filename)[1])
 
-		return onoapp.render_template("filelist.html", **data)
+		return opsoroapp.render_template("filelist.html", **data)
 
 	@socialscript_bp.route("/save", methods=["POST"])
-	@onoapp.app_api
+	@opsoroapp.app_api
 	def save():
 		socfile = request.form.get("file", type=str, default="")
 		filename = request.form.get("filename", type=str, default="")
@@ -108,7 +105,7 @@ def setup_pages(onoapp):
 		return {"status": "success", "filename": filename}
 
 	@socialscript_bp.route("/delete/<scriptfile>", methods=["POST"])
-	@onoapp.app_api
+	@opsoroapp.app_api
 	def delete(scriptfile):
 		scriptfiles = []
 		filenames = []
@@ -124,26 +121,26 @@ def setup_pages(onoapp):
 			return {"status": "error", "message": "Unknown file."}
 
 	@socialscript_bp.route("/scripts/<scriptfile>")
-	@onoapp.app_view
+	@opsoroapp.app_view
 	def scripts(scriptfile):
 		return send_from_directory(get_path("scripts/"), scriptfile)
 
 	@socialscript_bp.route("/servos/enable")
-	@onoapp.app_api
+	@opsoroapp.app_api
 	def servosenable():
 		print_info("Servos enabled")
 		with Hardware.lock:
 			Hardware.servo_enable()
 
 	@socialscript_bp.route("/servos/disable")
-	@onoapp.app_api
+	@opsoroapp.app_api
 	def servosdisable():
 		print_info("Servos disabled")
 		with Hardware.lock:
 			Hardware.servo_disable()
 
 	@socialscript_bp.route("/setemotion", methods=["POST"])
-	@onoapp.app_api
+	@opsoroapp.app_api
 	def setemotion():
 		phi = request.form.get("phi", type=float, default=0.0)
 		r = request.form.get("r", type=float, default=0.0)
@@ -166,7 +163,7 @@ def setup_pages(onoapp):
 
 
 	@socialscript_bp.route("/play/<soundfile>", methods=["GET"])
-	@onoapp.app_api
+	@opsoroapp.app_api
 	def play(soundfile):
 		soundfiles = []
 		filenames = []
@@ -183,19 +180,19 @@ def setup_pages(onoapp):
 			return {"status": "error", "message": "Unknown file."}
 
 	@socialscript_bp.route("/saytts", methods=["GET"])
-	@onoapp.app_api
+	@opsoroapp.app_api
 	def saytts():
 		text = request.args.get("text", None)
 		if text is not None:
 			Sound.say_tts(text)
 		return {"status": "success"}
 
-	onoapp.register_app_blueprint(socialscript_bp)
+	opsoroapp.register_app_blueprint(socialscript_bp)
 
-def setup(onoapp):
+def setup(opsoroapp):
 	pass
 
-def start(onoapp):
+def start(opsoroapp):
 	# Turn servo power off, init servos, update expression
 	with Hardware.lock:
 		Hardware.servo_disable()
@@ -211,7 +208,7 @@ def start(onoapp):
 	socialscript_t = StoppableThread(target=SocialscriptLoop)
 	socialscript_t.start();
 
-def stop(onoapp):
+def stop(opsoroapp):
 	with Hardware.lock:
 		Hardware.servo_disable()
 

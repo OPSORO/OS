@@ -16,6 +16,9 @@ import threading
 import base64
 import time
 import logging
+
+import glob
+
 from console_msg import *
 from preferences import Preferences
 try:
@@ -46,8 +49,12 @@ class AdminUser(object):
 	def is_admin(self):
 		return True
 
-class OnoApplication(object):
+class OpSoRoApplication(object):
 	def __init__(self):
+		# title
+		self.title = "OpSoRo Web Interface"
+		self.robotName = "Ono"
+
 		# Create flask instance for webserver
 		self.flaskapp = Flask(__name__)
 
@@ -146,11 +153,15 @@ class OnoApplication(object):
 	def render_template(self, template, **kwargs):
 		kwargs["toolbar"] = {}
 
+		kwargs["title"] = self.title
 		# Set toolbar variables
 		if self.activeapp in self.apps:
 			kwargs["toolbar"]["active"] = True
 			kwargs["toolbar"]["full_name"] = self.apps[self.activeapp].config["full_name"]
 			kwargs["toolbar"]["icon"] = self.apps[self.activeapp].config["icon"]
+			kwargs["title"] += " - %s" % self.apps[self.activeapp].config["full_name"]
+			kwargs["page_icon"] = self.apps[self.activeapp].config["icon"]
+			kwargs["page_caption"] = self.apps[self.activeapp].config["full_name"]
 		else:
 			kwargs["toolbar"]["active"] = False
 
@@ -161,9 +172,9 @@ class OnoApplication(object):
 
 	def run(self):
 		# Setup SockJS
-		class OnoSocketConnection(SockJSConnection):
+		class OpSoRoSocketConnection(SockJSConnection):
 			def __init__(conn, *args, **kwargs):
-				super(OnoSocketConnection, conn).__init__(*args, **kwargs)
+				super(OpSoRoSocketConnection, conn).__init__(*args, **kwargs)
 				conn._authenticated = False
 				conn._activeapp = self.activeapp
 
@@ -224,7 +235,7 @@ class OnoApplication(object):
 				return conn.send(json.dumps(msg))
 
 		flaskwsgi = WSGIContainer(self.flaskapp)
-		socketrouter = SockJSRouter(OnoSocketConnection, "/sockjs")
+		socketrouter = SockJSRouter(OpSoRoSocketConnection, "/sockjs")
 
 		tornado_app = tornado.web.Application(socketrouter.urls + [(r".*", tornado.web.FallbackHandler, {"fallback": flaskwsgi})] )
 		tornado_app.listen(80)
@@ -303,17 +314,16 @@ class OnoApplication(object):
 					"page_icon": self.apps[appname].config["icon"],
 					"page_caption": self.apps[appname].config["full_name"]
 				}
-
+				data["title"] = self.title
 				if self.activeapp in self.apps:
 					# Another app is active
 					data["toolbar"]["active"] = True
 					data["toolbar"]["full_name"] = self.apps[self.activeapp].config["full_name"]
 					data["toolbar"]["icon"] = self.apps[self.activeapp].config["icon"]
-					data["title"] = "Ono Web Interface - %s" % self.apps[self.activeapp].config["full_name"]
+					data["title"] += " - %s" % self.apps[self.activeapp].config["full_name"]
 				else:
 					# No app is active
 					data["toolbar"]["active"] = False
-					data["title"] = "Ono Web Interface"
 
 				return render_template("app_not_active.html", **data)
 		return wrapper
@@ -383,20 +393,21 @@ class OnoApplication(object):
 	def setup_urls(self):
 		protect = self.protected_view
 
-		self.flaskapp.add_url_rule("/",					"index",		protect(self.page_index))
-		self.flaskapp.add_url_rule("/login",			"login",		self.page_login, methods=["GET", "POST"])
-		self.flaskapp.add_url_rule("/logout",			"logout",		self.page_logout)
-		self.flaskapp.add_url_rule("/preferences",		"preferences",	protect(self.page_preferences), methods=["GET", "POST"])
-		self.flaskapp.add_url_rule("/sockjstoken",		"sockjstoken",	self.page_sockjstoken)
-		self.flaskapp.add_url_rule("/shutdown",			"shutdown",		protect(self.page_shutdown))
-		self.flaskapp.add_url_rule("/closeapp",			"closeapp",		protect(self.page_closeapp))
-		self.flaskapp.add_url_rule("/openapp/<appname>","openapp",		protect(self.page_openapp))
+		self.flaskapp.add_url_rule("/",									"index",		protect(self.page_index))
+		self.flaskapp.add_url_rule("/login",							"login",		self.page_login, methods=["GET", "POST"])
+		self.flaskapp.add_url_rule("/logout",							"logout",		self.page_logout)
+		self.flaskapp.add_url_rule("/preferences",						"preferences",	protect(self.page_preferences), methods=["GET", "POST"])
+		self.flaskapp.add_url_rule("/sockjstoken",						"sockjstoken",	self.page_sockjstoken)
+		self.flaskapp.add_url_rule("/shutdown",							"shutdown",		protect(self.page_shutdown))
+		self.flaskapp.add_url_rule("/closeapp",							"closeapp",		protect(self.page_closeapp))
+		self.flaskapp.add_url_rule("/openapp/<appname>",				"openapp",		protect(self.page_openapp))
+		self.flaskapp.add_url_rule("/files/<folder>/<extension>",		"files",		protect(self.page_files), methods=["GET", "POST"])
 
 		self.flaskapp.context_processor(self.inject_opsoro_vars)
 
 	def page_index(self):
 		data = {
-			"title":		"Ono Web Interface",
+			"title":		self.title,
 			"apps":			[]
 		}
 
@@ -412,11 +423,11 @@ class OnoApplication(object):
 
 	def page_login(self):
 		if request.method == "GET":
-			return render_template("login.html", title="Ono Web Interface - Login")
+			return render_template("login.html", title=self.title + " - Login")
 
 		password = request.form["password"]
 
-		if password == Preferences.get("general", "password", default="RobotOno"):
+		if password == Preferences.get("general", "password", default="RobotOpSoRo"):
 			login_user(AdminUser())
 			self.active_session_key = os.urandom(24)
 			session["active_session_key"] = self.active_session_key
@@ -448,7 +459,7 @@ class OnoApplication(object):
 
 			if request.form.get("wirelessSamePass", None) == "on":
 				# Set to same password
-				Preferences.set("wireless", "password", Preferences.get("general", "password", "RobotOno"))
+				Preferences.set("wireless", "password", Preferences.get("general", "password", "RobotOpSoRo"))
 			else:
 				if request.form["wirelessPassword"] == request.form["wirelessPasswordConfirm"]:
 					if request.form["wirelessPassword"] != "":
@@ -461,20 +472,20 @@ class OnoApplication(object):
 		# Prepare json string with prefs data
 		prefs = {
 			"general": {
-				"robotName": Preferences.get("general", "robot_name", "Ono")
+				"robotName": Preferences.get("general", "robot_name", self.robotName)
 			},
 			"audio": {
 				"volume": Preferences.get("audio", "master_volume", 66),
 				"ttsEngine": Preferences.get("audio", "tts_engine", "picotts")
 			},
 			"wireless": {
-				"ssid": Preferences.get("wireless", "ssid", "Ono_AP"),
-				"samePassword": Preferences.get("general", "password", "RobotOno") == Preferences.get("wireless", "password", "RobotOno"),
+				"ssid": Preferences.get("wireless", "ssid", self.robotName + "_AP"),
+				"samePassword": Preferences.get("general", "password", "RobotOpSoRo") == Preferences.get("wireless", "password", "RobotOpSoRo"),
 				"channel": Preferences.get("wireless", "channel", "1")
 			}
 		}
 
-		return self.render_template("preferences.html", title="Ono Web Interface - Preferences", page_caption="Preferences", page_icon="fa-cog", closebutton=False, prefs=prefs)
+		return self.render_template("preferences.html", title=self.title + " - Preferences", page_caption="Preferences", page_icon="fa-cog", closebutton=False, prefs=prefs)
 
 	def page_sockjstoken(self):
 		if current_user.is_authenticated():
@@ -493,7 +504,7 @@ class OnoApplication(object):
 		<p>
 		Shutting down...<br/> Please wait 60 seconds before cutting power.<br/>
 		<span class="note">
-			<strong>Note:</strong> Never power off Ono without completely shutting down first! Cutting power without properly shutting down the operating system can result in a corrupt file system.
+			<strong>Note:</strong> Never power off """ + Preferences.get("general", "robot_name", self.robotName) + """ without completely shutting down first! Cutting power without properly shutting down the operating system can result in a corrupt file system.
 		</span>
 		"""
 		self.stop_current_app()
@@ -524,6 +535,40 @@ class OnoApplication(object):
 		else:
 			return redirect(url_for("index"))
 
+	def page_files(self, folder, extension):
+		folderPath = "apps/" + folder + "/scripts/"
+		if request.method == "POST":
+			action = request.form["action"]
+			folderPath = folderPath + request.form["folder"] + "/"
+			if (action == "openfolder"):
+				pass
+			if (action == "openfile"):
+				openfile = folderPath + request.form["file"]
+
+		prefs = {
+			"folder": folder,
+			"extension": extension
+		}
+		data = {
+			"path": folderPath,
+			"folders": [],
+			"files": []
+		}
+
+		foldernames = glob.glob(get_path(folderPath + "*"))
+		for foldername in foldernames:
+			if ("." not in os.path.split(foldername)[1]):
+				data["folders"].append(os.path.split(foldername)[1])
+		data["folders"].sort()
+
+		filenames = glob.glob(get_path(folderPath + "*" + extension))
+		for filename in filenames:
+			if ("." in os.path.split(filename)[1]):
+				data["files"].append(os.path.split(filename)[1])
+		data["files"].sort()
+
+		return self.render_template("file_explorer.html", title=self.title + " - Files", page_caption=folderPath + " [" + extension + "]", page_icon="fa-folder", prefs=prefs, **data)
+
 	def inject_opsoro_vars(self):
-		opsoro = {"robot_name": Preferences.get("general", "robot_name", "Ono")}
+		opsoro = {"robot_name": Preferences.get("general", "robot_name", self.robotName)}
 		return dict(opsoro=opsoro)

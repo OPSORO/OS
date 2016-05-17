@@ -1,0 +1,16 @@
+<div class="filebox">
+  <span data-bind="text: fileName" class="filename"></span> <span data-bind="visible: fileIsModified()" class="fa fa-asterisk"></span><br>
+  <span class="fa" data-bind="css: { 'fa-lock': fileIsLocked(), 'fa-pencil': !fileIsLocked() }" style="font-size: 0.75rem;"></span> <span class="status" data-bind="text: fileIsLocked() ? 'Locked' : 'Editing' "></span>
+</div>
+<div class="spacer"></div>
+
+<script>
+fileIsModified = function(){
+  showMainError("The function fileIsModified is not yet defined.");
+  return false;
+};
+fileIsLocked = function(){
+  showMainError("The function fileIsLocked is not yet defined.");
+  return false;
+};
+</script>

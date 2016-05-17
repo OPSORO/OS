@@ -14,16 +14,13 @@ config = {"full_name": "Config Editor", "icon": "fa-pencil"}
 
 get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 
-def setup_pages(onoapp):
-	configeditor_bp = Blueprint("configeditor", __name__, template_folder="templates")
+def setup_pages(opsoroapp):
+	configeditor_bp = Blueprint("configeditor", __name__, template_folder="templates", static_folder="static")
 
 	@configeditor_bp.route("/")
-	@onoapp.app_view
+	@opsoroapp.app_view
 	def index():
 		data = {
-			"page_icon":		config["icon"],
-			"page_caption":		config["full_name"],
-			"title":			"Ono web interface - %s" % config["full_name"]
 		}
 		with open(get_path("../../config/pinmap.yaml")) as f:
 			data["file_pinmap"] = f.read()
@@ -31,10 +28,10 @@ def setup_pages(onoapp):
 			data["file_limits"] = f.read()
 		with open(get_path("../../config/functions.yaml")) as f:
 			data["file_functions"] = f.read()
-		return onoapp.render_template("configeditor.html", **data)
+		return opsoroapp.render_template("configeditor.html", **data)
 
 	@configeditor_bp.route("/default/<configfile>")
-	@onoapp.app_view
+	@opsoroapp.app_view
 	def default(configfile):
 		if configfile in ["pinmap.yaml", "limits.yaml", "functions.yaml"]:
 			filename = configfile[:-5] + ".default.yaml"
@@ -43,7 +40,7 @@ def setup_pages(onoapp):
 			abort(404)
 
 	@configeditor_bp.route("/saveconfig", methods=["POST"])
-	@onoapp.app_api
+	@opsoroapp.app_api
 	def saveconfig():
 		pinmap_yaml = request.form.get("pinmap", type=str, default="")
 		limits_yaml = request.form.get("limits", type=str, default="")
@@ -82,13 +79,13 @@ def setup_pages(onoapp):
 		else:
 			return {"message": "Successfully saved and parsed configuration files.<br>Loaded %d DOFs and %d servos." % (len(Expression.servos), len(Expression.dofs))}
 
-	onoapp.register_app_blueprint(configeditor_bp)
+	opsoroapp.register_app_blueprint(configeditor_bp)
 
-def setup(onoapp):
+def setup(opsoroapp):
 	pass
 
-def start(onoapp):
+def start(opsoroapp):
 	pass
 
-def stop(onoapp):
+def stop(opsoroapp):
 	pass

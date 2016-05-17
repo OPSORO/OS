@@ -29,7 +29,7 @@
 	</div>
 </div>
 
-{% block base_toolbar_body %}
+{% block base_systembar_body %}
 {% endblock %}
 
 {% endblock %}
@@ -45,13 +45,13 @@
 	</div>
 	<div class="content">
 		<p>
-			Are you sure you wish to shut down Ono?<br/>
+			Are you sure you wish to shut down {{ opsoro.robot_name }}?<br/>
 			<span class="note">
-				<strong>Note:</strong> Never power off Ono without completely shutting down first! Cutting power without properly shutting down the operating system can result in a corrupt file system.
+				<strong>Note:</strong> Never power off {{ opsoro.robot_name }} without completely shutting down first! Cutting power without properly shutting down the operating system can result in a corrupt file system.
 			</span>
 		</p>
 		<div class="text-center">
-			<a href="#" class="button" id="btnShutdown"><span class="fa fa-power-off"></span> Yes, shut down Ono</a>
+			<a href="#" class="button" id="btnShutdown"><span class="fa fa-power-off"></span> Yes, shut down {{ opsoro.robot_name }}</a>
 		</div>
 	</div>
 </div>

@@ -3,7 +3,6 @@
 {% block head %}
 {{ super() }}
 
-
 {% endblock %}
 
 {% block page_content %}
@@ -194,7 +193,7 @@ $(document).ready(function(){
 	var WirelessSettings = function(){
 		var self = this;
 
-		self.ssid = ko.observable("Ono");
+		self.ssid = ko.observable("OpSoRo_AP");
 
 		self.password = ko.observable("");
 		self.passwordConfirm = ko.observable("");
@@ -223,7 +222,7 @@ $(document).ready(function(){
 	viewmodel.general().robotName(prefsJson.general.robotName || "Ono");
 	viewmodel.audio().volume(prefsJson.audio.volume || 50);
 	viewmodel.audio().ttsEngine(prefsJson.audio.ttsEngine || "picotts");
-	viewmodel.wireless().ssid(prefsJson.wireless.ssid || "Ono_AP");
+	viewmodel.wireless().ssid(prefsJson.wireless.ssid || "OpSoRo_AP");
 	viewmodel.wireless().samePassword(prefsJson.wireless.samePassword || true);
 	viewmodel.wireless().channel(prefsJson.wireless.channel || 6);
 	viewmodel.wireless().settingsChanged(false);

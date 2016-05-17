@@ -13,18 +13,15 @@ config = {"full_name": "Sliders", "icon": "fa-sliders"}
 clientconn = None
 dof_positions = {}
 
-def setup_pages(onoapp):
-	sliders_bp = Blueprint("sliders", __name__, template_folder="templates")
+def setup_pages(opsoroapp):
+	sliders_bp = Blueprint("sliders", __name__, template_folder="templates", static_folder="static")
 
 	global clientconn
 
 	@sliders_bp.route("/")
-	@onoapp.app_view
+	@opsoroapp.app_view
 	def index():
 		data = {
-			"page_icon":		config["icon"],
-			"page_caption":		config["full_name"],
-			"title":			"Ono web interface - %s" % config["full_name"],
 			"dofs":				[]
 		}
 
@@ -42,31 +39,31 @@ def setup_pages(onoapp):
 					"current":	dof_positions[servo.dofname]
 				})
 
-		return onoapp.render_template("sliders.html", **data)
+		return opsoroapp.render_template("sliders.html", **data)
 
-	@onoapp.app_socket_connected
+	@opsoroapp.app_socket_connected
 	def s_connected(conn):
 		global clientconn
 		clientconn = conn
 
-	@onoapp.app_socket_disconnected
+	@opsoroapp.app_socket_disconnected
 	def s_disconnected(conn):
 		global clientconn
 		clientconn = None
 
-	@onoapp.app_socket_message("servosEnable")
+	@opsoroapp.app_socket_message("servosEnable")
 	def s_servosenable(conn, data):
 		print_info("Servos enabled")
 		with Hardware.lock:
 			Hardware.servo_enable()
 
-	@onoapp.app_socket_message("servosDisable")
+	@opsoroapp.app_socket_message("servosDisable")
 	def s_servosdisable(conn, data):
 		print_info("Servos disabled")
 		with Hardware.lock:
 			Hardware.servo_disable()
 
-	@onoapp.app_socket_message("setDofPos")
+	@opsoroapp.app_socket_message("setDofPos")
 	def s_setdofpos(conn, data):
 		dofname = str(data.pop("dofname", None))
 		pos = float(data.pop("pos", 0.0))
@@ -84,7 +81,7 @@ def setup_pages(onoapp):
 			with Expression.lock:
 				Expression.update()
 
-	onoapp.register_app_blueprint(sliders_bp)
+	opsoroapp.register_app_blueprint(sliders_bp)
 
 def overlay_fn(dof_pos, dof):
 	# Overwrite all DOFs to use the ones from the slider app
@@ -95,10 +92,10 @@ def overlay_fn(dof_pos, dof):
 	else:
 		return dof_pos
 
-def setup(onoapp):
+def setup(opsoroapp):
 	pass
 
-def start(onoapp):
+def start(opsoroapp):
 	global dof_positions
 	dof_positions = {}
 
@@ -119,7 +116,7 @@ def start(onoapp):
 	with Expression.lock:
 		Expression.update()
 
-def stop(onoapp):
+def stop(opsoroapp):
 	with Hardware.lock:
 		Hardware.servo_disable()
 

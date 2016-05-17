@@ -1,0 +1,46 @@
+<div class="filebox">
+  <span data-bind="text: fileName" class="filename"></span> <span data-bind="visible: fileIsModified()" class="fa fa-asterisk"></span><br>
+  <span class="fa" data-bind="css: { 'fa-lock': fileIsLocked(), 'fa-pencil': !fileIsLocked() && !isRunning(), 'fa-circle-o-notch fa-spin': isRunning() }" style="font-size: 0.75rem;"></span>  <span class="status" data-bind="text: fileStatus"></span>
+</div>
+
+<div class="spacer"></div>
+
+<a href="#" class="action" data-bind="click: saveFile">
+  <span class="fa fa-save"></span><br/>
+  <span class="text">Save</span>
+</a>
+<a href="#" class="action" data-bind="click: openFile">
+  <span class="fa fa-folder"></span><br/>
+  <span class="text">Open</span>
+</a>
+<a href="#" class="action" data-bind="click: newFile">
+  <span class="fa fa-file"></span><br/>
+  <span class="text">New</span>
+</a>
+<div class="spacer"></div>
+
+<script>
+fileIsModified = function(){
+  showMainError("The function fileIsModified is not yet defined.");
+  return false;
+};
+fileIsLocked = function(){
+  return false;
+};
+isRunning = function(){
+  return false;
+};
+fileStatus = "Editing";
+saveFile = function(){
+  showMainError("The function saveFile is not yet defined.");
+  return;
+};
+openFile = function(){
+  showMainError("The function openFile is not yet defined.");
+  return;
+};
+newFile = function(){
+  showMainError("The function newFile is not yet defined.");
+  return;
+};
+</script>

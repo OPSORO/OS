@@ -4,6 +4,10 @@
   r:     0.0
   phi:   0.0
 
+- name:  Laughing
+  image: laughing.png
+  r:     1.0
+  phi:   35.0
 
 - name:  Happy
   image: happy.png
@@ -34,3 +38,22 @@
   image: disgusted.png
   r:     1.0
   phi:   172.0
+
+- name:  Tired
+  image: tired.png
+  r:     1.0
+  phi:   270.0
+
+- name:  Wink
+  image: wink.png
+  r:     1.0
+  phi:   35.0
+  eyes:
+    left:
+      x: 0.0
+      y: 0.0
+      lid: -1.0
+    right:
+      x: 0.0
+      y: 0.0
+      lid: 0.7

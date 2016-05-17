@@ -13,7 +13,23 @@
 .btnDelSnd, .btnPlaySnd {
 	width: 3rem; margin-right: 0.75rem;
 }
+
+canvas {
+	display: inline-block;
+	background: #202020;
+	box-shadow: 0px 0px 10px black;
+	width: 48%;
+}
+audio {
+	display: inline-block;
+	width: 100%;
+}
 </style>
+
+
+<script src="static/recorderjs/audiodisplay.js"></script>
+<script src="static/recorderjs/recorder.js"></script>
+<script src="static/recorderjs/main.js"></script>
 {% endblock %}
 
 {% block page_content %}
@@ -50,28 +66,62 @@
 	{% endwith %}
 </div>
 
-<form action="upload" method="post" enctype="multipart/form-data" style="margin-bottom: 1rem;">
-	<div class="row">
-		<div class="large-9 medium-8 small-12 columns">
-			<input type="file" name="soundfile" style="margin-bottom: 0.25rem;"><br>
-			<span class="note"><strong>Note:</strong> Only .wav, .ogg and .mp3 files are allowed.</span>
+<fieldset>
+	<legend><span class="fa fa-upload"></span> Upload file</legend>
+	<form action="upload" method="post" enctype="multipart/form-data" style="margin-bottom: 1rem;">
+		<div class="row">
+			<div class="large-9 medium-8 small-12 columns">
+				<input type="file" name="soundfile" style="margin-bottom: 0.25rem;" accept="audio/*;capture=microphone"><br>
+				<span class="note"><strong>Note:</strong> Only .wav, .ogg and .mp3 files are allowed.</span>
+			</div>
+			<div class="large-3 medium-4 small-12 columns">
+				<button type="send" class="button" style="width: 100%;"><span class="fa fa-upload"></span> Upload</button>
+			</div>
 		</div>
-		<div class="large-3 medium-4 small-12 columns">
-			<button type="send" class="button" style="width: 100%;"><span class="fa fa-upload"></span> Upload</button>
-		</div>
-	</div>
-</form>
+	</form>
+</fieldset>
 
-<form id="formTTS">
-	<div class="row">
-		<div class="large-9 medium-8 small-12 columns">
-			<input type="text" name="txtTTS" id="txtTTS" style="width: 100%;" placeholder="Hello World!">
-		</div>
-		<div class="large-3 medium-4 small-12 columns">
-			<a href="#" id="btnTTS" class="button" style="width: 100%;"><span class="fa fa-volume-up"></span> Say it!</a>
-		</div>
+<fieldset>
+	<legend><span class="fa fa-microphone"></span> Upload recording</legend>
+	<div div class="large-9 medium-8 small-12 columns">
+		<canvas id="analyser" width="200" height="150"></canvas>
+		<canvas id="wavedisplay" width="200" height="150"></canvas>
 	</div>
-</form>
+	<div class="large-3 medium-4 small-12 columns">
+		<a href="#" class="button alert" data-bind="visible: !isRecordingEnabled(), click: enableRecording">
+			<span class="fa fa-microphone-slash"></span>
+			<span class="text">Enable microphone</span>
+		</a>
+		<a id="btnRecord" href="#" class="button alert" data-bind="visible: isRecordingEnabled(), click: toggleRecording">
+			<span class="fa fa-microphone"></span>
+			<span class="fa fa-circle-o-notch fa-spin" data-bind="visible: isRecording()"></span>
+			<span class="text" data-bind="text: isRecording() ? 'Stop' : 'Record'"></span>
+		</a>
+
+ 		<a id="btnSave" href="#" class="button" data-bind="visible: isRecorded() && !isRecording()"><span class="fa fa-download"> Download</span></a>
+
+
+		<audio width="100%" id="recordingAudio" src="" controls data-bind="visible: isRecorded() && !isRecording()"></audio>
+
+		<input type="text" name="text" class="text" style="width: 100%;" data-bind="value: fileName, visible: isRecorded() && !isRecording()"/>
+		<a href="#" class="button" data-bind="click: uploadRecording, visible: isRecorded() && !isRecording()"><span class="fa" data-bind="css { 'fa-upload': !isUploading(), 'fa-circle-o-notch': isUploading(), 'fa-spin': isUploading() }"></span> Upload recording</a>
+
+	</div>
+</fieldset>
+
+<fieldset>
+	<legend><span class="fa fa-commenting"></span> Text to speech</legend>
+	<form id="formTTS">
+		<div class="row">
+			<div class="large-9 medium-8 small-12 columns">
+				<input type="text" name="txtTTS" id="txtTTS" style="width: 100%;" placeholder="Hello World!">
+			</div>
+			<div class="large-3 medium-4 small-12 columns">
+				<a href="#" id="btnTTS" class="button" style="width: 100%;"><span class="fa fa-volume-up"></span> Say it!</a>
+			</div>
+		</div>
+	</form>
+</fieldset>
 
 {% if soundfiles %}
 	{% for soundfile in soundfiles %}
@@ -87,7 +137,6 @@
 
 {% block scripts %}
 {{ super() }}
-
 <script>
 	function addError(msg){
 		$("#errors").append("<div data-alert class=\"alert-box alert\">" + msg + "<a href=\"#\" class=\"close\">&times;</a></div>");
@@ -108,47 +157,5 @@
 			data: {text: $("#txtTTS").val()}
 		});
 	}
-
-	$(document).ready(function(){
-		$("a.btnDelSnd").click(function(){
-			filename = $(this).closest("span.file").data("soundfile");
-			fileElem = $(this).closest("span.file")
-			$.ajax({
-				dataType: "json",
-				type: "POST",
-				url: "delete/" + filename,
-				success: function(data){
-					if(data.status == "error"){
-						addError(data.message);
-					}else{
-						addMessage(data.message);
-						fileElem.hide();
-					}
-				}
-			});
-		});
-		$("a.btnPlaySnd").click(function(){
-			filename = $(this).closest("span.file").data("soundfile");
-			$.ajax({
-				dataType: "json",
-				type: "GET",
-				url: "play/" + filename,
-				success: function(data){
-					if(data.status == "error"){
-						addError(data.message);
-					}
-				}
-			});
-		});
-		$("#formTTS").submit(function(e){
-			e.preventDefault();
-		});
-		$("#btnTTS").click(doTTS);
-		$("#txtTTS").bind("keydown", function(e) {
-			if (e.keyCode == 13) {
-				doTTS();
-			}
-		});
-	});
 </script>
 {% endblock %}

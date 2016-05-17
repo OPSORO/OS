@@ -1,5 +1,10 @@
 {% extends "page.html" %}
 
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" href="static/app.css" />
+{% endblock %}
+
 {% block closebutton %}<a href="#" data-reveal-id="CloseAppModal" class="closebutton"><span class="fa fa-close"></span></a>{% endblock %}
 
 {% block modals %}
@@ -19,4 +24,9 @@
 		</div>
 	</div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script src="static/app.js"></script>
 {% endblock %}

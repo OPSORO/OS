@@ -114,7 +114,7 @@ class _Hardware(object):
 
 	# > GENERAL
 	def ping(self):
-		"""Returns True if OnoHAT rev3 is connected."""
+		"""Returns True if OpSoRoHAT rev3 is connected."""
 		return self.spi_command(CMD_PING, returned=1)[0] == 0xAA
 
 	def reset(self):
@@ -184,7 +184,7 @@ class _Hardware(object):
 		spi_params = []
 		for pos in pos_list:
 			if pos is None:
-				# Tell OnoFW not to update this servo
+				# Tell FW not to update this servo
 				spi_params.append(0xFF)
 				spi_params.append(0xFF)
 			else:

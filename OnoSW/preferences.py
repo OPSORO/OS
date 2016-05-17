@@ -71,8 +71,8 @@ class _Preferences(object):
 			with open("/etc/hostapd/hostapd.conf", "r+") as f:
 				lines = f.read()
 
-				ssid = self.get("wireless", "ssid", "OnoAP")
-				password = self.get("wireless", "password", "RobotOno")
+				ssid = self.get("wireless", "ssid", "OpSoRoAP")
+				password = self.get("wireless", "password", "RobotOpSoRo")
 				channel = self.get("wireless", "channel", 6)
 				channel = constrain(int(channel), 1, 11)
 

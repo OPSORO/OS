@@ -22,35 +22,32 @@ def CircumplexLoop():
 
 circumplex_t = None
 
-def setup_pages(onoapp):
+def setup_pages(opsoroapp):
 	circumplex_bp = Blueprint("circumplex", __name__, template_folder="templates", static_folder="static")
 
 	@circumplex_bp.route("/")
-	@onoapp.app_view
+	@opsoroapp.app_view
 	def index():
 		data = {
-			"page_icon":		config["icon"],
-			"page_caption":		config["full_name"],
-			"title":			"Ono web interface - %s" % config["full_name"]
 		}
-		return onoapp.render_template("circumplex.html", **data)
+		return opsoroapp.render_template("circumplex.html", **data)
 
 	@circumplex_bp.route("/servos/enable")
-	@onoapp.app_api
+	@opsoroapp.app_api
 	def servosenable():
 		print_info("Servos enabled")
 		with Hardware.lock:
 			Hardware.servo_enable()
 
 	@circumplex_bp.route("/servos/disable")
-	@onoapp.app_api
+	@opsoroapp.app_api
 	def servosdisable():
 		print_info("Servos disabled")
 		with Hardware.lock:
 			Hardware.servo_disable()
 
 	@circumplex_bp.route("/setemotion", methods=["POST"])
-	@onoapp.app_api
+	@opsoroapp.app_api
 	def setalphalength():
 		phi = request.form.get("phi", type=float, default=0.0)
 		r = request.form.get("r", type=float, default=0.0)
@@ -70,13 +67,13 @@ def setup_pages(onoapp):
 			Expression.set_emotion(phi=phi, r=r, anim_time=dist)
 			# Expression is updated in separate thread, no need to do this here.
 
-	onoapp.register_app_blueprint(circumplex_bp)
+	opsoroapp.register_app_blueprint(circumplex_bp)
 
 
-def setup(onoapp):
+def setup(opsoroapp):
 	pass
 
-def start(onoapp):
+def start(opsoroapp):
 	# Turn servo power off, init servos, update expression
 	with Hardware.lock:
 		Hardware.servo_disable()
@@ -92,7 +89,7 @@ def start(onoapp):
 	circumplex_t = StoppableThread(target=CircumplexLoop)
 	circumplex_t.start();
 
-def stop(onoapp):
+def stop(opsoroapp):
 	with Hardware.lock:
 		Hardware.servo_disable()
 

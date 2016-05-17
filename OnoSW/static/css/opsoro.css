@@ -6,25 +6,25 @@ body {
 
 @media only screen and (min-width: 64.063em) {
 	body {
-		padding: 3rem;
+		padding: 1rem 1rem 0rem 1rem;
 	}
 }
 @media only screen and (min-width: 40.063em) and (max-width: 64em) {
 	body {
-		padding: 2rem;
+		padding: 0.5rem 0.5rem 0rem 0.5rem;
 	}
 }
 
 @media only screen and (max-width: 40em) {
 	body {
-		padding: 1rem 0rem 0rem 0rem;
+		padding: 0.5rem 0rem 0rem 0rem;
 	}
 }
 
 #logo {
 	opacity: 0.75;
 	width: 8rem;
-	margin: 1rem auto 1rem auto;
+	margin: 0.5rem auto 0.5rem auto;
 	display: block;
 }
 
@@ -276,6 +276,7 @@ body {
 	background: #23774E;
 	margin: -1rem -1rem 1rem -1rem;
 	padding: 0.5rem 1rem;
+	min-height: 4rem;
 }
 
 .actionbar .action {
@@ -286,6 +287,11 @@ body {
 	padding: 0 0.5rem;
 	text-align: center;
 	display: inline-block;
+	min-width: 3rem;
+}
+
+.float_right {
+	float: right;
 }
 
 .actionbar .action:hover, .actionbar .action.active {
@@ -302,6 +308,27 @@ body {
 .actionbar .spacer {
 	display: inline-block;
 	width: 2rem;
+}
+
+.actionbar .filebox {
+	color: #fff;
+	display: inline-block;
+	min-width: 7rem;
+	max-width: 20rem;
+	overflow: hidden;
+	text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.actionbar .filebox .filename {
+	font-weight: bold;
+	text-transform: uppercase;
+}
+
+.actionbar .filebox .status {
+	font-size: 0.75rem;
+	font-weight: bold;
+	text-transform: uppercase;
 }
 
 .tooltip {
@@ -413,4 +440,16 @@ fieldset legend{
 	text-transform: uppercase;
 	color: #4D4D4D;
 	margin-top: 0;
+}
+
+#error_list {
+	margin: 0;
+	padding: 0;
+}
+#error_list .alert-box {
+	margin: 0 2rem 0.5rem 2rem;
+	border-radius: 0.25rem;
+}
+#error_list .alert-box .close {
+	opacity: 0.8;
 }

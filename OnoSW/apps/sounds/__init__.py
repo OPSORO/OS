@@ -11,16 +11,13 @@ config = {"full_name": "Sounds", "icon": "fa-volume-up"}
 
 get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 
-def setup_pages(onoapp):
-	sounds_bp = Blueprint("sounds", __name__, template_folder="templates")
+def setup_pages(opsoroapp):
+	sounds_bp = Blueprint("sounds", __name__, template_folder="templates", static_folder="static")
 
 	@sounds_bp.route("/")
-	@onoapp.app_view
+	@opsoroapp.app_view
 	def index():
 		data = {
-			"page_icon":		config["icon"],
-			"page_caption":		config["full_name"],
-			"title":			"Ono web interface - %s" % config["full_name"],
 			"soundfiles": 		[]
 		}
 
@@ -33,10 +30,10 @@ def setup_pages(onoapp):
 		for filename in filenames:
 			data["soundfiles"].append(os.path.split(filename)[1])
 
-		return onoapp.render_template("sounds.html", **data)
+		return opsoroapp.render_template("sounds.html", **data)
 
 	@sounds_bp.route("/upload", methods=["POST"])
-	@onoapp.app_view
+	@opsoroapp.app_view
 	def upload():
 		file = request.files["soundfile"]
 		if file:
@@ -53,7 +50,7 @@ def setup_pages(onoapp):
 			return redirect(url_for(".index"))
 
 	@sounds_bp.route("/delete/<soundfile>", methods=["POST"])
-	@onoapp.app_api
+	@opsoroapp.app_api
 	def delete(soundfile):
 		soundfiles = []
 		filenames = []
@@ -72,7 +69,7 @@ def setup_pages(onoapp):
 			return {"status": "error", "message": "Unknown file."}
 
 	@sounds_bp.route("/play/<soundfile>", methods=["GET"])
-	@onoapp.app_api
+	@opsoroapp.app_api
 	def play(soundfile):
 		soundfiles = []
 		filenames = []
@@ -91,20 +88,20 @@ def setup_pages(onoapp):
 			return {"status": "error", "message": "Unknown file."}
 
 	@sounds_bp.route("/saytts", methods=["GET"])
-	@onoapp.app_api
+	@opsoroapp.app_api
 	def saytts():
 		text = request.args.get("text", None)
 		if text is not None:
 			Sound.say_tts(text)
 		return {"status": "success"}
 
-	onoapp.register_app_blueprint(sounds_bp)
+	opsoroapp.register_app_blueprint(sounds_bp)
 
-def setup(onoapp):
+def setup(opsoroapp):
 	pass
 
-def start(onoapp):
+def start(opsoroapp):
 	pass
 
-def stop(onoapp):
+def stop(opsoroapp):
 	pass
