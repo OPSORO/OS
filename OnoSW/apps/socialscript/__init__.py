@@ -187,6 +187,52 @@ def setup_pages(opsoroapp):
 			Sound.say_tts(text)
 		return {"status": "success"}
 
+
+	@socialscript_bp.route("/eye", methods=["POST"])
+	@opsoroapp.app_api
+	def eye():
+		not_given = 10.0
+		left_lid = request.form.get("left_lid", type=float, default=not_given)
+		right_lid = request.form.get("right_lid", type=float, default=not_given)
+
+		if left_lid != not_given:
+			left_lid = constrain(left_lid, -1.0, 1.0)
+			with Hardware.lock:
+				# HARDCODED servo channel -> should be changed!!!
+				Hardware.servo_set(11, 1500 + int(left_lid * 1000.0))
+
+		if right_lid != not_given:
+			right_lid = constrain(right_lid, -1.0, 1.0)
+			with Hardware.lock:
+				# HARDCODED servo channel -> should be changed!!!
+				Hardware.servo_set(4, 1500 + int(right_lid * 1000.0))
+
+	@socialscript_bp.route("/eyebrow", methods=["POST"])
+	@opsoroapp.app_api
+	def eyebrow():
+		not_given = 10.0
+		left_brow_inner = request.form.get("left_inner", type=float, default=not_given)
+		left_brow_outer = request.form.get("left_outer", type=float, default=0.0)
+
+		right_brow_inner = request.form.get("right_inner", type=float, default=not_given)
+		right_brow_outer = request.form.get("right_outer", type=float, default=0.0)
+
+		if left_brow_inner != not_given:
+			left_brow_inner = constrain(left_brow_inner, -1.0, 1.0)
+			left_brow_outer = constrain(left_brow_outer, -1.0, 1.0)
+			with Hardware.lock:
+				# HARDCODED servo channel -> should be changed!!!
+				Hardware.servo_set(14, 1500 + int(left_brow_inner * 1000.0))
+				Hardware.servo_set(15, 1500 + int(left_brow_outer * 1000.0))
+
+		if right_brow_inner != not_given:
+			right_brow_inner = constrain(right_brow_inner, -1.0, 1.0)
+			right_brow_outer = constrain(right_brow_outer, -1.0, 1.0)
+			with Hardware.lock:
+				# HARDCODED servo channel -> should be changed!!!
+				Hardware.servo_set(0, 1500 + int(right_brow_inner * 1000.0))
+				Hardware.servo_set(1, 1500 + int(right_brow_outer * 1000.0))
+
 	opsoroapp.register_app_blueprint(socialscript_bp)
 
 def setup(opsoroapp):

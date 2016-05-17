@@ -49,11 +49,17 @@
   r:     1.0
   phi:   35.0
   eyes:
-    left:
-      x: 0.0
-      y: 0.0
-      lid: -1.0
     right:
-      x: 0.0
-      y: 0.0
-      lid: 0.7
+      lid: -1.0
+
+- name:  Question
+  image: questioning.png
+  r:     1.0
+  phi:   75.0
+  eyebrows:
+    left:
+      inner: -1.0
+      outer: 1.0
+    right:
+      inner: 1.0
+      outer: -1.0
