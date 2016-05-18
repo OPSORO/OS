@@ -1,0 +1,25 @@
+{
+  "voice_lines": [
+    {
+      "emotion": "Happy",
+      "output": {
+        "type": "tts",
+        "data": "Hello"
+      }
+    },
+    {
+      "emotion": "Sad",
+      "output": {
+        "type": "wav",
+        "data": "Hallo_ik_ben_Ono_en_ik_ben_een_sociale_robot.wav"
+      }
+    },
+    {
+      "emotion": "Angry",
+      "output": {
+        "type": "tts",
+        "data": "Ouch!"
+      }
+    }
+  ]
+}
