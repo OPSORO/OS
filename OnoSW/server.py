@@ -1,8 +1,9 @@
-from flask import Flask, request, render_template, redirect, url_for, flash, session, jsonify
+from flask import Flask, request, render_template, redirect, url_for, flash, session, jsonify, send_from_directory
 from flask.ext.login import LoginManager, login_user, logout_user, current_user, login_required
 from tornado.wsgi import WSGIContainer
 from tornado.ioloop import IOLoop
 import tornado.web
+import tornado.httpserver
 from sockjs.tornado import SockJSRouter, SockJSConnection
 from functools import wraps, partial
 import hardware
@@ -54,6 +55,7 @@ class OpSoRoApplication(object):
 		# title
 		self.title = "OpSoRo Web Interface"
 		self.robotName = "Ono"
+		self.dataPath = "data/"
 
 		# Create flask instance for webserver
 		self.flaskapp = Flask(__name__)
@@ -240,6 +242,11 @@ class OpSoRoApplication(object):
 		tornado_app = tornado.web.Application(socketrouter.urls + [(r".*", tornado.web.FallbackHandler, {"fallback": flaskwsgi})] )
 		tornado_app.listen(80)
 
+		# http_server = tornado.httpserver.HTTPServer(tornado_app, ssl_options={
+		# 	"certfile": "/etc/ssl/certs/server.crt",
+		# 	"keyfile": "/etc/ssl/private/server.key",
+		# 	})
+		# http_server.listen(443)
 		try:
 			IOLoop.instance().start()
 		except KeyboardInterrupt:
@@ -401,7 +408,9 @@ class OpSoRoApplication(object):
 		self.flaskapp.add_url_rule("/shutdown",							"shutdown",		protect(self.page_shutdown))
 		self.flaskapp.add_url_rule("/closeapp",							"closeapp",		protect(self.page_closeapp))
 		self.flaskapp.add_url_rule("/openapp/<appname>",				"openapp",		protect(self.page_openapp))
-		self.flaskapp.add_url_rule("/files/<folder>/<extension>",		"files",		protect(self.page_files), methods=["GET", "POST"])
+		self.flaskapp.add_url_rule("/app/<appname>/files",				"files",		protect(self.page_files), methods=["GET", "POST"])
+
+		self.flaskapp.add_url_rule("/file/<action>",					"file_action",	protect(self.file_action), methods=["GET", "POST"])
 
 		self.flaskapp.context_processor(self.inject_opsoro_vars)
 
@@ -535,18 +544,29 @@ class OpSoRoApplication(object):
 		else:
 			return redirect(url_for("index"))
 
-	def page_files(self, folder, extension):
-		folderPath = "apps/" + folder + "/scripts/"
+	def page_files(self, appname):
+		# If
+		if self.activeapp != appname:
+			return redirect("/openapp/%s" % appname)
+		deafultPath = self.dataPath + appname
+		folderPath = deafultPath + "/"
+		extension = ".*"
+
 		if request.method == "POST":
-			action = request.form["action"]
-			folderPath = folderPath + request.form["folder"] + "/"
-			if (action == "openfolder"):
-				pass
-			if (action == "openfile"):
-				openfile = folderPath + request.form["file"]
+			folderPath = request.form.get("path", type=str, default=deafultPath)
+			extension = request.form.get("extension", type=str, default=extension)
+
+			if folderPath.find(deafultPath) != 0:
+				folderPath = deafultPath
+
+			if folderPath[-1] != "/":
+				folderPath = folderPath + "/"
+			# Security checks, should stay within data folder
+			if folderPath.find("..") > 0:
+				folderPath = deafultPath
 
 		prefs = {
-			"folder": folder,
+			"folder": appname,
 			"extension": extension
 		}
 		data = {
@@ -554,6 +574,8 @@ class OpSoRoApplication(object):
 			"folders": [],
 			"files": []
 		}
+		if folderPath[0:-1] != deafultPath:
+			data["previouspath"] = folderPath[0:folderPath.rfind("/", 0, len(folderPath)-1)]
 
 		foldernames = glob.glob(get_path(folderPath + "*"))
 		for foldername in foldernames:
@@ -567,7 +589,41 @@ class OpSoRoApplication(object):
 				data["files"].append(os.path.split(filename)[1])
 		data["files"].sort()
 
-		return self.render_template("file_explorer.html", title=self.title + " - Files", page_caption=folderPath + " [" + extension + "]", page_icon="fa-folder", prefs=prefs, **data)
+		return self.render_template("filelist.html", title=self.title + " - Files", page_caption=folderPath + " [" + extension + "]", page_icon="fa-folder", prefs=prefs, **data)
+
+	def file_action(self, action):
+		if request.method != "POST":
+			return "";
+
+		print_info("FILE: " + action)
+
+		filepath = request.form.get("file", type=str, default=None)
+
+		if filepath.find(self.dataPath) != 0:
+			return
+
+		if action == "get":
+			if filepath == None:
+				return ""
+			filepath.replace("%2F", "/")
+			return send_from_directory(get_path(""), filepath)
+
+		if action == "delete":
+			scriptfiles = []
+			filenames = []
+			filenames.extend(glob.glob(get_path("../../data/socialscript/scripts/*.soc")))
+
+			for filename in filenames:
+				scriptfiles.append(os.path.split(filename)[1])
+
+			if scriptfile in scriptfiles:
+				os.remove(os.path.join(get_path("../../data/socialscript/scripts/"), scriptfile))
+				return {"status": "success", "message": "File %s deleted." % scriptfile}
+			else:
+				return {"status": "error", "message": "Unknown file."}
+
+		if action == "save":
+			pass
 
 	def inject_opsoro_vars(self):
 		opsoro = {"robot_name": Preferences.get("general", "robot_name", self.robotName)}

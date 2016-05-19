@@ -2,7 +2,6 @@
   <span data-bind="text: fileName" class="filename"></span> <span data-bind="visible: fileIsModified()" class="fa fa-asterisk"></span><br>
   <span class="fa" data-bind="css: { 'fa-lock': fileIsLocked(), 'fa-pencil': !fileIsLocked() && !isRunning(), 'fa-circle-o-notch fa-spin': isRunning() }" style="font-size: 0.75rem;"></span>  <span class="status" data-bind="text: fileStatus"></span>
 </div>
-
 <div class="spacer"></div>
 
 <a href="#" class="action" data-bind="click: saveFile">
@@ -36,11 +35,67 @@ saveFile = function(){
   return;
 };
 openFile = function(){
-  showMainError("The function openFile is not yet defined.");
+  showFiles("");
   return;
 };
 newFile = function(){
   showMainError("The function newFile is not yet defined.");
   return;
+};
+showFiles = function(currentpath){
+  //showMainError("The function openFile is not yet defined.");
+  //$("#popup").foundation("reveal", "open");
+  $("#popup .title").html(currentpath);
+  if (currentpath == "") {
+    $("#popup .title").html("{{ toolbar.full_name }}");
+  }
+
+  $("#popup").addClass("filebrowser");
+
+  $("#popup .spinner").removeClass("hide");
+  //$("#popup .content").html("");
+
+  $("#popup .content").load("files", { path: currentpath }, function(){
+    $("#popup .spinner").addClass("hide");
+    // Delete and Open button events need to be rebound here
+    // because filelist is loaded via AJAX
+    $(".btnDeleteFile").off("click");
+    $(".btnDeleteFile").on("click", function(){
+      filename = $(this).closest("div.file").data("file");
+      $("#ConfirmDeleteModal").foundation("reveal", "open");
+
+      $("#btnConfirmDelete").off("click");
+      $("#btnConfirmDelete").on("click", function(){
+        $.ajax({
+          dataType: "json",
+          type: "POST",
+          url: "/file/delete" + filename,
+          success: function(data){
+            $("#ConfirmDeleteModal").foundation("reveal", "close");
+            if(data.status == "error"){
+              addError(data.message);
+            }else{
+              addMessage(data.message);
+            }
+          }
+        });
+      });
+    });
+
+    $(".btnOpenFile").off("click");
+    $(".btnOpenFile").on("click", function(){
+      filename = $(this).closest("div.file").data("file");
+      window.location.href = "?action=openfile&param=" + currentpath + "/" + filename;
+    });
+
+    $(".btnOpenFolder").off("click");
+    $(".btnOpenFolder").on("click", function(){
+      folderpath = $(this).closest("div.folder").data("folder");
+      showFiles(folderpath);
+
+    });
+  });
+
+  $("#popup").foundation("reveal", "open");
 };
 </script>

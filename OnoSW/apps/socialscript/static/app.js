@@ -163,7 +163,6 @@ $(document).ready(function(){
 			self.voiceLines.removeAll();
 			self.voiceLines.push(new VoiceLine(self.emotions[0], "tts", "", ""));
 		};
-		self.init();
 
 		self.toggleLocked = function(){
 			if (self.fileIsLocked()) {
@@ -192,7 +191,53 @@ $(document).ready(function(){
 			self.voiceLines.remove(line);
 		};
 
-		self.openFile = function(){
+		self.loadFileData = function(filename){
+			if (filename == "") {
+				return;
+			}
+			$.ajax({
+				dataType: "text",
+				type: "POST",
+				url: "/file/get",
+				cache: false,
+				data: {"file": filename},
+				success: function(data){
+					// Load script
+					self.voiceLines.removeAll();
+
+					var dataobj = JSON.parse(data);
+
+					$.each(dataobj.voice_lines, function(idx, line){
+						var emo = self.emotions[0];
+						$.each(self.emotions, function(idx, emot){
+							if(emot.name == line.emotion){
+								emo = emot;
+							}
+						});
+
+						if(line.output.type == "tts"){
+							self.voiceLines.push(new VoiceLine(emo, line.output.type, line.output.data, ""));
+						}else{
+							self.voiceLines.push(new VoiceLine(emo, line.output.type, "", line.output.data));
+						}
+					});
+
+					// Update filename and asterisk
+					var filename_no_ext = filename;
+					if(filename_no_ext.slice(-4) == ".soc" || filename_no_ext.slice(-4) == ".SOC"){
+						filename_no_ext = filename_no_ext.slice(0, -4);
+					}
+					$(".filebox .filename").text(filename_no_ext);
+					$(".filebox .fa-asterisk").addClass("hide");
+					isScriptModified = false;
+					scriptname = filename;
+
+					self.lockFile();
+				}
+			});
+		};
+
+		self.openFileList = function(){
 			$("#FilesModalSpinner").removeClass("hide");
 			$("#FilesModalFilelist").html("");
 			$("#FilesModalFilelist").load("filelist", function(){
@@ -211,45 +256,7 @@ $(document).ready(function(){
 					filename = $(this).closest("div.file").data("scriptfile");
 
 					var do_load = function(){
-						$.ajax({
-							dataType: "text",
-							cache: false,
-							url: "scripts/" + filename,
-							success: function(data){
-								// Load script
-								self.voiceLines.removeAll();
-
-								var dataobj = JSON.parse(data);
-								//alert(dataobj.voice_lines[0].output.data);
-								$.each(dataobj.voice_lines, function(idx, line){
-									var emo = self.emotions[0];
-									$.each(self.emotions, function(idx, emot){
-										if(emot.name == line.emotion){
-											emo = emot;
-										}
-									});
-
-									if(line.output.type == "tts"){
-										self.voiceLines.push(new VoiceLine(emo, line.output.type, line.output.data, ""));
-									}else{
-										self.voiceLines.push(new VoiceLine(emo, line.output.type, "", line.output.data));
-									}
-								});
-
-								// Update filename and asterisk
-								var filename_no_ext = filename;
-								if(filename_no_ext.slice(-4) == ".soc" || filename_no_ext.slice(-4) == ".SOC"){
-									filename_no_ext = filename_no_ext.slice(0, -4);
-								}
-								$(".filebox .filename").text(filename_no_ext);
-								$(".filebox .fa-asterisk").addClass("hide");
-								isScriptModified = false;
-								scriptname = filename;
-
-								self.lockFile();
-								$("#FilesModal").foundation("reveal", "close");
-							}
-						});
+						self.loadFileData(filename);
 					}
 
 					if(isScriptModified){
@@ -276,14 +283,16 @@ $(document).ready(function(){
 
 		self.createNewFile = function(){
 			// if(scriptname != null){
-			scriptname = null;
+			window.location.href = "?";
 
-			self.init();
-
-			$(".filebox .filename").html("Untitled");
-			$(".filebox .fa-asterisk").addClass("hide");
-
-			self.unlockFile();
+			// scriptname = null;
+			//
+			// self.init();
+			//
+			// $(".filebox .filename").html("Untitled");
+			// $(".filebox .fa-asterisk").addClass("hide");
+			//
+			// self.unlockFile();
 
 			$("#ConfirmNewModal").foundation("reveal", "close");
 			// }
@@ -426,8 +435,15 @@ $(document).ready(function(){
 			self.selectedVoiceLine().emotion(emotion);
 			$("#PickEmotionModal").foundation("reveal", "close");
 		};
+
+		if (action_data.openfile) {
+			self.loadFileData(action_data.openfile || "");
+		} else {
+			self.init();
+		}
 	};
 	// This makes Knockout get to work
 	var model = new SocialScriptModel();
 	ko.applyBindings(model);
+
 });

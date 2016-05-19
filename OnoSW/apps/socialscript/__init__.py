@@ -23,8 +23,6 @@ try:
 except ImportError:
 	from yaml import Loader
 
-from flask import Blueprint, render_template, request, send_from_directory
-
 constrain = lambda n, minn, maxn: max(min(maxn, n), minn)
 
 from expression import Expression
@@ -47,13 +45,18 @@ socialscript_t = None
 def setup_pages(opsoroapp):
 	socialscript_bp = Blueprint("socialscript", __name__, template_folder="templates", static_folder="static")
 
-	@socialscript_bp.route("/")
+	@socialscript_bp.route("/", methods=["GET"])
 	@opsoroapp.app_view
 	def index():
 		data = {
+			"actions":			{},
 			"emotions":			[],
 			"sounds":			[]
 		}
+
+		action = request.args.get("action", None)
+		if action != None:
+			data["actions"][action] = request.args.get("param", None)
 
 		with open(get_path("emotions.yaml")) as f:
 			data["emotions"] = yaml.load(f, Loader=Loader)
@@ -126,6 +129,14 @@ def setup_pages(opsoroapp):
 	@opsoroapp.app_view
 	def scripts(scriptfile):
 		return send_from_directory(get_path("../../data/socialscript/scripts/"), scriptfile)
+
+
+	@socialscript_bp.route("/file", methods=["GET"])
+	@opsoroapp.app_view
+	def file():
+		scriptfile = request.args.get("script", None)
+		#scriptfile = request.form.get("script", type=str, default="")
+		return send_from_directory(get_path("../../"), scriptfile)
 
 	@socialscript_bp.route("/servos/enable")
 	@opsoroapp.app_api

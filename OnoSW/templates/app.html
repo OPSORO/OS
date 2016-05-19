@@ -24,6 +24,32 @@
 		</div>
 	</div>
 </div>
+
+<div id="ConfirmDeleteModal" class="reveal-modal tiny" data-reveal>
+	<div class="titlebar">
+		<a class="close-reveal-modal"><span class="fa fa-close"></span></a>
+		<span class="fa fa-trash"></span> Delete
+	</div>
+	<div class="content">
+		<p>Are you sure you wish to delete this file?</p>
+		<div class="text-center">
+			<a href="#" id="btnConfirmDelete" class="button"><span class="fa fa-trash"></span> Yes, delete file</a>
+		</div>
+	</div>
+</div>
+
+<div id="popup" class="reveal-modal" data-reveal>
+	<div class="titlebar">
+		<a class="close-reveal-modal"><span class="fa fa-close"></span></a>
+		<span class="fa fa-folder"></span> <span class="title"></span>
+	</div>
+	<div class="content">
+    <div class="spinner" style="text-align: center;">
+			<span class="fa fa-circle-o-notch fa-spin fa-2x"></span>
+		</div>
+
+	</div>
+</div>
 {% endblock %}
 
 {% block scripts %}

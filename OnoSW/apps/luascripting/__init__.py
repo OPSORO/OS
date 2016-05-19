@@ -56,7 +56,7 @@ def ui_add_key(key):
 def setup_pages(opsoroapp):
 	luascripting_bp = Blueprint("luascripting", __name__, template_folder="templates", static_folder="static")
 
-	@luascripting_bp.route("/")
+	@luascripting_bp.route("/", methods=["GET"])
 	@opsoroapp.app_view
 	def index():
 		global sh
@@ -65,10 +65,15 @@ def setup_pages(opsoroapp):
 		global script_modified
 
 		data = {
+			"actions":			{},
 			"script_name":		script_name,
 			"script_modified":	script_modified,
 			"script_running":	sh.is_running
 		}
+
+		action = request.args.get("action", None)
+		if action != None:
+			data["actions"][action] = request.args.get("param", None)
 
 		if sh.is_running:
 			data["script"] = script #sh._script

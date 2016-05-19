@@ -46,13 +46,18 @@ get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 def setup_pages(opsoroapp):
 	app_bp = Blueprint("app_template", __name__, template_folder="templates", static_folder="static")
 
-	@app_bp.route("/")
+	@app_bp.route("/", methods=["GET"])
 	@opsoroapp.app_view
 	def index():
 		data = {
-			"data":		[],
+			"actions":			{},
+			"data":				[],
 		}
 
+		action = request.args.get("action", None)
+		if action != None:
+			data["actions"][action] = request.args.get("param", None)
+			
 		return opsoroapp.render_template("app_template.html", **data)
 
 

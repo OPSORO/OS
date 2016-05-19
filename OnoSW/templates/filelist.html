@@ -1,0 +1,41 @@
+
+
+<div class="actionbar">
+	{% if previouspath %}
+		<div class="folder" data-folder="{{ previouspath }}">
+			<a href="#" class="action btnOpenFolder">
+				<span class="fa fa-backward"></span><br/>
+			  <span class="text">Back</span>
+			</a>
+		</div>
+	{% endif %}
+</div>
+<div class="foldercontent">
+	{% if folders %}
+		{% for folder in folders|sort %}
+			<div class="folder browseritem" data-folder="{{ path + folder }}">
+				<!-- <a href="#" class="button btnDeleteFile"><span class="fa fa-trash"></span></a> -->
+
+				<a href="#" class="button btnOpenFolder info"><span class="fa fa-folder-open"></span></a> <span class="foldername browseritemname"> {{ folder }}</span>
+
+				<div class="browseritemoptions">
+					<a href="#" class="button btnDeleteFile alert"><span class="fa fa-trash"></span></a>
+				</div>
+			</div>
+		{% endfor %}
+	{% endif %}
+
+	{% if files %}
+		{% for file in files|sort %}
+			<div class="file browseritem" data-file="{{ file }}">
+				<!-- <a href="#" class="button btnDeleteFile"><span class="fa fa-trash"></span></a> -->
+
+				<a href="#" class="button btnOpenFile success"><span class="fa fa-file-text"></span></a> <span class="filename browseritemname"> {{ file }}</span></a>
+
+				<div class="browseritemoptions">
+					<a href="#" class="button btnDeleteFile alert"><span class="fa fa-trash"></span></a>
+				</div>
+			</div>
+		{% endfor %}
+	{% endif %}
+</div>

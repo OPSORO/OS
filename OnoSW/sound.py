@@ -9,7 +9,7 @@ get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 class _Sound(object):
 	def __init__(self):
 		# List of search folders for sound files
-		self.sound_folders = ["apps/sounds/soundfiles/"]
+		self.sound_folders = ["data/sounds/soundfiles/"]
 
 	def say_tts(self, text, generate_only=False):
 		"""
@@ -40,15 +40,15 @@ class _Sound(object):
 
 		FNULL = open(os.devnull, "w")
 
-		if not os.path.exists("/tmp/OnoTTS/"):
-			os.makedirs("/tmp/OnoTTS/")
+		if not os.path.exists("/tmp/OpSoRoTTS/"):
+			os.makedirs("/tmp/OpSoRoTTS/")
 
 		filename = format_filename(text)
 
 		# Max length of filename is 255 chars
 		if len(filename) >= 250:
 			filename = filename[:250]
-		full_path = os.path.join(get_path("/tmp/OnoTTS/"), filename + ".wav")
+		full_path = os.path.join(get_path("/tmp/OpSoRoTTS/"), filename + ".wav")
 
 		if os.path.isfile(full_path):
 			# Sound file already exists, play it

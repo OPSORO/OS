@@ -92,8 +92,8 @@
 }
 
 #PickEmotionModal {
-	width: 28rem;
-	height: 35rem;
+	width: 35rem;
+	min-height: 10rem;
 }
 
 .voiceline .avatar,

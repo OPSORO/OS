@@ -54,6 +54,7 @@
 <script src="../../static/js/jquery-ui-sortable/jquery-ui.js"></script>
 <script src="../../static/js/knockout-sortable.min.js"></script>
 <script>
+var action_data = {{ actions|tojson|safe }};
 var emotions_data = {{ emotions|tojson|safe }};
 var sounds_data = {{ sounds|tojson|safe }};
 </script>
@@ -61,9 +62,9 @@ var sounds_data = {{ sounds|tojson|safe }};
 
 {% block modals %}
 {{ super() }}
-<div id="PickEmotionModal" class="reveal-modal tiny" data-reveal>
+<div id="PickEmotionModal" class="reveal-modal" data-reveal>
 	<div class="content">
-		<ul class="small-block-grid-4" data-bind="foreach: emotions">
+		<ul class="small-block-grid-5" data-bind="foreach: emotions">
 			<li>
 				<div class="avatar" data-bind="click: $root.changeEmotion"><div data-bind="avatar: image"></div></div>
 				<div class="avatarcaption" data-bind="text: name"></div>

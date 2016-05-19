@@ -32,7 +32,7 @@ div.page {
 	background-color: #0f0f0f;
 }
 
-.reveal-modal .file:last-child {
+/*.reveal-modal .file:last-child {
 	margin-bottom: -0.75rem;
 }
 
@@ -53,7 +53,7 @@ div.page {
 #FilesModal .content {
 	overflow-y: scroll;
 	max-height: 70vh;
-}
+}*/
 
 #ScriptUIModal .btnScriptUI {
 	width: 100%;

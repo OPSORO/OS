@@ -2,31 +2,6 @@
 
 {% block head %}
 {{ super() }}
-<style>
-.filename {
-	background: rgba(178, 175, 161, 0.5);
-	padding: 0.5rem 1rem;
-	border-radius: 0.25rem;
-	font-weight: bold;
-	color: #545454;
-}
-.btnDelSnd, .btnPlaySnd {
-	width: 3rem; margin-right: 0.75rem;
-}
-
-canvas {
-	display: inline-block;
-	background: #202020;
-	box-shadow: 0px 0px 10px black;
-	width: 48%;
-}
-audio {
-	display: inline-block;
-	width: 100%;
-}
-</style>
-
-
 <script src="static/recorderjs/audiodisplay.js"></script>
 <script src="static/recorderjs/recorder.js"></script>
 <script src="static/recorderjs/main.js"></script>
@@ -92,13 +67,13 @@ audio {
 			<span class="fa fa-microphone-slash"></span>
 			<span class="text">Enable microphone</span>
 		</a>
-		<a id="btnRecord" href="#" class="button alert" data-bind="visible: isRecordingEnabled(), click: toggleRecording">
+		<a href="#" class="button alert" data-bind="visible: isRecordingEnabled(), click: toggleRecording">
 			<span class="fa fa-microphone"></span>
 			<span class="fa fa-circle-o-notch fa-spin" data-bind="visible: isRecording()"></span>
 			<span class="text" data-bind="text: isRecording() ? 'Stop' : 'Record'"></span>
 		</a>
 
- 		<a id="btnSave" href="#" class="button" data-bind="visible: isRecorded() && !isRecording()"><span class="fa fa-download"> Download</span></a>
+ 		<a href="#" class="button" data-bind="visible: isRecorded() && !isRecording()"><span class="fa fa-download"> Download</span></a>
 
 
 		<audio width="100%" id="recordingAudio" src="" controls data-bind="visible: isRecorded() && !isRecording()"></audio>
