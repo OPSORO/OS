@@ -33,6 +33,8 @@ config = {"full_name": "Social Script", "icon": "fa-commenting-o"}
 
 get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 
+dof_positions = {}
+
 def SocialscriptLoop():
 	while not socialscript_t.stopped():
 		with Expression.lock:
@@ -56,7 +58,7 @@ def setup_pages(opsoroapp):
 		with open(get_path("emotions.yaml")) as f:
 			data["emotions"] = yaml.load(f, Loader=Loader)
 
-		filenames = glob.glob(get_path("../sounds/soundfiles/*.wav"))
+		filenames = glob.glob(get_path("../../data/sounds/soundfiles/*.wav"))
 
 		for filename in filenames:
 			data["sounds"].append(os.path.split(filename)[1])
@@ -72,7 +74,7 @@ def setup_pages(opsoroapp):
 		}
 
 		filenames = []
-		filenames.extend(glob.glob(get_path("scripts/*.soc")))
+		filenames.extend(glob.glob(get_path("../../data/socialscript/scripts/*.soc")))
 
 		for filename in filenames:
 			data["scriptfiles"].append(os.path.split(filename)[1])
@@ -93,7 +95,7 @@ def setup_pages(opsoroapp):
 			filename = filename + ".soc"
 		filename = secure_filename(filename)
 
-		full_path = os.path.join(get_path("scripts/"), filename)
+		full_path = os.path.join(get_path("../../data/socialscript/scripts/"), filename)
 
 		if overwrite == 0:
 			if os.path.isfile(full_path):
@@ -109,13 +111,13 @@ def setup_pages(opsoroapp):
 	def delete(scriptfile):
 		scriptfiles = []
 		filenames = []
-		filenames.extend(glob.glob(get_path("scripts/*.soc")))
+		filenames.extend(glob.glob(get_path("../../data/socialscript/scripts/*.soc")))
 
 		for filename in filenames:
 			scriptfiles.append(os.path.split(filename)[1])
 
 		if scriptfile in scriptfiles:
-			os.remove(os.path.join(get_path("scripts/"), scriptfile))
+			os.remove(os.path.join(get_path("../../data/socialscript/scripts/"), scriptfile))
 			return {"status": "success", "message": "File %s deleted." % scriptfile}
 		else:
 			return {"status": "error", "message": "Unknown file."}
@@ -123,7 +125,7 @@ def setup_pages(opsoroapp):
 	@socialscript_bp.route("/scripts/<scriptfile>")
 	@opsoroapp.app_view
 	def scripts(scriptfile):
-		return send_from_directory(get_path("scripts/"), scriptfile)
+		return send_from_directory(get_path("../../data/socialscript/scripts/"), scriptfile)
 
 	@socialscript_bp.route("/servos/enable")
 	@opsoroapp.app_api
@@ -159,7 +161,7 @@ def setup_pages(opsoroapp):
 		with Expression.lock:
 			Expression.set_emotion(phi=phi, r=r)#, anim_time=dist)
 			# Expression is updated in separate thread, no need to do this here.
-			Expression.update()
+			# Expression.update()
 
 
 	@socialscript_bp.route("/play/<soundfile>", methods=["GET"])
@@ -168,7 +170,7 @@ def setup_pages(opsoroapp):
 		soundfiles = []
 		filenames = []
 
-		filenames = glob.glob(get_path("../sounds/soundfiles/*.wav"))
+		filenames = glob.glob(get_path("../../data/sounds/soundfiles/*.wav"))
 
 		for filename in filenames:
 			soundfiles.append(os.path.split(filename)[1])
@@ -187,51 +189,26 @@ def setup_pages(opsoroapp):
 			Sound.say_tts(text)
 		return {"status": "success"}
 
-
-	@socialscript_bp.route("/eye", methods=["POST"])
+	@socialscript_bp.route("/setDofPos", methods=["POST"])
 	@opsoroapp.app_api
-	def eye():
-		not_given = 10.0
-		left_lid = request.form.get("left_lid", type=float, default=not_given)
-		right_lid = request.form.get("right_lid", type=float, default=not_given)
+	def s_setdofpos():
+		dofname = left_brow_inner = request.form.get("dofname", type=str, default=None)
+		pos = request.form.get("pos", type=float, default=0.0)
 
-		if left_lid != not_given:
-			left_lid = constrain(left_lid, -1.0, 1.0)
-			with Hardware.lock:
-				# HARDCODED servo channel -> should be changed!!!
-				Hardware.servo_set(11, 1500 + int(left_lid * 1000.0))
+		if dofname is None:
+			return {"status": "error", "message": "No DOF name given."}
 
-		if right_lid != not_given:
-			right_lid = constrain(right_lid, -1.0, 1.0)
-			with Hardware.lock:
-				# HARDCODED servo channel -> should be changed!!!
-				Hardware.servo_set(4, 1500 + int(right_lid * 1000.0))
+		global dof_positions
+		if dofname not in dof_positions:
+			return {"status": "error", "message": "Unknown DOF name."}
+		else:
+			pos = constrain(pos, -1.0, 1.0)
+			dof_positions[dofname] = pos
 
-	@socialscript_bp.route("/eyebrow", methods=["POST"])
-	@opsoroapp.app_api
-	def eyebrow():
-		not_given = 10.0
-		left_brow_inner = request.form.get("left_inner", type=float, default=not_given)
-		left_brow_outer = request.form.get("left_outer", type=float, default=0.0)
+			# with Expression.lock:
+			# 	Expression.update()
 
-		right_brow_inner = request.form.get("right_inner", type=float, default=not_given)
-		right_brow_outer = request.form.get("right_outer", type=float, default=0.0)
-
-		if left_brow_inner != not_given:
-			left_brow_inner = constrain(left_brow_inner, -1.0, 1.0)
-			left_brow_outer = constrain(left_brow_outer, -1.0, 1.0)
-			with Hardware.lock:
-				# HARDCODED servo channel -> should be changed!!!
-				Hardware.servo_set(14, 1500 + int(left_brow_inner * 1000.0))
-				Hardware.servo_set(15, 1500 + int(left_brow_outer * 1000.0))
-
-		if right_brow_inner != not_given:
-			right_brow_inner = constrain(right_brow_inner, -1.0, 1.0)
-			right_brow_outer = constrain(right_brow_outer, -1.0, 1.0)
-			with Hardware.lock:
-				# HARDCODED servo channel -> should be changed!!!
-				Hardware.servo_set(0, 1500 + int(right_brow_inner * 1000.0))
-				Hardware.servo_set(1, 1500 + int(right_brow_outer * 1000.0))
+		return {"status": "success"}
 
 	opsoroapp.register_app_blueprint(socialscript_bp)
 
@@ -239,6 +216,12 @@ def setup(opsoroapp):
 	pass
 
 def start(opsoroapp):
+	# Apply overlay function
+	for servo in Expression.servos:
+		if servo.pin < 0 or servo.pin > 15:
+			continue # Skip invalid pins
+		dof_positions[servo.dofname] = 0.0
+
 	# Turn servo power off, init servos, update expression
 	with Hardware.lock:
 		Hardware.servo_disable()

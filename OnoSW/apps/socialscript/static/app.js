@@ -84,80 +84,33 @@ $(document).ready(function(){
 			// 	self.isPlaying(false);
 			// 	self.hasPlayed(true);
 			// }else{
-			$.ajax({
-				dataType: "json",
-				data: {"phi": self.emotion().phi, "r": self.emotion().r},
-				type: "POST",
-				url: "setemotion",
-				success: function(data){
-					if(data.status == "error"){
-						addError(data.message);
+			if (self.emotion().emotion){
+				$.ajax({
+					dataType: "json",
+					data: {"phi": self.emotion().emotion.phi, "r": self.emotion().emotion.r},
+					type: "POST",
+					url: "setemotion",
+					success: function(data){
+						if(data.status == "error"){
+							addError(data.message);
+						}
 					}
-				}
-			});
-			if (self.emotion().eyes){
-				if (self.emotion().eyes.left){
-					if (self.emotion().eyes.left.lid){
-						$.ajax({
-							dataType: "json",
-							data: {"left_lid": self.emotion().eyes.left.lid},
-							type: "POST",
-							url: "eye",
-							success: function(data){
-								if(data.status == "error"){
-									addError(data.message);
-								}
-							}
-						});
-					}
-				}
-				if (self.emotion().eyes.right){
-					if (self.emotion().eyes.right.lid){
-						$.ajax({
-							dataType: "json",
-							data: {"right_lid": self.emotion().eyes.right.lid},
-							type: "POST",
-							url: "eye",
-							success: function(data){
-								if(data.status == "error"){
-									addError(data.message);
-								}
-							}
-						});
-					}
-				}
+				});
 			}
-			if (self.emotion().eyebrows){
-				if (self.emotion().eyebrows.left){
-					if (self.emotion().eyebrows.left.inner && self.emotion().eyebrows.left.outer){
-						$.ajax({
-							dataType: "json",
-							data: {"left_inner": self.emotion().eyebrows.left.inner, "left_outer": self.emotion().eyebrows.left.outer},
-							type: "POST",
-							url: "eyebrow",
-							success: function(data){
-								if(data.status == "error"){
-									addError(data.message);
-								}
+			if (self.emotion().custom){
+				$.each(self.emotion().custom, function(idx, customControl){
+					$.ajax({
+						dataType: "json",
+						data: {"dofname": customControl.dofname, "pos": customControl.pos},
+						type: "POST",
+						url: "setDofPos",
+						success: function(data){
+							if(data.status == "error"){
+								addError(data.message);
 							}
-						});
-					}
-				}
-				if (self.emotion().eyebrows.right){
-					if (self.emotion().eyebrows.right.inner && self.emotion().eyebrows.right.outer){
-						$.ajax({
-							dataType: "json",
-							data: {"right_inner": self.emotion().eyebrows.right.inner, "right_outer": self.emotion().eyebrows.right.outer},
-							type: "POST",
-							url: "eyebrow",
-							success: function(data){
-								if(data.status == "error"){
-									addError(data.message);
-								}
-							}
-						});
-					}
-				}
+						}
+					});
+				});
 			}
 			if(this.output() == "tts"){
 				$.ajax({
@@ -259,9 +212,9 @@ $(document).ready(function(){
 
 					var do_load = function(){
 						$.ajax({
-							url: "scripts/" + filename,
 							dataType: "text",
 							cache: false,
+							url: "scripts/" + filename,
 							success: function(data){
 								// Load script
 								self.voiceLines.removeAll();
