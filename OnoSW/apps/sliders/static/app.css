@@ -1,0 +1,26 @@
+
+.sliderrow {
+	margin-bottom: 1rem !important;
+}
+
+.sliderrow:last-child{
+	margin-bottom: 0 !important;
+}
+
+.sliderrow .range-slider{
+	margin: 0;
+}
+
+.sliderrow .numberstop {
+	font-size: 0.75rem;
+	line-height: 1rem;
+	font-weight: bold;
+	padding: 0 0 0.5rem 0;
+}
+
+.sliderrow .numbersbottom {
+	font-size: 0.75rem;
+	line-height: 1rem;
+	font-weight: 300;
+	padding: 0.5rem 0 0 0;
+}

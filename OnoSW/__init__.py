@@ -16,7 +16,7 @@ def sigterm_handler(_signo, _stack_frame):
 	sys.exit(0)
 
 # Setup logging
-LOG_FILENAME = "/tmp/OpSoRo.log"
+LOG_FILENAME = "/tmp/opsoro.log"
 LOG_LEVEL = logging.DEBUG
 
 tornado.log.enable_pretty_logging()
@@ -31,6 +31,6 @@ logger.addHandler(handler)
 if __name__ == "__main__":
 	signal.signal(signal.SIGTERM, sigterm_handler)
 
-	print_info("OpSoRoOS started...")
+	print_info("OpSoRo OS started...")
 	app = server.OpSoRoApplication()
 	app.run()

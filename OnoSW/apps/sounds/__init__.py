@@ -23,9 +23,9 @@ def setup_pages(opsoroapp):
 
 		filenames = []
 
-		filenames.extend(glob.glob(get_path("soundfiles/*.wav")))
-		filenames.extend(glob.glob(get_path("soundfiles/*.mp3")))
-		filenames.extend(glob.glob(get_path("soundfiles/*.ogg")))
+		filenames.extend(glob.glob(get_path("../../data/sounds/soundfiles/*.wav")))
+		filenames.extend(glob.glob(get_path("../../data/sounds/soundfiles/*.mp3")))
+		filenames.extend(glob.glob(get_path("../../data/sounds/soundfiles/*.ogg")))
 
 		for filename in filenames:
 			data["soundfiles"].append(os.path.split(filename)[1])
@@ -39,7 +39,7 @@ def setup_pages(opsoroapp):
 		if file:
 			if file.filename.rsplit('.', 1)[1] in ["wav", "mp3", "ogg"]:
 				filename = secure_filename(file.filename)
-				file.save(os.path.join(get_path("soundfiles/"), filename))
+				file.save(os.path.join(get_path("../../data/sounds/soundfiles/"), filename))
 				flash("%s uploaded successfully." % file.filename, "success")
 				return redirect(url_for(".index"))
 			else:
@@ -55,15 +55,15 @@ def setup_pages(opsoroapp):
 		soundfiles = []
 		filenames = []
 
-		filenames.extend(glob.glob(get_path("soundfiles/*.wav")))
-		filenames.extend(glob.glob(get_path("soundfiles/*.mp3")))
-		filenames.extend(glob.glob(get_path("soundfiles/*.ogg")))
+		filenames.extend(glob.glob(get_path("../../data/sounds/soundfiles/*.wav")))
+		filenames.extend(glob.glob(get_path("../../data/sounds/soundfiles/*.mp3")))
+		filenames.extend(glob.glob(get_path("../../data/sounds/soundfiles/*.ogg")))
 
 		for filename in filenames:
 			soundfiles.append(os.path.split(filename)[1])
 
 		if soundfile in soundfiles:
-			os.remove(os.path.join(get_path("soundfiles/"), soundfile))
+			os.remove(os.path.join(get_path("../../data/sounds/soundfiles/"), soundfile))
 			return {"status": "success", "message": "File %s deleted." % soundfile}
 		else:
 			return {"status": "error", "message": "Unknown file."}
@@ -74,9 +74,9 @@ def setup_pages(opsoroapp):
 		soundfiles = []
 		filenames = []
 
-		filenames.extend(glob.glob(get_path("soundfiles/*.wav")))
-		filenames.extend(glob.glob(get_path("soundfiles/*.mp3")))
-		filenames.extend(glob.glob(get_path("soundfiles/*.ogg")))
+		filenames.extend(glob.glob(get_path("../../data/sounds/soundfiles/*.wav")))
+		filenames.extend(glob.glob(get_path("../../data/sounds/soundfiles/*.mp3")))
+		filenames.extend(glob.glob(get_path("../../data/sounds/soundfiles/*.ogg")))
 
 		for filename in filenames:
 			soundfiles.append(os.path.split(filename)[1])

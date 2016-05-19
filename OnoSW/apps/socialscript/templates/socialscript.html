@@ -51,8 +51,8 @@
 
 {% block scripts %}
 {{ super() }}
-<script src="static/jquery-ui-sortable/jquery-ui.js"></script>
-<script src="static/knockout-sortable.min.js"></script>
+<script src="../../static/js/jquery-ui-sortable/jquery-ui.js"></script>
+<script src="../../static/js/knockout-sortable.min.js"></script>
 <script>
 var emotions_data = {{ emotions|tojson|safe }};
 var sounds_data = {{ sounds|tojson|safe }};

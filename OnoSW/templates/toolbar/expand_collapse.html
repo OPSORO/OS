@@ -1,0 +1,26 @@
+
+<a id="btnExpandCollapse" href="#" class="action" data-bind="click: expandCollapse">
+  <span class="fa fa-expand"></span><br/>
+  <span class="text">Expand view</span>
+</a>
+<div class="spacer"></div>
+
+
+
+<script>
+isFullscreen = false;
+expandCollapse = function(){
+  if(isFullscreen){
+    $("#btnExpandCollapse .fa").removeClass("fa-compress");
+    $("#btnExpandCollapse .fa").addClass("fa-expand");
+    $("#btnExpandCollapse .text").html("Expand view");
+    $("#content").removeClass("fullscreen");
+  }else{
+    $("#btnExpandCollapse .fa").removeClass("fa-expand");
+    $("#btnExpandCollapse .fa").addClass("fa-compress");
+    $("#btnExpandCollapse .text").html("Collapse view");
+    $("#content").addClass("fullscreen");
+  }
+  isFullscreen = !isFullscreen;
+};
+</script>

@@ -453,3 +453,20 @@ fieldset legend{
 #error_list .alert-box .close {
 	opacity: 0.8;
 }
+
+.fullscreen {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+}
+
+.fullscreen #editorWrapper {
+	height: calc(100vh - 4rem - 4.15rem);
+}
+
+.fullscreen #console {
+	border-bottom-left-radius: 0;
+	border-bottom-right-radius: 0;
+}
