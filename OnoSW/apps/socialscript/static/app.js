@@ -155,6 +155,7 @@ $(document).ready(function(){
 		self.fileIsModified = ko.observable(false);
 		self.fileName = ko.observable("");
 		self.fileStatus = ko.observable("");
+		self.fileExtension = ko.observable(".soc");
 
 		self.sounds = sounds_data;
 		self.emotions = emotions_data;
@@ -207,7 +208,7 @@ $(document).ready(function(){
 				type: "POST",
 				url: "files/get",
 				cache: false,
-				data: {path: filename, extension: ".soc"},
+				data: {path: filename, extension: self.fileExtension()},
 				success: function(data){
 					// Load script
 					self.voiceLines.removeAll();
@@ -229,7 +230,7 @@ $(document).ready(function(){
 					});
 					// Update filename and asterisk
 					var filename_no_ext = filename;
-					if(filename_no_ext.slice(-4) == ".soc" || filename_no_ext.slice(-4) == ".SOC"){
+					if(filename_no_ext.toLowerCase().slice(-4) == self.fileExtension()){
 						filename_no_ext = filename_no_ext.slice(0, -4);
 					}
 					self.fileName(filename_no_ext);
@@ -241,7 +242,7 @@ $(document).ready(function(){
 				}
 			});
 		};
-		
+
 		self.saveFileData = function(filename){
 			if(filename == ""){
 				addError("No filename!");
@@ -272,13 +273,13 @@ $(document).ready(function(){
 						path: filename,
 						filedata: json_data,
 						overwrite: 1,
-						extension: ".soc"
+						extension: self.fileExtension()
 					},
 					type: "POST",
 					url: "files/save",
 					success: function(data){
 						var filename_no_ext = filename;
-						if(filename_no_ext.slice(-4) == ".soc" || filename_no_ext.slice(-4) == ".SOC"){
+						if(filename_no_ext.toLowerCase().slice(-4) == self.fileExtension()){
 							filename_no_ext = filename_no_ext.slice(0, -4);
 						}
 						self.fileName(filename_no_ext);
@@ -305,6 +306,6 @@ $(document).ready(function(){
 	ko.applyBindings(model);
 	model.fileIsModified(false);
 
-	config_file_operations("scripts", ".soc", model.saveFileData, model.loadFileData, model.init);
+	config_file_operations("scripts", model.fileExtension(), model.saveFileData, model.loadFileData, model.init);
 
 });
