@@ -484,6 +484,11 @@ fieldset legend{
 	top: 4rem;
 	bottom: 0;
 }
+.filebrowser .actionbar .actionBarItem {
+	position: relative;
+	float: left;
+	min-width: 4rem;
+}
 .filebrowser .foldercontent {
 	position: absolute;
 	width: 100%;
@@ -540,4 +545,34 @@ fieldset legend{
 }
 .filebrowser .foldercontent .browseritem:hover .browseritemoptions {
 	opacity: 1;
+}
+
+#message_popup .content {
+
+}
+#message_popup .content .text {
+
+}
+#message_popup .content .buttons {
+	position: relative;
+	text-align: center;
+}
+#message_popup .content .buttons .button {
+	margin-left: 1rem;
+	margin-right: 1rem;
+}
+.reveal-modal .btnClose {
+	font-size: 2rem;
+	position: absolute;
+	top: 0.5rem;
+	left: 1rem;
+	right: auto;
+	color: #ffffff;
+	font-weight: normal;
+	cursor: pointer;
+}
+.reveal-modal .btnClose:hover {
+	font-size: 2.5rem;
+	left: 0.75rem;
+	top: 0.25rem;
 }

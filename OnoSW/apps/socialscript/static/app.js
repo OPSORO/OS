@@ -1,7 +1,4 @@
 
-var scriptname = null;
-var isScriptModified = false;
-
 $(document).ready(function(){
 
 	$.ajax({
@@ -25,6 +22,7 @@ $(document).ready(function(){
 	ko.bindingHandlers.outputswitch = {
 		init: function(element, valueAccessor){
 			$(element).change(function(){
+				model.fileIsModified(true);
 				var value = valueAccessor();
 				if( $(element).prop("checked") ){
 					value("wav");
@@ -71,7 +69,12 @@ $(document).ready(function(){
 			return self.emotion().image;
 		});
 
+		self.modified = function(){
+			model.fileIsModified(true);
+		}
+
 		self.toggleOutput = function(){
+			model.fileIsModified(true);
 			if(this.output() == "tts"){
 				this.output("wav");
 			}else{
@@ -150,8 +153,8 @@ $(document).ready(function(){
 
 		self.fileIsLocked = ko.observable(false);
 		self.fileIsModified = ko.observable(false);
-		self.fileName = ko.observable("Untitled");
-		self.fileStatus = ko.observable("Editing");
+		self.fileName = ko.observable("");
+		self.fileStatus = ko.observable("");
 
 		self.sounds = sounds_data;
 		self.emotions = emotions_data;
@@ -160,8 +163,11 @@ $(document).ready(function(){
 
 		self.voiceLines = ko.observableArray();
 		self.init = function(){
+			self.fileName("Untitled");
 			self.voiceLines.removeAll();
 			self.voiceLines.push(new VoiceLine(self.emotions[0], "tts", "", ""));
+			self.unlockFile();
+			self.fileIsModified(false);
 		};
 
 		self.toggleLocked = function(){
@@ -172,7 +178,6 @@ $(document).ready(function(){
 				self.lockFile();
 			}
 		};
-
 		self.lockFile = function(){
 			self.fileIsLocked(true);
 			self.fileStatus("Locked")
@@ -183,11 +188,13 @@ $(document).ready(function(){
 		};
 
 		self.addLine = function(){
+			self.fileIsModified(true);
 			self.voiceLines.push( new VoiceLine(self.emotions[0], "tts", "", "") );
       window.scrollTo(0, document.body.scrollHeight);
 		};
 
 		self.removeLine = function(line){
+			self.fileIsModified(true);
 			self.voiceLines.remove(line);
 		};
 
@@ -198,9 +205,9 @@ $(document).ready(function(){
 			$.ajax({
 				dataType: "text",
 				type: "POST",
-				url: "/file/get",
+				url: "files/get",
 				cache: false,
-				data: {"file": filename},
+				data: {path: filename, extension: ".soc"},
 				success: function(data){
 					// Load script
 					self.voiceLines.removeAll();
@@ -214,119 +221,37 @@ $(document).ready(function(){
 								emo = emot;
 							}
 						});
-
 						if(line.output.type == "tts"){
 							self.voiceLines.push(new VoiceLine(emo, line.output.type, line.output.data, ""));
 						}else{
 							self.voiceLines.push(new VoiceLine(emo, line.output.type, "", line.output.data));
 						}
 					});
-
 					// Update filename and asterisk
 					var filename_no_ext = filename;
 					if(filename_no_ext.slice(-4) == ".soc" || filename_no_ext.slice(-4) == ".SOC"){
 						filename_no_ext = filename_no_ext.slice(0, -4);
 					}
-					$(".filebox .filename").text(filename_no_ext);
-					$(".filebox .fa-asterisk").addClass("hide");
-					isScriptModified = false;
-					scriptname = filename;
-
+					self.fileName(filename_no_ext);
+					self.fileIsModified(false);
 					self.lockFile();
+				},
+				error: function(){
+					window.location.href = "?";
 				}
 			});
 		};
-
-		self.openFileList = function(){
-			$("#FilesModalSpinner").removeClass("hide");
-			$("#FilesModalFilelist").html("");
-			$("#FilesModalFilelist").load("filelist", function(){
-				$("#FilesModalSpinner").addClass("hide");
-
-				// Delete and Open button events need to be rebound here
-				// because filelist is loaded via AJAX
-				$(".btnDeleteFile").off("click");
-				$(".btnDeleteFile").on("click", function(){
-					filename = $(this).closest("div.file").data("scriptfile");
-					$("#ConfirmDeleteModal").foundation("reveal", "open");
-				});
-
-				$(".btnOpenFile").off("click");
-				$(".btnOpenFile").on("click", function(){
-					filename = $(this).closest("div.file").data("scriptfile");
-
-					var do_load = function(){
-						self.loadFileData(filename);
-					}
-
-					if(isScriptModified){
-						$("#btnConfirmLoad").off("click");
-						$("#btnConfirmLoad").on("click", do_load);
-						$("#ConfirmLoadModal").foundation("reveal", "open");
-					}else{
-						do_load();
-					}
-
-				});
-			});
-
-			$("#FilesModal").foundation("reveal", "open");
-		};
-
-		self.newFile = function(){
-			// if(isScriptModified){
-			$("#ConfirmNewModal").foundation("reveal", "open");
-			// }else{
-			// 	self.createNewFile();
-			// }
-		};
-
-		self.createNewFile = function(){
-			// if(scriptname != null){
-			window.location.href = "?";
-
-			// scriptname = null;
-			//
-			// self.init();
-			//
-			// $(".filebox .filename").html("Untitled");
-			// $(".filebox .fa-asterisk").addClass("hide");
-			//
-			// self.unlockFile();
-
-			$("#ConfirmNewModal").foundation("reveal", "close");
-			// }
-		};
-
-		self.deleteFile = function(){
-			$.ajax({
-				dataType: "json",
-				type: "POST",
-				url: "delete/" + filename,
-				success: function(data){
-					$("#ConfirmDeleteModal").foundation("reveal", "close");
-					if(data.status == "error"){
-						addError(data.message);
-					}else{
-						addMessage(data.message);
-					}
-				}
-			});
-		};
-
-		self.saveFile = function(){
-			if(scriptname == null){
-				// Untitled script
-				$("#txtFilename").val("");
-				$("#SaveAsModal small.error").addClass("hide");
-				$("#SaveAsModal").foundation("reveal", "open");
+		
+		self.saveFileData = function(filename){
+			if(filename == ""){
+				addError("No filename!");
+				return;
 			}else{
 				var file_data = {voice_lines: []};
 				$.each(self.voiceLines(), function(idx, item){
 					var line = {};
 					line.emotion = item.emotion().name;
 					line.output = {};
-
 					if(item.output() == "tts"){
 						line.output.type = "tts";
 						line.output.data = item.tts();
@@ -337,101 +262,34 @@ $(document).ready(function(){
 						line.output.type = "tts";
 						line.output.data = "";
 					}
-
 					file_data.voice_lines.push(line);
 				});
 				//console.log(file_data);
 				var json_data = ko.toJSON(file_data, null, 2);
-
 				$.ajax({
 					dataType: "json",
 					data: {
-						file: json_data,
-						filename: scriptname,
-						overwrite: 1
+						path: filename,
+						filedata: json_data,
+						overwrite: 1,
+						extension: ".soc"
 					},
 					type: "POST",
-					url: "save",
+					url: "files/save",
 					success: function(data){
-						if(data.status == "error"){
-							addError(data.message);
-						}else if(data.status == "success"){
-							scriptname = data.filename;
-							isScriptModified = false;
-
-							var filename_no_ext = data.filename;
-							if(filename_no_ext.slice(-4) == ".soc" || filename_no_ext.slice(-4) == ".SOC"){
-								filename_no_ext = filename_no_ext.slice(0, -4);
-							}
-
-							$(".filebox .fa-asterisk").addClass("hide");
-							$(".filebox .filename").html(filename_no_ext);
-						}
-					}
-				});
-				//alert(json_data);
-			}
-		};
-
-		self.saveFileAs = function(){
-			var filename = $("#txtFilename").val();
-
-			$("#SaveAsModal small.error").addClass("hide");
-
-			var file_data = {voice_lines: []};
-			$.each(self.voiceLines(), function(idx, item){
-				var line = {};
-				line.emotion = item.emotion().name;
-				line.output = {};
-
-				if(item.output() == "tts"){
-					line.output.type = "tts";
-					line.output.data = item.tts();
-				}else if(item.output() == "wav"){
-					line.output.type = "wav";
-					line.output.data = item.wav();
-				}else{
-					line.output.type = "tts";
-					line.output.data = "";
-				}
-
-				file_data.voice_lines.push(line);
-			});
-			//console.log(file_data);
-			var json_data = ko.toJSON(file_data, null, 2);
-
-			$.ajax({
-				dataType: "json",
-				data: {
-					file: json_data,
-					filename: filename,
-					overwrite: 0
-				},
-				type: "POST",
-				url: "save",
-				success: function(data){
-					if(data.status == "error"){
-						$("#SaveAsModal small.error").html(data.message).removeClass("hide");
-					}else if(data.status == "success"){
-						scriptname = data.filename;
-						isScriptModified = false;
-
-						var filename_no_ext = data.filename;
+						var filename_no_ext = filename;
 						if(filename_no_ext.slice(-4) == ".soc" || filename_no_ext.slice(-4) == ".SOC"){
 							filename_no_ext = filename_no_ext.slice(0, -4);
 						}
-
-						$(".filebox .fa-asterisk").addClass("hide");
-						$(".filebox .filename").html(filename_no_ext);
-
-						$("#SaveAsModal").foundation("reveal", "close");
+						self.fileName(filename_no_ext);
+						self.fileIsModified(false);
 					}
-				}
-			});
-			return 0;
+				});
+			}
 		};
 
 		self.changeEmotion = function(emotion){
+			self.fileIsModified(true);
 			self.selectedVoiceLine().emotion(emotion);
 			$("#PickEmotionModal").foundation("reveal", "close");
 		};
@@ -445,5 +303,8 @@ $(document).ready(function(){
 	// This makes Knockout get to work
 	var model = new SocialScriptModel();
 	ko.applyBindings(model);
+	model.fileIsModified(false);
+
+	config_file_operations("scripts", ".soc", model.saveFileData, model.loadFileData, model.init);
 
 });

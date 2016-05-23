@@ -19,6 +19,7 @@ import time
 import logging
 
 import glob
+import shutil
 
 from console_msg import *
 from preferences import Preferences
@@ -408,9 +409,7 @@ class OpSoRoApplication(object):
 		self.flaskapp.add_url_rule("/shutdown",							"shutdown",		protect(self.page_shutdown))
 		self.flaskapp.add_url_rule("/closeapp",							"closeapp",		protect(self.page_closeapp))
 		self.flaskapp.add_url_rule("/openapp/<appname>",				"openapp",		protect(self.page_openapp))
-		self.flaskapp.add_url_rule("/app/<appname>/files",				"files",		protect(self.page_files), methods=["GET", "POST"])
-
-		self.flaskapp.add_url_rule("/file/<action>",					"file_action",	protect(self.file_action), methods=["GET", "POST"])
+		self.flaskapp.add_url_rule("/app/<appname>/files/<action>",		"files",		protect(self.page_files), methods=["GET", "POST"])
 
 		self.flaskapp.context_processor(self.inject_opsoro_vars)
 
@@ -544,86 +543,143 @@ class OpSoRoApplication(object):
 		else:
 			return redirect(url_for("index"))
 
-	def page_files(self, appname):
-		# If
+	def page_files(self, appname, action):
+		#
 		if self.activeapp != appname:
 			return redirect("/openapp/%s" % appname)
 		deafultPath = self.dataPath + appname
 		folderPath = deafultPath + "/"
+		appSpecificFolderPath = ""
 		extension = ".*"
+		saveFileView = 0
+		onlyFolders = 0
 
 		if request.method == "POST":
-			folderPath = request.form.get("path", type=str, default=deafultPath)
-			extension = request.form.get("extension", type=str, default=extension)
+			givenPath = request.form.get("path", type=str, default=None)
+			if givenPath != None:
+				if len(givenPath) > 1 and givenPath[-1] == ".":
+					givenPath = givenPath[0:-1]
+				givenPath = folderPath + givenPath
 
-			if folderPath.find(deafultPath) != 0:
-				folderPath = deafultPath
+				extension = request.form.get("extension", type=str, default="")
+				if givenPath[-len(extension):] != extension:
+					givenPath = givenPath + extension
+
+				print_info("Files: " + action + ": " + givenPath)
+
+				# Make sure the file operations stay within the data folder
+				if givenPath.find("..") >= 0:
+					givenPath = None
+
+			if action == "get":
+				if givenPath == None:
+					return json.dumps({'success':False}), 200, {'ContentType':'application/json'}
+				givenPath.replace("%2F", "/")
+				return send_from_directory(get_path(""), givenPath)
+
+			if action == "delete":
+				if givenPath == None:
+					return json.dumps({'success':False}), 200, {'ContentType':'application/json'}
+
+				givenPath = get_path(givenPath)
+
+				deleted = False
+
+				if os.path.isdir(givenPath):
+					shutil.rmtree(givenPath)
+					deleted = True
+
+				if os.path.isfile(givenPath):
+					os.remove(os.path.join(get_path(""), givenPath))
+					deleted = True
+
+				if deleted:
+					return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
+				else:
+					return json.dumps({'success':False}), 200, {'ContentType':'application/json'}
+
+			if action == "save":
+				if givenPath == None:
+					return json.dumps({'success':False}), 200, {'ContentType':'application/json'}
+
+				filedata = request.form.get("filedata", type=str, default="")
+				overwrite = request.form.get("overwrite", type=int, default=0)
+
+				givenPath = get_path(givenPath)
+
+				if overwrite == 0:
+					if os.path.isfile(givenPath):
+						return json.dumps({'success':False}), 200, {'ContentType':'application/json'}
+
+				with open(givenPath, "w") as f:
+					f.write(filedata)
+
+				return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
+
+			if action == "newfolder":
+				if givenPath == None:
+					return json.dumps({'success':False}), 200, {'ContentType':'application/json'}
+
+				givenPath = get_path(givenPath)
+				if not os.path.exists(givenPath):
+					os.makedirs(givenPath)
+				else:
+					return json.dumps({'success':False}), 200, {'ContentType':'application/json'}
+
+				return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
+
+			appSpecificFolderPath = request.form.get("path", type=str, default="")
+			extension = request.form.get("extension", type=str, default=extension)
+			onlyFolders = request.form.get("onlyfolders", type=int, default=0)
+			saveFileView = request.form.get("savefileview", type=int, default=0)
+
+			while len(appSpecificFolderPath) > 0 and appSpecificFolderPath[0] == "/":
+				appSpecificFolderPath = appSpecificFolderPath[1:]
+
+			folderPath = folderPath + appSpecificFolderPath
+
+			if len(appSpecificFolderPath) > 0 and appSpecificFolderPath[-1] != "/":
+				appSpecificFolderPath = appSpecificFolderPath + "/"
 
 			if folderPath[-1] != "/":
 				folderPath = folderPath + "/"
-			# Security checks, should stay within data folder
-			if folderPath.find("..") > 0:
+			# Security check, should stay within data folder
+			if folderPath.find("..") >= 0:
 				folderPath = deafultPath
+			if appSpecificFolderPath.find("..") >= 0:
+				appSpecificFolderPath = ""
 
-		prefs = {
-			"folder": appname,
-			"extension": extension
-		}
 		data = {
-			"path": folderPath,
+			"path": appSpecificFolderPath,
 			"folders": [],
 			"files": []
 		}
-		if folderPath[0:-1] != deafultPath:
-			data["previouspath"] = folderPath[0:folderPath.rfind("/", 0, len(folderPath)-1)]
+		# Only add a previous path if it is not in the base folder
+		if appSpecificFolderPath[0:-1] != "":
+			data["previouspath"] = appSpecificFolderPath[0:appSpecificFolderPath.rfind("/", 0, len(appSpecificFolderPath)-1)] + "/"
+			if appSpecificFolderPath.rfind("/", 0, len(appSpecificFolderPath)-1) < 0:
+				data["previouspath"] = "/"
 
 		foldernames = glob.glob(get_path(folderPath + "*"))
 		for foldername in foldernames:
 			if ("." not in os.path.split(foldername)[1]):
-				data["folders"].append(os.path.split(foldername)[1])
+				data["folders"].append(os.path.split(foldername)[1] + "/")
 		data["folders"].sort()
 
-		filenames = glob.glob(get_path(folderPath + "*" + extension))
-		for filename in filenames:
-			if ("." in os.path.split(filename)[1]):
-				data["files"].append(os.path.split(filename)[1])
-		data["files"].sort()
+		if (saveFileView == 1):
+			data["savefileview"] = saveFileView
 
-		return self.render_template("filelist.html", title=self.title + " - Files", page_caption=folderPath + " [" + extension + "]", page_icon="fa-folder", prefs=prefs, **data)
-
-	def file_action(self, action):
-		if request.method != "POST":
-			return "";
-
-		print_info("FILE: " + action)
-
-		filepath = request.form.get("file", type=str, default=None)
-
-		if filepath.find(self.dataPath) != 0:
-			return
-
-		if action == "get":
-			if filepath == None:
-				return ""
-			filepath.replace("%2F", "/")
-			return send_from_directory(get_path(""), filepath)
-
-		if action == "delete":
-			scriptfiles = []
-			filenames = []
-			filenames.extend(glob.glob(get_path("../../data/socialscript/scripts/*.soc")))
-
+		if (onlyFolders != 1):
+			filenames = glob.glob(get_path(folderPath + "*" + extension))
 			for filename in filenames:
-				scriptfiles.append(os.path.split(filename)[1])
+				if ("." in os.path.split(filename)[1]):
+					data["files"].append(os.path.split(filename)[1])
+			data["files"].sort()
+		else:
+			data["onlyfolders"] = onlyFolders
 
-			if scriptfile in scriptfiles:
-				os.remove(os.path.join(get_path("../../data/socialscript/scripts/"), scriptfile))
-				return {"status": "success", "message": "File %s deleted." % scriptfile}
-			else:
-				return {"status": "error", "message": "Unknown file."}
+		return self.render_template("filelist.html", title=self.title + " - Files", page_caption=appSpecificFolderPath, page_icon="fa-folder", **data)
 
-		if action == "save":
-			pass
 
 	def inject_opsoro_vars(self):
 		opsoro = {"robot_name": Preferences.get("general", "robot_name", self.robotName)}

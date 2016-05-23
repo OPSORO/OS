@@ -69,74 +69,74 @@ def setup_pages(opsoroapp):
 
 		return opsoroapp.render_template("socialscript.html", **data)
 
-	@socialscript_bp.route("/filelist")
-	@opsoroapp.app_view
-	def filelist():
-		data = {
-			"scriptfiles":	[]
-		}
-
-		filenames = []
-		filenames.extend(glob.glob(get_path("../../data/socialscript/scripts/*.soc")))
-
-		for filename in filenames:
-			data["scriptfiles"].append(os.path.split(filename)[1])
-
-		return opsoroapp.render_template("filelist.html", **data)
-
-	@socialscript_bp.route("/save", methods=["POST"])
-	@opsoroapp.app_api
-	def save():
-		socfile = request.form.get("file", type=str, default="")
-		filename = request.form.get("filename", type=str, default="")
-		overwrite = request.form.get("overwrite", type=int, default=0)
-
-		if filename == "":
-			return {"status": "error", "message": "No filename given."}
-
-		if filename[-4:] != ".soc":
-			filename = filename + ".soc"
-		filename = secure_filename(filename)
-
-		full_path = os.path.join(get_path("../../data/socialscript/scripts/"), filename)
-
-		if overwrite == 0:
-			if os.path.isfile(full_path):
-				return {"status": "error", "message": "File already exists."}
-
-		with open(full_path, "w") as f:
-			f.write(socfile)
-
-		return {"status": "success", "filename": filename}
-
-	@socialscript_bp.route("/delete/<scriptfile>", methods=["POST"])
-	@opsoroapp.app_api
-	def delete(scriptfile):
-		scriptfiles = []
-		filenames = []
-		filenames.extend(glob.glob(get_path("../../data/socialscript/scripts/*.soc")))
-
-		for filename in filenames:
-			scriptfiles.append(os.path.split(filename)[1])
-
-		if scriptfile in scriptfiles:
-			os.remove(os.path.join(get_path("../../data/socialscript/scripts/"), scriptfile))
-			return {"status": "success", "message": "File %s deleted." % scriptfile}
-		else:
-			return {"status": "error", "message": "Unknown file."}
-
-	@socialscript_bp.route("/scripts/<scriptfile>")
-	@opsoroapp.app_view
-	def scripts(scriptfile):
-		return send_from_directory(get_path("../../data/socialscript/scripts/"), scriptfile)
-
-
-	@socialscript_bp.route("/file", methods=["GET"])
-	@opsoroapp.app_view
-	def file():
-		scriptfile = request.args.get("script", None)
-		#scriptfile = request.form.get("script", type=str, default="")
-		return send_from_directory(get_path("../../"), scriptfile)
+	# @socialscript_bp.route("/filelist")
+	# @opsoroapp.app_view
+	# def filelist():
+	# 	data = {
+	# 		"scriptfiles":	[]
+	# 	}
+	#
+	# 	filenames = []
+	# 	filenames.extend(glob.glob(get_path("../../data/socialscript/scripts/*.soc")))
+	#
+	# 	for filename in filenames:
+	# 		data["scriptfiles"].append(os.path.split(filename)[1])
+	#
+	# 	return opsoroapp.render_template("filelist.html", **data)
+	#
+	# @socialscript_bp.route("/save", methods=["POST"])
+	# @opsoroapp.app_api
+	# def save():
+	# 	socfile = request.form.get("file", type=str, default="")
+	# 	filename = request.form.get("filename", type=str, default="")
+	# 	overwrite = request.form.get("overwrite", type=int, default=0)
+	#
+	# 	if filename == "":
+	# 		return {"status": "error", "message": "No filename given."}
+	#
+	# 	if filename[-4:] != ".soc":
+	# 		filename = filename + ".soc"
+	# 	filename = secure_filename(filename)
+	#
+	# 	full_path = os.path.join(get_path("../../data/socialscript/scripts/"), filename)
+	#
+	# 	if overwrite == 0:
+	# 		if os.path.isfile(full_path):
+	# 			return {"status": "error", "message": "File already exists."}
+	#
+	# 	with open(full_path, "w") as f:
+	# 		f.write(socfile)
+	#
+	# 	return {"status": "success", "filename": filename}
+	#
+	# @socialscript_bp.route("/delete/<scriptfile>", methods=["POST"])
+	# @opsoroapp.app_api
+	# def delete(scriptfile):
+	# 	scriptfiles = []
+	# 	filenames = []
+	# 	filenames.extend(glob.glob(get_path("../../data/socialscript/scripts/*.soc")))
+	#
+	# 	for filename in filenames:
+	# 		scriptfiles.append(os.path.split(filename)[1])
+	#
+	# 	if scriptfile in scriptfiles:
+	# 		os.remove(os.path.join(get_path("../../data/socialscript/scripts/"), scriptfile))
+	# 		return {"status": "success", "message": "File %s deleted." % scriptfile}
+	# 	else:
+	# 		return {"status": "error", "message": "Unknown file."}
+	#
+	# @socialscript_bp.route("/scripts/<scriptfile>")
+	# @opsoroapp.app_view
+	# def scripts(scriptfile):
+	# 	return send_from_directory(get_path("../../data/socialscript/scripts/"), scriptfile)
+	#
+	#
+	# @socialscript_bp.route("/file", methods=["GET"])
+	# @opsoroapp.app_view
+	# def file():
+	# 	scriptfile = request.args.get("script", None)
+	# 	#scriptfile = request.form.get("script", type=str, default="")
+	# 	return send_from_directory(get_path("../../"), scriptfile)
 
 	@socialscript_bp.route("/servos/enable")
 	@opsoroapp.app_api

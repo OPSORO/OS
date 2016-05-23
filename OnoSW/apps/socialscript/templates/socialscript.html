@@ -19,8 +19,8 @@
 			<span class="bubble" data-bind="html: contentPreview"></span>
 		</div>
 		<form>
-			<select data-bind="visible: output() != 'tts', options: $root.sounds, value: wav">
-			<input type="text" placeholder="Enter text to be spoken..." data-bind="value: tts, visible: output() == 'tts' "></input>
+			<select data-bind="visible: output() != 'tts', options: $root.sounds, value: wav, click: modified">
+			<input type="text" placeholder="Enter text to be spoken..." data-bind="value: tts, visible: output() == 'tts', click: modified()"></input>
 			<div class="leftcontrols">
 				<div class="switch round tts-switch">
 					<input type="checkbox" data-bind="outputswitch: output, attr: {id: switchID} ">
@@ -73,7 +73,7 @@ var sounds_data = {{ sounds|tojson|safe }};
 	</div>
 </div>
 
-<div id="SaveAsModal" class="reveal-modal tiny" data-reveal>
+<!-- <div id="SaveAsModal" class="reveal-modal tiny" data-reveal>
 	<div class="titlebar">
 		<a class="close-reveal-modal"><span class="fa fa-close"></span></a>
 		<span class="fa fa-save"></span> Save as
@@ -92,9 +92,9 @@ var sounds_data = {{ sounds|tojson|safe }};
 			</div>
 		</form>
 	</div>
-</div>
+</div> -->
 
-<div id="FilesModal" class="reveal-modal small" data-reveal>
+<!-- <div id="FilesModal" class="reveal-modal small" data-reveal>
 	<div class="titlebar">
 		<a class="close-reveal-modal"><span class="fa fa-close"></span></a>
 		<span class="fa fa-folder"></span> All files
@@ -105,8 +105,8 @@ var sounds_data = {{ sounds|tojson|safe }};
 		</div>
 		<div id="FilesModalFilelist"></div>
 	</div>
-</div>
-
+</div> -->
+<!--
 <div id="ConfirmNewModal" class="reveal-modal tiny" data-reveal>
 	<div class="titlebar">
 		<a class="close-reveal-modal"><span class="fa fa-close"></span></a>
@@ -118,9 +118,9 @@ var sounds_data = {{ sounds|tojson|safe }};
 			<a href="#" class="button" data-bind="click: createNewFile"><span class="fa fa-file"></span> Yes, discard changes</a>
 		</div>
 	</div>
-</div>
+</div> -->
 
-<div id="ConfirmDeleteModal" class="reveal-modal tiny" data-reveal>
+<!-- <div id="ConfirmDeleteModal" class="reveal-modal tiny" data-reveal>
 	<div class="titlebar">
 		<a class="close-reveal-modal"><span class="fa fa-close"></span></a>
 		<span class="fa fa-trash"></span> Delete
@@ -131,9 +131,9 @@ var sounds_data = {{ sounds|tojson|safe }};
 			<a href="#" class="button" data-bind="click: deleteFile"><span class="fa fa-trash"></span> Yes, delete file</a>
 		</div>
 	</div>
-</div>
+</div> -->
 
-<div id="ConfirmLoadModal" class="reveal-modal tiny" data-reveal>
+<!-- <div id="ConfirmLoadModal" class="reveal-modal tiny" data-reveal>
 	<div class="titlebar">
 		<a class="close-reveal-modal"><span class="fa fa-close"></span></a>
 		<span class="fa fa-folder-open"></span> Load
@@ -144,5 +144,5 @@ var sounds_data = {{ sounds|tojson|safe }};
 			<a href="#" id="btnConfirmLoad" class="button"><span class="fa fa-folder-open"></span> Yes, load file</a>
 		</div>
 	</div>
-</div>
+</div> -->
 {% endblock %}

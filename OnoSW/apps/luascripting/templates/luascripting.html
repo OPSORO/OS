@@ -101,7 +101,7 @@
 			var self = this;
 
 			// File operations toolbar item
-			self.fileIsModified = ko.observable(false);
+			self.fileIsModified = ko.observable(isScriptModified);
 			self.fileName = ko.observable("Untitled");
 			self.fileStatus = ko.observable("Stopped");
 
@@ -127,7 +127,7 @@
 
 			editor.getSession().on("change", function(e){
 				$(".filebox .fa-asterisk").removeClass("hide");
-				isScriptModified = true;
+				self.fileIsModified(true);
 			});
 
 			editor.commands.addCommand({
@@ -166,13 +166,11 @@
 						break;
 					case "scriptStarted":
 						addConsole("Script started.", "#888888", "fa-play");
-						isScriptRunning = true;
 						self.fileStatus("Running");
 						self.isRunning(true);
 						break;
 					case "scriptStopped":
 						addConsole("Script stopped.", "#888888", "fa-stop");
-						isScriptRunning = false;
 						self.fileStatus("Stopped");
 						self.isRunning(false);
 						self.isUI(false);
@@ -252,165 +250,6 @@
 			});
 
 			// Toolbar buttons
-			// Save
-			self.saveFile = function(){
-				if(scriptname == null){
-					// Untitled script
-					$("#txtFilename").val("");
-					$("#SaveAsModal small.error").addClass("hide");
-					$("#SaveAsModal").foundation("reveal", "open");
-				}else{
-					// Don't show modal, overwrite script file
-					var luacode = editor.getValue();
-
-					$.ajax({
-						dataType: "json",
-						data: {
-							file: luacode,
-							filename: scriptname,
-							overwrite: 1
-						},
-						type: "POST",
-						url: "save",
-						success: function(data){
-							if(data.status == "error"){
-								addError(data.message);
-							}else if(data.status == "success"){
-								scriptname = data.filename;
-								isScriptModified = false;
-
-								var filename_no_ext = data.filename;
-								if(filename_no_ext.slice(-4) == ".lua" || filename_no_ext.slice(-4) == ".LUA"){
-									filename_no_ext = filename_no_ext.slice(0, -4);
-								}
-
-								$(".filebox .fa-asterisk").addClass("hide");
-								$(".filebox .filename").html(filename_no_ext);
-							}
-						}
-					});
-				}
-			}
-
-			$("#btnSaveAsModalSave").click(function(){
-				var filename = $("#txtFilename").val();
-
-				$("#SaveAsModal small.error").addClass("hide");
-
-				var luacode = editor.getValue();
-
-				$.ajax({
-					dataType: "json",
-					data: {
-						file: luacode,
-						filename: filename,
-						overwrite: 0
-					},
-					type: "POST",
-					url: "save",
-					success: function(data){
-						if(data.status == "error"){
-							$("#SaveAsModal small.error").html(data.message).removeClass("hide");
-						}else if(data.status == "success"){
-							scriptname = data.filename;
-							isScriptModified = false;
-
-							var filename_no_ext = data.filename;
-							if(filename_no_ext.slice(-4) == ".lua" || filename_no_ext.slice(-4) == ".LUA"){
-								filename_no_ext = filename_no_ext.slice(0, -4);
-							}
-
-							$(".filebox .fa-asterisk").addClass("hide");
-							$(".filebox .filename").html(filename_no_ext);
-
-							$("#SaveAsModal").foundation("reveal", "close");
-						}
-					}
-				});
-				return 0;
-			});
-
-			// All files
-			self.openFileList = function(){
-				$("#FilesModalSpinner").removeClass("hide");
-				$("#FilesModalFilelist").html("");
-				$("#FilesModalFilelist").load("filelist", function(){
-					$("#FilesModalSpinner").addClass("hide");
-
-					// Delete and Open button events need to be rebound here
-					// because filelist is loaded via AJAX
-					$(".btnDeleteFile").off("click");
-					$(".btnDeleteFile").on("click", function(){
-						filename = $(this).closest("div.file").data("scriptfile");
-						$("#ConfirmDeleteModal").foundation("reveal", "open");
-
-						$("#btnConfirmDelete").off("click");
-						$("#btnConfirmDelete").on("click", function(){
-							$.ajax({
-								dataType: "json",
-								type: "POST",
-								url: "delete/" + filename,
-								success: function(data){
-									$("#ConfirmDeleteModal").foundation("reveal", "close");
-									if(data.status == "error"){
-										addError(data.message);
-									}else{
-										addMessage(data.message);
-									}
-								}
-							});
-						});
-					});
-
-					$(".btnOpenFile").off("click");
-					$(".btnOpenFile").on("click", function(){
-						filename = $(this).closest("div.file").data("scriptfile");
-
-						var do_load = function(){
-							$.ajax({
-								url: "scripts/" + filename,
-								dataType: "text",
-								cache: false,
-								success: function(data){
-									// Load script
-									editor.setValue(data);
-									editor.gotoLine(1, 0, false);
-
-									// Update filename and asterisk
-									var filename_no_ext = filename;
-									if(filename_no_ext.slice(-4) == ".lua" || filename_no_ext.slice(-4) == ".LUA"){
-										filename_no_ext = filename_no_ext.slice(0, -4);
-									}
-									$(".filebox .filename").text(filename_no_ext);
-									$(".filebox .fa-asterisk").addClass("hide");
-									isScriptModified = false;
-									scriptname = filename;
-
-									$("#FilesModal").foundation("reveal", "close");
-								}
-							});
-						}
-
-						if(isScriptModified){
-							$("#btnConfirmLoad").off("click");
-							$("#btnConfirmLoad").on("click", do_load);
-							$("#ConfirmLoadModal").foundation("reveal", "open");
-						}else{
-							do_load();
-						}
-
-					});
-				});
-
-				$("#FilesModal").foundation("reveal", "open");
-			};
-
-			// New
-			// Load boilerplate from server
-			$.get("static/boilerplate.lua", function(data){
-				boilerplate = data;
-			});
-
 			self.loadFileData = function(filename){
 				if (filename == "") {
 					return;
@@ -418,58 +257,225 @@
 				$.ajax({
 					dataType: "text",
 					type: "POST",
-					url: "/file/get",
+					url: "files/get",
 					cache: false,
-					data: {"file": filename},
+					data: {path: filename, extension: ".lua"},
 					success: function(data){
 						// Load script
-						editor.setValue(data);
-						editor.gotoLine(1, 0, false);
+							editor.setValue(data);
+							editor.gotoLine(1, 0, false);
 
-						// Update filename and asterisk
-						var filename_no_ext = filename;
-						if(filename_no_ext.slice(-4) == ".lua" || filename_no_ext.slice(-4) == ".LUA"){
-							filename_no_ext = filename_no_ext.slice(0, -4);
-						}
-						$(".filebox .filename").text(filename_no_ext);
-						$(".filebox .fa-asterisk").addClass("hide");
-						isScriptModified = false;
-						scriptname = filename;
+							// Update filename and asterisk
+							var filename_no_ext = filename;
+							if(filename_no_ext.slice(-4) == ".lua" || filename_no_ext.slice(-4) == ".LUA"){
+								filename_no_ext = filename_no_ext.slice(0, -4);
+							}
+							self.fileName(filename_no_ext);
+							self.fileIsModified(false);
+					},
+					error: function(){
+						window.location.href = "?";
 					}
 				});
 			};
 
-			self.newFile = function(){
-				if(isScriptModified){
-					$("#ConfirmNewModal").foundation("reveal", "open");
+			self.saveFileData = function(filename){
+				if(filename == ""){
+					addError("No filename!");
+					return;
 				}else{
-					if(scriptname != null){
-						scriptname = null;
+					var luacode = editor.getValue();
 
-						editor.setValue(boilerplate);
-						editor.gotoLine(1, 0, false);
-
-						$(".filebox .filename").html("Untitled script");
-						$(".filebox .fa-asterisk").addClass("hide");
-					}
+					$.ajax({
+						dataType: "json",
+						data: {
+							path: filename,
+							filedata: luacode,
+							overwrite: 1,
+							extension: ".lua"
+						},
+						type: "POST",
+						url: "files/save",
+						success: function(data){
+							var filename_no_ext = filename;
+							if(filename_no_ext.slice(-4) == ".lua" || filename_no_ext.slice(-4) == ".LUA"){
+								filename_no_ext = filename_no_ext.slice(0, -4);
+							}
+							self.fileName(filename_no_ext);
+							self.fileIsModified(false);
+						}
+					});
 				}
 			};
+			// // Save
+			// self.saveFile = function(){
+			// 	if(scriptname == null){
+			// 		// Untitled script
+			// 		$("#txtFilename").val("");
+			// 		$("#SaveAsModal small.error").addClass("hide");
+			// 		$("#SaveAsModal").foundation("reveal", "open");
+			// 	}else{
+			// 		// Don't show modal, overwrite script file
+			// 		var luacode = editor.getValue();
+			//
+			// 		$.ajax({
+			// 			dataType: "json",
+			// 			data: {
+			// 				file: luacode,
+			// 				filename: scriptname,
+			// 				overwrite: 1
+			// 			},
+			// 			type: "POST",
+			// 			url: "save",
+			// 			success: function(data){
+			// 				if(data.status == "error"){
+			// 					addError(data.message);
+			// 				}else if(data.status == "success"){
+			// 					scriptname = data.filename;
+			// 					isScriptModified = false;
+			//
+			// 					var filename_no_ext = data.filename;
+			// 					if(filename_no_ext.slice(-4) == ".lua" || filename_no_ext.slice(-4) == ".LUA"){
+			// 						filename_no_ext = filename_no_ext.slice(0, -4);
+			// 					}
+			//
+			// 					$(".filebox .fa-asterisk").addClass("hide");
+			// 					$(".filebox .filename").html(filename_no_ext);
+			// 				}
+			// 			}
+			// 		});
+			// 	}
+			// }
+			//
+			// $("#btnSaveAsModalSave").click(function(){
+			// 	var filename = $("#txtFilename").val();
+			//
+			// 	$("#SaveAsModal small.error").addClass("hide");
+			//
+			// 	var luacode = editor.getValue();
+			//
+			// 	$.ajax({
+			// 		dataType: "json",
+			// 		data: {
+			// 			file: luacode,
+			// 			filename: filename,
+			// 			overwrite: 0
+			// 		},
+			// 		type: "POST",
+			// 		url: "save",
+			// 		success: function(data){
+			// 			if(data.status == "error"){
+			// 				$("#SaveAsModal small.error").html(data.message).removeClass("hide");
+			// 			}else if(data.status == "success"){
+			// 				scriptname = data.filename;
+			// 				isScriptModified = false;
+			//
+			// 				var filename_no_ext = data.filename;
+			// 				if(filename_no_ext.slice(-4) == ".lua" || filename_no_ext.slice(-4) == ".LUA"){
+			// 					filename_no_ext = filename_no_ext.slice(0, -4);
+			// 				}
+			//
+			// 				$(".filebox .fa-asterisk").addClass("hide");
+			// 				$(".filebox .filename").html(filename_no_ext);
+			//
+			// 				$("#SaveAsModal").foundation("reveal", "close");
+			// 			}
+			// 		}
+			// 	});
+			// 	return 0;
+			// });
 
-			$("#btnConfirmNew").click(function(){
+			// All files
+			// self.openFileList = function(){
+			// 	$("#FilesModalSpinner").removeClass("hide");
+			// 	$("#FilesModalFilelist").html("");
+			// 	$("#FilesModalFilelist").load("filelist", function(){
+			// 		$("#FilesModalSpinner").addClass("hide");
+			//
+			// 		// Delete and Open button events need to be rebound here
+			// 		// because filelist is loaded via AJAX
+			// 		$(".btnDeleteFile").off("click");
+			// 		$(".btnDeleteFile").on("click", function(){
+			// 			filename = $(this).closest("div.file").data("scriptfile");
+			// 			$("#ConfirmDeleteModal").foundation("reveal", "open");
+			//
+			// 			$("#btnConfirmDelete").off("click");
+			// 			$("#btnConfirmDelete").on("click", function(){
+			// 				$.ajax({
+			// 					dataType: "json",
+			// 					type: "POST",
+			// 					url: "delete/" + filename,
+			// 					success: function(data){
+			// 						$("#ConfirmDeleteModal").foundation("reveal", "close");
+			// 						if(data.status == "error"){
+			// 							addError(data.message);
+			// 						}else{
+			// 							addMessage(data.message);
+			// 						}
+			// 					}
+			// 				});
+			// 			});
+			// 		});
+			//
+			// 		$(".btnOpenFile").off("click");
+			// 		$(".btnOpenFile").on("click", function(){
+			// 			filename = $(this).closest("div.file").data("scriptfile");
+			//
+			// 			var do_load = function(){
+			// 				$.ajax({
+			// 					url: "scripts/" + filename,
+			// 					dataType: "text",
+			// 					cache: false,
+			// 					success: function(data){
+			// 						// Load script
+			// 						editor.setValue(data);
+			// 						editor.gotoLine(1, 0, false);
+			//
+			// 						// Update filename and asterisk
+			// 						var filename_no_ext = filename;
+			// 						if(filename_no_ext.slice(-4) == ".lua" || filename_no_ext.slice(-4) == ".LUA"){
+			// 							filename_no_ext = filename_no_ext.slice(0, -4);
+			// 						}
+			// 						$(".filebox .filename").text(filename_no_ext);
+			// 						$(".filebox .fa-asterisk").addClass("hide");
+			// 						isScriptModified = false;
+			// 						scriptname = filename;
+			//
+			// 						$("#FilesModal").foundation("reveal", "close");
+			// 					}
+			// 				});
+			// 			}
+			//
+			// 			if(isScriptModified){
+			// 				$("#btnConfirmLoad").off("click");
+			// 				$("#btnConfirmLoad").on("click", do_load);
+			// 				$("#ConfirmLoadModal").foundation("reveal", "open");
+			// 			}else{
+			// 				do_load();
+			// 			}
+			//
+			// 		});
+			// 	});
+			//
+			// 	$("#FilesModal").foundation("reveal", "open");
+			// };
+
+			// New
+			// Load boilerplate from server
+			$.get("static/boilerplate.lua", function(data){
+				boilerplate = data;
+			});
+
+			self.init = function(){
 				editor.setValue(boilerplate);
 				editor.gotoLine(1, 0, false);
 
-				isScriptModified = false;
-				scriptname = null;
-
-				$(".filebox .filename").html("Untitled script");
-				$(".filebox .fa-asterisk").addClass("hide");
-
-				$("#ConfirmNewModal").foundation("reveal", "close");
-			});
+				self.fileName("Untitled");
+				self.fileIsModified(false);
+			};
 
 			self.startStopScript = function(){
-				if(!isScriptRunning){
+				if(!self.isRunning()){
 					// Start the script
 					var luacode = editor.getValue();
 
@@ -477,8 +483,8 @@
 						dataType: "json",
 						data: {
 							file: luacode,
-							name: scriptname,
-							modified: isScriptModified ? 1 : 0
+							name: self.fileName(),
+							modified: self.fileIsModified() ? 1 : 0
 						},
 						type: "POST",
 						url: "startscript",
@@ -607,13 +613,16 @@
 			if (action_data.openfile) {
 				self.loadFileData(action_data.openfile || "");
 			} else {
-				self.newFile();
+				self.init();
 			}
 
 		};
 		// This makes Knockout get to work
 		var model = new Model();
 		ko.applyBindings(model);
+		model.fileIsModified(false);
+
+		config_file_operations("scripts", ".lua", model.saveFileData, model.loadFileData, model.init);
 	});
 </script>
 
@@ -622,7 +631,7 @@
 {% block modals %}
 {{ super() }}
 
-<div id="SaveAsModal" class="reveal-modal tiny" data-reveal>
+<!-- <div id="SaveAsModal" class="reveal-modal tiny" data-reveal>
 	<div class="titlebar">
 		<a class="close-reveal-modal"><span class="fa fa-close"></span></a>
 		<span class="fa fa-save"></span> Save as
@@ -682,7 +691,7 @@
 			<a href="#" id="btnConfirmLoad" class="button"><span class="fa fa-folder-open"></span> Yes, load file</a>
 		</div>
 	</div>
-</div>
+</div> -->
 
 <div id="ScriptUIModal" class="reveal-modal small" data-reveal>
 	<div class="titlebar">
