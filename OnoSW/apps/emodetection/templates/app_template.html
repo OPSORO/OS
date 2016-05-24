@@ -1,0 +1,71 @@
+{% extends "app.html" %}
+
+
+{% block base_toolbar %}
+<p style="color: white">This is the toolbar, you can add/remove options.<br/>To remove the toolbar completely, just remove the blocks: "block base_toolbar" and "endblock".</p>
+<!--
+{% include "toolbar/file_operations.html" %}
+{% include "toolbar/script_operations.html" %}
+{% include "toolbar/lock_unlock.html" %}
+-->
+{% endblock %}
+
+
+{% block page_content %}
+{{ super() }}
+<fieldset>
+	<legend><span class="fa fa-commenting"></span> Popup demo</legend>
+	<div class="row">
+			<div class="content">
+				<span class="" data-bind="text: popupTextInput"></span>
+			</div>
+	</div>
+	<div class="row">
+			<div class="content">
+	      <a href="#" class="button" data-bind="click: showPopup">
+					<span class="fa fa-cog" style="font-size: 1.5rem"></span> Change text popup
+				</a>
+			</div>
+	</div>
+</fieldset>
+
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<!--
+<script src="static/javascript.js"></script>
+-->
+
+<script>
+var action_data = {{ actions|tojson|safe }};
+
+var data = {{ data|tojson|safe }};
+</script>
+
+{% endblock %}
+
+{% block modals %}
+{{ super() }}
+<div id="popup_window" class="reveal-modal" data-reveal>
+	<div class="titlebar">
+		<a class="close-reveal-modal"><span class="fa fa-close"></span></a>
+		<span class="fa fa-cogs"></span> Popup window!
+	</div>
+	<div class="content">
+		<p>This is a popup window.</p>
+		<form>
+			<div class="row collapse">
+				<div class="small-9 columns">
+					<input type="text" name="text" class="error" style="width: 100%;" data-bind="value: popupTextInput">
+					<small class="error hide"></small>
+				</div>
+				<div class="small-3 columns">
+					<a href="#" class="button" style="width: 100%;" data-bind="click: popupButtonHandler()"><span class="fa fa-save"></span> Save</a>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+
+{% endblock %}
