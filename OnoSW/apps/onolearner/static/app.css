@@ -1,0 +1,42 @@
+.content{
+    width: 970px;
+    margin: auto 0;
+}
+
+.block{
+    width: 210px;
+    height: 210px;
+    border-radius: 10px;
+    background-color: #22b573;
+    float: left;
+    margin: 10px 20px;
+    -webkit-box-shadow: 5px 5px 5px #888888;
+    -moz-box-shadow: 5px 5px 5px #888888;
+    box-shadow: 5px 5px 5px #888888;
+}
+
+.block span{
+    color: white;
+    display:inline-block;
+    line-height: 100px;
+    text-align: center;
+    font-size: 100px;
+    /*margin-left: 30%;*/
+    margin-top: 25%;
+}
+
+.row1{
+    height: 250px;
+    width: 500px;
+    text-align: center;
+}
+
+.row2{
+    height: 250px;
+    width: 500px;
+    text-align: center;
+}
+
+.fa.fa-calculator{
+    font-size: 90px;
+}
