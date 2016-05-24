@@ -29,12 +29,14 @@
     height: 250px;
     width: 500px;
     text-align: center;
+    margin: auto;
 }
 
 .row2{
     height: 250px;
     width: 500px;
     text-align: center;
+    margin: auto;
 }
 
 .fa.fa-calculator{
