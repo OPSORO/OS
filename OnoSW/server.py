@@ -8,6 +8,7 @@ from sockjs.tornado import SockJSRouter, SockJSConnection
 from functools import wraps, partial
 import hardware
 import expression
+from expression import Expression
 import pluginbase
 import random
 import os
@@ -31,6 +32,7 @@ except ImportError:
 	print_info("Simplejson not available, falling back on json")
 
 
+dof_positions = {}
 # Helper function
 get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 
@@ -411,6 +413,8 @@ class OpSoRoApplication(object):
 		self.flaskapp.add_url_rule("/openapp/<appname>",				"openapp",		protect(self.page_openapp))
 		self.flaskapp.add_url_rule("/app/<appname>/files/<action>",		"files",		protect(self.page_files), methods=["GET", "POST"])
 
+		self.flaskapp.add_url_rule("/virtual",							"virtual",		self.page_virtual, methods=["GET", "POST"])
+
 		self.flaskapp.context_processor(self.inject_opsoro_vars)
 
 	def page_index(self):
@@ -680,6 +684,14 @@ class OpSoRoApplication(object):
 
 		return self.render_template("filelist.html", title=self.title + " - Files", page_caption=appSpecificFolderPath, page_icon="fa-folder", **data)
 
+
+	def page_virtual(self):
+		if request.method == "POST":
+			dataOnly = request.form.get("dataonly", type=str, default=0)
+			if dataOnly:
+				return json.dumps({'success':False, 'data': Expression.dof_values})
+		# 		return Expression.dof_values
+		return self.render_template("virtual.html", title="Virtual Model", page_caption="Virtual model", page_icon="fa-smile-o", dofs=Expression.dof_values)
 
 	def inject_opsoro_vars(self):
 		opsoro = {"robot_name": Preferences.get("general", "robot_name", self.robotName)}
