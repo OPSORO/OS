@@ -1,16 +1,6 @@
 {% extends "app.html" %}
 
 
-{% block base_toolbar %}
-<p style="color: white">This is the toolbar, you can add/remove options.<br/>To remove the toolbar completely, just remove the blocks: "block base_toolbar" and "endblock".</p>
-<!--
-{% include "toolbar/file_operations.html" %}
-{% include "toolbar/script_operations.html" %}
-{% include "toolbar/lock_unlock.html" %}
--->
-{% endblock %}
-
-
 {% block page_content %}
 {{ super() }}
 	<div class="row">
