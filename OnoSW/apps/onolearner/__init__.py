@@ -29,7 +29,7 @@ constrain = lambda n, minn, maxn: max(min(maxn, n), minn)
 
 from expression import Expression
 
-config = {"full_name": "Ono Learner", "icon": "fa-child"}
+config = {"full_name": "Ono Learner", "icon": "fa-child"} 
 
 get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 
