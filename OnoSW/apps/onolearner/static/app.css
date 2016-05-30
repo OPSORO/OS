@@ -54,3 +54,8 @@
 .fa.fa-calculator{
     font-size: 90px;
 }
+
+.actionbar{
+    min-height: 0px;
+    display: none;
+}

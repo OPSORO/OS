@@ -576,3 +576,14 @@ fieldset legend{
 	left: 0.75rem;
 	top: 0.25rem;
 }
+
+#verhaaltje, #rekenwereld, #simon, #tiktak{
+	display: none;
+	width: 0;
+	height: 0;
+	margin: 0;
+}
+
+#socialscript{
+	clear: none;
+}

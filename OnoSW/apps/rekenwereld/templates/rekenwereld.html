@@ -1,24 +1,33 @@
 {% extends "app.html" %}
 
+
 {% block base_toolbar %}
+<p style="color: white">This is the toolbar, you can add/remove options.<br/>To remove the toolbar completely, just remove the blocks: "block base_toolbar" and "endblock".</p>
+<!--
+{% include "toolbar/file_operations.html" %}
+{% include "toolbar/script_operations.html" %}
+{% include "toolbar/lock_unlock.html" %}
+-->
 {% endblock %}
+
 
 {% block page_content %}
 {{ super() }}
+<fieldset>
+	<legend><span class="fa fa-commenting"></span> Popup demo</legend>
 	<div class="row">
 			<div class="content">
-				<div class="row1">
-					<a href="/app/verhaaltje"><div class="block"><span class="fa fa-book"></span>Verhaaltjestijd</div></a>
-
-					<a href="/app/rekenwereld"><div class="block"><span class="fa fa-calculator"></span>Rekenwereld</div></a>
-				</div>
-				<div class="row2">
-					<a href="/app/tiktak"><div class="block"><span class="fa fa-clock-o"></span></div></a>
-
-					<a href="/app/simon"><div class="block"><span class="fa fa-gamepad"></span>Simon</div></a>
-				</div> 
+				<span class="" data-bind="text: popupTextInput"></span>
 			</div>
 	</div>
+	<div class="row">
+			<div class="content">
+	      <a href="#" class="button" data-bind="click: showPopup">
+					<span class="fa fa-cog" style="font-size: 1.5rem"></span> Change text popup
+				</a>
+			</div>
+	</div>
+</fieldset>
 
 {% endblock %}
 
