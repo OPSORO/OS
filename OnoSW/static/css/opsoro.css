@@ -577,13 +577,13 @@ fieldset legend{
 	top: 0.25rem;
 }
 
-#verhaaltje, #rekenwereld, #simon, #tiktak{
+#verhaaltje, #rekenwereld, #geheugen, #tiktak{
 	display: none;
 	width: 0;
 	height: 0;
 	margin: 0;
 }
 
-#socialscript{
+#sounds, #visprog, #luascripting, #socialscript{
 	clear: none;
 }

@@ -4,7 +4,7 @@
 	<div class="small-12 columns">
 		<ul class="small-block-grid-2 medium-block-grid-3 large-block-grid-4">
 			{% for app in apps -%}
-				<li id="{{ app.name }}">
+				<li id="{{ app.name }}" class="knoppen">
 					{% if app.active %}
 						<div class="appbutton selected">
 							<a href="#" data-reveal-id="CloseAppModal" class="closebutton"><span class="fa fa-close"></span></a>

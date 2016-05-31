@@ -1,0 +1,86 @@
+
+.maths{
+    display: none;    
+}
+
+.actionbar{
+    min-height: 0px;
+    display: none;
+}
+
+.answer{
+    width: 210px;
+    height: 210px;
+    border-radius: 10px;
+    background-color: #b2afa1;
+    margin: 30px 20px;
+    color: #4d4d4d;
+    -webkit-box-shadow: 5px 5px 5px #888888;
+    -moz-box-shadow: 5px 5px 5px #888888;
+    box-shadow: 5px 5px 5px #888888;
+    display: inline-block;    
+    font-size: 7rem;
+    font-family: "Roboto", sans-serif;
+    line-height: 210px;
+}
+
+.answer:hover{
+    width: 210px;
+    height: 210px;
+    border-radius: 10px;
+    background-color: #22b573;
+    margin: 10px 20px;
+    -webkit-box-shadow: 5px 5px 5px #888888;
+    -moz-box-shadow: 5px 5px 5px #888888;
+    box-shadow: 5px 5px 5px #888888;
+    color: white;    
+}
+
+.answers{
+    width: 970px;
+    text-align: center;
+}
+
+.exercise{
+    text-align: center;
+}
+
+.exe{
+    color: #4d4d4d;
+    font-family: "Roboto", sans-serif;
+    font-size: 6rem;
+}
+
+.level{
+    width: 210px;
+    height: 210px;
+    border-radius: 10px;
+    background-color: #b2afa1;
+    margin: 30px 20px;
+    color: #4d4d4d;
+    -webkit-box-shadow: 5px 5px 5px #888888;
+    -moz-box-shadow: 5px 5px 5px #888888;
+    box-shadow: 5px 5px 5px #888888;
+    display: inline-block;    
+    font-size: 2rem;
+    font-family: "Roboto", sans-serif;    
+    line-height: 210px;
+    font-weight: bold;
+}
+
+.level:hover{
+    width: 210px;
+    height: 210px;
+    border-radius: 10px;
+    background-color: #22b573;
+    margin: 10px 20px;
+    -webkit-box-shadow: 5px 5px 5px #888888;
+    -moz-box-shadow: 5px 5px 5px #888888;
+    box-shadow: 5px 5px 5px #888888;
+    color: white;    
+}
+
+.levels{
+    width: 970px;
+    text-align: center;
+}

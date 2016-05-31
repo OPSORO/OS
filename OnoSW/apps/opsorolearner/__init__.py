@@ -29,7 +29,7 @@ constrain = lambda n, minn, maxn: max(min(maxn, n), minn)
 
 from expression import Expression
 
-config = {"full_name": "Simon", "icon": "fa-gamepad"}
+config = {"full_name": "Opsoro Learner", "icon": "fa-child"} 
 
 get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 
@@ -44,7 +44,7 @@ get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 # app_t = None
 
 def setup_pages(opsoroapp):
-	app_bp = Blueprint("simon", __name__, template_folder="templates", static_folder="static")
+	app_bp = Blueprint("opsorolearner", __name__, template_folder="templates", static_folder="static")
 
 	@app_bp.route("/", methods=["GET"])
 	@opsoroapp.app_view
@@ -58,7 +58,7 @@ def setup_pages(opsoroapp):
 		if action != None:
 			data["actions"][action] = request.args.get("param", None)
 			
-		return opsoroapp.render_template("simon.html", **data)
+		return opsoroapp.render_template("opsorolearner.html", **data)
 
 
 	# @app_bp.route("/demo")

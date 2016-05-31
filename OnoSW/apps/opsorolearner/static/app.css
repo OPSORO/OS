@@ -27,16 +27,6 @@
     box-shadow: 5px 5px 5px #888888;
 }
 
-.block span{
-    color: white;
-    display:inline-block;
-    line-height: 100px;
-    text-align: center;
-    font-size: 100px;
-    margin-top: 25%;
-    text-shadow: 0.4rem 0.4rem 0 rgba(0, 0, 0, 0.33);
-}
-
 .row1{
     height: 250px;
     width: 500px;
@@ -53,9 +43,33 @@
 
 .fa.fa-calculator{
     font-size: 90px;
+    color: white;
+    display: block;
+    line-height: 90px;
+    text-align: center;
+    margin-top: 25%;
+    margin-bottom: 4%;
+    text-shadow: 0.4rem 0.4rem 0 rgba(0, 0, 0, 0.33);
+}
+
+.fa.fa-clock-o, .fa.fa-book, .fa.fa-gamepad{
+    font-size: 100px;
+    color: white;
+    display: block;
+    line-height: 100px;
+    text-align: center;
+    margin-top: 25%;
+    text-shadow: 0.4rem 0.4rem 0 rgba(0, 0, 0, 0.33);
 }
 
 .actionbar{
     min-height: 0px;
     display: none;
+}
+
+.appname{
+    display: block;   
+    font-size: 20px;
+    text-shadow: 0.2rem 0.2rem 0 rgba(0, 0, 0, 0.33);
+    color: white;
 }
