@@ -104,6 +104,7 @@
 			self.fileIsModified = ko.observable(isScriptModified);
 			self.fileName = ko.observable("Untitled");
 			self.fileStatus = ko.observable("Stopped");
+			self.fileExtension = ko.observable(".lua");
 
 			// Script operations toolbar item
 			self.isRunning = ko.observable(isScriptRunning);
@@ -168,6 +169,7 @@
 						addConsole("Script started.", "#888888", "fa-play");
 						self.fileStatus("Running");
 						self.isRunning(true);
+						//SetButtonToStop();
 						break;
 					case "scriptStopped":
 						addConsole("Script stopped.", "#888888", "fa-stop");
@@ -259,7 +261,7 @@
 					type: "POST",
 					url: "files/get",
 					cache: false,
-					data: {path: filename, extension: ".lua"},
+					data: {path: filename, extension: self.fileExtension()},
 					success: function(data){
 						// Load script
 							editor.setValue(data);
@@ -267,7 +269,7 @@
 
 							// Update filename and asterisk
 							var filename_no_ext = filename;
-							if(filename_no_ext.slice(-4) == ".lua" || filename_no_ext.slice(-4) == ".LUA"){
+							if(filename_no_ext.slice(-4) == self.fileExtension() || filename_no_ext.slice(-4) == ".LUA"){
 								filename_no_ext = filename_no_ext.slice(0, -4);
 							}
 							self.fileName(filename_no_ext);
@@ -292,13 +294,13 @@
 							path: filename,
 							filedata: luacode,
 							overwrite: 1,
-							extension: ".lua"
+							extension: self.extension()
 						},
 						type: "POST",
 						url: "files/save",
 						success: function(data){
 							var filename_no_ext = filename;
-							if(filename_no_ext.slice(-4) == ".lua" || filename_no_ext.slice(-4) == ".LUA"){
+							if(filename_no_ext.slice(-4) == self.fileExtension() || filename_no_ext.slice(-4) == ".LUA"){
 								filename_no_ext = filename_no_ext.slice(0, -4);
 							}
 							self.fileName(filename_no_ext);
@@ -622,7 +624,7 @@
 		ko.applyBindings(model);
 		model.fileIsModified(false);
 
-		config_file_operations("scripts", ".lua", model.saveFileData, model.loadFileData, model.init);
+		config_file_operations("scripts", self.fileExtension(), model.saveFileData, model.loadFileData, model.init);
 	});
 </script>
 

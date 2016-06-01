@@ -350,17 +350,19 @@ updateData = function(){
 		dataType: "text",
 		type: "POST",
 		url: "/virtual",
-		data: { dataonly: 1 },
+		data: { getdata: 1 },
 		success: function(data){
-			// alert(data);
-			dofs = JSON.parse(data)["data"];
+			//alert(data);
+
+			dofs = JSON.parse(data)["dofs"];
+
 			//alert(dofs["l_eb_inner"]);
 			checkData();
 			updateVirtualModel();
 			$("#virtualModelCanvas").drawLayers();
 		}
 	});
-	setTimeout(updateData,500);
+	setTimeout(updateData, 50);
 }
 
 $(document).ready(function(){

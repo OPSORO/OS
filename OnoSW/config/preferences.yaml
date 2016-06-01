@@ -1,12 +1,12 @@
 general:
   robot_name: Ono
-  password: RobotOno
+  password: opsoro
 
 audio:
   master_volume: 50
   tts_engine: picotts
 
 wireless:
-  ssid: Cesar's Ono
-  password: RobotOno
+  ssid: OpSoRo_Robot
+  password: opsoro
   channel: 6
