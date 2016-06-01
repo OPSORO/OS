@@ -1,0 +1,114 @@
+{% extends "page.html" %}
+
+{% block head %}
+{{ super() }}
+<style>
+#errors .alert-box:first-child {
+	margin-top: 2rem;
+}
+.fullscreen {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+}
+.actionbar .filebox {
+	color: #fff;
+	display: inline-block;
+}
+.actionbar .filebox .filename {
+	font-weight: bold;
+	text-transform: uppercase;
+}
+.actionbar .filebox .status {
+	font-size: 0.75rem;
+	font-weight: bold;
+	text-transform: uppercase;
+}
+/*.fa.fa-grip-large:before {
+	content: "\f142 \202F \f142 \202F \f142 \202F \f142 \202F";
+}*/
+.gripper{
+	background: url(gripper.png) no-repeat;
+	/*width: 17px;
+	height: 33px;*/
+	width: 1.25rem;
+	height: 2.5rem;
+	margin-bottom: 1.8rem;
+	margin-right: 0.5rem;
+	display: inline-block;
+	cursor: ns-resize;
+	background-size: 100%;
+	/*border: 1px solid #0f0;*/
+}
+.tts-switch {
+	display: inline;
+}
+.tts-switch label{
+	background-color: #4D4D4D;
+}
+.tts-switch input:checked + label {
+	background-color: #4D4D4D;
+}
+.tts-switch .switch-on {
+	position: absolute;
+	left: -3.3rem;
+	top: 0.5rem;
+	color: white;
+	font-size: 1rem;
+}
+.tts-switch .switch-off {
+	position: absolute;
+	left: -1.6rem;
+	top: 0.5rem;
+	color: white;
+	font-size: 1rem;
+}
+.sliderrow {
+	margin-bottom: 1rem !important;
+}
+.sliderrow:last-child{
+	margin-bottom: 0 !important;
+}
+.sliderrow .range-slider{
+	margin: 0;
+}
+.sliderrow .numberstop {
+	font-size: 0.75rem;
+	line-height: 1rem;
+	font-weight: bold;
+	padding: 0 0 0.5rem 0;
+}
+.sliderrow .numbersbottom {
+	font-size: 0.75rem;
+	line-height: 1rem;
+	font-weight: 300;
+	padding: 0.5rem 0 0 0;
+}
+</style>
+{% endblock %}
+
+{% block page_content %}
+{{ super() }}
+
+<fieldset>
+	<legend><span class="fa fa-commenting"></span> Popup demo</legend>
+  <div id="virtualModelDiv" style= "z-index: 100; position: relative; ">
+  		<canvas id="virtualModelCanvas" width="600" height="600"></canvas>
+  </div>
+</fieldset>
+
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+	<script>
+	var data = {{ data|tojson|safe }};
+	</script>
+  <script src="static/js/vendor/jquery.js"></script>
+  <script src="static/js/foundation.min.js"></script>
+  <script src="static/js/jcanvas.min.js"></script>
+  <script src="static/js/numeral.min.js"></script>
+  <script src="static/js/virtual.js"></script>
+{% endblock %}

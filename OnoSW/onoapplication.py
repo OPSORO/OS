@@ -1,11 +1,10 @@
-from flask import Flask, request, render_template, redirect, url_for, flash, session, jsonify, send_from_directory
+from flask import Flask, request, render_template, redirect, url_for, flash, session, jsonify
 from flask.ext.login import LoginManager, login_user, logout_user, current_user, login_required
-from flask.ext.cors import CORS, cross_origin
 from tornado.wsgi import WSGIContainer
 from tornado.ioloop import IOLoop
 import tornado.web
-import tornado.httpserver
 from sockjs.tornado import SockJSRouter, SockJSConnection
+from onoadminuser import OnoAdminUser
 from functools import wraps, partial
 import hardware
 import expression
@@ -18,12 +17,7 @@ import threading
 import base64
 import time
 import logging
-
-import glob
-import shutil
-
-from console_msg import *
-from preferences import Preferences
+from consolemsg import *
 try:
 	import simplejson as json
 	print_info("Using simplejson")
@@ -32,38 +26,13 @@ except ImportError:
 	print_info("Simplejson not available, falling back on json")
 
 
-
-dof_positions = {}
 # Helper function
 get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 
-# Helper class to deal with login
-class AdminUser(object):
-	def is_authenticated(self):
-		return True
-
-	def is_active(self):
-		return True
-
-	def is_anonymous(self):
-		return False
-
-	def get_id(self):
-		return "admin"
-
-	def is_admin(self):
-		return True
-
-class OpSoRoApplication(object):
+class OnoApplication(object):
 	def __init__(self):
-		# title
-		self.title = "OpSoRo Web Interface"
-		self.robotName = "Ono"
-		self.dataPath = "data/"
-
 		# Create flask instance for webserver
 		self.flaskapp = Flask(__name__)
-
 
 		# Setup key for sessions
 		self.flaskapp.secret_key = "5\x075y\xfe$\x1aV\x1c<A\xf4\xc1\xcfst0\xa49\x9e@\x0b\xb2\x17"
@@ -83,7 +52,7 @@ class OpSoRoApplication(object):
 		self.sockjs_token = None
 
 		# Setup app system
-		self.plugin_base = pluginbase.PluginBase(package="server.apps")
+		self.plugin_base = pluginbase.PluginBase(package="onoapplication.apps")
 		self.plugin_source = self.plugin_base.make_plugin_source(searchpath=[get_path("./apps")])
 
 		self.apps = {}
@@ -147,7 +116,7 @@ class OpSoRoApplication(object):
 		@self.login_manager.user_loader
 		def load_user(id):
 			if id == "admin":
-				return AdminUser()
+				return OnoAdminUser()
 			else:
 				return None
 
@@ -160,15 +129,11 @@ class OpSoRoApplication(object):
 	def render_template(self, template, **kwargs):
 		kwargs["toolbar"] = {}
 
-		kwargs["title"] = self.title
 		# Set toolbar variables
 		if self.activeapp in self.apps:
 			kwargs["toolbar"]["active"] = True
 			kwargs["toolbar"]["full_name"] = self.apps[self.activeapp].config["full_name"]
 			kwargs["toolbar"]["icon"] = self.apps[self.activeapp].config["icon"]
-			kwargs["title"] += " - %s" % self.apps[self.activeapp].config["full_name"]
-			kwargs["page_icon"] = self.apps[self.activeapp].config["icon"]
-			kwargs["page_caption"] = self.apps[self.activeapp].config["full_name"]
 		else:
 			kwargs["toolbar"]["active"] = False
 
@@ -179,9 +144,9 @@ class OpSoRoApplication(object):
 
 	def run(self):
 		# Setup SockJS
-		class OpSoRoSocketConnection(SockJSConnection):
+		class OnoSocketConnection(SockJSConnection):
 			def __init__(conn, *args, **kwargs):
-				super(OpSoRoSocketConnection, conn).__init__(*args, **kwargs)
+				super(OnoSocketConnection, conn).__init__(*args, **kwargs)
 				conn._authenticated = False
 				conn._activeapp = self.activeapp
 
@@ -242,16 +207,11 @@ class OpSoRoApplication(object):
 				return conn.send(json.dumps(msg))
 
 		flaskwsgi = WSGIContainer(self.flaskapp)
-		socketrouter = SockJSRouter(OpSoRoSocketConnection, "/sockjs")
+		socketrouter = SockJSRouter(OnoSocketConnection, "/sockjs")
 
 		tornado_app = tornado.web.Application(socketrouter.urls + [(r".*", tornado.web.FallbackHandler, {"fallback": flaskwsgi})] )
 		tornado_app.listen(80)
 
-		# http_server = tornado.httpserver.HTTPServer(tornado_app, ssl_options={
-		# 	"certfile": "/etc/ssl/certs/server.crt",
-		# 	"keyfile": "/etc/ssl/private/server.key",
-		# 	})
-		# http_server.listen(443)
 		try:
 			IOLoop.instance().start()
 		except KeyboardInterrupt:
@@ -326,18 +286,19 @@ class OpSoRoApplication(object):
 					"page_icon": self.apps[appname].config["icon"],
 					"page_caption": self.apps[appname].config["full_name"]
 				}
-				data["title"] = self.title
+
 				if self.activeapp in self.apps:
 					# Another app is active
 					data["toolbar"]["active"] = True
 					data["toolbar"]["full_name"] = self.apps[self.activeapp].config["full_name"]
 					data["toolbar"]["icon"] = self.apps[self.activeapp].config["icon"]
-					data["title"] += " - %s" % self.apps[self.activeapp].config["full_name"]
+					data["title"] = "Ono Web Interface - %s" % self.apps[self.activeapp].config["full_name"]
 				else:
 					# No app is active
 					data["toolbar"]["active"] = False
+					data["title"] = "Ono Web Interface"
 
-				return render_template("app_not_active.html", **data)
+				return render_template("appnotactive.html", **data)
 		return wrapper
 
 	def app_api(self, f):
@@ -404,24 +365,17 @@ class OpSoRoApplication(object):
 
 	def setup_urls(self):
 		protect = self.protected_view
-
-		self.flaskapp.add_url_rule("/",									"index",		protect(self.page_index))
-		self.flaskapp.add_url_rule("/login",							"login",		self.page_login, methods=["GET", "POST"])
-		self.flaskapp.add_url_rule("/logout",							"logout",		self.page_logout)
-		self.flaskapp.add_url_rule("/preferences",						"preferences",	protect(self.page_preferences), methods=["GET", "POST"])
-		self.flaskapp.add_url_rule("/sockjstoken",						"sockjstoken",	self.page_sockjstoken)
-		self.flaskapp.add_url_rule("/shutdown",							"shutdown",		protect(self.page_shutdown))
-		self.flaskapp.add_url_rule("/closeapp",							"closeapp",		protect(self.page_closeapp))
-		self.flaskapp.add_url_rule("/openapp/<appname>",				"openapp",		protect(self.page_openapp))
-		self.flaskapp.add_url_rule("/app/<appname>/files/<action>",		"files",		protect(self.page_files), methods=["GET", "POST"])
-
-		self.flaskapp.add_url_rule("/virtual",							"virtual",		self.page_virtual)
-
-		self.flaskapp.context_processor(self.inject_opsoro_vars)
+		self.flaskapp.add_url_rule("/",					"index",		protect(self.page_index))
+		self.flaskapp.add_url_rule("/login",			"login",		self.page_login, methods=["GET", "POST"])
+		self.flaskapp.add_url_rule("/logout",			"logout",		self.page_logout)
+		self.flaskapp.add_url_rule("/sockjstoken",		"sockjstoken",	self.page_sockjstoken)
+		self.flaskapp.add_url_rule("/shutdown",			"shutdown",		protect(self.page_shutdown))
+		self.flaskapp.add_url_rule("/closeapp",			"closeapp",		protect(self.page_closeapp))
+		self.flaskapp.add_url_rule("/openapp/<appname>","openapp",		protect(self.page_openapp))
 
 	def page_index(self):
 		data = {
-			"title":		self.title,
+			"title":		"Ono Web Interface",
 			"apps":			[]
 		}
 
@@ -437,12 +391,12 @@ class OpSoRoApplication(object):
 
 	def page_login(self):
 		if request.method == "GET":
-			return render_template("login.html", title=self.title + " - Login")
+			return render_template("login.html", title="Ono Web Interface - Login")
 
 		password = request.form["password"]
-
-		if password == Preferences.get("general", "password", default="RobotOpSoRo"):
-			login_user(AdminUser())
+		# TODO: Bad practice, fix it
+		if password == "RobotOno":
+			login_user(OnoAdminUser())
 			self.active_session_key = os.urandom(24)
 			session["active_session_key"] = self.active_session_key
 			return redirect(url_for("index"))
@@ -455,51 +409,6 @@ class OpSoRoApplication(object):
 		session.pop("active_session_key", None)
 		flash("You have been logged out.")
 		return redirect(url_for("login"))
-
-	def page_preferences(self):
-		if request.method == "POST":
-			# Update preferences
-			Preferences.set("general", "robot_name", request.form["robotName"])
-
-			if request.form["robotPassword"] == request.form["robotPasswordConfirm"]:
-				if request.form["robotPassword"] != "":
-					Preferences.set("general", "password", request.form["robotPassword"])
-
-			Preferences.set("audio", "master_volume", request.form.get("volume", type=int))
-			Preferences.set("audio", "tts_engine", request.form["ttsEngine"])
-
-			Preferences.set("wireless", "ssid", request.form["wirelessSsid"])
-			Preferences.set("wireless", "channel", request.form.get("wirelessChannel", type=int))
-
-			if request.form.get("wirelessSamePass", None) == "on":
-				# Set to same password
-				Preferences.set("wireless", "password", Preferences.get("general", "password", "RobotOpSoRo"))
-			else:
-				if request.form["wirelessPassword"] == request.form["wirelessPasswordConfirm"]:
-					if request.form["wirelessPassword"] != "":
-						Preferences.set("wireless", "password", request.form["wirelessPassword"])
-
-			flash("Preferences have been saved.", "success")
-			Preferences.save_prefs()
-			Preferences.apply_prefs(update_audio=True, update_wireless=True, restart_wireless=False)
-
-		# Prepare json string with prefs data
-		prefs = {
-			"general": {
-				"robotName": Preferences.get("general", "robot_name", self.robotName)
-			},
-			"audio": {
-				"volume": Preferences.get("audio", "master_volume", 66),
-				"ttsEngine": Preferences.get("audio", "tts_engine", "picotts")
-			},
-			"wireless": {
-				"ssid": Preferences.get("wireless", "ssid", self.robotName + "_AP"),
-				"samePassword": Preferences.get("general", "password", "RobotOpSoRo") == Preferences.get("wireless", "password", "RobotOpSoRo"),
-				"channel": Preferences.get("wireless", "channel", "1")
-			}
-		}
-
-		return self.render_template("preferences.html", title=self.title + " - Preferences", page_caption="Preferences", page_icon="fa-cog", closebutton=False, prefs=prefs)
 
 	def page_sockjstoken(self):
 		if current_user.is_authenticated():
@@ -518,7 +427,7 @@ class OpSoRoApplication(object):
 		<p>
 		Shutting down...<br/> Please wait 60 seconds before cutting power.<br/>
 		<span class="note">
-			<strong>Note:</strong> Never power off """ + Preferences.get("general", "robot_name", self.robotName) + """ without completely shutting down first! Cutting power without properly shutting down the operating system can result in a corrupt file system.
+			<strong>Note:</strong> Never power off Ono without completely shutting down first! Cutting power without properly shutting down the operating system can result in a corrupt file system.
 		</span>
 		"""
 		self.stop_current_app()
@@ -548,151 +457,3 @@ class OpSoRoApplication(object):
 			return redirect("/app/%s/" % appname)
 		else:
 			return redirect(url_for("index"))
-
-	def page_files(self, appname, action):
-		#
-		if self.activeapp != appname:
-			return redirect("/openapp/%s" % appname)
-		deafultPath = self.dataPath + appname
-		folderPath = deafultPath + "/"
-		appSpecificFolderPath = ""
-		extension = ".*"
-		saveFileView = 0
-		onlyFolders = 0
-
-		if request.method == "POST":
-			givenPath = request.form.get("path", type=str, default=None)
-			if givenPath != None:
-				if len(givenPath) > 1 and givenPath[-1] == ".":
-					givenPath = givenPath[0:-1]
-				givenPath = folderPath + givenPath
-
-				extension = request.form.get("extension", type=str, default="")
-				if givenPath[-len(extension):] != extension:
-					givenPath = givenPath + extension
-
-				print_info("Files: " + action + ": " + givenPath)
-
-				# Make sure the file operations stay within the data folder
-				if givenPath.find("..") >= 0:
-					givenPath = None
-
-			if action == "get":
-				if givenPath == None:
-					return json.dumps({'success':False}), 200, {'ContentType':'application/json'}
-				givenPath.replace("%2F", "/")
-				return send_from_directory(get_path(""), givenPath)
-
-			if action == "delete":
-				if givenPath == None:
-					return json.dumps({'success':False}), 200, {'ContentType':'application/json'}
-
-				givenPath = get_path(givenPath)
-
-				deleted = False
-
-				if os.path.isdir(givenPath):
-					shutil.rmtree(givenPath)
-					deleted = True
-
-				if os.path.isfile(givenPath):
-					os.remove(os.path.join(get_path(""), givenPath))
-					deleted = True
-
-				if deleted:
-					return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
-				else:
-					return json.dumps({'success':False}), 200, {'ContentType':'application/json'}
-
-			if action == "save":
-				if givenPath == None:
-					return json.dumps({'success':False}), 200, {'ContentType':'application/json'}
-
-				filedata = request.form.get("filedata", type=str, default="")
-				overwrite = request.form.get("overwrite", type=int, default=0)
-
-				givenPath = get_path(givenPath)
-
-				if overwrite == 0:
-					if os.path.isfile(givenPath):
-						return json.dumps({'success':False}), 200, {'ContentType':'application/json'}
-
-				with open(givenPath, "w") as f:
-					f.write(filedata)
-
-				return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
-
-			if action == "newfolder":
-				if givenPath == None:
-					return json.dumps({'success':False}), 200, {'ContentType':'application/json'}
-
-				givenPath = get_path(givenPath)
-				if not os.path.exists(givenPath):
-					os.makedirs(givenPath)
-				else:
-					return json.dumps({'success':False}), 200, {'ContentType':'application/json'}
-
-				return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
-
-			appSpecificFolderPath = request.form.get("path", type=str, default="")
-			extension = request.form.get("extension", type=str, default=extension)
-			onlyFolders = request.form.get("onlyfolders", type=int, default=0)
-			saveFileView = request.form.get("savefileview", type=int, default=0)
-
-			while len(appSpecificFolderPath) > 0 and appSpecificFolderPath[0] == "/":
-				appSpecificFolderPath = appSpecificFolderPath[1:]
-
-			folderPath = folderPath + appSpecificFolderPath
-
-			if len(appSpecificFolderPath) > 0 and appSpecificFolderPath[-1] != "/":
-				appSpecificFolderPath = appSpecificFolderPath + "/"
-
-			if folderPath[-1] != "/":
-				folderPath = folderPath + "/"
-			# Security check, should stay within data folder
-			if folderPath.find("..") >= 0:
-				folderPath = deafultPath
-			if appSpecificFolderPath.find("..") >= 0:
-				appSpecificFolderPath = ""
-
-		data = {
-			"path": appSpecificFolderPath,
-			"folders": [],
-			"files": []
-		}
-		# Only add a previous path if it is not in the base folder
-		if appSpecificFolderPath[0:-1] != "":
-			data["previouspath"] = appSpecificFolderPath[0:appSpecificFolderPath.rfind("/", 0, len(appSpecificFolderPath)-1)] + "/"
-			if appSpecificFolderPath.rfind("/", 0, len(appSpecificFolderPath)-1) < 0:
-				data["previouspath"] = "/"
-
-		foldernames = glob.glob(get_path(folderPath + "*"))
-		for foldername in foldernames:
-			if ("." not in os.path.split(foldername)[1]):
-				data["folders"].append(os.path.split(foldername)[1] + "/")
-		data["folders"].sort()
-
-		if (saveFileView == 1):
-			data["savefileview"] = saveFileView
-
-		if (onlyFolders != 1):
-			filenames = glob.glob(get_path(folderPath + "*" + extension))
-			for filename in filenames:
-				if ("." in os.path.split(filename)[1]):
-					data["files"].append(os.path.split(filename)[1])
-			data["files"].sort()
-		else:
-			data["onlyfolders"] = onlyFolders
-
-		return self.render_template("filelist.html", title=self.title + " - Files", page_caption=appSpecificFolderPath, page_icon="fa-folder", **data)
-
-
-	def page_virtual(self):
-		print_info("Virtual model")
-		global dof_positions
-		data = dof_positions
-		return self.render_template("virtual.html", title="Virtual Model", page_caption="Virtual model", page_icon="fa-smile-o", **data)
-
-	def inject_opsoro_vars(self):
-		opsoro = {"robot_name": Preferences.get("general", "robot_name", self.robotName)}
-		return dict(opsoro=opsoro)

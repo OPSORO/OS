@@ -1,0 +1,22 @@
+{% extends "page.html" %}
+
+{% block closebutton %}<a href="#" data-reveal-id="CloseAppModal" class="closebutton"><span class="fa fa-close"></span></a>{% endblock %}
+
+{% block modals %}
+{{ super() }}
+
+<div id="CloseAppModal" class="reveal-modal small" data-reveal>
+	<div class="titlebar">
+		<a class="close-reveal-modal"><span class="fa fa-close"></span></a>
+		<span class="fa fa-power-off"></span> Confirm
+	</div>
+	<div class="content">
+		<p>
+			Are you sure you wish to close this app?
+		</p>
+		<div class="text-center">
+			<a href="/closeapp" class="button"><span class="fa fa-close"></span> Yes, close app.</a>
+		</div>
+	</div>
+</div>
+{% endblock %}
