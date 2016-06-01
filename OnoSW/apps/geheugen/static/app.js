@@ -1,24 +1,16 @@
 
 $(document).ready(function(){
     var twee = ["blauw", "groen", "rood", "geel"];
-    var kleuren = ["#00a8ec","#22b573","#df0024","#fcd016"]
+    var kleuren = ["#00a8ec","#22b573","#df0024","#fcd016"];
     var antwoorden = [];
     var vraag = [];
     var score = 0;
     var niveau = 0;
     var text;
+    var startOpnieuw = 0;
 
 
-    function start() { 
-        var elems = document.getElementsByClassName('highscores');        
-        var elemsSettings = document.getElementsByClassName('gamesettings');
-
-        console.log(elems);
-        if (elems[0] !== "div.highscores"){
-            elems[0].style.display = "hidden";            
-            //elemsSettings[0].style.display = "block";
-        }
-        //$(".points").html("0 punten");
+    function start() {
         for (i = 0; i < niveau + 2; i++) {
             var index = Math.floor(Math.random() * 4);
             var rand = twee[index];
@@ -37,7 +29,6 @@ $(document).ready(function(){
                 
         var vraagske = document.getElementsByClassName('question'); 
                 console.log(kleuren[0]);
-                vraagske.style.color = kleuren[0];
                 console.log("vraag: " + vraag);
             }
         }
@@ -105,38 +96,20 @@ $(document).ready(function(){
                     localStorage.setItem("names", JSON.stringify(test));
                         
                     var elems = document.getElementsByClassName('highscores');        
-                    var elemsSettings = document.getElementsByClassName('gamesettings');
+                    var elemsSettings = document.getElementsByClassName('gamesettings');                    
+                    var pointsdiv = document.getElementsByClassName('points');
+
                     console.log("laatste: " + elemsSettings);
                     for (i = 0; i < 10; i++) {   
                         elemsSettings[0].style.display = "none";                        
-                        elems[0].style.display = "inline-block";
-
+                        elems[0].style.display = "inline-block";                        
+                        pointsdiv[0].style.display = "none";
+                        startOpnieuw = 1;
                         $(".high.high"+i).html(test[i][1]);
                         $(".high.score"+i).html(test[i][0]);
-
                     }
-
-
                 }
-
-                //alert("fout");
-//                if(niveau = 1){
-//                    twee.pop();
-//                    niveau = 0;
-//                }
-//                if(niveau = 2){
-//                    twee.pop();
-//                    twee.pop();
-//                    niveau = 0;
-//
-//                }
-//                if(niveau = 3){
-//                    twee.pop();
-//                    twee.pop();
-//                    twee.pop();
-//                    niveau = 0;
-//
-//                }
+                
                 niveau = 0;
                 score = 0;
             }
@@ -149,9 +122,35 @@ $(document).ready(function(){
 
         }
     }
+    
+    function zethighscoresGoed(){
+        var elems = document.getElementsByClassName('highscores');        
+        var elemsSettings = document.getElementsByClassName('gamesettings');
+
+        console.log(elems);
+        if (elems[0] !== null){
+            elemsSettings[0].style.display = "hidden";
+        }
+    }
+    
+    function ZetSettingsGoed(){
+        var elems = document.getElementsByClassName('highscores');        
+        var elemsSettings = document.getElementsByClassName('gamesettings');
+
+        console.log(elems);
+        if (elems[0] !== null){
+            elems[0].style.display = "none";
+            elemsSettings[0].style.display = "block";
+        }
+        
+        start();
+    }
 
 
-    $(".start").click(function(){
+    $(".button.start").click(function(){          
+        if(startOpnieuw == 1){
+            window.location.reload();
+        }
         start();
     });
 

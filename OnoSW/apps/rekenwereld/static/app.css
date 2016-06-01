@@ -84,3 +84,33 @@
     width: 970px;
     text-align: center;
 }
+
+.points{
+	color: white;
+    width: 800px;
+    text-align: right;
+    float: right;
+    line-height: 4rem;
+    font-size: 2rem;
+}
+
+.high{
+	font-size: 2rem;
+	color: #4d4d4d;
+	width: 200px;
+}
+
+.highscore{
+	display: none;
+}
+
+li{	
+	font-size: 2rem;
+	color: #4d4d4d;
+	width: 800px;
+}
+
+ol{
+	margin-left: 3rem;
+}
+
