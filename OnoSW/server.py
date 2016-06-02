@@ -1,5 +1,6 @@
 from flask import Flask, request, render_template, redirect, url_for, flash, session, jsonify, send_from_directory
-from flask.ext.login import LoginManager, login_user, logout_user, current_user, login_required
+from flask_login import LoginManager, login_user, logout_user, current_user, login_required
+from werkzeug.exceptions import default_exceptions
 from tornado.wsgi import WSGIContainer
 from tornado.ioloop import IOLoop
 import tornado.web
@@ -273,7 +274,7 @@ class OpSoRoApplication(object):
 	def protected_view(self, f):
 		@wraps(f)
 		def wrapper(*args, **kwargs):
-			if current_user.is_authenticated():
+			if current_user.is_authenticated:
 				if current_user.is_admin():
 					if session["active_session_key"] == self.active_session_key:
 						# the actual page
@@ -297,7 +298,7 @@ class OpSoRoApplication(object):
 		@wraps(f)
 		def wrapper(*args, **kwargs):
 			# Protected page
-			if current_user.is_authenticated():
+			if current_user.is_authenticated:
 				if current_user.is_admin():
 					if session["active_session_key"] != self.active_session_key:
 						logout_user()
@@ -344,7 +345,7 @@ class OpSoRoApplication(object):
 		@wraps(f)
 		def wrapper(*args, **kwargs):
 			# Protected page
-			if current_user.is_authenticated():
+			if current_user.is_authenticated:
 				if current_user.is_admin():
 					if session["active_session_key"] != self.active_session_key:
 						logout_user()
@@ -414,6 +415,9 @@ class OpSoRoApplication(object):
 		self.flaskapp.add_url_rule("/app/<appname>/files/<action>",		"files",		protect(self.page_files), methods=["GET", "POST"])
 
 		self.flaskapp.add_url_rule("/virtual",							"virtual",		self.page_virtual, methods=["GET", "POST"])
+
+		for _exc in default_exceptions:
+			self.flaskapp.errorhandler(_exc)(self.show_errormessage)
 
 		self.flaskapp.context_processor(self.inject_opsoro_vars)
 
@@ -500,7 +504,7 @@ class OpSoRoApplication(object):
 		return self.render_template("preferences.html", title=self.title + " - Preferences", page_caption="Preferences", page_icon="fa-cog", closebutton=False, prefs=prefs)
 
 	def page_sockjstoken(self):
-		if current_user.is_authenticated():
+		if current_user.is_authenticated:
 			if current_user.is_admin():
 				if session["active_session_key"] == self.active_session_key:
 					# Valid user, generate a token
@@ -684,14 +688,20 @@ class OpSoRoApplication(object):
 
 		return self.render_template("filelist.html", title=self.title + " - Files", page_caption=appSpecificFolderPath, page_icon="fa-folder", **data)
 
-
 	def page_virtual(self):
 		if request.method == "POST":
-			dataOnly = request.form.get("dataonly", type=str, default=0)
-			if dataOnly:
-				return json.dumps({'success':False, 'data': Expression.dof_values})
+			dataOnly = request.form.get("getdata", type=int, default=0)
+			if dataOnly == 1:
+				return json.dumps({'success':False, 'dofs': Expression.dof_values})
 		# 		return Expression.dof_values
+			frameOnly = request.form.get("frame", type=int, default=0)
+			if frameOnly == 1:
+				#return self.render_template("virtual.html", title="Virtual Model", page_caption="Virtual model", page_icon="fa-smile-o", dofs=Expression.dof_values)
+				pass
 		return self.render_template("virtual.html", title="Virtual Model", page_caption="Virtual model", page_icon="fa-smile-o", dofs=Expression.dof_values)
+
+	def show_errormessage(self, error):
+		return redirect("http://play.opsoro.be/")
 
 	def inject_opsoro_vars(self):
 		opsoro = {"robot_name": Preferences.get("general", "robot_name", self.robotName)}
