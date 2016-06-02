@@ -238,12 +238,12 @@
 }
 .voiceline.unlocked .gripper{
 	background: url("gripper.png") no-repeat;
-	width: 1.25rem;
+	width: 2rem;
 	height: 2.5rem;
 	cursor: move;
 	background-size: 100%;
 	position: absolute;
-	left: 0;
+	left: -0.5rem;
 	top: 1.5rem;
 }
 

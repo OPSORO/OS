@@ -353,7 +353,7 @@ body {
 }
 
 .reveal-modal {
-	position: fixed;
+	position: absolute;
 	top: 2rem;
 
 	background: #ffffff;
