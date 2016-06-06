@@ -15,38 +15,103 @@ $(document).ready(function(){
 
     var score = 0;
     var test = [];
-
+    var person = 0;
     var level = 0;
 
+    var knop = 0;
+    var klikkenOfScherm = 1;
+
+    var antwoordKnop = 0;
+
     $(".maths").hide();
+    $(".levelselect").hide();
+    $(".back").hide();
+    $("#verander").hide();
+
+    $("#invoerKnop").click(function(){
+        console.log("hoi");
+        $(".levelselect").show();
+        $(".back").show();
+        $("#verander").show();
+        $("#invoerKnop").hide();
+        $("#naam").prop('disabled', true);
+        person = $( "#naam" ).val();
+        //$("#invoerKnop").text("verander");
+
+
+    });
+
+    $("#verander").click(function(){
+        $("#naam").prop('disabled', false);
+        $("#verander").hide();
+        $("#invoerKnop").show();
+    });
+
+
+
+    $('#naam').change(function() {
+
+        $('#invoerKnop').prop('disabled', false);
+    });
+
     function start() {
-        for (i = 0; i < 3; i++) {
 
-            var x = Math.floor((Math.random() * 10) + 1);
-            var y = Math.floor((Math.random() * 10) + 1);
-            teken = tekens[Math.floor(Math.random() * tekens.length)];
 
-            if(teken === "-" ){
-                antwoord = (x-y);
-                //if((antwoord) > 0){
+        var x = Math.floor((Math.random() * 10) + 1);
+        var y = Math.floor((Math.random() * 10) + 1);
+        teken = tekens[Math.floor(Math.random() * tekens.length)];
+
+        if(teken === "-" ){
+            antwoord = (x-y);
+            if((antwoord) > 0){
+                som = [];
                 som.push(x,teken, y,antwoord);
+                mogelijkeAntwoorden = [];
                 mogelijkeAntwoorden.push(antwoord);
 
-                //}else{
-                //  start();
-                //}
-            }
-            if(teken === "+"){
-                antwoord = (x+y);
-                //if((antwoord) < 10){
-                som.push(x,teken, y,antwoord);
-                mogelijkeAntwoorden.push(antwoord);
+                (function test() {
+                    var z = Math.floor((Math.random() * 10) + 1);
+                    var a = Math.floor((Math.random() * 10) + 1);
+                    if(antwoord != z && z != a && antwoord != a){
+                        mogelijkeAntwoorden.push(z,a);
+                    }else{
+                        test();
+                    }
+                }())
 
-                //}else{
-                //    start();
-                //}
+
+
+            }else{
+                som = [];
+                mogelijkeAntwoorden = [];
+                start();
             }
         }
+        if(teken === "+"){
+            antwoord = (x+y);
+            if((antwoord) < 10){
+                som = [];
+                som.push(x,teken, y,antwoord);
+                mogelijkeAntwoorden = [];
+                mogelijkeAntwoorden.push(antwoord);
+
+                (function test() {
+                    var z = Math.floor((Math.random() * 10) + 1);
+                    var a = Math.floor((Math.random() * 10) + 1);
+                    if(antwoord != z && z != a && antwoord != a){
+                        mogelijkeAntwoorden.push(z,a);
+                    }else{
+                        test();
+                    }
+                }())
+            }else{
+
+                som = [];
+                mogelijkeAntwoorden = [];
+                start();
+            }
+        }
+
     }
 
 
@@ -96,7 +161,7 @@ $(document).ready(function(){
         //antwoordArray();
         console.log("term2 = "+mogelijkeAntwoorden);
 
-        mogelijkeAntwoorden = [];
+
     }
     $(".level1").click(function(){
         level = 1;
@@ -112,16 +177,19 @@ $(document).ready(function(){
         $(".maths").hide();
         $(".highscore").hide();
 
-        var antwoord = 0;
-        var vraagNummer = 0;
-
+        antwoord = 0;
+        vraagNummer = 0;
+        score = 0;
+        som = [];
+        mogelijkeAntwoorden = [];
     });
 
     $(".answer").click(function(){
+        knop = 0;
         text = $(this).text();
         console.log("antw = "+som[3]);
         if(som[3]== text){
-            alert("juist");
+            console.log("juist");
             som = [];
             score++;
             vraagNummer++;
@@ -139,7 +207,7 @@ $(document).ready(function(){
                 Tafels();
             }
         }else{
-            alert("fout");
+            console.log("fout");
             som = [];
             vraagNummer++;
             if(vraagNummer == 10){
@@ -168,21 +236,24 @@ $(document).ready(function(){
             localstorageNaam = "namesRekenenTafels";
         }
         if (localStorage.getItem(localstorageNaam) === null) {
-            var person = prompt("Wat is jouw naam?", "naam");
+
             var names = [];
             var a = [];
             a.push(score,person);
             names.push(a);
 
             localStorage.setItem(localstorageNaam, JSON.stringify(names));
-
+            $(".score"+0).html(names[0][1]);
+            $(".high"+0).html(names[0][0]);
+            $(".highscore").show();
+            $(".maths").hide();
 
         }else {
             var test;
             //if(score > 0){
             var storedNames = JSON.parse(localStorage.getItem(localstorageNaam));
 
-            var person = prompt("Wat is jouw naam?", "naam");
+
             var a = [];
             a.push(score,person);
 
@@ -205,17 +276,17 @@ $(document).ready(function(){
 
                     $(".high"+i).html(test[i][1]);
                     $(".score"+i).html(test[i][0]);
-                    $(".maths").hide();
                     $(".highscore").show();
-
+                    $(".maths").hide();
                 }
             }else{
                 for (i = 0; i < 10; i++) {
 
                     $(".high"+i).html(test[i][1]);
                     $(".score"+i).html(test[i][0]);
-                    $(".maths").hide();
                     $(".highscore").show();
+                    $(".maths").hide();
+
 
                 }
             }
@@ -224,63 +295,72 @@ $(document).ready(function(){
 
     }
 
-    //$(".start").click(function(){
-    //
-    //    test.push(start());
-    //    console.log("test = "+ test);
-    //    start();
-    //    console.log("test");
-    //    var vraag = x + teken + y;
-    //    //console.log(x);
-    //    //console.log(y);
-    //    //console.log(x + y );
-    //    // console.log(vraag);
-    //
-    //    if(teken == "-" ){
-    //        console.log(vraag);
-    //        console.log("antwoord="+ (x - y)  );
-    //    }
-    //    if(teken == "+"){
-    //        console.log(vraag);
-    //        console.log("antwoord="+ (x + y)  );
-    //    }
-    //
-    //});
+
 
 
     function startTot100() {
 
-        for (i = 0; i < 3; i++) {
 
-            var x = Math.floor((Math.random() * 100) + 1);
-            var y = Math.floor((Math.random() * 100) + 1);
-            teken = tekens[Math.floor(Math.random() * tekens.length)];
 
-            if(teken === "-" ){
-                antwoord = (x-y);
-                //if((antwoord) > 0){
+        var x = Math.floor((Math.random() * 100) + 1);
+        var y = Math.floor((Math.random() * 100) + 1);
+        teken = tekens[Math.floor(Math.random() * tekens.length)];
+
+        if(teken === "-" ){
+            antwoord = (x-y);
+            if((antwoord) > 0){
+                //hier is de fout !!!
+
+                som = [];
                 som.push(x,teken, y,antwoord);
+                mogelijkeAntwoorden = [];
                 mogelijkeAntwoorden.push(antwoord);
 
-                //}else{
-                //  start();
-                //}
-            }
-            if(teken === "+"){
-                antwoord = (x+y);
-                //if((antwoord) < 10){
-                som.push(x,teken, y,antwoord);
-                mogelijkeAntwoorden.push(antwoord);
-
-                //}else{
-                //    start();
-                //}
+                (function test() {
+                    var z = Math.floor((Math.random() * 100) + 1);
+                    var a = Math.floor((Math.random() * 100) + 1);
+                    if(antwoord != z && z != a && antwoord != a){
+                        mogelijkeAntwoorden.push(z,a);
+                    }else{
+                        test();
+                    }
+                }())
+            }else{
+                som = [];
+                teken = 0;
+                mogelijkeAntwoorden = [];
+                startTot100();
             }
         }
+        if(teken === "+"){
+            antwoord = (x+y);
+            if((antwoord) < 100){
+                som = [];
+                som.push(x,teken, y,antwoord);
+                mogelijkeAntwoorden = [];
+                mogelijkeAntwoorden.push(antwoord);
+                (function test() {
+                    var z = Math.floor((Math.random() * 100) + 1);
+                    var a = Math.floor((Math.random() * 100) + 1);
+                    if(antwoord != z && z != a && antwoord != a){
+                        mogelijkeAntwoorden.push(z,a);
+                    }else{
+                        test();
+                    }
+                }())
+            }else{
+                som = [];
+                mogelijkeAntwoorden = [];
+                startTot100();
+            }
+        }
+
 
     }
 
     function Tot100(){
+        som = [];
+        mogelijkeAntwoorden = [];
         startTot100();
 
 
@@ -305,7 +385,6 @@ $(document).ready(function(){
         //antwoordArray();
         console.log("term2 = "+mogelijkeAntwoorden);
 
-        mogelijkeAntwoorden = [];
     }
 
     $(".level2").click(function(){
@@ -333,7 +412,7 @@ $(document).ready(function(){
         for (i = 0; i < mogelijkeAntwoorden.length; i++) {
             $(".answer"+i).html(mogelijkeAntwoorden[i]);
         }
-        mogelijkeAntwoorden = [];
+
     }
 
     function startTafel(){
@@ -359,63 +438,222 @@ $(document).ready(function(){
 
     });
 
-    //
-    //$(".antw").click(function(){
-    //    text = $(this).text();
-    //    text = text.replace(/\s/g, '');
-    //    makenAntw();
-    //});
 
 
-    $(document).on('keypress', function(e) {
-        var tag = e.target.tagName.toLowerCase();
-        if ( e.which === 70 && tag != 'input' && tag != 'textarea')
-        {
-            //78
-            console.log("w");
-            text = "blauw";
-            makenAntw();
-        }
+
+
+
+
+    $("#opties").click(function(){
+        klikkenOfScherm = 1;
+        console.log(klikkenOfScherm);
+    });
+
+    $("#klikken").click(function(){
+        klikkenOfScherm = 0;
+        console.log(klikkenOfScherm);
 
     });
 
-    $(document).on('keypress', function(e) {
-        var tag = e.target.tagName.toLowerCase();
-        if ( e.which === 68 && tag != 'input' && tag != 'textarea'){
-            //68
-            console.log("d");
-            text = "wit";
-            makenAntw();
-        }
-
+    $("#plus").click(function(){
+        knop++;
     });
 
+
+    $("#enter").click(function(){
+        console.log(knop);
+        if(som[3]== knop){
+            console.log("juist");
+            som = [];
+            score++;
+            vraagNummer++;
+            if(vraagNummer == 10){
+
+                HighScore();
+            }
+            if(level == 1){
+                Tot10();
+            }
+            if(level == 2){
+                Tot100();
+            }
+            if(level == 3){
+                Tafels();
+            }
+        }else{
+            console.log("fout");
+            som = [];
+            vraagNummer++;
+            if(vraagNummer == 10){
+                HighScore();
+            }
+            if(level == 1){
+                Tot10();
+            }
+            if(level == 2){
+                Tot100();
+            }
+            if(level == 3){
+                Tafels();
+            }
+        }
+        knop = 0;
+    });
+
+    //f
     $(document).on('keypress', function(e) {
+
+        if(klikkenOfScherm == 1){
+            var tag = e.target.tagName.toLowerCase();
+            if ( e.which === 113 && tag != 'input' && tag != 'textarea')
+            {
+                //70
+                //78
+                console.log("f");
+                console.log(mogelijkeAntwoorden[0]);
+                antwoordKnop = mogelijkeAntwoorden[0];
+                text = "blauw";
+
+            }}
+
+
+    });
+    //g
+    $(document).on('keypress', function(e) {
+
+
+
         var tag = e.target.tagName.toLowerCase();
-        if ( e.which === 81 && tag != 'input' && tag != 'textarea'){
+        if ( e.which === 122 && tag != 'input' && tag != 'textarea'){
+
+            if(klikkenOfScherm == 1){
+                //68
+                //71
+                console.log("2de optie");
+                console.log(mogelijkeAntwoorden[1]);
+                antwoordKnop = mogelijkeAntwoorden[1];
+                text = "2de";
+
+
+            }
+        }
+
+
+
+    });
+    //q
+    $(document).on('keypress', function(e) {
+
+
+
+        var tag = e.target.tagName.toLowerCase();
+        if ( e.which === 102 && tag != 'input' && tag != 'textarea') {
+
+            if (klikkenOfScherm == 0) {
+                console.log(knop);
+                if (som[3] == knop) {
+                    console.log("juist");
+                    som = [];
+                    score++;
+                    vraagNummer++;
+                    if (vraagNummer == 10) {
+
+                        HighScore();
+                    }
+                    if (level == 1) {
+                        Tot10();
+                    }
+                    if (level == 2) {
+                        Tot100();
+                    }
+                    if (level == 3) {
+                        Tafels();
+                    }
+                } else {
+                    console.log("fout");
+                    som = [];
+                    vraagNummer++;
+                    if (vraagNummer == 10) {
+                        HighScore();
+                    }
+                    if (level == 1) {
+                        Tot10();
+                    }
+                    if (level == 2) {
+                        Tot100();
+                    }
+                    if (level == 3) {
+                        Tafels();
+                    }
+                }
+                knop = 0;
+            }
+
             //65
-            console.log("a");
-            text = "groen";
-            makenAntw();
+            //81
+            if(klikkenOfScherm == 1){
+                console.log("q");
+                text = "groen";
+                console.log(mogelijkeAntwoorden[2]);
+                antwoordKnop = mogelijkeAntwoorden[2];
+
+            }
         }
 
-    });
 
+
+    });
+    //s
     $(document).on('keypress', function(e) {
-        var tag = e.target.tagName.toLowerCase();
-        if ( e.which === 90 && tag != 'input' && tag != 'textarea'){
-            //83
-            console.log("s");
-            text = "rood";
-            makenAntw();
+
+        if(klikkenOfScherm == 1) {
+            var tag = e.target.tagName.toLowerCase();
+            if (e.which === 103 && tag != 'input' && tag != 'textarea') {
+                //83
+                //90
+                console.log("Enter");
+                text = "3de";
+
+                if(antwoordKnop == som[3]){
+                    console.log("juist");
+                    som = [];
+                    score++;
+                    vraagNummer++;
+                    if(vraagNummer == 10){
+
+                        HighScore();
+                    }
+                    if(level == 1){
+                        Tot10();
+                    }
+                    if(level == 2){
+                        Tot100();
+                    }
+                    if(level == 3){
+                        Tafels();
+                    }
+                }else{
+                    console.log("fout");
+                    som = [];
+                    vraagNummer++;
+                    if(vraagNummer == 10){
+                        HighScore();
+                    }
+                    if(level == 1){
+                        Tot10();
+                    }
+                    if(level == 2){
+                        Tot100();
+                    }
+                    if(level == 3){
+                        Tafels();
+                    }
+                }
+
+            }
         }
 
     });
-
-
-
-
-
 
 
 

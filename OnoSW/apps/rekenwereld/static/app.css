@@ -95,22 +95,29 @@
 }
 
 .high{
-	font-size: 2rem;
+	font-size: 1.2rem;
 	color: #4d4d4d;
 	width: 200px;
 }
 
-.highscore{
-	display: none;
+.highscore{    
+    border-collapse: collapse;
+    border: none;
+    display: none;
+    text-align: center;
 }
 
-li{	
-	font-size: 2rem;
-	color: #4d4d4d;
-	width: 800px;
+.highscore th{
+	background-color: #22b573;
+    color: white;
+    font-family: "roboto", sans-serif;
+    text-align: center
+    
 }
 
-ol{
-	margin-left: 3rem;
-}
+.firstRow{
+	background-color: #22b573;
+    width: 3%;
+    color: white;
+    
 

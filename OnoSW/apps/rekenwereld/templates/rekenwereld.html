@@ -12,6 +12,13 @@
 
 {% block page_content %}
 {{ super() }}
+        
+<div class="invoer">
+    <input type="text" id="naam" name="FirstName" placeholder="Typ hier je naam">
+    <button disabled id="invoerKnop btn btn-primary"> start</button>
+    <button id="verander btn btn-primary"> verander</button>
+</div>
+        
 <div class="levelselect">	
 	<div class="levels">
 		<a href="#"><div class="level level1">Tot 10</div></a>
@@ -26,36 +33,46 @@
 	<span class="exe number2">6</span>
 	<span class="exe is">=</span></div>
 	<div class="answers">
-		<a href="#"><div class="answer answer0"></div></a>
-		<a href="#"><div class="answer answer1"></div></a>
-		<a href="#"><div class="answer answer2"></div></a>
+
+        <a href="#"><div class="answer answer0"></div></a>
+
+        <a href="#"><div class="answer answer1"></div></a>
+
+        <a href="#"><div class="answer answer2"></div></a>
+
+
+
+
 	</div>
 </div>
 
-<ol class="highscore">
-	<li><span class="high high0"></span>	<span class="high score0"></span></li>
+<table class="highscore" style="width:100%">
+   <th></th><th>Naam</th><th>Punten</th>
 
-	<li><span class="high high1"></span>	<span class="high score1"></span></li>
+	<tr><td class="firstRow">1</td><td><span class="high high0"></span></td>	<td><span class="high score0"></span></td></tr>
 
-	<li><span class="high high2"></span>	<span class="high score2"></span></li>
+    <tr><td class="firstRow">2</td><td><span class="high high1"></span></td>	<td><span class="high score1"></span></td></tr>
 
-	<li><span class="high high3"></span>	<span class="high score3"></span></li>
+    <tr><td class="firstRow">3</td><td><span class="high high2"></span></td>	<td><span class="high score2"></span></td></tr>
 
-	<li><span class="high high4"></span>	<span class="high score4"></span></li>
+    <tr><td class="firstRow">4</td><td><span class="high high3"></span></td>	<td><span class="high score3"></span></td></tr>
 
-	<li><span class="high high5"></span>	<span class="high score5"></span></li>
+    <tr><td class="firstRow">5</td><td><span class="high high4"></span></td>	<td><span class="high score4"></span></td></tr>
 
-	<li><span class="high high6"></span>	<span class="high score6"></span></li>
+    <tr><td class="firstRow">6</td><td><span class="high high5"></span></td>	<td><span class="high score5"></span></td></tr>
 
-	<li><span class="high high7"></span>	<span class="high score7"></span></li>
+    <tr><td class="firstRow">7</td><td><span class="high high6"></span></td>	<td><span class="high score6"></span></td></tr>
 
-	<li><span class="high high8"></span>	<span class="high score8"></span></li>
+    <tr><td class="firstRow">8</td><td><span class="high high7"></span></td>	<td><span class="high score7"></span></td></tr>
 
-	<li><span class="high high9"></span>	<span class="high score9"></span></li>
+    <tr><td class="firstRow">9</td><td><span class="high high8"></span></td>	<td><span class="high score8"></span></td></tr>
 
-</ol>
+    <tr><td class="firstRow">10</td><td><span class="high high9"></span></td>	<td><span class="high score9"></span></td></tr>
 
-<h2 class="back"> terug</h2>
+</table>
+
+<button class="back btn btn-primary">Speel opnieuw</button>
+
 {% endblock %}
 
 {% block scripts %}

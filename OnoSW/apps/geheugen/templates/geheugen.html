@@ -13,7 +13,7 @@
 {{ super() }}
 <div class="gamesettings">
 <div id="voicelines" data-bind="sortable: { data: voiceLines, options: {handle: '.gripper', axis: 'y', opacity: 0.75} }">
-	<div class="voiceline" data-bind="css: {locked: $root.fileIsLocked(), unlocked: !$root.fileIsLocked()}">
+	<div class="voiceline" data-bind="css: {locked: $root.fileIsLocked(), locked: !$root.fileIsLocked()}">
 		<div class="avatar">
 				<div data-bind="avatar: avatar, click: pickEmotion"></div>
 		</div>
@@ -48,28 +48,30 @@
 <div class="question"></div>
 </div>
 
-<ol class="highscores">
-	<li><span class="high high0"></span>	<span class="high score0"></span></li>
+<table class="highscore" style="width:100%">
+   <th></th><th>Naam</th><th>Punten</th>
 
-	<li><span class="high high1"></span>	<span class="high score1"></span></li>
+	<tr><td class="firstRow">1</td><td><span class="high high0"></span></td>	<td><span class="high score0"></span></td></tr>
 
-	<li><span class="high high2"></span>	<span class="high score2"></span></li>
+    <tr><td class="firstRow">2</td><td><span class="high high1"></span></td>	<td><span class="high score1"></span></td></tr>
 
-	<li><span class="high high3"></span>	<span class="high score3"></span></li>
+    <tr><td class="firstRow">3</td><td><span class="high high2"></span></td>	<td><span class="high score2"></span></td></tr>
 
-	<li><span class="high high4"></span>	<span class="high score4"></span></li>
+    <tr><td class="firstRow">4</td><td><span class="high high3"></span></td>	<td><span class="high score3"></span></td></tr>
 
-	<li><span class="high high5"></span>	<span class="high score5"></span></li>
+    <tr><td class="firstRow">5</td><td><span class="high high4"></span></td>	<td><span class="high score4"></span></td></tr>
 
-	<li><span class="high high6"></span>	<span class="high score6"></span></li>
+    <tr><td class="firstRow">6</td><td><span class="high high5"></span></td>	<td><span class="high score5"></span></td></tr>
 
-	<li><span class="high high7"></span>	<span class="high score7"></span></li>
+    <tr><td class="firstRow">7</td><td><span class="high high6"></span></td>	<td><span class="high score6"></span></td></tr>
 
-	<li><span class="high high8"></span>	<span class="high score8"></span></li>
+    <tr><td class="firstRow">8</td><td><span class="high high7"></span></td>	<td><span class="high score7"></span></td></tr>
 
-	<li><span class="high high9"></span>	<span class="high score9"></span></li>
+    <tr><td class="firstRow">9</td><td><span class="high high8"></span></td>	<td><span class="high score8"></span></td></tr>
 
-</ol>
+    <tr><td class="firstRow">10</td><td><span class="high high9"></span></td>	<td><span class="high score9"></span></td></tr>
+
+</table>
 {% endblock %}
 
 {% block scripts %}

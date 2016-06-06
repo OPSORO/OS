@@ -2,7 +2,6 @@
 
 
 {% block base_toolbar %}
-<p style="color: white">This is the toolbar, you can add/remove options.<br/>To remove the toolbar completely, just remove the blocks: "block base_toolbar" and "endblock".</p>
 <!--
 {% include "toolbar/file_operations.html" %}
 {% include "toolbar/script_operations.html" %}
@@ -13,22 +12,16 @@
 
 {% block page_content %}
 {{ super() }}
-<fieldset>
-	<legend><span class="fa fa-commenting"></span> Popup demo</legend>
-	<div class="row">
-			<div class="content">
-				<span class="" data-bind="text: popupTextInput"></span>
-			</div>
-	</div>
-	<div class="row">
-			<div class="content">
-	      <a href="#" class="button" data-bind="click: showPopup">
-					<span class="fa fa-cog" style="font-size: 1.5rem"></span> Change text popup
-				</a>
-			</div>
-	</div>
-</fieldset>
-
+<div class="rowStory">
+	<div class="block"></div>
+	<div class="block"></div>
+	<div class="block"></div>
+</div>
+<div class="rowStory">
+	<div class="block"></div>
+	<div class="block"></div>
+	<div class="block"><span class="fa fa-plus"></span></div>
+</div>
 {% endblock %}
 
 {% block scripts %}
