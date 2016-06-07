@@ -577,7 +577,7 @@ fieldset legend{
 	top: 0.25rem;
 }
 
-#verhaaltje, #rekenwereld, #geheugen, #tiktak{
+#AppBtn_verhaaltje, #AppBtn_rekenwereld, #AppBtn_geheugen, #AppBtn_tiktak{
 	background: #fcd017
 }
 

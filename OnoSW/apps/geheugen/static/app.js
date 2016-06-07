@@ -10,26 +10,125 @@ $(document).ready(function(){
     var startOpnieuw = 0;
 
 
+    $.ajax({
+        dataType: "json",
+        url: "servos/enable",
+        success: function(data){
+            if(data.status == "error"){
+                addError(data.message);
+            }
+        }
+    });
+
     function start() {
         for (i = 0; i < niveau + 2; i++) {
             var index = Math.floor(Math.random() * 4);
             var rand = twee[index];
             var randColor = kleuren[rand];
-            console.log(rand);
-            $.ajax({
-                dataType: "json",
-                type: "GET",
-                url: "saytts",
-                data: {text: rand}
-            });
+            console.log("rand=" +rand);
+
+
+
+
+
+
+            //$.when($.ajax({
+            //    dataType: "json",
+            //    type: "GET",
+            //    url: "play/groen.wav",
+            //    success: function(data){
+            //        if(data.status == "error"){
+            //            addError(data.message);
+            //        }
+            //    }
+            //})).then(
+            //    $.ajax({
+            //        dataType: "json",
+            //        type: "GET",
+            //        url: "play/blauw.wav",
+            //        success: function(data){
+            //            if(data.status == "error"){
+            //                addError(data.message);
+            //            }
+            //        }
+            //    })
+            //);
+
+
+            //if(rand == "rood"){
+            //    $.ajax({
+            //        dataType: "json",
+            //        type: "GET",
+            //        url: "play/rood.wav",
+            //        success: function(data){
+            //            if(data.status == "error"){
+            //                addError(data.message);
+            //            }
+            //        }
+            //    });
+            //}
             vraag.push(rand);
             if((niveau+2) == vraag.length ){
                 
                 $(".question").html(vraag.join(' '));
-                
-        var vraagske = document.getElementsByClassName('question'); 
-                console.log(kleuren[0]);
+                var vraagske = document.getElementsByClassName('question');
+                console.log("kleuren =" +kleuren[0]);
+
                 console.log("vraag: " + vraag);
+
+
+
+
+                $.ajax({
+                    dataType: "json",
+                    type: "GET",
+                    url: "play/"+vraag[0]+".wav",
+                    success: function(data){
+                        if(data.status == "error"){
+                            addError(data.message);
+                        }
+                    }
+                });
+
+                setTimeout(function() {
+                    $.ajax({
+                        dataType: "json",
+                        type: "GET",
+                        url: "play/"+vraag[1]+".wav",
+                        success: function(data){
+                            if(data.status == "error"){
+                                addError(data.message);
+                            }
+                        }
+                    });
+                },3000);
+
+                setTimeout(function() {
+                    $.ajax({
+                        dataType: "json",
+                        type: "GET",
+                        url: "play/"+vraag[2]+".wav",
+                        success: function(data){
+                            if(data.status == "error"){
+                                addError(data.message);
+                            }
+                        }
+                    });
+                },6000);
+
+                setTimeout(function() {
+                    $.ajax({
+                        dataType: "json",
+                        type: "GET",
+                        url: "play/"+vraag[3]+".wav",
+                        success: function(data){
+                            if(data.status == "error"){
+                                addError(data.message);
+                            }
+                        }
+                    });
+                },9000);
+
             }
         }
     }
@@ -50,6 +149,31 @@ $(document).ready(function(){
             if(is_same== true){
                 // alert("juist");
                 score += 5;
+                $.ajax({
+                    dataType: "json",
+                    type: "GET",
+                    url: "play/goed zo.wav",
+                    success: function(data){
+                        if(data.status == "error"){
+                            addError(data.message);
+                        }
+                    }
+                });
+
+                $.ajax({
+                    dataType: "json",
+                    data: {"phi": 17, "r": 1},
+                    type: "POST",
+                    url: "setemotion",
+                    success: function(data){
+                        if(data.status == "error"){
+                            addError(data.message);
+                        }
+                    }
+                });
+
+
+
                 console.log("juist:");
 
                 for (i = 0; i < 8; i++) {
@@ -61,6 +185,28 @@ $(document).ready(function(){
 
             }else{
                 console.log("fout :");
+                $.ajax({
+                    dataType: "json",
+                    type: "GET",
+                    url: "play/jammer probeer opnieuw.wav",
+                    success: function(data){
+                        if(data.status == "error"){
+                            addError(data.message);
+                        }
+                    }
+                });
+
+                $.ajax({
+                    dataType: "json",
+                    data: {"phi": 200, "r": 1},
+                    type: "POST",
+                    url: "setemotion",
+                    success: function(data){
+                        if(data.status == "error"){
+                            addError(data.message);
+                        }
+                    }
+                });
 
                 if (localStorage.getItem("names") === null) {
                     var person = prompt("Wat is jouw naam?", "naam");
@@ -95,7 +241,7 @@ $(document).ready(function(){
                     console.log(test);
                     localStorage.setItem("names", JSON.stringify(test));
                         
-                    var elems = document.getElementsByClassName('highscores');        
+                    var elems = document.getElementsByClassName('highscore');
                     var elemsSettings = document.getElementsByClassName('gamesettings');                    
                     var pointsdiv = document.getElementsByClassName('points');
 
@@ -124,7 +270,7 @@ $(document).ready(function(){
     }
     
     function zethighscoresGoed(){
-        var elems = document.getElementsByClassName('highscores');        
+        var elems = document.getElementsByClassName('highscore');
         var elemsSettings = document.getElementsByClassName('gamesettings');
 
         console.log(elems);
@@ -134,7 +280,7 @@ $(document).ready(function(){
     }
     
     function ZetSettingsGoed(){
-        var elems = document.getElementsByClassName('highscores');        
+        var elems = document.getElementsByClassName('highscore');
         var elemsSettings = document.getElementsByClassName('gamesettings');
 
         console.log(elems);

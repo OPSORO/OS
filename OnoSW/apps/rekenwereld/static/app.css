@@ -120,4 +120,22 @@
     width: 3%;
     color: white;
     
+}
 
+.uitleg{
+	margin-left: 10%;
+	font-family: "Roboto", sans-serif;
+}
+
+
+.uitleg h1, .uitleg h2{
+	color: #22b573;
+}
+
+.uitleg ol{
+	margin-left: 6%;
+}
+
+.uitleg h2{
+	font-size: 2rem;
+}

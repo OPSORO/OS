@@ -325,14 +325,16 @@
 }
 
 .high{
-	font-size: 2rem;
+	font-size: 1.2rem;
 	color: #4d4d4d;
 	width: 200px;
+	text-align: center;
 }
 
 .highscore{    
     border-collapse: collapse;
     border: none;
+	display: none;
 }
 
 .highscore th{
@@ -343,9 +345,32 @@
     
 }
 
+.high{
+    padding-left: 35%;
+    
+}
+
 .firstRow{
 	background-color: #22b573;
     width: 3%;
     color: white;
     
+}
+
+.uitleg{
+	margin-left: 10%;
+	font-family: "Roboto", sans-serif;
+}
+
+
+.uitleg h1, .uitleg h2{
+	color: #22b573;
+}
+
+.uitleg ol{
+	margin-left: 6%;
+}
+
+.uitleg h2{
+	font-size: 2rem;
 }

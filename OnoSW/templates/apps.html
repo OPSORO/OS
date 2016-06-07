@@ -20,7 +20,7 @@
 								<div class="applabel">{{ app.full_name }}</div>
 							</a>
 						{% else %}
-							<a href="/openapp/{{ app.name }}" class="appbutton" >
+							<a href="/openapp/{{ app.name }}" class="appbutton {{ app.name }}" id="AppBtn_{{ app.name }}">
 								<div class="icon {{ app.icon }}"></div>
 								<div class="applabel">{{ app.full_name }}</div>
 							</a>
