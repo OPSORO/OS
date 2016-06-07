@@ -516,13 +516,7 @@ class OpSoRoApplication(object):
 		return "" # Not a valid user, return nothing!
 
 	def page_shutdown(self):
-		message = """
-		<p>
-		Shutting down...<br/> Please wait 60 seconds before cutting power.<br/>
-		<span class="note">
-			<strong>Note:</strong> Never power off """ + Preferences.get("general", "robot_name", self.robotName) + """ without completely shutting down first! Cutting power without properly shutting down the operating system can result in a corrupt file system.
-		</span>
-		"""
+		message = ""
 		self.stop_current_app()
 
 		# Run shutdown command with 5 second delay, returns immediately
