@@ -1,12 +1,10 @@
-general:
-  robot_name: Ono
-  password: RobotOno
-
 audio:
-  master_volume: 50
-  tts_engine: picotts
-
-wireless:
-  ssid: Cesar's Ono
+  master_volume: 67
+  tts_engine: !!python/unicode picotts
+general:
   password: RobotOno
+  robot_name: !!python/unicode Ono
+wireless:
   channel: 6
+  password: RobotOno
+  ssid: !!python/unicode Cesar's Ono

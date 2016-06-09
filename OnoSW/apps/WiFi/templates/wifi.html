@@ -1,0 +1,68 @@
+{% extends "app.html" %}
+
+
+{% block base_toolbar %}
+<!-- <p style="color: white">This is the toolbar, you can add/remove options.<br/>To remove the toolbar completely, just remove the blocks: "block base_toolbar" and "endblock".</p> -->
+
+
+{% endblock %}
+
+
+{% block page_content %}
+{{ super() }}
+<fieldset>
+	<legend><span class="fa fa-gears"></span> Settings Wi-Fi</legend>
+	<div class="row">
+			<div class="content">
+		      		<div class="form-group">
+					    <label for="inputlg">WiFi Connections</label>
+					    <div class="inline">
+					    	<select id='ssid-select' class="form-control" name='ssid'></select>
+					    	<button type="submit" id="refresh" class="sr" data-bind="click: pressRefresh">Refresh</button>
+					    	
+					    </div>
+					    <div class="password">
+                        	<input type="password" id="passwordfield" placeholder="password">
+                        	<i class="fa fa-eye" aria-hidden="true"></i>
+                    	</div>
+                    	<span class="info" id="info">8-character minimum; case-sensitive</span>
+					    <button type="submit" data-bind="click: pressConnect">Connect</button>
+	  				</div>
+			</div>
+	</div>
+</fieldset>
+
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<!--
+<script src="static/javascript.js"></script>
+-->
+
+<script>
+var action_data = {{ actions|tojson|safe }};
+//test
+var data = {{ data|tojson|safe }};
+</script>
+
+{% endblock %}
+
+{% block modals %}
+{{ super() }}
+<div id="popup_window" class="reveal-modal" data-reveal>
+	<div class="titlebar">
+		<a class="close-reveal-modal"><span class="fa fa-close"></span></a>
+		<span class="fa fa-wifi"></span> Connecting...
+	</div>
+	<div class="content" id="successful"><!-- 
+		<div id="successful">
+			<p>Successful connected to </p><span id="network"></span>
+		</div> -->
+	</div>
+</div>
+
+
+{% endblock %}
+
+

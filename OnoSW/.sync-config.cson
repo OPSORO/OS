@@ -1,7 +1,7 @@
 remote:
   host: "ono.local"
   user: "pi"
-  path: "/home/pi/OnoSW"
+  path: "/home/pi/OnoSW/"
 behaviour:
   uploadOnSave: true
   syncDownOnOpen: false
@@ -15,9 +15,5 @@ option:
     ".git"
     "node_modules"
     "tmp"
+    "vendor"
   ]
-# trigger:
-#   "__init__.py": [
-#     #"ssh ono ./initserver.sh"
-#     "echo \'<span class=warning>Send and initialized!</span>\'"
-#   ]

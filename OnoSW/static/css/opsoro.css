@@ -270,6 +270,7 @@ body {
 .page .content {
 	padding: 1rem;
 	/*background: #FFFFFF;*/
+	overflow: auto;
 }
 
 .actionbar {
@@ -353,7 +354,7 @@ body {
 }
 
 .reveal-modal {
-	position: fixed;
+	position: absolute;
 	top: 2rem;
 
 	background: #ffffff;
@@ -387,6 +388,10 @@ body {
 .reveal-modal .titlebar.red {
 	background: #B2382A;
 	border-bottom: 0.25rem solid #79261D;
+}
+.reveal-modal .titlebar.green {
+	background: #38B22A;
+	border-bottom: 0.25rem solid #26791D;
 }
 
 .reveal-modal .content {

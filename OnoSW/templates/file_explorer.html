@@ -75,8 +75,8 @@
 
 {% block scripts %}
 {{ super() }}
-<script src="../../static/js/jquery-ui-sortable/jquery-ui.js"></script>
-<script src="../../static/js/knockout-sortable.min.js"></script>
+<script src="/static/js/jquery-ui-sortable/jquery-ui.js"></script>
+<script src="/static/js/knockout-sortable.min.js"></script>
 <script>
 var prefsJson = {{ prefs|tojson|safe }};
 var folders_data = {{ folders|tojson|safe }};

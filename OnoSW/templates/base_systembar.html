@@ -23,6 +23,7 @@
 					<a href="/logout" class="action has-tip" data-tooltip aria-haspopup="true" data-options="disable_for_touch:true" title="Log out"><div class="icon fa-sign-out"></div></a>
 					<a href="/preferences" class="action has-tip" data-tooltip aria-haspopup="true" data-options="disable_for_touch:true" title="Preferences"><div class="icon fa-cog"></div></a>
 					<a href="/" class="action has-tip" data-tooltip aria-haspopup="true" data-options="disable_for_touch:true" title="Home"><div class="icon fa-home"></div></a>
+					<a target="_new" href="/virtual" class="action has-tip" data-tooltip aria-haspopup="true" data-options="disable_for_touch:true" title="Virtual model"><div class="icon fa-smile-o"></div></a>
 				</div>
 			</div>
 		</div>
@@ -60,8 +61,25 @@
 {% block scripts %}
 <script>
 $(document).ready(function() {
+	var delay = 20;
 	$("#btnShutdown").click(function(){
-		$("#ShutdownModal .content").load("/shutdown");
+		$("#ShutdownModal .content span").load("/shutdown");
+		var countdownFunction = function () {
+			$("#ShutdownModal .content" ).html(
+				"<span></span><p>Shutting down {{ opsoro.robot_name }}.<br/>Please wait <strong>" + delay + "</strong> seconds before unplugging the power.</p>"
+			);
+			if (delay == 0){
+				clearInterval(countdownInterval);
+				$("#ShutdownModal .content p" ).html(
+					"Your {{ opsoro.robot_name }} has been shut down.<br/>You may unplug the power."
+				);
+				$(".titlebar").removeClass("red");
+				$(".titlebar").addClass("green");
+			}
+			delay -= 1;
+    }
+		countdownFunction();
+		var countdownInterval = setInterval(countdownFunction, 1000); //will call the function every 1 sec.
 	});
 });
 </script>

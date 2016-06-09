@@ -51,7 +51,7 @@
 	border-bottom-left-radius: 0;
 	border-bottom-right-radius: 0;
 }
-
+/*
 .actionbar .filebox {
 	color: #fff;
 	display: inline-block;
@@ -66,12 +66,12 @@
 	font-size: 0.75rem;
 	font-weight: bold;
 	text-transform: uppercase;
-}
+}*/
 
 div.page {
 	background-color: #0f0f0f;
 }
-
+/*
 .reveal-modal .file:last-child {
 	margin-bottom: -0.75rem;
 }
@@ -93,7 +93,7 @@ div.page {
 #FilesModal .content {
 	overflow-y: scroll;
 	max-height: 70vh;
-}
+}*/
 
 #ScriptUIModal .btnScriptUI {
 	width: 100%;

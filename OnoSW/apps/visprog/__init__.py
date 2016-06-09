@@ -56,7 +56,7 @@ def ui_add_key(key):
 def setup_pages(opsoroapp):
 	visprog_bp = Blueprint("Visual Programming", __name__, template_folder="templates", static_folder="static")
 
-	@visprog_bp.route("/")
+	@visprog_bp.route("/", methods=["GET"])
 	@opsoroapp.app_view
 	def index():
 		global sh
@@ -65,10 +65,15 @@ def setup_pages(opsoroapp):
 		global script_modified
 
 		data = {
+			"actions":			{},
 			"script_name":		script_name,
 			"script_modified":	script_modified,
 			"script_running":	sh.is_running
 		}
+
+		action = request.args.get("action", None)
+		if action != None:
+			data["actions"][action] = request.args.get("param", None)
 
 		if script_name:
 			if script_name[-4:] == ".xml" or script_name[-4:] == ".XML":
@@ -92,67 +97,67 @@ def setup_pages(opsoroapp):
 
 		return opsoroapp.render_template("blockly.html", **data)
 
-	@visprog_bp.route("/filelist")
-	@opsoroapp.app_view
-	def filelist():
-		data = {
-			"scriptfiles":	[]
-		}
-
-		filenames = []
-		filenames.extend(glob.glob(get_path("../../data/visprog/scripts/*.xml")))
-
-		for filename in filenames:
-			data["scriptfiles"].append(os.path.split(filename)[1])
-
-		return opsoroapp.render_template("filelist.html", **data)
-
-	@visprog_bp.route("/save", methods=["POST"])
-	@opsoroapp.app_api
-	def save():
-		xmlfile = request.form.get("file", type=str, default="")
-		filename = request.form.get("filename", type=str, default="")
-		overwrite = request.form.get("overwrite", type=int, default=0)
-
-		if filename == "":
-			return {"status": "error", "message": "No filename given."}
-
-		if filename[-4:] != ".xml":
-			filename = filename + ".xml"
-		filename = secure_filename(filename)
-
-		full_path = os.path.join(get_path("../../data/visprog/scripts/"), filename)
-
-		if overwrite == 0:
-			if os.path.isfile(full_path):
-				return {"status": "error", "message": "File already exists."}
-
-		with open(full_path, "w") as f:
-			f.write(xmlfile)
-
-		return {"status": "success", "filename": filename}
-
-	@visprog_bp.route("/delete/<scriptfile>", methods=["POST"])
-	@opsoroapp.app_api
-	def delete(scriptfile):
-		scriptfiles = []
-		filenames = []
-		filenames.extend(glob.glob(get_path("../../data/visprog/scripts/*.xml")))
-		filenames.extend(glob.glob(get_path("../../data/visprog/scripts/*.XML")))
-
-		for filename in filenames:
-			scriptfiles.append(os.path.split(filename)[1])
-
-		if scriptfile in scriptfiles:
-			os.remove(os.path.join(get_path("../../data/visprog/scripts/"), scriptfile))
-			return {"status": "success", "message": "File %s deleted." % scriptfile}
-		else:
-			return {"status": "error", "message": "Unknown file."}
-
-	@visprog_bp.route("/scripts/<scriptfile>")
-	@opsoroapp.app_view
-	def scripts(scriptfile):
-		return send_from_directory(get_path("../../data/visprog/scripts/"), scriptfile)
+	# @visprog_bp.route("/filelist")
+	# @opsoroapp.app_view
+	# def filelist():
+	# 	data = {
+	# 		"scriptfiles":	[]
+	# 	}
+	#
+	# 	filenames = []
+	# 	filenames.extend(glob.glob(get_path("../../data/visprog/scripts/*.xml")))
+	#
+	# 	for filename in filenames:
+	# 		data["scriptfiles"].append(os.path.split(filename)[1])
+	#
+	# 	return opsoroapp.render_template("filelist.html", **data)
+	#
+	# @visprog_bp.route("/save", methods=["POST"])
+	# @opsoroapp.app_api
+	# def save():
+	# 	xmlfile = request.form.get("file", type=str, default="")
+	# 	filename = request.form.get("filename", type=str, default="")
+	# 	overwrite = request.form.get("overwrite", type=int, default=0)
+	#
+	# 	if filename == "":
+	# 		return {"status": "error", "message": "No filename given."}
+	#
+	# 	if filename[-4:] != ".xml":
+	# 		filename = filename + ".xml"
+	# 	filename = secure_filename(filename)
+	#
+	# 	full_path = os.path.join(get_path("../../data/visprog/scripts/"), filename)
+	#
+	# 	if overwrite == 0:
+	# 		if os.path.isfile(full_path):
+	# 			return {"status": "error", "message": "File already exists."}
+	#
+	# 	with open(full_path, "w") as f:
+	# 		f.write(xmlfile)
+	#
+	# 	return {"status": "success", "filename": filename}
+	#
+	# @visprog_bp.route("/delete/<scriptfile>", methods=["POST"])
+	# @opsoroapp.app_api
+	# def delete(scriptfile):
+	# 	scriptfiles = []
+	# 	filenames = []
+	# 	filenames.extend(glob.glob(get_path("../../data/visprog/scripts/*.xml")))
+	# 	filenames.extend(glob.glob(get_path("../../data/visprog/scripts/*.XML")))
+	#
+	# 	for filename in filenames:
+	# 		scriptfiles.append(os.path.split(filename)[1])
+	#
+	# 	if scriptfile in scriptfiles:
+	# 		os.remove(os.path.join(get_path("../../data/visprog/scripts/"), scriptfile))
+	# 		return {"status": "success", "message": "File %s deleted." % scriptfile}
+	# 	else:
+	# 		return {"status": "error", "message": "Unknown file."}
+	#
+	# @visprog_bp.route("/scripts/<scriptfile>")
+	# @opsoroapp.app_view
+	# def scripts(scriptfile):
+	# 	return send_from_directory(get_path("../../data/visprog/scripts/"), scriptfile)
 
 	@visprog_bp.route("/startscript", methods=["POST"])
 	@opsoroapp.app_api

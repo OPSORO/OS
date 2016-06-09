@@ -10,6 +10,10 @@
   <span class="fa fa-magic"></span><br/>
   <span class="text">Clear log</span>
 </a>
+<a href="#" class="action" data-bind="click: codeView">
+  <span class="fa fa-code"></span><br/>
+  <span class="text">Code view</span>
+</a>
 
 <script>
 startStopScript = function(){
@@ -30,6 +34,10 @@ isUI = function(){
 };
 clearLog = function(){
   showMainError("The function clearLog is not yet defined.");
+  return;
+};
+codeView = function(){
+  //showMainError("The function clearLog is not yet defined.");
   return;
 };
 </script>

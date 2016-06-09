@@ -171,6 +171,7 @@ class _Expression(object):
 
 		self.servos = []
 		self.dofs = {}
+		self.dof_values = {}
 		self.lock = threading.Lock()
 
 		self.empty_config()
@@ -223,21 +224,22 @@ class _Expression(object):
 		servo_pos_us = [None for i in range(16)]
 
 		# Buffer to store all DOF values
-		dof_values = {}
+		#self.dof_values = {}
 
 		# (1) Calculate DOF positions using phi/r
 		# (2) This step also applies overlay functions to the DOFs
 		for dofname, dof in self.dofs.iteritems():
-			dof_values[dofname] = dof.calc(phi, r)
+			self.dof_values[dofname] = dof.calc(phi, r)
 
 		# (3) Update all servos
 		for servo in self.servos:
 			if servo.pin < 0 or servo.pin > 15:
 				continue # Skip invalid pins
-			if servo.dofname in dof_values:
-				servo_pos_us[servo.pin] = servo.dof_to_us(dof_values[servo.dofname])
+			if servo.dofname in self.dof_values:
+				servo_pos_us[servo.pin] = servo.dof_to_us(self.dof_values[servo.dofname])
 
 		# TODO: send values to hardware
+
 		with Hardware.lock:
 			Hardware.servo_set_all(servo_pos_us)
 

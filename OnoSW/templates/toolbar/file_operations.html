@@ -16,9 +16,11 @@
   <span class="fa fa-file"></span><br/>
   <span class="text">New</span>
 </a>
+
 <div class="spacer"></div>
 
 <script>
+
 fileName = "Untitled";
 fileIsModified = function(){
   if ($(".filebox .fa-asterisk").css("display") == "none"){
@@ -54,6 +56,7 @@ var newFileHandler = function(){
 var _CurrentPath = "";
 var _OnlyFolders = 0;
 var _SaveFileView = 0;
+
 var saveFile = function(){
   if ($(".filebox .filename").text() == "Untitled"){
     showFiles(path, 0, 1);
@@ -88,7 +91,7 @@ var newFile = function(){
   }
   return;
 };
-var showFiles = function(currentpath, onlyFolders = 0, saveFileView = 0){
+var showFiles = function(currentpath, onlyFolders, saveFileView){
   if (currentpath[currentpath.length -1] != "/"){
     currentpath += "/";
   }
@@ -98,7 +101,7 @@ var showFiles = function(currentpath, onlyFolders = 0, saveFileView = 0){
   _CurrentPath = currentpath;
   _OnlyFolders = onlyFolders;
   _SaveFileView = saveFileView;
-  showPopup("fa-folder-open", "{{ toolbar.full_name }}" + "/" + currentpath, "filebrowser");
+  showPopup("fa-folder-open", "{{ toolbar.full_name }}" + "/" + currentpath, "filebrowser", "");
   $("#popup .content").load("files/show", { path: currentpath, extension: extension, onlyfolders: onlyFolders, savefileview: saveFileView }, function(){
     // Delete and Open button events need to be rebound here
     // because filelist is loaded via AJAX
@@ -117,7 +120,7 @@ var showFiles = function(currentpath, onlyFolders = 0, saveFileView = 0){
     $("#popup .btnOpenFile").off("click");
     $("#popup .btnOpenFile").on("click", function(){
       filename = $(this).closest("div.file").data("path");
-      openItem(filename);
+      openItem(filename, 0);
       closePopup();
       return;
     });
@@ -130,12 +133,12 @@ var showFiles = function(currentpath, onlyFolders = 0, saveFileView = 0){
     $("#popup .btnSaveFile").off("click");
     $("#popup .btnSaveFile").on("click", function(){
       filename = $(this).closest("div.browseritem").data("path");
-      saveItem(filename);
+      saveItem(filename, 0, 0);
     });
 
     $("#popup .btnSaveFileAs").off("click");
     $("#popup .btnSaveFileAs").on("click", function(){
-      saveItem(currentpath);
+      saveItem(currentpath, 0, 0);
     });
   });
 };
@@ -158,7 +161,7 @@ var deleteItem = function(filename) {
   };
   showMessagePopup("fa-trash", "Delete?", "Are you sure you wish to delete this item?", { btnYes: yesHandler, btnCancel: ReopenPopup});
 };
-var saveItem = function(folderPath, overwrite = 0, isCurrentFile = 0) {
+var saveItem = function(folderPath, overwrite, isCurrentFile) {
   if (isCurrentFile == 1){
     saveFileHandler(folderPath);
     openItem(folderPath, 1);
@@ -212,7 +215,7 @@ var newFolder = function(folderPath){
   };
   showMessagePopup("fa-plus", "New folder?", "Please enter a name and press OK.", { inputText: inputTextHandler, btnOk: okHandler, btnCancel: ReopenPopup });
 };
-var openItem = function(filename, onlyChangeUrl = 0){
+var openItem = function(filename, onlyChangeUrl){
   window.history.pushState("", "Open", "?action=openfile&param=" + filename);
   if (onlyChangeUrl == 1){ return; }
   loadFileHandler(filename);
@@ -230,4 +233,5 @@ function config_file_operations(sPath, sExtension, oSaveHandler, oLoadHandler, o
   loadFileHandler = oLoadHandler;
   newFileHandler = oNewHandler;
 }
+
 </script>

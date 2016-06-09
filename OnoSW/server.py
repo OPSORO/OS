@@ -1,6 +1,6 @@
 from flask import Flask, request, render_template, redirect, url_for, flash, session, jsonify, send_from_directory
-from flask.ext.login import LoginManager, login_user, logout_user, current_user, login_required
-from flask.ext.cors import CORS, cross_origin
+from flask_login import LoginManager, login_user, logout_user, current_user, login_required
+from werkzeug.exceptions import default_exceptions
 from tornado.wsgi import WSGIContainer
 from tornado.ioloop import IOLoop
 import tornado.web
@@ -9,6 +9,7 @@ from sockjs.tornado import SockJSRouter, SockJSConnection
 from functools import wraps, partial
 import hardware
 import expression
+from expression import Expression
 import pluginbase
 import random
 import os
@@ -30,7 +31,6 @@ try:
 except ImportError:
 	import json
 	print_info("Simplejson not available, falling back on json")
-
 
 
 dof_positions = {}
@@ -63,7 +63,6 @@ class OpSoRoApplication(object):
 
 		# Create flask instance for webserver
 		self.flaskapp = Flask(__name__)
-
 
 		# Setup key for sessions
 		self.flaskapp.secret_key = "5\x075y\xfe$\x1aV\x1c<A\xf4\xc1\xcfst0\xa49\x9e@\x0b\xb2\x17"
@@ -275,7 +274,7 @@ class OpSoRoApplication(object):
 	def protected_view(self, f):
 		@wraps(f)
 		def wrapper(*args, **kwargs):
-			if current_user.is_authenticated():
+			if current_user.is_authenticated:
 				if current_user.is_admin():
 					if session["active_session_key"] == self.active_session_key:
 						# the actual page
@@ -299,7 +298,7 @@ class OpSoRoApplication(object):
 		@wraps(f)
 		def wrapper(*args, **kwargs):
 			# Protected page
-			if current_user.is_authenticated():
+			if current_user.is_authenticated:
 				if current_user.is_admin():
 					if session["active_session_key"] != self.active_session_key:
 						logout_user()
@@ -346,7 +345,7 @@ class OpSoRoApplication(object):
 		@wraps(f)
 		def wrapper(*args, **kwargs):
 			# Protected page
-			if current_user.is_authenticated():
+			if current_user.is_authenticated:
 				if current_user.is_admin():
 					if session["active_session_key"] != self.active_session_key:
 						logout_user()
@@ -415,7 +414,10 @@ class OpSoRoApplication(object):
 		self.flaskapp.add_url_rule("/openapp/<appname>",				"openapp",		protect(self.page_openapp))
 		self.flaskapp.add_url_rule("/app/<appname>/files/<action>",		"files",		protect(self.page_files), methods=["GET", "POST"])
 
-		self.flaskapp.add_url_rule("/virtual",							"virtual",		self.page_virtual)
+		self.flaskapp.add_url_rule("/virtual",							"virtual",		self.page_virtual, methods=["GET", "POST"])
+
+		for _exc in default_exceptions:
+			self.flaskapp.errorhandler(_exc)(self.show_errormessage)
 
 		self.flaskapp.context_processor(self.inject_opsoro_vars)
 
@@ -502,7 +504,7 @@ class OpSoRoApplication(object):
 		return self.render_template("preferences.html", title=self.title + " - Preferences", page_caption="Preferences", page_icon="fa-cog", closebutton=False, prefs=prefs)
 
 	def page_sockjstoken(self):
-		if current_user.is_authenticated():
+		if current_user.is_authenticated:
 			if current_user.is_admin():
 				if session["active_session_key"] == self.active_session_key:
 					# Valid user, generate a token
@@ -514,13 +516,7 @@ class OpSoRoApplication(object):
 		return "" # Not a valid user, return nothing!
 
 	def page_shutdown(self):
-		message = """
-		<p>
-		Shutting down...<br/> Please wait 60 seconds before cutting power.<br/>
-		<span class="note">
-			<strong>Note:</strong> Never power off """ + Preferences.get("general", "robot_name", self.robotName) + """ without completely shutting down first! Cutting power without properly shutting down the operating system can result in a corrupt file system.
-		</span>
-		"""
+		message = ""
 		self.stop_current_app()
 
 		# Run shutdown command with 5 second delay, returns immediately
@@ -686,12 +682,20 @@ class OpSoRoApplication(object):
 
 		return self.render_template("filelist.html", title=self.title + " - Files", page_caption=appSpecificFolderPath, page_icon="fa-folder", **data)
 
-
 	def page_virtual(self):
-		print_info("Virtual model")
-		global dof_positions
-		data = dof_positions
-		return self.render_template("virtual.html", title="Virtual Model", page_caption="Virtual model", page_icon="fa-smile-o", **data)
+		if request.method == "POST":
+			dataOnly = request.form.get("getdata", type=int, default=0)
+			if dataOnly == 1:
+				return json.dumps({'success':False, 'dofs': Expression.dof_values})
+		# 		return Expression.dof_values
+			frameOnly = request.form.get("frame", type=int, default=0)
+			if frameOnly == 1:
+				#return self.render_template("virtual.html", title="Virtual Model", page_caption="Virtual model", page_icon="fa-smile-o", dofs=Expression.dof_values)
+				pass
+		return self.render_template("virtual.html", title="Virtual Model", page_caption="Virtual model", page_icon="fa-smile-o", dofs=Expression.dof_values)
+
+	def show_errormessage(self, error):
+		return redirect("http://play.opsoro.be/")
 
 	def inject_opsoro_vars(self):
 		opsoro = {"robot_name": Preferences.get("general", "robot_name", self.robotName)}

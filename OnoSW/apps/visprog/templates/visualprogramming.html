@@ -4,8 +4,16 @@
 {{ super() }}
 {% endblock %}
 
+
+{% block base_toolbar %}
+{% include "toolbar/file_operations.html" %}
+{% include "toolbar/script_operations.html" %}
+{% include "toolbar/expand_collapse.html" %}
+{% endblock %}
+
 {% block page_content %}
-<div class="actionbar">
+{{ super() }}
+<!-- <div class="actionbar">
 	<div class="filebox">
 		<span class="filename">{% if script_name %}{{ script_name_noext }}{% else %}Untitled script{% endif %}</span> <span class="fa fa-asterisk {% if not script_modified %}hide{% endif %}"></span><br>
 		{% if script_running %}
@@ -53,7 +61,7 @@
 		<span class="fa fa-expand"></span><br/>
 		<span class="text">Expand view</span>
 	</a>
-</div>
+</div> -->
 <div id="errors" style="margin-top: -1rem;">
 	{% with messages = get_flashed_messages(category_filter=["message"]) %}
 		{% if messages %}
@@ -106,6 +114,7 @@
 <script src="/app/luascripting/static/ono-lua-highlighter.js" type="text/javascript" charset="utf-8"></script>
 
 <script>
+	var action_data = {{ actions|tojson|safe }};
 	var isFullscreen = false;
 	var codeViewOn = false;
 	var scriptname = {% if script_name %}"{{ script_name }}"{% else %}null{% endif %};
@@ -199,502 +208,604 @@
 	}
 
 	$(document).ready(function(){
-		// Setup ACE editor.
-		var editor = ace.edit("editor");
-		editor.setTheme("ace/theme/twilight");
-		editor.setReadOnly(true);
+		var Model = function(){
+			var self = this;
 
-		var LuaMode = require("ace/mode/lua").Mode;
-		var mode = new LuaMode();
-		var Tokenizer = require("ace/tokenizer").Tokenizer;
-		var OnoLuaHighlightRules = require("ace/mode/onolua_highlight_rules").OnoLuaHighlightRules;
-		mode.$tokenizer = new Tokenizer(new OnoLuaHighlightRules().getRules());
-		editor.session.setMode(mode);
+			self.fileIsLocked = ko.observable(false);
+			self.fileIsModified = ko.observable(isScriptModified);
+			self.fileName = ko.observable("Untitled");
+			self.fileStatus = ko.observable("Editing");
+			self.fileExtension = ko.observable(".xml");
+			self.isRunning = ko.observable(isScriptRunning);
+			self.isUI = ko.observable(false);
 
-		editor.getSession().setUseSoftTabs(false);
-		editor.getSession().setTabSize(4);
-		editor.$blockScrolling = Infinity; // Disable warning
+			// Setup ACE editor.
+			var editor = ace.edit("editor");
+			editor.setTheme("ace/theme/twilight");
+			editor.setReadOnly(true);
 
-		// Setup websocket connection.
-		var conn = null;
-		var connReady = false;
-		conn = new SockJS("http://" + window.location.host + "/sockjs");
+			var LuaMode = require("ace/mode/lua").Mode;
+			var mode = new LuaMode();
+			var Tokenizer = require("ace/tokenizer").Tokenizer;
+			var OnoLuaHighlightRules = require("ace/mode/onolua_highlight_rules").OnoLuaHighlightRules;
+			mode.$tokenizer = new Tokenizer(new OnoLuaHighlightRules().getRules());
+			editor.session.setMode(mode);
 
-		conn.onopen = function(){
-			console.log("SockJS connected.");
-			$.ajax({
-				url: "/sockjstoken",
-				cache: false
-			})
-			.done(function(data) {
-				conn.send(JSON.stringify({action: "authenticate", token: data}));
-				connReady = true;
-				console.log("SockJS authenticated.");
-			});
-		};
+			editor.getSession().setUseSoftTabs(false);
+			editor.getSession().setTabSize(4);
+			editor.$blockScrolling = Infinity; // Disable warning
 
-		conn.onmessage = function(e){
-			var msg = $.parseJSON(e.data);
+			// Setup websocket connection.
+			var conn = null;
+			var connReady = false;
+			conn = new SockJS("http://" + window.location.host + "/sockjs");
 
-			switch(msg.action){
-				case "addConsole":
-					addConsole(msg.message, msg.color, msg.icon);
-					break;
-				case "scriptStarted":
-					addConsole("Script started.", "#888888", "fa-play");
-					isScriptRunning = true;
-					SetButtonToStop();
-					break;
-				case "scriptStopped":
-					addConsole("Script stopped.", "#888888", "fa-stop");
-					isScriptRunning = false;
-					SetButtonToStart();
-					$("#btnScriptUI").addClass("hide");
-					break;
-				case "initUI":
-					$("#btnScriptUI").removeClass("hide");
-					$("#ScriptUIWrench").removeClass("hide");
-					$("#ScriptUIButtons").addClass("hide");
-					$("#ScriptUIButtons").html("");
-					$("#ScriptUIKeys").addClass("hide");
-					$("#ScriptUIKeys").html("");
-					$("#ScriptUIModal hr").addClass("hide");
-					break;
-				case "UIAddButton":
-					$("#ScriptUIWrench").addClass("hide");
-					$("#ScriptUIButtons").removeClass("hide");
-
-					if(!$("#ScriptUIKeys").hasClass("hide")){
-						$("#ScriptUIModal hr").removeClass("hide");
-					}
-
-					var li = "<li>";
-					li += "<a href=\"#\" class=\"button btnScriptUI\" data-toggle=\"" + msg.toggle + "\" data-buttonname=\"" + msg.name + "\">";
-					li += "<span class=\"fa " + msg.icon + " fa-2x\"></span><br>"
-					li += msg.caption;
-					li += "</a>";
-					li += "</li>";
-					$("#ScriptUIButtons").append(li);
-					break;
-				case "UIAddKey":
-					var div = "";
-					var arrows = ["up", "down", "left", "right"];
-					var alphabet = "abcdefghijklmnopqrstuvwxyz";
-					var keymap = {
-						"up": 38, "down": 40, "left": 37, "right": 39, "space": 32,
-						"a": 65, "b": 66, "c": 67, "d": 68, "e": 69, "f": 70,
-						"g": 71, "h": 72, "i": 73, "j": 74, "k": 75, "l": 76,
-						"m": 77, "n": 78, "o": 79, "p": 80, "q": 81, "r": 82,
-						"s": 83, "t": 84, "u": 85, "v": 86, "w": 87, "x": 88,
-						"y": 89, "z": 90
-					};
-
-					if(msg.key == "space"){
-						// Key is space bar
-						div = "<div class=\"keyboardKey space\" data-key=\"" + msg.key + "\" data-keycode=\"" + keymap[msg.key] + "\">&nbsp;</div>";
-					}else if(arrows.indexOf(msg.key) > -1){
-						// Key is an arrow
-						div = "<div class=\"keyboardKey\"  data-key=\"" + msg.key + "\" data-keycode=\"" + keymap[msg.key] + "\"><span class=\"fa fa-caret-" + msg.key + "\"></span></div>";
-					}else if(alphabet.indexOf(msg.key) > -1){
-						// Key is a letter
-						div = "<div class=\"keyboardKey letter\"  data-key=\"" + msg.key + "\" data-keycode=\"" + keymap[msg.key] + "\">" + msg.key + "</div>";
-					}else{
-						return;
-					}
-
-					$("#ScriptUIWrench").addClass("hide");
-					$("#ScriptUIKeys").removeClass("hide");
-					$("#ScriptUIKeys").append(div);
-
-					if(!$("#ScriptUIButtons").hasClass("hide")){
-						$("#ScriptUIModal hr").removeClass("hide");
-					}
-
-					break;
-			}
-		};
-
-		conn.onclose = function(){
-			console.log("SockJS disconnected.");
-			conn = null;
-			connReady = false;
-		};
-
-		// Don't submit form on enter
-		$("input,select").keypress(function(evt){
-			return evt.keyCode != 13;
-		});
-
-		// Toolbar buttons
-		// Save
-		function doSave(){
-			if(scriptname == null){
-				// Untitled script
-				$("#txtFilename").val("");
-				$("#SaveAsModal small.error").addClass("hide");
-				$("#SaveAsModal").foundation("reveal", "open");
-			}else{
-				// Don't show modal, overwrite script file
-				var xmlcode = generateXml();
-
+			conn.onopen = function(){
+				console.log("SockJS connected.");
 				$.ajax({
-					dataType: "json",
-					data: {
-						file: xmlcode,
-						filename: scriptname,
-						overwrite: 1
-					},
-					type: "POST",
-					url: "save",
-					success: function(data){
-						if(data.status == "error"){
-							addError(data.message);
-						}else if(data.status == "success"){
-							scriptname = data.filename;
-							isScriptModified = false;
+					url: "/sockjstoken",
+					cache: false
+				})
+				.done(function(data) {
+					conn.send(JSON.stringify({action: "authenticate", token: data}));
+					connReady = true;
+					console.log("SockJS authenticated.");
+				});
+			};
 
-							var filename_no_ext = data.filename;
-							if(filename_no_ext.slice(-4) == ".xml" || filename_no_ext.slice(-4) == ".XML"){
+			conn.onmessage = function(e){
+				var msg = $.parseJSON(e.data);
+
+				switch(msg.action){
+					case "addConsole":
+						addConsole(msg.message, msg.color, msg.icon);
+						break;
+					case "scriptStarted":
+						addConsole("Script started.", "#888888", "fa-play");
+						self.fileStatus("Running");
+						self.isRunning(true);
+						//SetButtonToStop();
+						break;
+					case "scriptStopped":
+						addConsole("Script stopped.", "#888888", "fa-stop");
+						self.fileStatus("Stopped");
+						self.isRunning(false);
+						self.isUI(false);
+						$("#btnScriptUI").addClass("hide");
+						break;
+					case "initUI":
+						self.isUI(true);
+						$("#btnScriptUI").removeClass("hide");
+						$("#ScriptUIWrench").removeClass("hide");
+						$("#ScriptUIButtons").addClass("hide");
+						$("#ScriptUIButtons").html("");
+						$("#ScriptUIKeys").addClass("hide");
+						$("#ScriptUIKeys").html("");
+						$("#ScriptUIModal hr").addClass("hide");
+						break;
+					case "UIAddButton":
+						$("#ScriptUIWrench").addClass("hide");
+						$("#ScriptUIButtons").removeClass("hide");
+
+						if(!$("#ScriptUIKeys").hasClass("hide")){
+							$("#ScriptUIModal hr").removeClass("hide");
+						}
+
+						var li = "<li>";
+						li += "<a href=\"#\" class=\"button btnScriptUI\" data-toggle=\"" + msg.toggle + "\" data-buttonname=\"" + msg.name + "\">";
+						li += "<span class=\"fa " + msg.icon + " fa-2x\"></span><br>"
+						li += msg.caption;
+						li += "</a>";
+						li += "</li>";
+						$("#ScriptUIButtons").append(li);
+						break;
+					case "UIAddKey":
+						var div = "";
+						var arrows = ["up", "down", "left", "right"];
+						var alphabet = "abcdefghijklmnopqrstuvwxyz";
+						var keymap = {
+							"up": 38, "down": 40, "left": 37, "right": 39, "space": 32,
+							"a": 65, "b": 66, "c": 67, "d": 68, "e": 69, "f": 70,
+							"g": 71, "h": 72, "i": 73, "j": 74, "k": 75, "l": 76,
+							"m": 77, "n": 78, "o": 79, "p": 80, "q": 81, "r": 82,
+							"s": 83, "t": 84, "u": 85, "v": 86, "w": 87, "x": 88,
+							"y": 89, "z": 90
+						};
+
+						if(msg.key == "space"){
+							// Key is space bar
+							div = "<div class=\"keyboardKey space\" data-key=\"" + msg.key + "\" data-keycode=\"" + keymap[msg.key] + "\">&nbsp;</div>";
+						}else if(arrows.indexOf(msg.key) > -1){
+							// Key is an arrow
+							div = "<div class=\"keyboardKey\"  data-key=\"" + msg.key + "\" data-keycode=\"" + keymap[msg.key] + "\"><span class=\"fa fa-caret-" + msg.key + "\"></span></div>";
+						}else if(alphabet.indexOf(msg.key) > -1){
+							// Key is a letter
+							div = "<div class=\"keyboardKey letter\"  data-key=\"" + msg.key + "\" data-keycode=\"" + keymap[msg.key] + "\">" + msg.key + "</div>";
+						}else{
+							return;
+						}
+
+						$("#ScriptUIWrench").addClass("hide");
+						$("#ScriptUIKeys").removeClass("hide");
+						$("#ScriptUIKeys").append(div);
+
+						if(!$("#ScriptUIButtons").hasClass("hide")){
+							$("#ScriptUIModal hr").removeClass("hide");
+						}
+
+						break;
+				}
+			};
+
+			conn.onclose = function(){
+				console.log("SockJS disconnected.");
+				conn = null;
+				connReady = false;
+			};
+
+			// Don't submit form on enter
+			$("input,select").keypress(function(evt){
+				return evt.keyCode != 13;
+			});
+
+
+			self.saveFileData = function(filename){
+				if(filename == ""){
+					addError("No filename!");
+					return;
+				}else{
+					var xmlcode = generateXml();
+
+					$.ajax({
+						dataType: "json",
+						data: {
+							path: filename,
+							filedata: xmlcode,
+							overwrite: 1,
+							extension: self.fileExtension()
+						},
+						type: "POST",
+						url: "files/save",
+						success: function(data){
+							console.log("Save file");
+							var filename_no_ext = filename;
+							if(filename_no_ext.toLowerCase().slice(-4) == self.fileExtension()){
 								filename_no_ext = filename_no_ext.slice(0, -4);
 							}
-
-							$(".filebox .fa-asterisk").addClass("hide");
-							$(".filebox .filename").html(filename_no_ext);
+							self.fileName(filename_no_ext);
+							self.fileIsModified(false);
 						}
-					}
-				});
-			}
-		}
-		$("#btnSave").click(doSave);
+					});
+				}
+			};
+			// // Toolbar buttons
+			// // Save
+			// function doSave(){
+			// 	if(scriptname == null){
+			// 		// Untitled script
+			// 		$("#txtFilename").val("");
+			// 		$("#SaveAsModal small.error").addClass("hide");
+			// 		$("#SaveAsModal").foundation("reveal", "open");
+			// 	}else{
+			// 		// Don't show modal, overwrite script file
+			// 		var xmlcode = generateXml();
+			//
+			// 		$.ajax({
+			// 			dataType: "json",
+			// 			data: {
+			// 				file: xmlcode,
+			// 				filename: scriptname,
+			// 				overwrite: 1
+			// 			},
+			// 			type: "POST",
+			// 			url: "save",
+			// 			success: function(data){
+			// 				if(data.status == "error"){
+			// 					addError(data.message);
+			// 				}else if(data.status == "success"){
+			// 					scriptname = data.filename;
+			// 					isScriptModified = false;
+			//
+			// 					var filename_no_ext = data.filename;
+			// 					if(filename_no_ext.slice(-4) == ".xml" || filename_no_ext.slice(-4) == ".XML"){
+			// 						filename_no_ext = filename_no_ext.slice(0, -4);
+			// 					}
+			//
+			// 					$(".filebox .fa-asterisk").addClass("hide");
+			// 					$(".filebox .filename").html(filename_no_ext);
+			// 				}
+			// 			}
+			// 		});
+			// 	}
+			// }
+			// $("#btnSave").click(doSave);
+			//
+			// $("#btnSaveAsModalSave").click(function(){
+			// 	var filename = $("#txtFilename").val();
+			//
+			// 	$("#SaveAsModal small.error").addClass("hide");
+			//
+			// 	var xmlcode = generateXml();
+			//
+			// 	$.ajax({
+			// 		dataType: "json",
+			// 		data: {
+			// 			file: xmlcode,
+			// 			filename: filename,
+			// 			overwrite: 0
+			// 		},
+			// 		type: "POST",
+			// 		url: "save",
+			// 		success: function(data){
+			// 			if(data.status == "error"){
+			// 				$("#SaveAsModal small.error").html(data.message).removeClass("hide");
+			// 			}else if(data.status == "success"){
+			// 				scriptname = data.filename;
+			// 				isScriptModified = false;
+			//
+			// 				var filename_no_ext = data.filename;
+			// 				if(filename_no_ext.slice(-4) == ".xml" || filename_no_ext.slice(-4) == ".XML"){
+			// 					filename_no_ext = filename_no_ext.slice(0, -4);
+			// 				}
+			//
+			// 				$(".filebox .fa-asterisk").addClass("hide");
+			// 				$(".filebox .filename").html(filename_no_ext);
+			//
+			// 				$("#SaveAsModal").foundation("reveal", "close");
+			// 			}
+			// 		}
+			// 	});
+			// 	return 0;
+			// });
 
-		$("#btnSaveAsModalSave").click(function(){
-			var filename = $("#txtFilename").val();
 
-			$("#SaveAsModal small.error").addClass("hide");
 
-			var xmlcode = generateXml();
+			// All files
+			// $("#btnFiles").click(function(){
+			// 	$("#FilesModalSpinner").removeClass("hide");
+			// 	$("#FilesModalFilelist").html("");
+			// 	$("#FilesModalFilelist").load("filelist", function(){
+			// 		$("#FilesModalSpinner").addClass("hide");
+			//
+			// 		// Delete and Open button events need to be rebound here
+			// 		// because filelist is loaded via AJAX
+			// 		$(".btnDeleteFile").off("click");
+			// 		$(".btnDeleteFile").on("click", function(){
+			// 			filename = $(this).closest("div.file").data("scriptfile");
+			// 			$("#ConfirmDeleteModal").foundation("reveal", "open");
+			//
+			// 			$("#btnConfirmDelete").off("click");
+			// 			$("#btnConfirmDelete").on("click", function(){
+			// 				$.ajax({
+			// 					dataType: "json",
+			// 					type: "POST",
+			// 					url: "delete/" + filename,
+			// 					success: function(data){
+			// 						$("#ConfirmDeleteModal").foundation("reveal", "close");
+			// 						if(data.status == "error"){
+			// 							addError(data.message);
+			// 						}else{
+			// 							addMessage(data.message);
+			// 						}
+			// 					}
+			// 				});
+			// 			});
+			// 		});
+			//
+			// 		$(".btnOpenFile").off("click");
+			// 		$(".btnOpenFile").on("click", function(){
+			// 			filename = $(this).closest("div.file").data("scriptfile");
+			//
+			// 			var do_load = function(){
+			// 				$.ajax({
+			// 					url: "scripts/" + filename,
+			// 					dataType: "text",
+			// 					cache: false,
+			// 					success: function(data){
+			// 						// Load script
+			// 						ignoreNextChangeEvt = true;
+			// 						Blockly.mainWorkspace.clear();
+			// 						var xml = Blockly.Xml.textToDom(data);
+			// 						Blockly.Xml.domToWorkspace(workspace, xml);
+			//
+			// 						// Update filename and asterisk
+			// 						var filename_no_ext = filename;
+			// 						if(filename_no_ext.slice(-4) == ".xml" || filename_no_ext.slice(-4) == ".XML"){
+			// 							filename_no_ext = filename_no_ext.slice(0, -4);
+			// 						}
+			// 						$(".filebox .filename").text(filename_no_ext);
+			// 						$(".filebox .fa-asterisk").addClass("hide");
+			// 						isScriptModified = false;
+			// 						scriptname = filename;
+			//
+			// 						$("#FilesModal").foundation("reveal", "close");
+			// 					}
+			// 				});
+			// 			}
+			//
+			// 			if(isScriptModified){
+			// 				$("#btnConfirmLoad").off("click");
+			// 				$("#btnConfirmLoad").on("click", do_load);
+			// 				$("#ConfirmLoadModal").foundation("reveal", "open");
+			// 			}else{
+			// 				do_load();
+			// 			}
+			//
+			// 		});
+			// 	});
+			//
+			// 	$("#FilesModal").foundation("reveal", "open");
+			// });
 
-			$.ajax({
-				dataType: "json",
-				data: {
-					file: xmlcode,
-					filename: filename,
-					overwrite: 0
-				},
-				type: "POST",
-				url: "save",
-				success: function(data){
-					if(data.status == "error"){
-						$("#SaveAsModal small.error").html(data.message).removeClass("hide");
-					}else if(data.status == "success"){
-						scriptname = data.filename;
-						isScriptModified = false;
+			self.loadFileData = function(filename){
+				if (filename == "") {
+					return;
+				}
+				$.ajax({
+					dataType: "text",
+					type: "POST",
+					url: "files/get",
+					cache: false,
+					data: {path: filename, extension: self.fileExtension()},
+					success: function(data){
+						// Load script
+						console.log("Open file");
+						ignoreNextChangeEvt = true;
+						Blockly.mainWorkspace.clear();
+						var xml = Blockly.Xml.textToDom(data);
+						Blockly.Xml.domToWorkspace(workspace, xml);
 
-						var filename_no_ext = data.filename;
-						if(filename_no_ext.slice(-4) == ".xml" || filename_no_ext.slice(-4) == ".XML"){
+						// Update filename and asterisk
+						var filename_no_ext = filename;
+						if(filename_no_ext.slice(-4) == ".lua" || filename_no_ext.slice(-4) == ".LUA"){
 							filename_no_ext = filename_no_ext.slice(0, -4);
 						}
-
-						$(".filebox .fa-asterisk").addClass("hide");
-						$(".filebox .filename").html(filename_no_ext);
-
-						$("#SaveAsModal").foundation("reveal", "close");
-					}
-				}
-			});
-			return 0;
-		});
-
-		// All files
-		$("#btnFiles").click(function(){
-			$("#FilesModalSpinner").removeClass("hide");
-			$("#FilesModalFilelist").html("");
-			$("#FilesModalFilelist").load("filelist", function(){
-				$("#FilesModalSpinner").addClass("hide");
-
-				// Delete and Open button events need to be rebound here
-				// because filelist is loaded via AJAX
-				$(".btnDeleteFile").off("click");
-				$(".btnDeleteFile").on("click", function(){
-					filename = $(this).closest("div.file").data("scriptfile");
-					$("#ConfirmDeleteModal").foundation("reveal", "open");
-
-					$("#btnConfirmDelete").off("click");
-					$("#btnConfirmDelete").on("click", function(){
-						$.ajax({
-							dataType: "json",
-							type: "POST",
-							url: "delete/" + filename,
-							success: function(data){
-								$("#ConfirmDeleteModal").foundation("reveal", "close");
-								if(data.status == "error"){
-									addError(data.message);
-								}else{
-									addMessage(data.message);
-								}
-							}
-						});
-					});
-				});
-
-				$(".btnOpenFile").off("click");
-				$(".btnOpenFile").on("click", function(){
-					filename = $(this).closest("div.file").data("scriptfile");
-
-					var do_load = function(){
-						$.ajax({
-							url: "scripts/" + filename,
-							dataType: "text",
-							cache: false,
-							success: function(data){
-								// Load script
-								ignoreNextChangeEvt = true;
-								Blockly.mainWorkspace.clear();
-								var xml = Blockly.Xml.textToDom(data);
-								Blockly.Xml.domToWorkspace(workspace, xml);
-
-								// Update filename and asterisk
-								var filename_no_ext = filename;
-								if(filename_no_ext.slice(-4) == ".xml" || filename_no_ext.slice(-4) == ".XML"){
-									filename_no_ext = filename_no_ext.slice(0, -4);
-								}
-								$(".filebox .filename").text(filename_no_ext);
-								$(".filebox .fa-asterisk").addClass("hide");
-								isScriptModified = false;
-								scriptname = filename;
-
-								$("#FilesModal").foundation("reveal", "close");
-							}
-						});
-					}
-
-					if(isScriptModified){
-						$("#btnConfirmLoad").off("click");
-						$("#btnConfirmLoad").on("click", do_load);
-						$("#ConfirmLoadModal").foundation("reveal", "open");
-					}else{
-						do_load();
-					}
-
-				});
-			});
-
-			$("#FilesModal").foundation("reveal", "open");
-		});
-
-		// New
-		$("#btnNew").click(function(){
-			if(isScriptModified){
-				$("#ConfirmNewModal").foundation("reveal", "open");
-				console.log("scriptmod");
-			}else{
-				console.log("scriptnotmod");
-				if(scriptname != null){
-					console.log("scriptname not null");
-					scriptname = null;
-
-					ignoreNextChangeEvt = true;
-					Blockly.mainWorkspace.clear();
-
-					$(".filebox .filename").html("Untitled script");
-					$(".filebox .fa-asterisk").addClass("hide");
-				}
-			}
-		});
-
-		$("#btnConfirmNew").click(function(){
-			ignoreNextChangeEvt = true;
-			Blockly.mainWorkspace.clear();
-
-			isScriptModified = false;
-			scriptname = null;
-
-			$(".filebox .filename").html("Untitled script");
-			$(".filebox .fa-asterisk").addClass("hide");
-
-			$("#ConfirmNewModal").foundation("reveal", "close");
-		});
-
-		// Run
-		function SetButtonToStart(){
-			// Button
-			$("#btnStartStop .fa").removeClass("fa-stop");
-			$("#btnStartStop .fa").addClass("fa-play");
-			$("#btnStartStop .text").html("Run");
-
-			// Filename bar
-			$(".filebox .status").html("Stopped");
-			$(".filebox .fa-circle-o-notch").removeClass("fa-circle-o-notch fa-spin").addClass("fa-stop");
-		}
-
-		function SetButtonToStop(){
-			// Button
-			$("#btnStartStop .fa").removeClass("fa-play");
-			$("#btnStartStop .fa").addClass("fa-stop");
-			$("#btnStartStop .text").html("Stop");
-
-			// Filename bar
-			$(".filebox .status").html("Running");
-			$(".filebox .fa-stop").removeClass("fa-stop").addClass("fa-circle-o-notch fa-spin");
-		}
-
-		$("#btnStartStop").click(function(){
-			if(!isScriptRunning){
-				// Start the script
-				var luacode = generateLua();
-				var xmlcode = generateXml();
-
-				$.ajax({
-					dataType: "json",
-					data: {
-						luacode: luacode,
-						xmlcode: xmlcode,
-						name: scriptname,
-						modified: isScriptModified ? 1 : 0
+						self.fileName(filename_no_ext);
+						self.fileIsModified(false);
 					},
-					type: "POST",
-					url: "startscript",
-					success: function(data){
-						if(data.status == "error"){
-							addError(data.message);
-						}
+					error: function(){
+						window.location.href = "?";
 					}
 				});
-			}else{
-				// Stop the script
-				$.ajax({
-					dataType: "json",
-					data: {},
-					type: "POST",
-					url: "stopscript",
-					success: function(data){
-						if(data.status == "error"){
-							addError(data.message);
+			};
+
+			// New
+			// $("#btnNew").click(function(){
+			// 	if(isScriptModified){
+			// 		$("#ConfirmNewModal").foundation("reveal", "open");
+			// 		console.log("scriptmod");
+			// 	}else{
+			// 		console.log("scriptnotmod");
+			// 		if(scriptname != null){
+			// 			console.log("scriptname not null");
+			// 			scriptname = null;
+			//
+			// 			ignoreNextChangeEvt = true;
+			// 			Blockly.mainWorkspace.clear();
+			//
+			// 			$(".filebox .filename").html("Untitled script");
+			// 			$(".filebox .fa-asterisk").addClass("hide");
+			// 		}
+			// 	}
+			// });
+
+			// $("#btnConfirmNew").click(function(){
+			// 	ignoreNextChangeEvt = true;
+			// 	Blockly.mainWorkspace.clear();
+			//
+			// 	isScriptModified = false;
+			// 	scriptname = null;
+			//
+			// 	$(".filebox .filename").html("Untitled script");
+			// 	$(".filebox .fa-asterisk").addClass("hide");
+			//
+			// 	$("#ConfirmNewModal").foundation("reveal", "close");
+			// });
+			self.init = function(){
+				console.log("New file");
+				ignoreNextChangeEvt = true;
+				if (Blockly != null){
+					Blockly.mainWorkspace.clear();
+				}
+
+				self.fileName("Untitled");
+				self.fileIsModified(false);
+			};
+
+			// Run
+			// function SetButtonToStart(){
+			// 	// Button
+			// 	$("#btnStartStop .fa").removeClass("fa-stop");
+			// 	$("#btnStartStop .fa").addClass("fa-play");
+			// 	$("#btnStartStop .text").html("Run");
+			//
+			// 	// Filename bar
+			// 	$(".filebox .status").html("Stopped");
+			// 	$(".filebox .fa-circle-o-notch").removeClass("fa-circle-o-notch fa-spin").addClass("fa-stop");
+			// }
+
+			// function SetButtonToStop(){
+			// 	// Button
+			// 	$("#btnStartStop .fa").removeClass("fa-play");
+			// 	$("#btnStartStop .fa").addClass("fa-stop");
+			// 	$("#btnStartStop .text").html("Stop");
+			//
+			// 	// Filename bar
+			// 	$(".filebox .status").html("Running");
+			// 	$(".filebox .fa-stop").removeClass("fa-stop").addClass("fa-circle-o-notch fa-spin");
+			// }
+
+			self.startStopScript = function(){
+				if(!self.isRunning()){
+					// Start the script
+					var luacode = generateLua();
+					var xmlcode = generateXml();
+
+					$.ajax({
+						dataType: "json",
+						data: {
+							luacode: luacode,
+							xmlcode: xmlcode,
+							name: scriptname,
+							modified: isScriptModified ? 1 : 0
+						},
+						type: "POST",
+						url: "startscript",
+						success: function(data){
+							if(data.status == "error"){
+								addError(data.message);
+							}
 						}
+					});
+				}else{
+					// Stop the script
+					$.ajax({
+						dataType: "json",
+						data: {},
+						type: "POST",
+						url: "stopscript",
+						success: function(data){
+							if(data.status == "error"){
+								addError(data.message);
+							}
+						}
+					});
+				}
+			};
+
+			// Clear log
+			self.clearLog = function(){
+				$("#console").html("");
+			};
+
+			// Code view
+			self.codeView = function(){
+				if(codeViewOn){
+					// Switch to Blockly
+					$("#pnlCode").addClass("hide");
+					$("#pnlBlockly").removeClass("hide");
+					//$("#btnCodeView").removeClass("active");
+				}else{
+					// Switch to code
+					var code = generateLua();
+					editor.setValue(code);
+					editor.gotoLine(1, 0, false);
+
+					$("#pnlCode").removeClass("hide");
+					$("#pnlBlockly").addClass("hide");
+					//$("#btnCodeView").addClass("active");
+
+					editor.resize();
+				}
+				codeViewOn = !codeViewOn;
+			};
+
+			// // Expand/Collapse
+			// $("#btnExpandCollapse").click(function(){
+			// 	if(isFullscreen){
+			// 		$("#btnExpandCollapse .fa").removeClass("fa-compress");
+			// 		$("#btnExpandCollapse .fa").addClass("fa-expand");
+			// 		$("#btnExpandCollapse .text").html("Expand view");
+			// 		$("#content").removeClass("fullscreen");
+			// 	}else{
+			// 		$("#btnExpandCollapse .fa").removeClass("fa-expand");
+			// 		$("#btnExpandCollapse .fa").addClass("fa-compress");
+			// 		$("#btnExpandCollapse .text").html("Collapse view");
+			// 		$("#content").addClass("fullscreen");
+			// 	}
+			// 	editor.resize();
+			// 	isFullscreen = !isFullscreen;
+			// });
+
+			// ScriptUI
+			// Set a flag to capture keypresses when ScriptUI is opened
+			$(document).on("opened.fndtn.reveal", "#ScriptUIModal[data-reveal]", function(){
+				monitorKeypresses = true;
+			});
+			$(document).on("closed.fndtn.reveal", "#ScriptUIModal[data-reveal]", function(){
+				monitorKeypresses = false;
+			});
+
+			// Monitor keypresses
+			var keysDown = {};
+			$(document).keydown(function(evt){
+				if(!monitorKeypresses){
+					return;
+				}
+
+				var keycode = (event.keyCode ? event.keyCode : event.which);
+
+				if(keysDown[keycode] == null){
+					// First press
+					var elem = $("#ScriptUIKeys .keyboardKey[data-keycode=" + keycode + "]");
+					elem.addClass("down");
+
+					if(connReady){
+						conn.send(JSON.stringify({action: "keyDown", key: elem.data("key")}));
 					}
-				});
-			}
-		});
 
-		// Clear log
-		$("#btnClearLog").click(function(){
-			$("#console").html("");
-		});
+					keysDown[keycode] = true;
+				}
+			});
 
-		// Code view
-		$("#btnCodeView").click(function(){
-			if(codeViewOn){
-				// Switch to Blockly
-				$("#pnlCode").addClass("hide");
-				$("#pnlBlockly").removeClass("hide");
-				$("#btnCodeView").removeClass("active");
-			}else{
-				// Switch to code
-				var code = generateLua();
-				editor.setValue(code);
-				editor.gotoLine(1, 0, false);
+			$(document).keyup(function(evt){
+				if(!monitorKeypresses){
+					return;
+				}
+				var keycode = (event.keyCode ? event.keyCode : event.which);
+				keysDown[keycode] = null;
 
-				$("#pnlCode").removeClass("hide");
-				$("#pnlBlockly").addClass("hide");
-				$("#btnCodeView").addClass("active");
-
-				editor.resize();
-			}
-			codeViewOn = !codeViewOn;
-		});
-
-		// Expand/Collapse
-		$("#btnExpandCollapse").click(function(){
-			if(isFullscreen){
-				$("#btnExpandCollapse .fa").removeClass("fa-compress");
-				$("#btnExpandCollapse .fa").addClass("fa-expand");
-				$("#btnExpandCollapse .text").html("Expand view");
-				$("#content").removeClass("fullscreen");
-			}else{
-				$("#btnExpandCollapse .fa").removeClass("fa-expand");
-				$("#btnExpandCollapse .fa").addClass("fa-compress");
-				$("#btnExpandCollapse .text").html("Collapse view");
-				$("#content").addClass("fullscreen");
-			}
-			editor.resize();
-			isFullscreen = !isFullscreen;
-		});
-
-		// ScriptUI
-		// Set a flag to capture keypresses when ScriptUI is opened
-		$(document).on("opened.fndtn.reveal", "#ScriptUIModal[data-reveal]", function(){
-			monitorKeypresses = true;
-		});
-		$(document).on("closed.fndtn.reveal", "#ScriptUIModal[data-reveal]", function(){
-			monitorKeypresses = false;
-		});
-
-		// Monitor keypresses
-		var keysDown = {};
-		$(document).keydown(function(evt){
-			if(!monitorKeypresses){
-				return;
-			}
-
-			var keycode = (event.keyCode ? event.keyCode : event.which);
-
-			if(keysDown[keycode] == null){
-				// First press
 				var elem = $("#ScriptUIKeys .keyboardKey[data-keycode=" + keycode + "]");
-				elem.addClass("down");
+				elem.removeClass("down");
 
 				if(connReady){
-					conn.send(JSON.stringify({action: "keyDown", key: elem.data("key")}));
+					conn.send(JSON.stringify({action: "keyUp", key: elem.data("key")}));
 				}
+			});
 
-				keysDown[keycode] = true;
-			}
-		});
+			$("#ScriptUIModal").on("mousedown", "a.btnScriptUI", function(){
+				var elem = $(this);
+				if(connReady && !elem.hasClass("toggled")){
+					conn.send(JSON.stringify({action: "buttonDown", button: elem.data("buttonname")}));
+				}
+			});
 
-		$(document).keyup(function(evt){
-			if(!monitorKeypresses){
-				return;
-			}
-			var keycode = (event.keyCode ? event.keyCode : event.which);
-			keysDown[keycode] = null;
+			$("#ScriptUIModal").on("mouseup", "a.btnScriptUI", function(){
+				var elem = $(this);
 
-			var elem = $("#ScriptUIKeys .keyboardKey[data-keycode=" + keycode + "]");
-			elem.removeClass("down");
-
-			if(connReady){
-				conn.send(JSON.stringify({action: "keyUp", key: elem.data("key")}));
-			}
-		});
-
-		$("#ScriptUIModal").on("mousedown", "a.btnScriptUI", function(){
-			var elem = $(this);
-			if(connReady && !elem.hasClass("toggled")){
-				conn.send(JSON.stringify({action: "buttonDown", button: elem.data("buttonname")}));
-			}
-		});
-
-		$("#ScriptUIModal").on("mouseup", "a.btnScriptUI", function(){
-			var elem = $(this);
-
-			if(elem.data("toggle")){
-				// Toggle button
-				if(elem.hasClass("toggled")){
+				if(elem.data("toggle")){
+					// Toggle button
+					if(elem.hasClass("toggled")){
+						if(connReady){
+							conn.send(JSON.stringify({action: "buttonUp", button: elem.data("buttonname")}));
+						}
+					}
+					elem.toggleClass("toggled");
+				}else{
+					// Regular button
 					if(connReady){
 						conn.send(JSON.stringify({action: "buttonUp", button: elem.data("buttonname")}));
 					}
 				}
-				elem.toggleClass("toggled");
-			}else{
-				// Regular button
-				if(connReady){
-					conn.send(JSON.stringify({action: "buttonUp", button: elem.data("buttonname")}));
-				}
-			}
-		});
+			});
 
-		$("#btnScriptUI").click(function(){
-			$("#ScriptUIModal").foundation("reveal", "open");
-		});
+			self.scriptUI = function(){
+				$("#ScriptUIModal").foundation("reveal", "open");
+			};
+
+			if (action_data.openfile) {
+				self.loadFileData(action_data.openfile || "");
+			} else {
+				self.init();
+			}
+
+		};
+		// This makes Knockout get to work
+		var model = new Model();
+		ko.applyBindings(model);
+		model.fileIsModified(false);
+
+		config_file_operations("scripts", model.fileExtension(), model.saveFileData, model.loadFileData, model.init);
 	});
 </script>
 
@@ -703,7 +814,7 @@
 {% block modals %}
 {{ super() }}
 
-<div id="SaveAsModal" class="reveal-modal tiny" data-reveal>
+<!-- <div id="SaveAsModal" class="reveal-modal tiny" data-reveal>
 	<div class="titlebar">
 		<a class="close-reveal-modal"><span class="fa fa-close"></span></a>
 		<span class="fa fa-save"></span> Save as
@@ -774,7 +885,7 @@
 			<a href="#" id="btnConfirmLoad" class="button"><span class="fa fa-folder-open"></span> Yes, load file</a>
 		</div>
 	</div>
-</div>
+</div> -->
 
 <div id="ScriptUIModal" class="reveal-modal small" data-reveal>
 	<div class="titlebar">
