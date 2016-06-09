@@ -2,19 +2,15 @@
 OnoSW is the software framework for [social robot Ono](http://www.industrialdesigncenter.be/ono/), to be used in conjunction with [Ono2](https://github.com/cesarvandevelde/Ono2) and [OnoHAT](https://github.com/cesarvandevelde/OnoHAT).
 
 # Hardware Requirements
-- Raspberry Pi model B+ (RPi 2 model B should also work)
+- Raspberry Pi 1 model B+ | Raspberry Pi 2 model B | Raspberry Pi 3
 - [OnoHAT](https://github.com/cesarvandevelde/OnoHAT)
 - WiFi dongle that supports AP-mode (e.g. [WiPi](http://be.farnell.com/element14/wipi/dongle-wifi-usb-for-raspberry/dp/2133900?ost=wipi&categoryId=700000005571))
 - Separate power supplies for logic (5V 2A) and servos (5V 10A), these can be connected directly to the OnoHAT
 
 # Installation
 1. Start with a fresh Raspbian install
-2. Downgrade kernel to pre-3.18. This workaround is needed because more recent kernels use device tree, which causes timeout errors on the I2C bus. I have not found a better solution yet, unfortunately.
-
-    ```
-    sudo rpi-update f74b92120e0d469fc5c2dc85b2b5718d877e1cbb
-    ```
-3. Copy the contents the folder /OnoSW/ to /home/pi/OnoSW/
+2. Copy the contents the folder /OnoSW/ to /home/pi/OnoSW/
+3. Copy the contents the folder /Scripts/ to /home/pi/Scripts/
 4. Update your system
 
     ```
@@ -79,7 +75,15 @@ This step is not strictly necessary, but will result in a massive speedup when p
     ```
     sudo nano /etc/modprobe.d/raspi-blacklist.conf
     ```
-11. Configure ALSA:
+11. Configure audio:
+    
+    Add hifiberry-dac device tree overlay in config.txt (```sudo nano /boot/config.txt```). And add the following to the end of the config.txt file:
+    ```
+    dtoverlay=hifiberry-dac
+    ```
+    If present, change ```dtparam=audio=on``` to ```#dtparam=audio=on```
+
+    Configure ALSA
     
     ```
     sudo nano /etc/asound.conf
@@ -127,47 +131,49 @@ Use the following configuration for /etc/hostapd/hostapd.conf:
     ```
     interface=wlan0
     driver=nl80211
-    ssid=Ono_AP
+    ssid=OpSoRo_Robot
     hw_mode=g
     channel=6
     macaddr_acl=0
     auth_algs=1
     ignore_broadcast_ssid=0
     wpa=2
-    wpa_passphrase=RobotOno
+    wpa_passphrase=opsoro123
     wpa_key_mgmt=WPA-PSK
     wpa_pairwise=TKIP
     rsn_pairwise=CCMP
     ```
 
-14. [Change the host name to "ono"](http://www.raspians.com/Knowledgebase/how-to-change-hostname-on-raspberrypi/)
-15. [Setup a daemon for Ono](http://blog.scphillips.com/2013/07/getting-a-python-script-to-run-in-the-background-as-a-service-on-boot/)  
-The script for the daemon can be found in /Scripts/onosw.sh.  
-Make sure the main OnoSW python script is executable!
+14. [Change the host name to "opsoro"](http://www.raspians.com/Knowledgebase/how-to-change-hostname-on-raspberrypi/)
+15. Setup Opsoro service  
+The script for setting up opsoro can be found in /Scripts/.  
+Follow next steps to setup OpSoRo:
 
     ```
-    sudo chmod 755 /home/pi/OnoSW/main.py  
+    sudo cd /home/pi/Scripts/
+    sudo chmod +x setup_opsoro
+    sudo ./setup_opsoro
     ```
 
-OnoSW and its dependencies should now all be installed and working. Reboot the Raspberry Pi to test. Please let me know if any steps are missing!
+OnoSW and its dependencies should now all be installed and working. Reboot the Raspberry Pi to test. Please let us know if any steps are missing!
 
 # Use
-If everything was configured correctly, the Raspberry Pi should create a WiFi hotspot (Ono_AP) at startup. This network lets access the robot's web interface. Once connected to the network, open a browser and go to http://ono.local. You will be presented with a login screen, the default password is "RobotOno". The main interface lets you control the robot through a number of apps.
+If everything was configured correctly, the Raspberry Pi should create a WiFi hotspot (Opsoro_AP) at startup. This network lets access the robot's web interface. Once connected to the network, open a browser and go to http://ono.local. You will be presented with a login screen, the default password is "RobotOno". The main interface lets you control the robot through a number of apps.
 
 ### Notes:
 - Be sure to properly shut down the operating system! Cutting power without performing a proper shutdown can corrupt the file system on the SD card, requiring a reinstall.
 - The ono.local address only works on computers that have Bonjour. If you are using OS X or have iTunes installed, you already have Bonjour. Bonjour can also be downloaded [here](https://www.apple.com/support/bonjour/). The web interface can also be accessed by entering the IP-address in your browser, which is 192.168.42.1.
-- If the Raspberry Pi is connected to the internet via ethernet, the hotspot will also allow internet access. Additionally, the web interface will be accessible from the parent network using the ono.local address.
+- If the Raspberry Pi is connected to the internet via ethernet, the hotspot will also allow internet access. Additionally, the web interface will be accessible from the parent network using the opsoro.local address.
 - Only one user can be logged into the software. This is to prevent conflicting commands from multiple clients. It is possible to overwrite this behaviour inside apps, if desired.
 - The code from the visual programming app is currently executed in the browser, which then sends raw commands to the web server. This causes minor bugs, which is why future versions will run the generated code on the server.
 - To create custom apps, please look at the examples in /OnoSW/apps/. Apps are self-contained within their folder inside /apps/, and are automatically detected and activated by the software.
 
 
 # More info
-More information about this project can be found on [our website](http://www.industrialdesigncenter.be/ono/).  
+More information about this project can be found on [our website](http://www.opsoro.be/).  
 Also be sure to check out the [main repository](http://www.github.com/cesarvandevelde/ono2), which contains all the mechanical design files.  
-If you have any questions concerning this project, feel free to contact me at cesar [dot] vandevelde [at] ugent [dot] be
+If you have any questions concerning this project, feel free to contact us at info [at] opsoro [dot] be
 
-Copyright (C) 2015 Cesar Vandevelde.
+Copyright (C) 2016 OPSORO.
 
 This work is licensed under a [Creative Commons Attribution-ShareAlike 4.0 International License](http://creativecommons.org/licenses/by-sa/4.0/).
