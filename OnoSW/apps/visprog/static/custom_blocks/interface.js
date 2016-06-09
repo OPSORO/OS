@@ -1,5 +1,17 @@
 Blockly.Lua.addReservedWords("UI");
 
+Blockly.Blocks['interface_addbutton'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField(new Blockly.FieldImage("static/icons/fa-gamepad.png", 16, 18, ""))
+        .appendField("jens is een homo");
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setColour(300);
+    this.setTooltip('Add a button to the interface.');
+  }
+};
+
 Blockly.Blocks['interface_init'] = {
   init: function() {
     this.appendDummyInput()

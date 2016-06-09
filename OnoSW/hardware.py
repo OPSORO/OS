@@ -129,6 +129,8 @@ class _Hardware(object):
 		"""Turns status LED off."""
 		self.spi_command(CMD_LEDOFF)
 
+
+
 	# > I2C
 	def i2c_detect(self, addr):
 		"""Returns True if an I2C device is found at a particular address."""

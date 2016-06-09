@@ -10,6 +10,9 @@ from expression import Expression
 from animate import Animate, AnimatePeriodic
 from sound import Sound
 from stoppable_thread import StoppableThread
+#################################
+from detection import Detection
+#################################
 
 def callback(fn):
 	"""
@@ -71,6 +74,13 @@ class ScriptHost(object):
 
 		g["Sound"] = Sound
 		g["Expression"] = Expression
+
+
+		#################################
+		g["Detection"] = Detection
+		#################################
+
+
 		g["Hardware"] = LuaHardware(self.runtime)
 		g["Animate"] = LuaAnimate
 		g["AnimatePeriodic"] = LuaAnimatePeriodic

@@ -176,6 +176,46 @@ class _Expression(object):
 		self.empty_config()
 		self.load_config()
 
+	def test(self):
+		#rechter oog:
+		#horizontaal = 3
+		#mid: 1700
+	    #min: -350
+	    #max: +350
+		#verticaal = 2
+		#mid: 1525
+		#min: +350
+		#max: -350
+		#kniperen = 4
+		#mid: 1500
+	    #min: +300
+	    #max: -350
+		#
+		#linker oog :
+		#horizontaal = 13
+		#mid: 1550
+	  	#min: -350
+	  	#max: +350
+		#vertikaal = 12
+		#mid: 1525
+	    #min: -350
+	    #max: +350
+		#kniperen = 11
+		#mid: 1525
+	    #min: -300
+	    #max: +350
+		#
+		#rezolutie width =350 hieght = 350
+
+		#reghter oog horizontaal
+		Hardware.servo_set(3,1350)
+		#reghter oog verticaal
+		Hardware.servo_set(2,1525)
+		#linker oog horizontaal
+		Hardware.servo_set(13,1900)
+		#linker ook vertikaal
+		Hardware.servo_set(12,1525)
+
 	def get_emotion_complex(self):
 		"""
 		Returns current emotion as a complex number

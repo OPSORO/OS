@@ -18,6 +18,13 @@
 </head>
 <body>
 	<xml id="toolbox" style="display: none">
+		<category name="Detection">
+			<block type="detection_get_coordinates"></block>
+			<block type="detection_get_coordinates_face"></block>
+			<block type="detection_colorCheck"></block>
+			<block type="detection_start_stream"></block>
+			<block type="detection_stop_stream"></block>
+		</category>
 		<category name="General" id="catGeneral">
 			<block type="general_onsetup"></block>
 			<block type="general_onloop"></block>
@@ -316,6 +323,7 @@
 	<script src="static/custom_blocks/expression.js"></script>
 	<script src="static/custom_blocks/touch.js"></script>
 	<script src="static/custom_blocks/neopixel.js"></script>
+	<script src="static/custom_blocks/detection.js"></script>
 
 	<script>
 		$(document).ready(function(){
