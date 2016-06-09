@@ -1,0 +1,97 @@
+# List of emotions available inside social script app
+- name:  Neutral
+  image: neutral.png
+  emotion:
+    r:     0.0
+    phi:   0.0
+
+- name:  Laughing
+  image: laughing.png
+  emotion:
+    r:     1.0
+    phi:   35.0
+
+- name:  Happy
+  image: happy.png
+  emotion:
+    r:     1.0
+    phi:   18.0
+
+- name:  Sad
+  image: sad.png
+  emotion:
+    r:     1.0
+    phi:   200.0
+
+- name:  Angry
+  image: angry.png
+  emotion:
+    r:     1.0
+    phi:   153.0
+
+- name:  Surprised
+  image: surprised.png
+  emotion:
+    r:     1.0
+    phi:   90.0
+
+- name:  Afraid
+  image: afraid.png
+  emotion:
+    r:     1.0
+    phi:   125.0
+
+- name:  Disgusted
+  image: disgusted.png
+  emotion:
+    r:     1.0
+    phi:   172.0
+
+- name:  Tired
+  image: tired.png
+  emotion:
+    r:     1.0
+    phi:   270.0
+
+- name:  Wink
+  image: wink.png
+  emotion:
+    r:     1.0
+    phi:   35.0
+  custom:
+    - dofname: R_EB_INNER
+      pos: 0.3
+    - dofname: R_EB_OUTER
+      pos: -0.1
+    - dofname: R_E_LID
+      pos: 0.3
+
+- name:  Question
+  image: questioning.png
+  custom:
+    - dofname: R_EB_INNER
+      pos: 0.74
+    - dofname: R_EB_OUTER
+      pos: 0.42
+    - dofname: R_E_VER
+      pos: 0.61
+    - dofname: R_E_HOR
+      pos: -0.27
+    - dofname: R_E_LID
+      pos: 1.0
+    - dofname: M_L
+      pos: -0.01
+    - dofname: M_MID
+      pos: -0.01
+    - dofname: M_R
+      pos: -1.0
+    - dofname: L_E_LID
+      pos: 0.63
+    - dofname: L_E_VER
+      pos: 0.61
+    - dofname: L_E_HOR
+      pos: 0.26
+    - dofname: L_EB_INNER
+      pos: -1.0
+    - dofname: L_EB_OUTER
+      pos: -0.03

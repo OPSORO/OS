@@ -18,6 +18,8 @@ $(document).ready(function(){
     var person = 0;
     var level = 0;
 
+    var b_antwoord = false;
+
     var knop = 0;
     var klikkenOfScherm = 1;
 
@@ -28,10 +30,13 @@ $(document).ready(function(){
     $(".back").hide();
     $("#verander").hide();
 
+
     $("#invoerKnop").click(function(){
         console.log("hoi");
+        $(".uitleg").hide()
         $(".levelselect").show();
-        $(".back").show();
+
+        //$(".back").show();
         $("#verander").show();
         $("#invoerKnop").hide();
         $("#naam").prop('disabled', true);
@@ -45,6 +50,7 @@ $(document).ready(function(){
         $("#naam").prop('disabled', false);
         $("#verander").hide();
         $("#invoerKnop").show();
+
     });
 
 
@@ -53,6 +59,30 @@ $(document).ready(function(){
 
         $('#invoerKnop').prop('disabled', false);
     });
+
+
+    $.ajax({
+        dataType: "json",
+        url: "servos/enable",
+        success: function(data){
+            if(data.status == "error"){
+                addError(data.message);
+            }
+        }
+    });
+
+    $.ajax({
+        dataType: "json",
+        data: {"phi": 13 , "r": 1},
+        type: "POST",
+        url: "setemotion",
+        success: function(data){
+            if(data.status == "error"){
+                addError(data.message);
+            }
+        }
+    });
+
 
     function start() {
 
@@ -147,6 +177,91 @@ $(document).ready(function(){
 
         $(".vraag").html(som[0]+" "+som[1]+" "+som[2]);
         $(".number1").html(som[0]);
+
+        if(vraagNummer !== 0){
+            $.ajax({
+                dataType: "json",
+                data: {"phi": 23, "r": 1},
+                type: "POST",
+                url: "setemotion",
+                success: function(data){
+                    if(data.status == "error"){
+                        addError(data.message);
+                    }
+                }
+            });
+            if(b_antwoord == "true"){
+                var goedArray = ["flink", "goedgedaan", "goedgespeeld", "goedzo", "smb_coin"];
+                var index = Math.floor(Math.random() * 5);
+                var goedzo = goedArray[index];
+
+                setTimeout(function() {
+                    $.ajax({
+                        dataType: "json",
+                        type: "GET",
+                        url: "play/"+goedzo+".wav",
+                        success: function(data){
+                            if(data.status == "error"){
+                                addError(data.message);
+                            }
+                        }
+                    });
+                },0);
+            }else{
+
+                    $.ajax({
+                        dataType: "json",
+                        type: "GET",
+                        url: "play/jammer.wav",
+                        success: function(data){
+                            if(data.status == "error"){
+                                addError(data.message);
+                            }
+                        }
+                    });
+
+            }
+
+        }
+        setTimeout(function() {
+            $.ajax({
+                dataType: "json",
+                type: "GET",
+                url: "play/"+som[0]+".wav",
+                success: function(data){
+                    if(data.status == "error"){
+                        addError(data.message);
+                    }
+                }
+            });
+        },1500);
+
+        setTimeout(function() {
+            $.ajax({
+                dataType: "json",
+                type: "GET",
+                url: "play/"+som[1]+".wav",
+                success: function(data){
+                    if(data.status == "error"){
+                        addError(data.message);
+                    }
+                }
+            });
+        },2500);
+
+        setTimeout(function() {
+            $.ajax({
+                dataType: "json",
+                type: "GET",
+                url: "play/"+som[2]+".wav",
+                success: function(data){
+                    if(data.status == "error"){
+                        addError(data.message);
+                    }
+                }
+            });
+        },3500);
+
         $(".sign").html(som[1]);
         $(".number2").html(som[2]);
 
@@ -168,6 +283,7 @@ $(document).ready(function(){
         Tot10();
         $(".level").hide();
         $(".maths").show();
+        $(".back").show();
 
     });
 
@@ -175,6 +291,7 @@ $(document).ready(function(){
 
         $(".level").show();
         $(".maths").hide();
+        $(".back").hide();
         $(".highscore").hide();
 
         antwoord = 0;
@@ -193,11 +310,33 @@ $(document).ready(function(){
             som = [];
             score++;
             vraagNummer++;
+            b_antwoord = "true";
             if(vraagNummer == 10){
-
+                $.ajax({
+                    dataType: "json",
+                    data: {"phi": 2, "r": 1},
+                    type: "POST",
+                    url: "setemotion",
+                    success: function(data){
+                        if(data.status == "error"){
+                            addError(data.message);
+                        }
+                    }
+                });
                 HighScore();
             }
             if(level == 1){
+                $.ajax({
+                    dataType: "json",
+                    data: {"phi": 19, "r": 1},
+                    type: "POST",
+                    url: "setemotion",
+                    success: function(data){
+                        if(data.status == "error"){
+                            addError(data.message);
+                        }
+                    }
+                });
                 Tot10();
             }
             if(level == 2){
@@ -208,10 +347,12 @@ $(document).ready(function(){
             }
         }else{
             console.log("fout");
+            b_antwoord = "false";
             som = [];
             vraagNummer++;
             if(vraagNummer == 10){
                 HighScore();
+
             }
             if(level == 1){
                 Tot10();
@@ -223,9 +364,47 @@ $(document).ready(function(){
                 Tafels();
             }
         }
+        $(".points").html(score + " punten");
     });
 
     function HighScore(){
+        setTimeout(function() {
+            $.ajax({
+                dataType: "json",
+                type: "GET",
+                url: "play/jehebt.wav",
+                success: function(data){
+                    if(data.status == "error"){
+                        addError(data.message);
+                    }
+                }
+            });
+        },0);
+        setTimeout(function() {
+            $.ajax({
+                dataType: "json",
+                type: "GET",
+                url: "play/"+score+".wav",
+                success: function(data){
+                    if(data.status == "error"){
+                        addError(data.message);
+                    }
+                }
+            });
+        },1000);
+        setTimeout(function() {
+            $.ajax({
+                dataType: "json",
+                type: "GET",
+                url: "play/punten.wav",
+                success: function(data){
+                    if(data.status == "error"){
+                        addError(data.message);
+                    }
+                }
+            });
+        },2500);
+
         if(level == 1){
             localstorageNaam = "namesRekenen";
         }
@@ -299,9 +478,6 @@ $(document).ready(function(){
 
 
     function startTot100() {
-
-
-
         var x = Math.floor((Math.random() * 100) + 1);
         var y = Math.floor((Math.random() * 100) + 1);
         teken = tekens[Math.floor(Math.random() * tekens.length)];
@@ -374,6 +550,89 @@ $(document).ready(function(){
         $(".sign").html(som[1]);
         $(".number2").html(som[2]);
 
+        if(vraagNummer !== 0){
+            $.ajax({
+                dataType: "json",
+                data: {"phi": 23, "r": 1},
+                type: "POST",
+                url: "setemotion",
+                success: function(data){
+                    if(data.status == "error"){
+                        addError(data.message);
+                    }
+                }
+            });
+
+            if(b_antwoord == "true"){
+                var goedArray = ["flink", "goedgedaan", "goedgespeeld", "goedzo", "smb_coin"];
+                var index = Math.floor(Math.random() * 5);
+                var goedzo = goedArray[index];
+
+                setTimeout(function() {
+                    $.ajax({
+                        dataType: "json",
+                        type: "GET",
+                        url: "play/"+goedzo+".wav",
+                        success: function(data){
+                            if(data.status == "error"){
+                                addError(data.message);
+                            }
+                        }
+                    });
+                },0);
+            }else{
+                $.ajax({
+                    dataType: "json",
+                    type: "GET",
+                    url: "play/jammer.wav",
+                    success: function(data){
+                        if(data.status == "error"){
+                            addError(data.message);
+                        }
+                    }
+                });
+            }
+        }
+        setTimeout(function() {
+            $.ajax({
+                    dataType: "json",
+                    type: "GET",
+                    url: "play/"+som[0]+".wav",
+                    success: function(data){
+                        if(data.status == "error"){
+                            addError(data.message);
+                        }
+                    }
+            });
+        },1500);
+
+        setTimeout(function() {
+            $.ajax({
+                dataType: "json",
+                type: "GET",
+                url: "play/"+som[1]+".wav",
+                success: function(data){
+                    if(data.status == "error"){
+                        addError(data.message);
+                    }
+                }
+            });
+        },3000);
+
+        setTimeout(function() {
+            $.ajax({
+                dataType: "json",
+                type: "GET",
+                url: "play/"+som[2]+".wav",
+                success: function(data){
+                    if(data.status == "error"){
+                        addError(data.message);
+                    }
+                }
+            });
+        },4500);
+
+
         console.log("mogelijkeAntwoorden = "+mogelijkeAntwoorden);
         mogelijkeAntwoorden.shuffle();
         console.log("mogelijkeAntwoorden = "+mogelijkeAntwoorden);
@@ -392,18 +651,102 @@ $(document).ready(function(){
         Tot100();
         $(".level").hide();
         $(".maths").show();
-
+        $(".back").show();
 
 
     });
 
     function Tafels() {
+        som = [];
+        mogelijkeAntwoorden = [];
         startTafel();
 
         $(".vraag").html(som[0]+" "+som[1]+" "+som[2]);
         $(".number1").html(som[0]);
         $(".sign").html(som[1]);
         $(".number2").html(som[2]);
+
+        if(vraagNummer !== 0){
+            $.ajax({
+                dataType: "json",
+                data: {"phi": 23, "r": 1},
+                type: "POST",
+                url: "setemotion",
+                success: function(data){
+                    if(data.status == "error"){
+                        addError(data.message);
+                    }
+                }
+            });
+
+            if(b_antwoord == "true"){
+                var goedArray = ["flink", "goedgedaan", "goedgespeeld", "goedzo", "smb_coin"];
+                var index = Math.floor(Math.random() * 5);
+                var goedzo = goedArray[index];
+
+                setTimeout(function() {
+                    $.ajax({
+                        dataType: "json",
+                        type: "GET",
+                        url: "play/"+goedzo+".wav",
+                        success: function(data){
+                            if(data.status == "error"){
+                                addError(data.message);
+                            }
+                        }
+                    });
+                },0);
+            }else{
+                $.ajax({
+                    dataType: "json",
+                    type: "GET",
+                    url: "play/jammer.wav",
+                    success: function(data){
+                        if(data.status == "error"){
+                            addError(data.message);
+                        }
+                    }
+                });
+            }
+        }
+        setTimeout(function() {
+            $.ajax({
+                dataType: "json",
+                type: "GET",
+                url: "play/"+som[0]+".wav",
+                success: function(data){
+                    if(data.status == "error"){
+                        addError(data.message);
+                    }
+                }
+            });
+        },1500);
+
+        setTimeout(function() {
+            $.ajax({
+                dataType: "json",
+                type: "GET",
+                url: "play/"+som[1]+".wav",
+                success: function(data){
+                    if(data.status == "error"){
+                        addError(data.message);
+                    }
+                }
+            });
+        },2500);
+
+        setTimeout(function() {
+            $.ajax({
+                dataType: "json",
+                type: "GET",
+                url: "play/"+som[2]+".wav",
+                success: function(data){
+                    if(data.status == "error"){
+                        addError(data.message);
+                    }
+                }
+            });
+        },3500);
 
         console.log("mogelijkeAntwoorden = "+mogelijkeAntwoorden);
         mogelijkeAntwoorden.shuffle();
@@ -423,6 +766,7 @@ $(document).ready(function(){
             teken = "X";
 
             antwoord = (x*y);
+
             som.push(x,teken, y,antwoord);
             mogelijkeAntwoorden.push(antwoord);
         }
@@ -435,13 +779,8 @@ $(document).ready(function(){
         Tafels();
         $(".level").hide();
         $(".maths").show();
-
+        $(".back").show();
     });
-
-
-
-
-
 
 
     $("#opties").click(function(){
@@ -464,6 +803,7 @@ $(document).ready(function(){
         console.log(knop);
         if(som[3]== knop){
             console.log("juist");
+            b_antwoord == "true";
             som = [];
             score++;
             vraagNummer++;
@@ -482,6 +822,7 @@ $(document).ready(function(){
             }
         }else{
             console.log("fout");
+            b_antwoord == "false";
             som = [];
             vraagNummer++;
             if(vraagNummer == 10){
@@ -497,6 +838,7 @@ $(document).ready(function(){
                 Tafels();
             }
         }
+        $(".points").html(score + " punten");
         knop = 0;
     });
 
@@ -512,6 +854,18 @@ $(document).ready(function(){
                 console.log("f");
                 console.log(mogelijkeAntwoorden[0]);
                 antwoordKnop = mogelijkeAntwoorden[0];
+
+                $.ajax({
+                    dataType: "json",
+                    type: "GET",
+                    url: "play/"+mogelijkeAntwoorden[0]+".wav",
+                    success: function(data){
+                        if(data.status == "error"){
+                            addError(data.message);
+                        }
+                    }
+                });
+
                 text = "blauw";
 
             }}
@@ -531,6 +885,17 @@ $(document).ready(function(){
                 //71
                 console.log("2de optie");
                 console.log(mogelijkeAntwoorden[1]);
+                $.ajax({
+                    dataType: "json",
+                    type: "GET",
+                    url: "play/"+mogelijkeAntwoorden[1]+".wav",
+                    success: function(data){
+                        if(data.status == "error"){
+                            addError(data.message);
+                        }
+                    }
+                });
+
                 antwoordKnop = mogelijkeAntwoorden[1];
                 text = "2de";
 
@@ -553,6 +918,7 @@ $(document).ready(function(){
                 console.log(knop);
                 if (som[3] == knop) {
                     console.log("juist");
+                    b_antwoord = "true";
                     som = [];
                     score++;
                     vraagNummer++;
@@ -571,6 +937,7 @@ $(document).ready(function(){
                     }
                 } else {
                     console.log("fout");
+                    b_antwoord = "false";
                     som = [];
                     vraagNummer++;
                     if (vraagNummer == 10) {
@@ -586,6 +953,7 @@ $(document).ready(function(){
                         Tafels();
                     }
                 }
+                $(".points").html(score + " punten");
                 knop = 0;
             }
 
@@ -595,6 +963,16 @@ $(document).ready(function(){
                 console.log("q");
                 text = "groen";
                 console.log(mogelijkeAntwoorden[2]);
+                $.ajax({
+                    dataType: "json",
+                    type: "GET",
+                    url: "play/"+mogelijkeAntwoorden[2]+".wav",
+                    success: function(data){
+                        if(data.status == "error"){
+                            addError(data.message);
+                        }
+                    }
+                });
                 antwoordKnop = mogelijkeAntwoorden[2];
 
             }
@@ -614,41 +992,62 @@ $(document).ready(function(){
                 console.log("Enter");
                 text = "3de";
 
-                if(antwoordKnop == som[3]){
-                    console.log("juist");
-                    som = [];
-                    score++;
-                    vraagNummer++;
-                    if(vraagNummer == 10){
+                if(antwoordKnop != 0) {
 
-                        HighScore();
+                    if(antwoordKnop == som[3]){
+                        console.log("juist");
+                        b_antwoord = "true";
+                        som = [];
+                        score++;
+                        vraagNummer++;
+                        if(vraagNummer == 10){
+
+                            HighScore();
+                        }
+                        if(level == 1){
+                            Tot10();
+                        }
+                        if(level == 2){
+                            Tot100();
+                        }
+                        if(level == 3){
+                            Tafels();
+                        }
+                    }else{
+                        b_antwoord = "false";
+                        console.log("fout");
+                        som = [];
+                        vraagNummer++;
+                        if(vraagNummer == 10){
+                            HighScore();
+                        }
+                        if(level == 1){
+                            Tot10();
+                        }
+                        if(level == 2){
+                            Tot100();
+                        }
+                        if(level == 3){
+                            Tafels();
+                        }
                     }
-                    if(level == 1){
-                        Tot10();
-                    }
-                    if(level == 2){
-                        Tot100();
-                    }
-                    if(level == 3){
-                        Tafels();
-                    }
+                    $(".points").html(score + " punten");
                 }else{
-                    console.log("fout");
-                    som = [];
-                    vraagNummer++;
-                    if(vraagNummer == 10){
-                        HighScore();
-                    }
-                    if(level == 1){
-                        Tot10();
-                    }
-                    if(level == 2){
-                        Tot100();
-                    }
-                    if(level == 3){
-                        Tafels();
-                    }
+                    console.log("de array is leeg");
+                    $.ajax({
+                        dataType: "json",
+                        type: "GET",
+                        url: "play/jammerprobeeropnieuw.wav",
+                        success: function(data){
+                            if(data.status == "error"){
+                                addError(data.message);
+                            }
+                        }
+                    });
                 }
+
+
+                antwoordKnop = 0;
 
             }
         }

@@ -8,11 +8,67 @@ $(document).ready(function(){
     var niveau = 0;
     var text;
     var startOpnieuw = 0;
+    var person = 0;
+    var vraagNummer = 0;
+
+
+
+    $(".button.start").click(function(){
+        if(startOpnieuw == 1){
+            window.location.reload();
+        }
+        start();
+    });
+
+    $("#verander").hide();
+
+    $("#invoerKnop").click(function(){
+        console.log("hoi");
+        $(".uitleg").hide()
+        $(".levelselect").show();
+        $(".back").show();
+        $("#verander").show();
+        $("#invoerKnop").hide();
+        $("#naam").prop('disabled', true);
+        person = $( "#naam" ).val();
+        //$("#invoerKnop").text("verander");
+        if(startOpnieuw == 1){
+            window.location.reload();
+        }
+        start();
+        vraagNummer = 0;
+
+    });
+
+    $("#verander").click(function(){
+        $("#naam").prop('disabled', false);
+        $("#verander").hide();
+        $("#invoerKnop").show();
+    });
+
+
+
+    $('#naam').change(function() {
+
+        $('#invoerKnop').prop('disabled', false);
+    });
 
 
     $.ajax({
         dataType: "json",
         url: "servos/enable",
+        success: function(data){
+            if(data.status == "error"){
+                addError(data.message);
+            }
+        }
+    });
+
+    $.ajax({
+        dataType: "json",
+        data: {"phi": 0 , "r": 1},
+        type: "POST",
+        url: "setemotion",
         success: function(data){
             if(data.status == "error"){
                 addError(data.message);
@@ -32,41 +88,6 @@ $(document).ready(function(){
 
 
 
-            //$.when($.ajax({
-            //    dataType: "json",
-            //    type: "GET",
-            //    url: "play/groen.wav",
-            //    success: function(data){
-            //        if(data.status == "error"){
-            //            addError(data.message);
-            //        }
-            //    }
-            //})).then(
-            //    $.ajax({
-            //        dataType: "json",
-            //        type: "GET",
-            //        url: "play/blauw.wav",
-            //        success: function(data){
-            //            if(data.status == "error"){
-            //                addError(data.message);
-            //            }
-            //        }
-            //    })
-            //);
-
-
-            //if(rand == "rood"){
-            //    $.ajax({
-            //        dataType: "json",
-            //        type: "GET",
-            //        url: "play/rood.wav",
-            //        success: function(data){
-            //            if(data.status == "error"){
-            //                addError(data.message);
-            //            }
-            //        }
-            //    });
-            //}
             vraag.push(rand);
             if((niveau+2) == vraag.length ){
                 
@@ -78,7 +99,49 @@ $(document).ready(function(){
 
 
 
+                //for (i = 0; i < vraag.length; i++) {
+                //    setTimeout(function() {
+                //        $.ajax({
+                //            dataType: "json",
+                //            type: "GET",
+                //            url: "play/"+vraag[i]+".wav",
+                //            success: function(data){
+                //                if(data.status == "error"){
+                //                    addError(data.message);
+                //                }
+                //            }
+                //        });
+                //    },i*1000);
+                //}
 
+                $.ajax({
+                    dataType: "json",
+                    data: {"phi": 0, "r": 1},
+                    type: "POST",
+                    url: "setemotion",
+                    success: function(data){
+                        if(data.status == "error"){
+                            addError(data.message);
+                        }
+                    }
+                });
+
+                if(vraagNummer !== 0){
+                    setTimeout(function() {
+                        $.ajax({
+                            dataType: "json",
+                            type: "GET",
+                            url: "play/smb_coin.wav",
+                            success: function(data){
+                                if(data.status == "error"){
+                                    addError(data.message);
+                                }
+                            }
+                        });
+                    },0);
+                }
+
+                setTimeout(function() {
                 $.ajax({
                     dataType: "json",
                     type: "GET",
@@ -89,6 +152,7 @@ $(document).ready(function(){
                         }
                     }
                 });
+                },2000);
 
                 setTimeout(function() {
                     $.ajax({
@@ -103,31 +167,118 @@ $(document).ready(function(){
                     });
                 },3000);
 
-                setTimeout(function() {
-                    $.ajax({
-                        dataType: "json",
-                        type: "GET",
-                        url: "play/"+vraag[2]+".wav",
-                        success: function(data){
-                            if(data.status == "error"){
-                                addError(data.message);
+                if(vraag[2] != null){
+                    setTimeout(function() {
+                        $.ajax({
+                            dataType: "json",
+                            type: "GET",
+                            url: "play/"+vraag[2]+".wav",
+                            success: function(data){
+                                if(data.status == "error"){
+                                    addError(data.message);
+                                }
                             }
-                        }
-                    });
-                },6000);
+                        });
+                    },4000);
+                }
 
-                setTimeout(function() {
-                    $.ajax({
-                        dataType: "json",
-                        type: "GET",
-                        url: "play/"+vraag[3]+".wav",
-                        success: function(data){
-                            if(data.status == "error"){
-                                addError(data.message);
+
+                if(vraag[3] != null){
+                    setTimeout(function() {
+                        $.ajax({
+                            dataType: "json",
+                            type: "GET",
+                            url: "play/"+vraag[3]+".wav",
+                            success: function(data){
+                                if(data.status == "error"){
+                                    addError(data.message);
+                                }
                             }
-                        }
-                    });
-                },9000);
+                        });
+                    },5000);
+
+                }
+
+
+                if(vraag[4] != null){
+                    setTimeout(function() {
+                        $.ajax({
+                            dataType: "json",
+                            type: "GET",
+                            url: "play/"+vraag[4]+".wav",
+                            success: function(data){
+                                if(data.status == "error"){
+                                    addError(data.message);
+                                }
+                            }
+                        });
+                    },6000);
+                }
+
+
+                if(vraag[5] != null){
+                    setTimeout(function() {
+                        $.ajax({
+                            dataType: "json",
+                            type: "GET",
+                            url: "play/"+vraag[5]+".wav",
+                            success: function(data){
+                                if(data.status == "error"){
+                                    addError(data.message);
+                                }
+                            }
+                        });
+                    },7000);
+                }
+
+
+                if(vraag[6] != null){
+                    setTimeout(function() {
+                        $.ajax({
+                            dataType: "json",
+                            type: "GET",
+                            url: "play/"+vraag[6]+".wav",
+                            success: function(data){
+                                if(data.status == "error"){
+                                    addError(data.message);
+                                }
+                            }
+                        });
+                    },8000);
+                }
+
+
+                if(vraag[7] != null){
+                    setTimeout(function() {
+                        $.ajax({
+                            dataType: "json",
+                            type: "GET",
+                            url: "play/"+vraag[7]+".wav",
+                            success: function(data){
+                                if(data.status == "error"){
+                                    addError(data.message);
+                                }
+                            }
+                        });
+                    },9000);
+                }
+
+
+                if(vraag[8] != null){
+                    setTimeout(function() {
+                        $.ajax({
+                            dataType: "json",
+                            type: "GET",
+                            url: "play/"+vraag[8]+".wav",
+                            success: function(data){
+                                if(data.status == "error"){
+                                    addError(data.message);
+                                }
+                            }
+                        });
+                    },10000);
+                }
+
 
             }
         }
@@ -148,17 +299,20 @@ $(document).ready(function(){
                 });
             if(is_same== true){
                 // alert("juist");
-                score += 5;
-                $.ajax({
-                    dataType: "json",
-                    type: "GET",
-                    url: "play/goed zo.wav",
-                    success: function(data){
-                        if(data.status == "error"){
-                            addError(data.message);
-                        }
-                    }
-                });
+                score = score + (niveau+2) ;
+
+                vraagNummer++;
+
+                //$.ajax({
+                //    dataType: "json",
+                //    type: "GET",
+                //    url: "play/fart-01.wav",
+                //    success: function(data){
+                //        if(data.status == "error"){
+                //            addError(data.message);
+                //        }
+                //    }
+                //});
 
                 $.ajax({
                     dataType: "json",
@@ -177,7 +331,7 @@ $(document).ready(function(){
                 console.log("juist:");
 
                 for (i = 0; i < 8; i++) {
-                    if(score == i*20){
+                    if(score == i*12){
                         niveau = i;
                     }
                 }
@@ -185,16 +339,58 @@ $(document).ready(function(){
 
             }else{
                 console.log("fout :");
-                $.ajax({
-                    dataType: "json",
-                    type: "GET",
-                    url: "play/jammer probeer opnieuw.wav",
-                    success: function(data){
-                        if(data.status == "error"){
-                            addError(data.message);
+
+                setTimeout(function() {
+                    $.ajax({
+                        dataType: "json",
+                        type: "GET",
+                        url: "play/jehebt.wav",
+                        success: function(data){
+                            if(data.status == "error"){
+                                addError(data.message);
+                            }
                         }
-                    }
-                });
+                    });
+                },0);
+                setTimeout(function() {
+                    $.ajax({
+                        dataType: "json",
+                        type: "GET",
+                        url: "play/"+score+".wav",
+                        success: function(data){
+                            if(data.status == "error"){
+                                addError(data.message);
+                            }
+                        }
+                    });
+                },1000);
+                setTimeout(function() {
+                    $.ajax({
+                        dataType: "json",
+                        type: "GET",
+                        url: "play/punten.wav",
+                        success: function(data){
+                            if(data.status == "error"){
+                                addError(data.message);
+                            }
+                        }
+                    });
+                },2500);
+
+                if(score == 0 ){
+                    $.ajax({
+                        dataType: "json",
+                        type: "GET",
+                        url: "play/jammerprobeeropnieuw.wav",
+                        success: function(data){
+                            if(data.status == "error"){
+                                addError(data.message);
+                            }
+                        }
+                    });
+
+                }
+
 
                 $.ajax({
                     dataType: "json",
@@ -209,7 +405,7 @@ $(document).ready(function(){
                 });
 
                 if (localStorage.getItem("names") === null) {
-                    var person = prompt("Wat is jouw naam?", "naam");
+                    //var person = prompt("Wat is jouw naam?", "naam");
                     var names = [];
                     var a = [];
                     a.push(score,person);
@@ -220,9 +416,12 @@ $(document).ready(function(){
 
                 }
                     else {
+
+
+
                     var storedNames = JSON.parse(localStorage.getItem("names"));
 
-                    var person = prompt("Wat is jouw naam?", "naam");
+                    //var person = prompt("Wat is jouw naam?", "naam");
                     var a = [];
                     a.push(score,person);
 
@@ -261,10 +460,15 @@ $(document).ready(function(){
             }
             console.log("score :"  + score);
             $(".points").html(score + " punten");
+
+
             console.log("niveau :"  +niveau );
             vraag = [];
             antwoorden = [];
-            start();
+            if(startOpnieuw != 1){
+                start();
+            }
+
 
         }
     }
@@ -293,12 +497,7 @@ $(document).ready(function(){
     }
 
 
-    $(".button.start").click(function(){          
-        if(startOpnieuw == 1){
-            window.location.reload();
-        }
-        start();
-    });
+
 
 
     $(".antw").click(function(){
@@ -357,9 +556,27 @@ $(document).ready(function(){
 
     });
 
+    $(document).on('keypress', function(e) {
+        var tag = e.target.tagName.toLowerCase();
+        if ( e.which === 221 && tag != 'input' && tag != 'textarea'){
+            $.ajax({
+                dataType: "json",
+                type: "GET",
+                url: "play/drake.wav",
+                success: function(data){
+                    if(data.status == "error"){
+                        addError(data.message);
+                    }
+                }
+            });
+        }
+
+    });
 
 
-	$.ajax({
+
+
+    $.ajax({
 		dataType: "json",
 		url: "servos/enable",
 		success: function(data){

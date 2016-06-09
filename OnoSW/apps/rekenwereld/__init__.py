@@ -52,11 +52,18 @@ def setup_pages(opsoroapp):
 		data = {
 			"actions":			{},
 			"data":				[],
+			"sounds":			[]
 		}
 
 		action = request.args.get("action", None)
 		if action != None:
 			data["actions"][action] = request.args.get("param", None)
+			
+		filenames = glob.glob(get_path("../../data/sounds/soundfiles/*.wav"))
+
+		for filename in filenames:
+			data["sounds"].append(os.path.split(filename)[1])
+		data["sounds"].sort()
 			
 		return opsoroapp.render_template("rekenwereld.html", **data)
 
@@ -69,6 +76,67 @@ def setup_pages(opsoroapp):
 	#
 	# 	return opsoroapp.render_template("app.html", **data)
 
+	@app_bp.route("/servos/enable")
+	@opsoroapp.app_api
+	def servosenable():
+		print_info("Servos enabled")
+		with Hardware.lock:
+			Hardware.servo_enable()
+
+	@app_bp.route("/servos/disable")
+	@opsoroapp.app_api
+	def servosdisable():
+		print_info("Servos disabled")
+		with Hardware.lock:
+			Hardware.servo_disable()
+
+	@app_bp.route("/setemotion", methods=["POST"])
+	@opsoroapp.app_api
+	def setemotion():
+		phi = request.form.get("phi", type=float, default=0.0)
+		r = request.form.get("r", type=float, default=0.0)
+
+		phi = constrain(phi, 0.0, 360.0)
+		r = constrain(r, 0.0, 1.0)
+
+		phi = phi * math.pi/180.0
+
+		# Calculate distance between old and new emotions.
+		# Shorter emotional distances are animated faster than longer distances.
+		#e_old = Expression.get_emotion_complex()
+		#e_new = cmath.rect(r, phi)
+		#dist = abs(e_new - e_old)/2
+
+		with Expression.lock:
+			Expression.set_emotion(phi=phi, r=r)#, anim_time=dist)
+			# Expression is updated in separate thread, no need to do this here.
+			# Expression.update()
+
+	@app_bp.route("/play/<soundfile>", methods=["GET"])
+	@opsoroapp.app_api
+	def play(soundfile):
+		soundfiles = []
+		filenames = []
+
+		filenames = glob.glob(get_path("../../data/sounds/soundfiles/*.wav"))
+
+		for filename in filenames:
+			soundfiles.append(os.path.split(filename)[1])
+
+		if soundfile in soundfiles:
+			Sound.play_file(soundfile)
+			return {"status": "success"}
+		else:
+			return {"status": "error", "message": "Unknown file."}
+
+	@app_bp.route("/saytts", methods=["GET"])
+	@opsoroapp.app_api
+	def saytts():
+		text = request.args.get("text", None)
+		if text is not None:
+			Sound.say_tts(text)
+		return {"status": "success"}
+
 	opsoroapp.register_app_blueprint(app_bp)
 
 def setup(opsoroapp):
@@ -76,14 +144,26 @@ def setup(opsoroapp):
 
 def start(opsoroapp):
 	# Start update thread
-	# global app_t
-	# app_t = StoppableThread(target=AppLoop)
-	# app_t.start();
-	pass
+	for servo in Expression.servos:
+		if servo.pin < 0 or servo.pin > 15:
+			continue # Skip invalid pins
+		#dof_positions[servo.dofname] = 0.0
+
+	# Turn servo power off, init servos, update expression
+	with Hardware.lock:
+		Hardware.servo_disable()
+		Hardware.servo_init()
+		Hardware.servo_neutral()
+
+	with Expression.lock:
+		Expression.set_emotion(valence=0.0, arousal=0.0)
+		Expression.update()
+
+	# Start update thread
+	
 
 def stop(opsoroapp):
-	# Stop update thread
-	# global app_t
-	# if app_t is not None:
-	# 	app_t.stop()
-	pass
+	with Hardware.lock:
+		Hardware.servo_disable()
+
+

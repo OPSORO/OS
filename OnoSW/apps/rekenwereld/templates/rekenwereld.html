@@ -7,17 +7,18 @@
 {% include "toolbar/script_operations.html" %}
 {% include "toolbar/lock_unlock.html" %}
 -->
+<span class="points">Druk op start</span>
 {% endblock %}
 
 
 {% block page_content %}
 {{ super() }}
+
 <div class="uitleg">
 		<h1>Werking rekenwereld</h1>
 	<p>Welkom in de rekenwereld. Behaal zoveel mogelijk punten door de juiste oplossing te kiezen. Diegene met de meeste punten belandt in de lijst met topscores. </p>
 	<h2>Hoe gaat dit te werk?</h2>
 <ol>
-<li>Plaats het rekenwerelddeksel op de doos</li>
 <li>Voer de naam van de speler in</li>
 <li>Druk op start</li>
 <li>De robot geeft een oefening waarna de speler deze oplost</li>
@@ -32,6 +33,7 @@
     <input type="text" id="naam" name="FirstName" placeholder="Typ hier je naam">
     <button disabled id="invoerKnop"> start</button>
     <button id="verander"> verander</button>
+	<button class="back btn btn-primary">Kies level</button>
 </div>
 
 
@@ -88,7 +90,6 @@
 
 </table>
 
-<button class="back btn btn-primary">Speel opnieuw</button>
 
 {% endblock %}
 

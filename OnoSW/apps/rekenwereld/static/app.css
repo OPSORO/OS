@@ -4,8 +4,7 @@
 }
 
 .actionbar{
-    min-height: 0px;
-    display: none;
+    min-height: 50px;
 }
 
 .answer{
@@ -138,4 +137,13 @@
 
 .uitleg h2{
 	font-size: 2rem;
+}
+
+.points{
+    color: white;
+    width: 800px;
+    text-align: right;
+    float: right;
+    line-height: 1.6rem;
+    font-size: 1.4rem;
 }
