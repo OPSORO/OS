@@ -72,7 +72,7 @@ class _Preferences(object):
 				lines = f.read()
 
 				ssid = self.get("wireless", "ssid", "OpSoRoAP")
-				password = self.get("wireless", "password", "RobotOpSoRo")
+				password = self.get("wireless", "password", "RobotOpsoro")
 				channel = self.get("wireless", "channel", 6)
 				channel = constrain(int(channel), 1, 11)
 

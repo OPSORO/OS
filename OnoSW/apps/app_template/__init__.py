@@ -57,7 +57,7 @@ def setup_pages(opsoroapp):
 		action = request.args.get("action", None)
 		if action != None:
 			data["actions"][action] = request.args.get("param", None)
-			
+
 		return opsoroapp.render_template("app_template.html", **data)
 
 

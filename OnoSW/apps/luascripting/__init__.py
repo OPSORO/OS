@@ -89,67 +89,6 @@ def setup_pages(opsoroapp):
 
 		return opsoroapp.render_template("luascripting.html", **data)
 
-	# @luascripting_bp.route("/filelist")
-	# @opsoroapp.app_view
-	# def filelist():
-	# 	data = {
-	# 		"scriptfiles":	[]
-	# 	}
-	#
-	# 	filenames = []
-	# 	filenames.extend(glob.glob(get_path("../../data/luascripting/scripts/*.lua")))
-	#
-	# 	for filename in filenames:
-	# 		data["scriptfiles"].append(os.path.split(filename)[1])
-	#
-	# 	return opsoroapp.render_template("filelist.html", **data)
-	#
-	# @luascripting_bp.route("/save", methods=["POST"])
-	# @opsoroapp.app_api
-	# def save():
-	# 	luafile = request.form.get("file", type=str, default="")
-	# 	filename = request.form.get("filename", type=str, default="")
-	# 	overwrite = request.form.get("overwrite", type=int, default=0)
-	#
-	# 	if filename == "":
-	# 		return {"status": "error", "message": "No filename given."}
-	#
-	# 	if filename[-4:] != ".lua":
-	# 		filename = filename + ".lua"
-	# 	filename = secure_filename(filename)
-	#
-	# 	full_path = os.path.join(get_path("../../data/luascripting/scripts/"), filename)
-	#
-	# 	if overwrite == 0:
-	# 		if os.path.isfile(full_path):
-	# 			return {"status": "error", "message": "File already exists."}
-	#
-	# 	with open(full_path, "w") as f:
-	# 		f.write(luafile)
-	#
-	# 	return {"status": "success", "filename": filename}
-	#
-	# @luascripting_bp.route("/delete/<scriptfile>", methods=["POST"])
-	# @opsoroapp.app_api
-	# def delete(scriptfile):
-	# 	scriptfiles = []
-	# 	filenames = []
-	# 	filenames.extend(glob.glob(get_path("../../data/luascripting/scripts/*.lua")))
-	#
-	# 	for filename in filenames:
-	# 		scriptfiles.append(os.path.split(filename)[1])
-	#
-	# 	if scriptfile in scriptfiles:
-	# 		os.remove(os.path.join(get_path("../../data/luascripting/scripts/"), scriptfile))
-	# 		return {"status": "success", "message": "File %s deleted." % scriptfile}
-	# 	else:
-	# 		return {"status": "error", "message": "Unknown file."}
-	#
-	# @luascripting_bp.route("/scripts/<scriptfile>")
-	# @opsoroapp.app_view
-	# def scripts(scriptfile):
-	# 	return send_from_directory(get_path("../../data/luascripting/scripts/"), scriptfile)
-
 	@luascripting_bp.route("/startscript", methods=["POST"])
 	@opsoroapp.app_api
 	def startscript():
