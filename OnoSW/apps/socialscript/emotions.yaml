@@ -59,39 +59,39 @@
     r:     1.0
     phi:   35.0
   custom:
-    - dofname: R_EB_INNER
+    - dofname: r_eb_inner
       pos: 0.3
-    - dofname: R_EB_OUTER
+    - dofname: r_eb_outer
       pos: -0.1
-    - dofname: R_E_LID
+    - dofname: r_e_lid
       pos: 0.3
 
 - name:  Question
   image: questioning.png
   custom:
-    - dofname: R_EB_INNER
+    - dofname: r_eb_inner
       pos: 0.74
-    - dofname: R_EB_OUTER
+    - dofname: r_eb_outer
       pos: 0.42
-    - dofname: R_E_VER
+    - dofname: r_e_ver
       pos: 0.61
-    - dofname: R_E_HOR
+    - dofname: r_e_hor
       pos: -0.27
-    - dofname: R_E_LID
+    - dofname: r_e_lid
       pos: 1.0
-    - dofname: M_L
+    - dofname: m_l
       pos: -0.01
-    - dofname: M_MID
+    - dofname: m_mid
       pos: -0.01
-    - dofname: M_R
+    - dofname: m_r
       pos: -1.0
-    - dofname: L_E_LID
+    - dofname: l_e_lid
       pos: 0.63
-    - dofname: L_E_VER
+    - dofname: l_e_ver
       pos: 0.61
-    - dofname: L_E_HOR
+    - dofname: l_e_hor
       pos: 0.26
-    - dofname: L_EB_INNER
+    - dofname: l_eb_inner
       pos: -1.0
-    - dofname: L_EB_OUTER
+    - dofname: l_eb_outer
       pos: -0.03

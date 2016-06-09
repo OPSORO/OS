@@ -83,59 +83,75 @@ $(document).ready(function(){
 		};
 
 		self.pressPlay = function(){
-			// if(self.isPlaying()){
-			// 	self.isPlaying(false);
-			// 	self.hasPlayed(true);
-			// }else{
-			if (self.emotion().emotion){
+			if(self.isPlaying()){
 				$.ajax({
 					dataType: "json",
-					data: {"phi": self.emotion().emotion.phi, "r": self.emotion().emotion.r},
-					type: "POST",
-					url: "setemotion",
-					success: function(data){
-						if(data.status == "error"){
-							addError(data.message);
-						}
-					}
+					type: "GET",
+					url: "stopsound"
 				});
-			}
-			if (self.emotion().custom){
-				$.each(self.emotion().custom, function(idx, customControl){
+			 	self.isPlaying(false);
+			 	self.hasPlayed(true);
+			}else{
+				if (model.selectedVoiceLine() != undefined) {
+					model.selectedVoiceLine().isPlaying(false);
+				}
+				model.selectedVoiceLine(self);
+				if (self.emotion().emotion){
 					$.ajax({
 						dataType: "json",
-						data: {"dofname": customControl.dofname, "pos": customControl.pos},
+						data: {"phi": self.emotion().emotion.phi, "r": self.emotion().emotion.r},
 						type: "POST",
-						url: "setDofPos",
+						url: "setemotion",
 						success: function(data){
 							if(data.status == "error"){
 								addError(data.message);
 							}
 						}
 					});
-				});
-			}
-			if(this.output() == "tts"){
-				$.ajax({
-					dataType: "json",
-					type: "GET",
-					url: "saytts",
-					data: {text: self.tts()}
-				});
-			}else{
-				$.ajax({
-					dataType: "json",
-					type: "GET",
-					url: "play/" + self.wav(),
-					success: function(data){
-						if(data.status == "error"){
-							addError(data.message);
+				}
+				if (self.emotion().custom){
+					dofdata = {};
+					$.each(self.emotion().custom, function(idx, customControl){
+						dofdata[customControl.dofname] = customControl.pos;
+					});
+					var json_data = ko.toJSON(dofdata, null, 2);
+					$.ajax({
+						dataType: "json",
+						data: { dofdata: json_data },
+						type: "POST",
+						url: "setDofData",
+						success: function(data){
+							if(data.status == "error"){
+								addError(data.message);
+							}
 						}
-					}
-				});
+					});
+				}
+				if(this.output() == "tts"){
+					$.ajax({
+						dataType: "json",
+						type: "GET",
+						url: "saytts",
+						data: {text: self.tts()},
+						success: function(data){
+
+						}
+					});
+				}else{
+					$.ajax({
+						dataType: "json",
+						type: "GET",
+						url: "play/" + self.wav(),
+						success: function(data){
+							if(data.status == "error"){
+								addError(data.message);
+							}
+
+						}
+					});
+				}
+				self.isPlaying(true);
 			}
-			self.isPlaying(true)
-			// }
 		};
 
 		self.pickEmotion = function(){
@@ -163,6 +179,12 @@ $(document).ready(function(){
 		self.selectedVoiceLine = ko.observable();
 
 		self.voiceLines = ko.observableArray();
+		self.fixedVoiceLines = ko.observableArray();
+
+		$.each(self.emotions, function(idx, emot){
+			self.fixedVoiceLines.push(new VoiceLine(emot, "tts", "", ""));
+		});
+
 		self.init = function(){
 			self.fileName("Untitled");
 			self.voiceLines.removeAll();
@@ -294,6 +316,40 @@ $(document).ready(function(){
 			self.selectedVoiceLine().emotion(emotion);
 			$("#PickEmotionModal").foundation("reveal", "close");
 		};
+
+		// Setup websocket connection.
+		self.conn = null;
+		self.connReady = false;
+		self.conn = new SockJS("http://" + window.location.host + "/sockjs");
+
+		self.conn.onopen = function(){
+			$.ajax({
+				url: "/sockjstoken",
+				cache: false
+			})
+			.done(function(data) {
+				self.conn.send(JSON.stringify({action: "authenticate", token: data}));
+				self.connReady = true;
+			});
+		};
+
+		self.conn.onmessage = function(e){
+			var msg = $.parseJSON(e.data);
+			switch(msg.action){
+				case "soundStopped":
+					if (self.selectedVoiceLine() != undefined) {
+						self.selectedVoiceLine().isPlaying(false);
+					 	self.selectedVoiceLine().hasPlayed(true);
+					}
+					break;
+			}
+		};
+
+		self.conn.onclose = function(){
+			self.conn = null;
+			self.connReady = false;
+		};
+
 
 		if (action_data.openfile) {
 			self.loadFileData(action_data.openfile || "");

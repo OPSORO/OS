@@ -1,7 +1,8 @@
 .tts-switch {
 	display: inline;
+
 }
-.tts-switch label{
+.tts-switch label {
 	background-color: #4D4D4D;
 }
 
@@ -35,9 +36,11 @@
 	-webkit-border-radius: 0.5rem;
 	-moz-border-radius: 0.5rem;
 	border-radius: 0.5rem;
-	margin-left: 1.2rem;
+	margin-top: -1rem;
+	margin-left: 1.1rem;
 	margin-bottom: 0.5rem;
 	font-style: italic;
+	font-size: 0.8rem;
 }
 .bubble:after {
 	content: "";
@@ -47,8 +50,8 @@
 	/* reduce the damage in FF3.0 */
 	display: block;
 	width: 0;
-	top: 0.5rem;
-	left: -1.2rem;
+	top: 0.3rem;
+	left: -1.1rem;
 	bottom: auto;
 	border-width: 0.75rem 1.2rem 0.75rem 0;
 	border-color: transparent #dddddd;
@@ -80,15 +83,15 @@
 	}
 }
 
-.voiceline{
+.voiceline {
 	min-height: 5.5rem;
 	position: relative;
 	margin-bottom: 0.5rem;
 	background: #fff;
 }
-.voiceline.locked{
-	min-height: 4.5rem;
-	margin-bottom: 0.2rem;
+.voiceline.locked {
+	min-height: 2rem;
+	margin-bottom: 0rem;
 }
 
 #PickEmotionModal {
@@ -138,20 +141,22 @@
 
 
 .voiceline.locked .avatar {
-	left: 1.5rem;
-	width: 4.5rem;
-	height: 4.5rem;
+	left: 2rem;
+	width: 3.5rem;
+	height: 3.5rem;
+	padding-left: 0.15rem;
+	padding-top: 0.15rem;
 }
 .voiceline.locked .avatar > div {
-	width: 3.75rem;
-	height: 3.75rem;
+	width: 3rem;
+	height: 3rem;
 	background-size: 100% !important;
 	border-radius: 50%;
 }
 
 .voiceline .playbutton {
-	width: 4rem;
-	height: 4rem;
+	width: 3rem;
+	height: 3rem;
 	position: absolute;
 	top: 0.25rem;
 	right: 0;
@@ -166,10 +171,10 @@
 
 .voiceline .playbutton a.button {
 	position: absolute;
-	top: 0.5rem;
-	left: 0.5rem;
-	width: 3rem;
-	height: 3rem;
+	top: 0.4rem;
+	left: 0.4rem;
+	width: 2.2rem;
+	height: 2.2rem;
 	border-radius: 50%;
 	padding-top: 1rem;
 	background-color: #43AC6A;
@@ -177,8 +182,9 @@
 
 .voiceline .playbutton a.button span {
 	position: absolute;
-	top: 0.75rem;
-	left: 0.75rem;
+	top: 0.35rem;
+	left: 0.2rem;
+	font-size: 1.4rem;
 }
 
 .voiceline .playbutton a.button:hover {
@@ -247,7 +253,7 @@
 	top: 1.5rem;
 }
 
-.voiceline.locked form {
+#voicelines .voiceline.locked form {
 	display: none;
 }
 
@@ -285,4 +291,60 @@
 	height: 2rem;
 	padding: 0.25rem 1rem;
 	margin-left: 0.5rem;
+}
+
+
+#fixedvoicelines .voiceline {
+	/*display: none;*/
+	min-height: 3.8rem;
+	padding-top: 0.8rem;
+}
+#fixedvoicelines .voiceline .avatar {
+	left: 0rem;
+}
+#fixedvoicelines .voiceline .tts-switch {
+	margin-top: 0rem;
+	margin-left: 3.8rem;
+}
+#fixedvoicelines .voiceline form {
+
+}
+#fixedvoicelines .voiceline form select,
+#fixedvoicelines .voiceline form input {
+	position: absolute;
+	top: 0.8rem;
+	width: 53%;
+	left: 8.5rem;
+	height: 2rem;
+	font-size: 0.8rem;
+
+}
+
+#fixedvoicelines .voiceline .playbutton a.button span {
+	position: absolute;
+	top: 0.35rem;
+	left: 0.5rem;
+	font-size: 1.4rem;
+}
+.title {
+	font-size: 1.5rem;
+	font-weight: bold;
+	text-align: center;
+	width: 100%;
+	margin-bottom: 1rem;
+	margin-top: -1rem;
+}
+.left-column {
+	padding-right: 1rem;
+	position: relative;
+	float: left;
+	width: 49%;
+}
+.right-column {
+	border-left-style: dashed;
+	border-width: 1px;
+	border-color: #888;
+	position: relative;
+	float: right;
+	width: 51%;
 }

@@ -33,14 +33,26 @@ get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 
 dof_positions = {}
 
+clientconn = None
+def send_stopped():
+	global clientconn
+	if clientconn:
+		clientconn.send_data("soundStopped", {})
+
 def SocialscriptLoop():
-	while not socialscript_t.stopped():
+	while not socialscriptloop_t.stopped():
 		with Expression.lock:
 			Expression.update()
 
-		socialscript_t.sleep(0.015)
+		socialscriptloop_t.sleep(0.015)
 
+def SocialscriptRun():
+	Sound.wait_for_sound()
+	send_stopped()
+
+socialscriptloop_t = None
 socialscript_t = None
+
 
 def setup_pages(opsoroapp):
 	socialscript_bp = Blueprint("socialscript", __name__, template_folder="templates", static_folder="static")
@@ -69,74 +81,15 @@ def setup_pages(opsoroapp):
 
 		return opsoroapp.render_template("socialscript.html", **data)
 
-	# @socialscript_bp.route("/filelist")
-	# @opsoroapp.app_view
-	# def filelist():
-	# 	data = {
-	# 		"scriptfiles":	[]
-	# 	}
-	#
-	# 	filenames = []
-	# 	filenames.extend(glob.glob(get_path("../../data/socialscript/scripts/*.soc")))
-	#
-	# 	for filename in filenames:
-	# 		data["scriptfiles"].append(os.path.split(filename)[1])
-	#
-	# 	return opsoroapp.render_template("filelist.html", **data)
-	#
-	# @socialscript_bp.route("/save", methods=["POST"])
-	# @opsoroapp.app_api
-	# def save():
-	# 	socfile = request.form.get("file", type=str, default="")
-	# 	filename = request.form.get("filename", type=str, default="")
-	# 	overwrite = request.form.get("overwrite", type=int, default=0)
-	#
-	# 	if filename == "":
-	# 		return {"status": "error", "message": "No filename given."}
-	#
-	# 	if filename[-4:] != ".soc":
-	# 		filename = filename + ".soc"
-	# 	filename = secure_filename(filename)
-	#
-	# 	full_path = os.path.join(get_path("../../data/socialscript/scripts/"), filename)
-	#
-	# 	if overwrite == 0:
-	# 		if os.path.isfile(full_path):
-	# 			return {"status": "error", "message": "File already exists."}
-	#
-	# 	with open(full_path, "w") as f:
-	# 		f.write(socfile)
-	#
-	# 	return {"status": "success", "filename": filename}
-	#
-	# @socialscript_bp.route("/delete/<scriptfile>", methods=["POST"])
-	# @opsoroapp.app_api
-	# def delete(scriptfile):
-	# 	scriptfiles = []
-	# 	filenames = []
-	# 	filenames.extend(glob.glob(get_path("../../data/socialscript/scripts/*.soc")))
-	#
-	# 	for filename in filenames:
-	# 		scriptfiles.append(os.path.split(filename)[1])
-	#
-	# 	if scriptfile in scriptfiles:
-	# 		os.remove(os.path.join(get_path("../../data/socialscript/scripts/"), scriptfile))
-	# 		return {"status": "success", "message": "File %s deleted." % scriptfile}
-	# 	else:
-	# 		return {"status": "error", "message": "Unknown file."}
-	#
-	# @socialscript_bp.route("/scripts/<scriptfile>")
-	# @opsoroapp.app_view
-	# def scripts(scriptfile):
-	# 	return send_from_directory(get_path("../../data/socialscript/scripts/"), scriptfile)
-	#
-	#
-	# @socialscript_bp.route("/file", methods=["GET"])
-	# @opsoroapp.app_view
-	# def file():
-	# 	scriptfile = request.args.get("script", None)
-	# 	#scriptfile = request.form.get("script", type=str, default="")
-	# 	return send_from_directory(get_path("../../"), scriptfile)
+	@opsoroapp.app_socket_connected
+	def s_connected(conn):
+		global clientconn
+		clientconn = conn
+
+	@opsoroapp.app_socket_disconnected
+	def s_disconnected(conn):
+		global clientconn
+		clientconn = None
 
 	@socialscript_bp.route("/servos/enable")
 	@opsoroapp.app_api
@@ -170,10 +123,9 @@ def setup_pages(opsoroapp):
 		#dist = abs(e_new - e_old)/2
 
 		with Expression.lock:
-			Expression.set_emotion(phi=phi, r=r)#, anim_time=dist)
+			Expression.set_emotion(phi=phi, r=r, anim_time=0.5)
 			# Expression is updated in separate thread, no need to do this here.
 			# Expression.update()
-
 
 	@socialscript_bp.route("/play/<soundfile>", methods=["GET"])
 	@opsoroapp.app_api
@@ -188,9 +140,27 @@ def setup_pages(opsoroapp):
 
 		if soundfile in soundfiles:
 			Sound.play_file(soundfile)
+
+			global socialscript_t
+			if socialscript_t != None:
+				socialscript_t.stop();
+			socialscript_t = StoppableThread(target=SocialscriptRun)
+			socialscript_t.start();
+
 			return {"status": "success"}
+
 		else:
 			return {"status": "error", "message": "Unknown file."}
+
+	@socialscript_bp.route("/stopsound", methods=["GET"])
+	@opsoroapp.app_api
+	def stopsound():
+		# Sound.say_tts("")
+		Sound.stop_sound()
+		global socialscript_t
+		if socialscript_t != None:
+			socialscript_t.stop();
+		return {"status": "success"}
 
 	@socialscript_bp.route("/saytts", methods=["GET"])
 	@opsoroapp.app_api
@@ -198,26 +168,39 @@ def setup_pages(opsoroapp):
 		text = request.args.get("text", None)
 		if text is not None:
 			Sound.say_tts(text)
+
+			global socialscript_t
+			if socialscript_t != None:
+				socialscript_t.stop();
+			socialscript_t = StoppableThread(target=SocialscriptRun)
+			socialscript_t.start();
+
 		return {"status": "success"}
 
-	@socialscript_bp.route("/setDofPos", methods=["POST"])
+	@socialscript_bp.route("/setDofData", methods=["POST"])
 	@opsoroapp.app_api
 	def s_setdofpos():
-		dofname = left_brow_inner = request.form.get("dofname", type=str, default=None)
-		pos = request.form.get("pos", type=float, default=0.0)
-
-		if dofname is None:
-			return {"status": "error", "message": "No DOF name given."}
-
 		global dof_positions
-		if dofname not in dof_positions:
-			return {"status": "error", "message": "Unknown DOF name."}
-		else:
-			pos = constrain(pos, -1.0, 1.0)
-			dof_positions[dofname] = pos
 
-			# with Expression.lock:
-			# 	Expression.update()
+		dofdata = yaml.load(request.form.get("dofdata", type=str, default=""), Loader=Loader)
+		#dofdata = json.loads(request.form.get("dofdata", type=str, default=""))
+
+		Expression.set_dof_values(dofdata)
+		#print dofdata("m_l")
+		#
+		# for dof in dofdata:
+		# 	dofdata[dof] = constrain(dofdata[dof], -1.0, 1.0)
+		#
+		# print dofdata
+		# print Expression.dof_values
+		# print Expression.dofs
+		# dof_positions = dofdata;
+		# Expression.dofs = dof_positions
+		# print Expression.dofs
+
+
+		# with Expression.lock:
+		# 	Expression.update()
 
 		return {"status": "success"}
 
@@ -244,14 +227,16 @@ def start(opsoroapp):
 		Expression.update()
 
 	# Start update thread
-	global socialscript_t
-	socialscript_t = StoppableThread(target=SocialscriptLoop)
-	socialscript_t.start();
+	global socialscriptloop_t
+	socialscriptloop_t = StoppableThread(target=SocialscriptLoop)
+	socialscriptloop_t.start();
 
 def stop(opsoroapp):
 	with Hardware.lock:
 		Hardware.servo_disable()
 
-	global socialscript_t
+	global socialscriptloop_t
+	if socialscriptloop_t is not None:
+		socialscriptloop_t.stop()
 	if socialscript_t is not None:
 		socialscript_t.stop()

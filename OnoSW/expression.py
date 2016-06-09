@@ -24,6 +24,8 @@ except ImportError:
 
 get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 
+constrain = lambda n, minn, maxn: max(min(maxn, n), minn)
+
 # Config file locations
 _configs = {
 	"pinmap":     get_path("config/pinmap.yaml"),
@@ -176,6 +178,7 @@ class _Expression(object):
 
 		self.empty_config()
 		self.load_config()
+		self.isEmotion = False
 
 	def get_emotion_complex(self):
 		"""
@@ -184,6 +187,8 @@ class _Expression(object):
 		return self._emotion
 
 	def set_emotion(self, valence=None, arousal=None, r=None, phi=None, degrees=False, anim_time=0):
+		self.isEmotion = True
+
 		# TODO: Phi in deg or radians? Internally probably radians
 		e = 0 + 0j
 		if valence is not None and arousal is not None:
@@ -210,6 +215,12 @@ class _Expression(object):
 	def set_emotion_r_phi(self, r, phi, degrees=False, anim_time=0):
 		self.set_emotion(r=r, phi=phi, degrees=degrees, anim_time=anim_time)
 
+	def set_dof_values(self, dof_position_values):
+		self.isEmotion = False
+		for dof in dof_position_values:
+		 	dof_position_values[dof] = constrain(dof_position_values[dof], -1.0, 1.0)
+		self.dof_values = dof_position_values
+
 	def update(self):
 		if self._anim is not None:
 			self._emotion = self._anim()
@@ -228,8 +239,9 @@ class _Expression(object):
 
 		# (1) Calculate DOF positions using phi/r
 		# (2) This step also applies overlay functions to the DOFs
-		for dofname, dof in self.dofs.iteritems():
-			self.dof_values[dofname] = dof.calc(phi, r)
+		if self.isEmotion:
+			for dofname, dof in self.dofs.iteritems():
+				self.dof_values[dofname] = dof.calc(phi, r)
 
 		# (3) Update all servos
 		for servo in self.servos:
