@@ -3,6 +3,7 @@ import os
 import glob
 import subprocess
 import string
+from tts import TTS
 
 get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 
@@ -10,60 +11,26 @@ class _Sound(object):
 	def __init__(self):
 		# List of search folders for sound files
 		self.sound_folders = ["data/sounds/soundfiles/"]
+		self.playProcess = None
+		self.jack = False
 
 	def say_tts(self, text, generate_only=False):
-		"""
-		Takes a string of text, converts it using the PicoTTS engine, and plays it.
-		Wave files are buffered in /tmp/OnoTTS/<text>.wav.
-		First call blocks while PicoTTS generates the .wav, this may take about a second.
-		Subsequent calls of the same text return immediately.
-		If you wish to avoid this, sound files can be generated on beforehand by
-		using generate_only=True.
-		"""
-		def format_filename(s):
-			"""
-			Take a string and return a valid filename constructed from the string.
-			Uses a whitelist approach: any characters not present in valid_chars are
-			removed. Also spaces are replaced with underscores.
+		full_path = TTS.create(text)
 
-			Note: this method may produce invalid filenames such as ``, `.` or `..`
-			When I use this method I prepend a date string like '2009_01_15_19_46_32_'
-			and append a file extension like '.txt', so I avoid the potential of using
-			an invalid filename.
-
-			Taken from: https://gist.github.com/seanh/93666
-			"""
-			valid_chars = "-_.() %s%s" % (string.ascii_letters, string.digits)
-			filename = ''.join(c for c in s if c in valid_chars)
-			filename = filename.replace(' ','_') # I don't like spaces in filenames.
-			return filename
+		if generate_only:
+			return
 
 		FNULL = open(os.devnull, "w")
 
-		if not os.path.exists("/tmp/OpSoRoTTS/"):
-			os.makedirs("/tmp/OpSoRoTTS/")
-
-		filename = format_filename(text)
-
-		# Max length of filename is 255 chars
-		if len(filename) >= 250:
-			filename = filename[:250]
-		full_path = os.path.join(get_path("/tmp/OpSoRoTTS/"), filename + ".wav")
-
-		if os.path.isfile(full_path):
-			# Sound file already exists, play it
-			if generate_only:
-				return
-			subprocess.Popen(["aplay", full_path], stdout=FNULL, stderr=subprocess.STDOUT)
+		self.stop_sound();
+		if not self.jack:
+			self.playProcess = subprocess.Popen(["aplay", full_path], stdout=FNULL, stderr=subprocess.STDOUT)
 		else:
-			# Sound file does not exist yet, generate it and then play it
-			if generate_only:
-				subprocess.Popen(["pico2wave", "-w", full_path, text])
-			else:
-				subprocess.call(["pico2wave", "-w", full_path, text]) # Waits for process to return
-				subprocess.Popen(["aplay", full_path], stdout=FNULL, stderr=subprocess.STDOUT)
+			# self.playProcess = subprocess.Popen(["aplay", "-D", "hw:0,0", full_path], stdout=FNULL, stderr=subprocess.STDOUT)
+			self.playProcess = subprocess.Popen(["aplay", "-D", "hw:0,0", full_path], stdout=FNULL, stderr=subprocess.STDOUT)
 
 	def play_file(self, filename):
+		self.stop_sound();
 		path = None
 		for folder in self.sound_folders:
 			f = os.path.join(get_path(folder), filename)
@@ -73,7 +40,25 @@ class _Sound(object):
 		if path is None:
 			raise ValueError("Could not find soundfile \"%s\"." % filename)
 		FNULL = open(os.devnull, "w")
-		subprocess.Popen(["aplay", path], stdout=FNULL, stderr=subprocess.STDOUT)
+		if not self.jack:
+			self.playProcess = subprocess.Popen(["aplay", path], stdout=FNULL, stderr=subprocess.STDOUT)
+		else:
+			# self.playProcess = subprocess.Popen(["aplay", "-D", "hw:0,0", path], stdout=FNULL, stderr=subprocess.STDOUT)
+			self.playProcess = subprocess.Popen(["aplay", "-D", "hw:0,0", path], stdout=FNULL, stderr=subprocess.STDOUT)
+
+	def stop_sound(self):
+		if self.playProcess == None:
+			return
+
+		self.playProcess.terminate()
+		self.playProcess = None
+
+	def wait_for_sound(self):
+		if self.playProcess == None:
+			return
+
+		self.playProcess.wait()
+		self.playProcess = None
 
 # Global instance that can be accessed by apps and scripts
 Sound = _Sound()

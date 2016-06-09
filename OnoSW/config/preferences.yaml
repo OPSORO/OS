@@ -4,9 +4,11 @@ general:
 
 audio:
   master_volume: 50
-  tts_engine: picotts
+  tts_engine: pico
+  tts_language: nl
+  tts_gender: m
 
 wireless:
   ssid: OpSoRo_Robot
-  password: opsoro
+  password: opsoro123
   channel: 6

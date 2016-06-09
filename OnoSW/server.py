@@ -443,7 +443,7 @@ class OpSoRoApplication(object):
 
 		password = request.form["password"]
 
-		if password == Preferences.get("general", "password", default="RobotOpSoRo"):
+		if password == Preferences.get("general", "password", default="RobotOpsoro"):
 			login_user(AdminUser())
 			self.active_session_key = os.urandom(24)
 			session["active_session_key"] = self.active_session_key
@@ -469,13 +469,15 @@ class OpSoRoApplication(object):
 
 			Preferences.set("audio", "master_volume", request.form.get("volume", type=int))
 			Preferences.set("audio", "tts_engine", request.form["ttsEngine"])
+			Preferences.set("audio", "tts_language", request.form["ttsLanguage"])
+			Preferences.set("audio", "tts_gender", request.form["ttsGender"])
 
 			Preferences.set("wireless", "ssid", request.form["wirelessSsid"])
 			Preferences.set("wireless", "channel", request.form.get("wirelessChannel", type=int))
 
 			if request.form.get("wirelessSamePass", None) == "on":
 				# Set to same password
-				Preferences.set("wireless", "password", Preferences.get("general", "password", "RobotOpSoRo"))
+				Preferences.set("wireless", "password", Preferences.get("general", "password", "RobotOpsoro"))
 			else:
 				if request.form["wirelessPassword"] == request.form["wirelessPasswordConfirm"]:
 					if request.form["wirelessPassword"] != "":
@@ -492,11 +494,13 @@ class OpSoRoApplication(object):
 			},
 			"audio": {
 				"volume": Preferences.get("audio", "master_volume", 66),
-				"ttsEngine": Preferences.get("audio", "tts_engine", "picotts")
+				"ttsEngine": Preferences.get("audio", "tts_engine", "pico"),
+				"ttsLanguage": Preferences.get("audio", "tts_language", "nl"),
+				"ttsGender": Preferences.get("audio", "tts_gender", "m")
 			},
 			"wireless": {
 				"ssid": Preferences.get("wireless", "ssid", self.robotName + "_AP"),
-				"samePassword": Preferences.get("general", "password", "RobotOpSoRo") == Preferences.get("wireless", "password", "RobotOpSoRo"),
+				"samePassword": Preferences.get("general", "password", "RobotOpsoro") == Preferences.get("wireless", "password", "RobotOpsoro"),
 				"channel": Preferences.get("wireless", "channel", "1")
 			}
 		}
