@@ -125,7 +125,12 @@ This step is not strictly necessary, but will result in a massive speedup when p
     ```
     
 12. [Install PicoTTS](http://rpihome.blogspot.be/2015/02/installing-pico-tts.html)
-13. [Setup and configure the WiFi dongle](http://elinux.org/RPI-Wireless-Hotspot)  
+13. Install the eSpeak TTS engine
+
+    ```
+    sudo apt-get install espeak
+    ```
+14. [Setup and configure the WiFi dongle](http://elinux.org/RPI-Wireless-Hotspot)  
 Use the following configuration for /etc/hostapd/hostapd.conf:
 
     ```
@@ -144,8 +149,8 @@ Use the following configuration for /etc/hostapd/hostapd.conf:
     rsn_pairwise=CCMP
     ```
 
-14. [Change the host name to "opsoro"](http://www.raspians.com/Knowledgebase/how-to-change-hostname-on-raspberrypi/)
-15. Setup Opsoro service  
+15. [Change the host name to "opsoro"](http://www.raspians.com/Knowledgebase/how-to-change-hostname-on-raspberrypi/)
+16. Setup Opsoro service  
 The script for setting up opsoro can be found in /Scripts/.  
 Follow next steps to setup OpSoRo:
 
