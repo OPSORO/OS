@@ -1380,6 +1380,7 @@
     <Folder Include="OnoSW\static\js\flot\examples\series-pie" />
     <Folder Include="OnoSW\static\js\flot\examples\series-toggle" />
     <Folder Include="OnoSW\static\js\flot\examples\series-types" />
+    <Folder Include="OnoSW\static\js\flot\examples\shared\" />
     <Folder Include="OnoSW\static\js\flot\examples\shared\jquery-ui" />
     <Folder Include="OnoSW\static\js\flot\examples\stacking" />
     <Folder Include="OnoSW\static\js\flot\examples\symbols" />
@@ -1389,6 +1390,7 @@
     <Folder Include="OnoSW\static\js\flot\examples\zooming" />
     <Folder Include="OnoSW\static\js\foundation" />
     <Folder Include="OnoSW\static\js\jquery-ui-sortable" />
+    <Folder Include="OnoSW\static\js\jquery-ui-sortable\external\" />
     <Folder Include="OnoSW\static\js\jquery-ui-sortable\external\jquery" />
     <Folder Include="OnoSW\static\js\jquery-ui-sortable\images" />
     <Folder Include="OnoSW\static\js\languages" />
