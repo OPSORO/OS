@@ -163,7 +163,7 @@ Follow next steps to setup OpSoRo:
 OnoSW and its dependencies should now all be installed and working. Reboot the Raspberry Pi to test. Please let us know if any steps are missing!
 
 # Use
-If everything was configured correctly, the Raspberry Pi should create a WiFi hotspot (Opsoro_AP) at startup. This network lets access the robot's web interface. Once connected to the network, open a browser and go to http://ono.local. You will be presented with a login screen, the default password is "RobotOno". The main interface lets you control the robot through a number of apps.
+If everything was configured correctly, the Raspberry Pi should create a WiFi hotspot (Opsoro_AP) at startup. This network lets access the robot's web interface. Once connected to the network, open a browser and go to http://opsoro.local. You will be presented with a login screen, the default password is "RobotOno". The main interface lets you control the robot through a number of apps.
 
 ### Notes:
 - Be sure to properly shut down the operating system! Cutting power without performing a proper shutdown can corrupt the file system on the SD card, requiring a reinstall.
