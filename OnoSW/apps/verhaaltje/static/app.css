@@ -5,7 +5,9 @@
     border-radius: 20px;
     margin: 10px;
     display: inline-block;
+    float: left;
     text-align: center;
+    position: relative;
 }
 
 .rowStory{
@@ -17,5 +19,11 @@
 .fa-plus{
     color: #17a15c;
     font-size: 150px;
-    margin-top: 20%;
+    position: relative;
+    line-height: 210px;
+    
+}
+
+.content{
+    min-height: 550px;
 }
