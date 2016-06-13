@@ -64,7 +64,7 @@ class _Detection(object):
         pts = deque(maxlen=args["buffer"])
         return check_for_color(vs)
 
-    def get_coord_x(color):
+    def get_coord_x(self, color):
         global vs
         def check_for_green_coord_x(vs):
             frame = vs.read()
@@ -88,22 +88,23 @@ class _Detection(object):
         ap.add_argument("-d", "--display", type=int, default=1, help="Wheter or not frames should be displayed")
         ap.add_argument("-b", "--buffer", type=int, default=2500, help="Max buffer size")
         args = vars(ap.parse_args())
-        #if color == "#ff0000":
-        #    colorLower = np.array([29, 86, 6])
-        #    colorUpper = np.array([64, 255,255])
-        #if color == "#00ff00":
-        colorLower = np.array([29, 86, 6])
-        colorUpper = np.array([64, 255,255])
-        #if color == "#0000ff":
-        #    colorLower = np.array([29, 86, 6])
-        #    colorUpper = np.array([64, 255,255])
-        #if color == "#ffff00":
-        #    colorLower = np.array([29, 86, 6])
-        #    colorUpper = np.array([64, 255,255])
+        if color == "#ff0000":
+            colorLower = np.array([29, 86, 6])
+            colorUpper = np.array([64, 255,255])
+        if color == "#00ff00":
+            colorLower = np.array([29, 86, 6])
+            colorUpper = np.array([64, 255,255])
+        if color == "#0000ff":
+            colorLower = np.array([29, 86, 6])
+            colorUpper = np.array([64, 255,255])
+        if color == "#ffff00":
+            colorLower = np.array([29, 86, 6])
+            colorUpper = np.array([64, 255,255])
         pts = deque(maxlen=args["buffer"])
         x = check_for_green_coord_x(vs)
         return x
-    def get_coord_y(color):
+
+    def get_coord_y(self, color):
         global vs
         def check_for_green_coord_y(vs):
             frame = vs.read()
@@ -127,23 +128,24 @@ class _Detection(object):
         ap.add_argument("-d", "--display", type=int, default=1, help="Wheter or not frames should be displayed")
         ap.add_argument("-b", "--buffer", type=int, default=2500, help="Max buffer size")
         args = vars(ap.parse_args())
-        #if color == "#ff0000":
-        #    colorLower = np.array([350, 86, 6])
-        #    colorUpper = np.array([300, 255,255])
-        #if color == "#00ff00":
-        colorLower = np.array([29, 86, 6])
-        colorUpper = np.array([64, 255,255])
-        #if color == "#0000ff":
-        #    colorLower = np.array([280, 86, 6])
-        #    colorUpper = np.array([150, 255,255])
-        #if color == "#ffff00":
-        #    colorLower = np.array([29, 86, 6])
-        #    colorUpper = np.array([64, 255,255])
+        if color == "#ff0000":
+            colorLower = np.array([350, 86, 6])
+            colorUpper = np.array([300, 255,255])
+        if color == "#00ff00":
+            colorLower = np.array([29, 86, 6])
+            colorUpper = np.array([64, 255,255])
+        if color == "#0000ff":
+            colorLower = np.array([280, 86, 6])
+            colorUpper = np.array([150, 255,255])
+        if color == "#ffff00":
+            colorLower = np.array([29, 86, 6])
+            colorUpper = np.array([64, 255,255])
         pts = deque(maxlen=args["buffer"])
         y = check_for_green_coord_y(vs)
         return y
 
     def get_face_coord_x(self):
+        global vs
         face = cv2.CascadeClassifier('data/visprog/scripts/haarcascade_frontalface_default')
         frame = vs.read()
         frame = imutils.resize(frame, width=350)
@@ -158,6 +160,7 @@ class _Detection(object):
             return xValue
 
     def get_face_coord_y(self):
+        global vs
         face = cv2.CascadeClassifier('data/visprog/scripts/haarcascade_frontalface_default')
         frame = vs.read()
         frame = imutils.resize(frame, width=350)
