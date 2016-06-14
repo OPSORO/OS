@@ -1,5 +1,5 @@
 # OnoSW
-OnoSW is the software framework for [social robot Ono](http://www.industrialdesigncenter.be/ono/), to be used in conjunction with [Ono2](https://github.com/cesarvandevelde/Ono2) and [OnoHAT](https://github.com/cesarvandevelde/OnoHAT).
+OnoSW is the software framework for [OPSORO](http://www.opsoro.be/), , to be used in conjunction with [Ono2](https://github.com/cesarvandevelde/Ono2) and [OnoHAT](https://github.com/cesarvandevelde/OnoHAT).
 
 # Hardware Requirements
 - Raspberry Pi 1 model B+ | Raspberry Pi 2 model B | Raspberry Pi 3
@@ -138,14 +138,54 @@ This step is not strictly necessary, but will result in a massive speedup when p
     sudo apt-get install espeak
     ```
     
-14. [Setup and configure the WiFi dongle](http://elinux.org/RPI-Wireless-Hotspot)
+14. Setup and configure the WiFi dongle (http://elinux.org/RPI-Wireless-Hotspot)
+    
+    Install hostapd for the access point and dnsmasq for the DHCP server and DNS redirect
 
     ```
     sudo apt-get install -y hostapd dnsmasq
     ```
     
-    Update ```/etc/network/interfaces``` so it contains following lines
+    Update ```/etc/network/interfaces``` so it matches following lines
     
+    ```
+    auto lo
+    iface lo inet loopback
+    
+    allow-hotplug eth0
+    iface eth0 inet manual
+    
+    #allow-hotplug wlan0
+    #iface wlan0 inet manual
+    #    wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf
+    
+    #allow-hotplug wlan1
+    #iface wlan1 inet manual
+    #    wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf
+
+    allow-hotplug wlan0
+    auto wlan0
+    iface wlan0 inet static
+       address 192.168.42.1
+       netmask 255.255.255.0
+       broadcast 192.168.42.255
+    
+    # reset existing rules and chains
+    up /sbin/iptables -F
+    up /sbin/iptables -X
+    up /sbin/iptables -t nat -F
+    
+    # Mask for the interface, activate port-forwarding and NAT
+    up iptables -A FORWARD -o eth0 -i wlan0 -s 192.168.42.0/24 -m conntrack --ctstate NEW -j ACCEPT
+    up iptables -A FORWARD -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+    
+    up iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+    up sysctl -w net.ipv4.ip_forward=1
+    
+    # restart hostapd and dnsmasq
+    up /etc/init.d/hostapd restart
+    up /etc/init.d/dnsmasq restart
+    ```
     
     Use the following configuration for /etc/hostapd/hostapd.conf:
 
@@ -163,7 +203,21 @@ This step is not strictly necessary, but will result in a massive speedup when p
     wpa_passphrase=opsoro123
     rsn_pairwise=CCMP
     ```
-
+    
+    Configure the DHCP server and DNS redirect
+    Create new config file (```sudo nano /etc/dnsmasq.d/dnsmasq.opsoro.conf```) and paste following lines
+    
+    ```
+    # Redirect specific urls
+    address=/play.opsoro.be/192.168.42.1
+    
+    # DHCP-Server active for the wlan interface
+    interface=wlan0
+    
+    # IP-Address range / Lease-Time
+    dhcp-range=interface:wlan0,192.168.42.100,192.168.42.200,infinite
+    ```
+    
 15. Change the host name to "opsoro"
     In the files '/etc/hostname' and '/etc/hosts', change 'raspberrypi' to 'opsoro'
 
@@ -173,8 +227,8 @@ This step is not strictly necessary, but will result in a massive speedup when p
     ```
     
 16. Setup Opsoro service  
-The script for setting up opsoro can be found in /Scripts/.  
-Follow next steps to setup OpSoRo:
+    The script for setting up opsoro can be found in /Scripts/.  
+    Follow next steps to setup OpSoRo:
 
     ```
     sudo cd /home/pi/Scripts/
@@ -185,11 +239,11 @@ Follow next steps to setup OpSoRo:
 OnoSW and its dependencies should now all be installed and working. Reboot the Raspberry Pi to test. Please let us know if any steps are missing!
 
 # Use
-If everything was configured correctly, the Raspberry Pi should create a WiFi hotspot (Opsoro_AP) at startup. This network lets access the robot's web interface. Once connected to the network, open a browser and go to http://opsoro.local. You will be presented with a login screen, the default password is "RobotOno". The main interface lets you control the robot through a number of apps.
+If everything was configured correctly, the Raspberry Pi should create a WiFi hotspot (OpSoRo_Robot) at startup (Default password: opsoro123). This network lets access the robot's web interface. Once connected to the network, open a browser and go to http://opsoro.local. If you configured the DHCP and DNS server correctly http://play.opsoro.be should also work. You will be presented with a login screen, the default password is "opsoro". The main interface lets you control the robot through a number of apps.
 
 ### Notes:
 - Be sure to properly shut down the operating system! Cutting power without performing a proper shutdown can corrupt the file system on the SD card, requiring a reinstall.
-- The ono.local address only works on computers that have Bonjour. If you are using OS X or have iTunes installed, you already have Bonjour. Bonjour can also be downloaded [here](https://www.apple.com/support/bonjour/). The web interface can also be accessed by entering the IP-address in your browser, which is 192.168.42.1.
+- The opsoro.local address only works on computers that have Bonjour. If you are using OS X or have iTunes installed, you already have Bonjour. Bonjour can also be downloaded [here](https://www.apple.com/support/bonjour/). The web interface can also be accessed by entering the IP-address in your browser, which is 192.168.42.1.
 - If the Raspberry Pi is connected to the internet via ethernet, the hotspot will also allow internet access. Additionally, the web interface will be accessible from the parent network using the opsoro.local address.
 - Only one user can be logged into the software. This is to prevent conflicting commands from multiple clients. It is possible to overwrite this behaviour inside apps, if desired.
 - The code from the visual programming app is currently executed in the browser, which then sends raw commands to the web server. This causes minor bugs, which is why future versions will run the generated code on the server.
