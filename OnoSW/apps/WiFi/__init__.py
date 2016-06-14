@@ -100,11 +100,18 @@ def setup_pages(opsoroapp):
 		subprocess.call("sudo ifup wlan0", shell=True)
 
 
-	@app_bp.route("/checkwifi", methods=["POST"])
+
+	@app_bp.route("/ip", methods=["POST"])
 	@opsoroapp.app_api
-	def checkwifi():
-		output = subprocess.check_output("sudo /sbin/ifconfig wlan0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}'",shell=True)
-				
+	def ip():
+		subprocess.call("sudo ip -4 addr show wlan0 | grep inet | awk '{print $2}' | cut -d/ -f1 > /home/pi/OnoSW/apps/WiFi/static/ip", shell=True)
+	
+	# @app_bp.route("/checkwifi", methods=["GET"])
+	# @opsoroapp.app_api
+	# def checkwifi():
+	# 	output = subprocess.check_output("sudo /sbin/ifconfig wlan0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}'", shell=True)
+	# 	output = subprocess.check_output("sudo ls", shell=True)
+	# 	return output	
 
 		
 	opsoroapp.register_app_blueprint(app_bp)

@@ -128,9 +128,8 @@ $(document).ready(function(){
 							if(data.status == "error"){
 								console.log(data);
 							}else{
-  								var actionbar = document.getElementsByClassName("actionbar")[0];
-								actionbar.innerHTML = ssid;
-  						
+  								document.cookie = "ssid=" + ssid;
+						
 							}
 						}
 					});
@@ -184,23 +183,75 @@ $(document).ready(function(){
 
   };
 
-window.onload = function(){
-	$.ajax({
-				dataType: "json",
-				/*data: {"phi": self.emotion().emotion.phi, "r": self.emotion().emotion.r},*/
-				type: "POST",
-				url: "checkwifi",
-				success: function(data){
-					if(data.status == "error"){
-						console.log(data);
-					}else{
-						console.log(data);
+  window.onload = function(){
 
-	console.log('test');
-					}
+  	var online = navigator.onLine;
+  	if(online){
+  		function getCookie(cname) {
+    		var name = cname + "=";
+    		var ca = document.cookie.split(';');
+    		for(var i = 0; i <ca.length; i++) {
+       			var c = ca[i];
+        		while (c.charAt(0)==' ') {
+            		c = c.substring(1);
+        	}
+        	if (c.indexOf(name) == 0) {
+            	return c.substring(name.length,c.length);
+        	}
+    	}
+    		return "";
+		}
+
+		$.ajax({
+			dataType: "json",
+			/*data: {"phi": self.emotion().emotion.phi, "r": self.emotion().emotion.r},*/
+			type: "POST",
+			url: "ip",
+			success: function(data){
+				if(data.status == "error"){
+					console.log(data);
+				}else{
+					$.ajax({
+						type: "GET",
+						url: "/app/WiFi/static/ip"
+					}).done(function(ip){
+							document.getElementsByClassName('actionbar')[0].innerHTML = "Connected to " + getCookie("ssid") + " with IP: " + ip; 
+							console.log(ip);
+					});
+					
 				}
-			});
-}
+			}
+		});
+		
+		
+
+    		//document.getElementsByClassName('actionbar')[0].innerHTML = "Connected to " + getCookie("ssid") + "with IP: " + ip ;  
+  	
+  	}else{
+  		document.cookie = "ssid=";
+  	}
+
+  }
+
+// window.onload = function(){
+// 	$.ajax({
+// 				dataType: "json",
+// 				/*data: {"phi": self.emotion().emotion.phi, "r": self.emotion().emotion.r},*/
+// 				type: "GET",
+// 				url: "checkwifi",
+// 				success: function(data){
+// 					if(data.status == "error"){
+// 						console.log(data);
+
+// 					}else{
+// 						console.log(data);
+// 						console.log('tes')
+
+// 	console.log('test');
+// 					}
+// 				}
+// 			});
+// }
 
   						
   

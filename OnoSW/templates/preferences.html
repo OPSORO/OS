@@ -96,7 +96,31 @@
 			</div>
 			<div class="small-8 medium-6 large-4 columns end">
 				<select id="ttsEngine" name="ttsEngine" data-bind="value: ttsEngine">
-					<option value="picotts">PicoTTS</option>
+					<option value="pico">PicoTTS</option>
+					<option value="espeak">eSpeak</option>
+				</select>
+			</div>
+		</div>
+		<div class="row" data-bind="visible: ttsEngine() == 'espeak'">
+			<div class="small-4 medium-3 large-4 columns">
+				<label for="ttsLanguage" class="right inline">Text-to-speech language</label>
+			</div>
+			<div class="small-8 medium-6 large-4 columns end">
+				<select id="ttsLanguage" name="ttsLanguage" data-bind="value: ttsLanguage">
+					<option value="en">English</option>
+					<option value="nl">Dutch</option>
+					<option value="fr">French</option>
+				</select>
+			</div>
+		</div>
+		<div class="row" data-bind="visible: ttsEngine() == 'espeak'">
+			<div class="small-4 medium-3 large-4 columns">
+				<label for="ttsGender" class="right inline">Text-to-speech gender</label>
+			</div>
+			<div class="small-8 medium-6 large-4 columns end">
+				<select id="ttsGender" name="ttsGender" data-bind="value: ttsGender">
+					<option value="m">Male</option>
+					<option value="f">Female</option>
 				</select>
 			</div>
 		</div>
@@ -187,7 +211,9 @@ $(document).ready(function(){
 		var self = this;
 
 		self.volume = ko.observable(0);
-		self.ttsEngine = ko.observable("picotts");
+		self.ttsEngine = ko.observable("pico");
+		self.ttsLanguage = ko.observable("nl");
+		self.ttsGender = ko.observable("m");
 	};
 
 	var WirelessSettings = function(){
@@ -221,7 +247,9 @@ $(document).ready(function(){
 	ko.applyBindings(viewmodel);
 	viewmodel.general().robotName(prefsJson.general.robotName || "Ono");
 	viewmodel.audio().volume(prefsJson.audio.volume || 50);
-	viewmodel.audio().ttsEngine(prefsJson.audio.ttsEngine || "picotts");
+	viewmodel.audio().ttsEngine(prefsJson.audio.ttsEngine || "pico");
+	viewmodel.audio().ttsLanguage(prefsJson.audio.ttsLanguage || "nl");
+	viewmodel.audio().ttsGender(prefsJson.audio.ttsGender || "m");
 	viewmodel.wireless().ssid(prefsJson.wireless.ssid || "OpSoRo_AP");
 	viewmodel.wireless().samePassword(prefsJson.wireless.samePassword || true);
 	viewmodel.wireless().channel(prefsJson.wireless.channel || 6);

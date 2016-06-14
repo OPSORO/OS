@@ -20,6 +20,73 @@
 				</div>
 			</div>
 	</div>
+	</br>
+
+
+	<h5>Maak uw eigen Assistant</h5>
+<fieldset>
+	<legend>Stap 1 : IFTTT account</legend>
+	<div class="row">
+		<div class="content">
+		<img src="../assistant/static/images/ifttt.png" align="left" style="height:100px; position:relative; margin-top:-20px" alt="">
+				<div align="right" style="position:relative"><p style="margin-right:7%">Registreer je op onderstaande link om je account op IFTTT aan te maken</p></br>
+				<a href="https://ifttt.com/join" target="blank"><button type="submit" class="button" style="margin-right:30%" >Maak Account</button></a></div>
+		</div>			
+	</div>
+</fieldset>
+<fieldset>
+	<legend>Stap 2 : IFTTT Recepten</legend>
+	<div class="row">
+		<div class="content">
+			<img src="../assistant/static/images/ifttt.png" align="left" style="height:100px; position:relative; margin-top:-20px" alt="">
+			<p style="margin-right:7%" align="right">Maak nieuwe recepten voor je assistant</p><br>
+			<div style="margin-right:7%" align="right">Voorbeeld Recept :
+			<select name="recipe" class="fa-list-ul" style="width:150px; max-width:150px" id="dropdown_recept">
+				<option value="null">Kies Recept</option>
+				<option value="calender">Kalender</option>
+				<option value="nieuws">Nieuws</option>
+				<option value="weerbericht">Weerbericht</option>
+			</select>
+			</div>
+
+			<div style="margin-right:7%;display:none" align="right" id="Kalender">
+				</br>
+				<p>Om uw robot succesvol te kunnen koppelen aan uw Google Calender, volg onderstaande video's</p></br>
+					<iframe width="560" height="315" src="https://www.youtube.com/embed/MlkG07Bmui0" frameborder="0" allowfullscreen></iframe>
+					<iframe width="560" height="315" src="https://www.youtube.com/embed/ylzkv43egqc" frameborder="0" allowfullscreen></iframe>
+			</div>
+			<div style="margin-right:7%;display:none" align="right" id="Nieuws" >
+				<p>Dit is de News video feed</p>
+			</div>
+			<div style="margin-right:7%;display:none" align="right" id="Weerbericht">
+			<p>Dit is de Weerbericht Video Feed</p>
+			</div>
+		
+	</div>
+</fieldset>
+<!-- <fieldset>
+	<legend>Stap 3 : Maker Channel</legend>
+	<div class="row">
+		<div class="content">
+			<img src="../assistant/static/images/ifttt.png" align="left" style="height:100px; position:relative; margin-top:-20px" alt="">
+	
+			<p style="margin-right:7%" align="right">Configureer je de Maker Channel zodat je robot berichten kan ontvangen</p>
+		</div>
+	</div>
+</fieldset> -->
+<fieldset>
+	<legend>Stap 4 : Klaar voor gebruik</legend>
+	<div class="row">
+		<div class="content">
+			<img src="../assistant/static/images/ifttt.png" align="left" style="height:100px; position:relative;margin-top:-20px" alt="">
+	
+			<p style="margin-right:7%" align="right">Uw robot is nu volledig klaar voor gebruik</p>
+		</div>
+	</div>
+</fieldset>
+	
+		
+	</div>
 	<div class="row">
 			<div class="content">
 		      		<div class="form-group">
@@ -34,12 +101,49 @@
 					  		off.style.background = "#008CBA";
 					  		off.style.borderColor = "#007095";
 
-					    }
+					    };
 
 					    var on = document.getElementById("on");
 					    var off = document.getElementById("off");
+					   	var dropdown = document.getElementById("dropdown_recept");
+					   	var divKalender = document.getElementById("Kalender");
+					   	var divNieuws = document.getElementById("Nieuws");
+					   	var divWeerbericht = document.getElementById("Weerbericht");
 
-					 
+					  	$('#dropdown_recept').change(function(){	     		
+					  		var optionSelected = $(this).find("option:selected");
+	     					var valueSelected  = optionSelected.val();
+	     					if(valueSelected == "calender")
+	     					{
+	     						console.log("Kalender selected");
+	     						divKalender.style.display="block";
+	     						divNieuws.style.display="none";
+	     						divWeerbericht.style.display="none";
+	     							
+	     						
+	     					}
+	     					if(valueSelected=="null")
+	     					{
+	     						divKalender.style.display="none";
+	     						divWeerbericht.style.display="none";
+	     						divNieuws.style.display="none";
+	     					}
+	     					if(valueSelected=="nieuws")
+	     					{
+	     						console.log("nieuws");
+	     						divKalender.style.display="none";
+	     						divNieuws.style.display="block";
+	     						divWeerbericht.style.dispay="none";
+	     					}
+	     					if(valueSelected=="weerbericht")
+	     					{
+	     						console.log("weer");
+	     						divWeerbericht.style.display="block";
+	     						divNieuws.style.display="none";
+	     						divKalender.style.display="none";
+	     					}
+ 						});
+
 
 					  	$("#on").click(function(){
 					  		
@@ -65,24 +169,7 @@
 					  		document.cookie = "status=off";
 					  	});
 						
-						$("#save").click(function(){
-							var text=document.getElementById("inputlg").value;
-							var input = document.getElementById("inputlg");
-							
-						
-
-							if(text != null && text != " "){
-								document.cookie = "keyapi="+text;
-
-							}else{
-								document.cookie = "keyapi=";
-								input.placeholder = "Vul een geldige key in."
-							}
-
-						});
-
-
-						
+											
 					    </script>
 					    
 					    

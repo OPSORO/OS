@@ -29,7 +29,7 @@ if  __name__ == "__main__":
         cmd = ['rec', '-c', '2', output_filename, 'rate', '8k', 'trim', '0', '10']
         call(cmd)
 
-        os.rename("rec.wav", "/home/pi/OnoSW/data/opsoroassistant/rec.wav")
+        os.rename("rec.wav", "/home/pi/OnoSW/data/assistant/rec.wav")
 
         end_time = datetime.datetime.now()
         end = end_time.strftime('%Y-%m-%d %H:%M:%S')

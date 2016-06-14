@@ -1,10 +1,12 @@
 audio:
-  master_volume: 67
-  tts_engine: !!python/unicode picotts
+  master_volume: 75
+  tts_engine: !!python/unicode espeak
+  tts_gender: !!python/unicode m
+  tts_language: !!python/unicode nl
 general:
-  password: RobotOno
+  password: opsoro
   robot_name: !!python/unicode Ono
 wireless:
   channel: 6
-  password: RobotOno
-  ssid: !!python/unicode Cesar's Ono
+  password: opsoro
+  ssid: !!python/unicode OpSoRo_Robot
