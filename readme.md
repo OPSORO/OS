@@ -1,5 +1,5 @@
 # OnoSW
-OnoSW is the software framework for [OPSORO](http://www.opsoro.be/), , to be used in conjunction with [Ono2](https://github.com/cesarvandevelde/Ono2) and [OnoHAT](https://github.com/cesarvandevelde/OnoHAT).
+OnoSW is the software framework for [OPSORO](http://www.opsoro.be/), to be used in conjunction with [Ono2](https://github.com/cesarvandevelde/Ono2) and [OnoHAT](https://github.com/cesarvandevelde/OnoHAT).
 
 # Hardware Requirements
 - Raspberry Pi 1 model B+ | Raspberry Pi 2 model B | Raspberry Pi 3
