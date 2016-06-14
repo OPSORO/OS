@@ -23,7 +23,7 @@ OnoSW is the software framework for [OPSORO](http://www.opsoro.be/), to be used 
     sudo apt-get install python2.7-dev avahi-daemon libluajit-5.1-dev
     ```
 
-6. Install PIP:
+6. Install PIP
 
     ```
     sudo apt-get install python-setuptools
@@ -40,7 +40,7 @@ This step is not strictly necessary, but will result in a massive speedup when p
     sudo apt-get install -y python-scipy
     ```
 
-9. Enable SPI and I2C.
+9. Enable SPI and I2C
 
     ```
     sudo raspi-config
@@ -48,13 +48,13 @@ This step is not strictly necessary, but will result in a massive speedup when p
     
     Go to advanced, A5 SPI --> Enable, A6 --> I2C enable.
 
-10. Edit /etc/modules:
+10. Edit /etc/modules
 
     ```
     sudo nano /etc/modules
     ```
     
-    Enter the following configuration:
+    Enter the following configuration
     
     ```
     # /etc/modules: kernel modules to load at boot time.
@@ -77,9 +77,8 @@ This step is not strictly necessary, but will result in a massive speedup when p
     ```
     sudo nano /etc/modprobe.d/raspi-blacklist.conf
     ```
-11. Configure audio:
-    
-    Add hifiberry-dac device tree overlay in config.txt (```sudo nano /boot/config.txt```). And add the following to the end of the config.txt file:
+11. Configure audio
+    Add hifiberry-dac device tree overlay in config.txt (```sudo nano /boot/config.txt```). And add the following to the end of the config.txt file
     ```
     dtoverlay=hifiberry-dac
     ```
@@ -91,7 +90,7 @@ This step is not strictly necessary, but will result in a massive speedup when p
     sudo nano /etc/asound.conf
     ```
     
-    Enter the following configuration:
+    Enter the following configuration
     
     ```
     pcm.!default {
@@ -114,13 +113,13 @@ This step is not strictly necessary, but will result in a massive speedup when p
     }
     ```
     
-    Reboot the Raspberry Pi:
+    Reboot the Raspberry Pi
     
     ```
     sudo reboot
     ```
     
-    Lower the master sound volume to something reasonable (limits 0-255):
+    Lower the master sound volume to something reasonable (limits 0-255)
     
     ```
     amixer set Master 128
@@ -138,8 +137,7 @@ This step is not strictly necessary, but will result in a massive speedup when p
     sudo apt-get install espeak
     ```
     
-14. Setup and configure the WiFi dongle (http://elinux.org/RPI-Wireless-Hotspot)
-    
+14. Setup and configure the WiFi dongle  
     Install hostapd for the access point and dnsmasq for the DHCP server and DNS redirect
 
     ```
@@ -187,12 +185,15 @@ This step is not strictly necessary, but will result in a massive speedup when p
     up /etc/init.d/dnsmasq restart
     ```
     
-    Use the following configuration for /etc/hostapd/hostapd.conf:
+    Use the following configuration for /etc/hostapd/hostapd.conf
 
     ```
     interface=wlan0
     driver=nl80211
     ssid=OpSoRo_Robot
+    ieee80211n=1          # 802.11n support
+    wmm_enabled=1         # QoS support
+    ht_capab=[HT40][SHORT-GI-20][DSSS_CCK-40]
     hw_mode=g
     channel=6
     macaddr_acl=0
@@ -204,8 +205,9 @@ This step is not strictly necessary, but will result in a massive speedup when p
     rsn_pairwise=CCMP
     ```
     
-    Configure the DHCP server and DNS redirect
+    Edit the file /etc/default/hostapd and change the line ```#DAEMON_CONF=""``` to ```DAEMON_CONF="/etc/hostapd/hostapd.conf"```
     
+    Configure the DHCP server and DNS redirect  
     Create new config file (```sudo nano /etc/dnsmasq.d/dnsmasq.opsoro.conf```) and paste following lines
     
     ```
@@ -219,7 +221,7 @@ This step is not strictly necessary, but will result in a massive speedup when p
     dhcp-range=interface:wlan0,192.168.42.100,192.168.42.200,infinite
     ```
     
-15. Change the host name to "opsoro"
+15. Change the host name to "opsoro"  
     In the files '/etc/hostname' and '/etc/hosts', change 'raspberrypi' to 'opsoro'
 
     ```
@@ -229,7 +231,7 @@ This step is not strictly necessary, but will result in a massive speedup when p
     
 16. Setup Opsoro service  
     The script for setting up opsoro can be found in /Scripts/.  
-    Follow next steps to setup OpSoRo:
+    Follow next steps to setup OpSoRo
 
     ```
     sudo cd /home/pi/Scripts/
