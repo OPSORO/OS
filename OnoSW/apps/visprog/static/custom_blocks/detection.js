@@ -1,10 +1,6 @@
 Blockly.Lua.addReservedWords("Detection");
 
-<<<<<<< HEAD
-Blockly.Blocks['detection_follow'] = {
-=======
 Blockly.Blocks['detection_follow_color'] = {
->>>>>>> origin/NMCT12_EmoDetection
   init: function() {
     var colour = new Blockly.FieldColour('#ff0000');
     colour.setColours(['#f00','#0f0','#00f','#ff0']).setColumns(2);
@@ -21,17 +17,7 @@ Blockly.Blocks['detection_follow_color'] = {
     this.setNextStatement(true);
   }
 };
-<<<<<<< HEAD
-Blockly.Lua['detection_follow'] = function(block) {
-  var color = block.getFieldValue('COLOUR')
-  var code = '';
-  code += 'if Detection:is_color_detected("'+color+'") then\n';
-  code += 'cords = Detection:get_color_coords("'+color+'")\n'
-  //code += 'print(test[0])'
-  /*code += 'x = Detection:get_color_coord_x("'+color+'")\n';
-  code += 'y = Detection:get_color_coord_y("'+color+'")\n';*/
-  code += 'Detection:follow_object(tonumber(cords[0]),tonumber(cords[1]))\n';
-=======
+
 Blockly.Lua['detection_follow_color'] = function(block) {
   var color = block.getFieldValue('COLOUR')
   var code = '';
@@ -42,16 +28,11 @@ Blockly.Lua['detection_follow_color'] = function(block) {
   code += 'x = Detection:get_color_coord_x("'+color+'")\n';
   code += 'y = Detection:get_color_coord_y("'+color+'")\n';
   code += 'Detection:follow_object(x,y)\n';
->>>>>>> origin/NMCT12_EmoDetection
   code += 'end\n';
   return code;
 };
 
-<<<<<<< HEAD
-Blockly.Blocks['detection_get_coordinates'] = {
-=======
 Blockly.Blocks['detection_get_coordinates_color'] = {
->>>>>>> origin/NMCT12_EmoDetection
   init: function() {
     var colour = new Blockly.FieldColour('#ff0000');
     colour.setColours(['#f00','#0f0','#00f','#ff0']).setColumns(2);
@@ -61,15 +42,6 @@ Blockly.Blocks['detection_get_coordinates_color'] = {
         .appendField('is detected.');
     this.appendField
     this.setColour(330);
-<<<<<<< HEAD
-    this.setTooltip('This block can do something with colors');
-        this.appendDummyInput()
-            .appendField(new Blockly.FieldDropdown([["Get y waarde", "Y"], ["Get x waarde", "X"]]), "DROPDOWN");
-    this.setOutput(true, 'Number');
-  }
-};
-Blockly.Lua['detection_get_coordinates'] = function(block) {
-=======
     this.setTooltip('This block will return the coordinates of a detected color.');
         this.appendDummyInput()
             .appendField(new Blockly.FieldDropdown([["Get y value", "Y"], ["Get x value", "X"]]), "DROPDOWN");
@@ -77,16 +49,10 @@ Blockly.Lua['detection_get_coordinates'] = function(block) {
   }
 };
 Blockly.Lua['detection_get_coordinates_color'] = function(block) {
->>>>>>> origin/NMCT12_EmoDetection
   var color = block.getFieldValue('COLOUR')
   var dropdown = block.getFieldValue('DROPDOWN');
   var code = '';
   if(dropdown == "Y"){
-<<<<<<< HEAD
-    code = 'Detection:get_color_coord_y("'+color+'")\n';
-  }else if(dropdown == "X"){
-    code = 'Detection:get_color_coord_x("'+color+'")\n';
-=======
     code += 'if (Detection:is_color_detected("'+color+'") == null) then\n';
     code += 'print("Something went wrong. Did you perhaps forget to start the camera?")';
     code += 'end\n';
@@ -99,7 +65,6 @@ Blockly.Lua['detection_get_coordinates_color'] = function(block) {
     code += 'print("Something went wrong. Did you perhaps forget to start the camera? (or did you get an error earlier in the script?)")';
     code += 'end\n';
     code = 'Detection:get_coord_x("'+color+'")\n';
->>>>>>> origin/NMCT12_EmoDetection
   }
   return [code, Blockly.Lua.ORDER_FUNCTION_CALL];
 };
@@ -116,16 +81,6 @@ Blockly.Blocks['detection_get_coordinates_face'] = {
 };
 Blockly.Lua['detection_get_coordinates_face'] = function(block) {
   var code = '';
-<<<<<<< HEAD
-  code += 'cords = Detection:get_face_coords()'
-  //code += 'x = Detection:get_face_coord_x()\n';
-  //code += 'y = Detection:get_face_coord_y()\n';
-  code += 'Detection:follow_object(tonumber(cords[0]),tonumber(cords[1]))\n';
-  return code;
-};
-
-Blockly.Blocks['detection_colorCheck'] = {
-=======
   code += 'if (Detection:is_face_detected() == null) then\n';
   code += 'print("Something went wrong. Did you perhaps forget to start the camera? (or did you get an error earlier in the script?)")';
   code += 'end\n';
@@ -139,7 +94,6 @@ Blockly.Blocks['detection_colorCheck'] = {
 };
 
 Blockly.Blocks['detection_color_check'] = {
->>>>>>> origin/NMCT12_EmoDetection
   init: function() {
     var colour = new Blockly.FieldColour('#ff0000');
     colour.setColours(['#f00','#0f0','#00f','#ff0']).setColumns(2);
@@ -162,23 +116,14 @@ Blockly.Lua['detection_color_check'] = function(block) {
   this.setFieldValue(color,'COLOUR')
   var code = '';
   code += 'if (Detection:is_color_detected("'+color+'") == null) then\n';
-<<<<<<< HEAD
-  code += 'print("er is iets misgelopen heeft u de camera wel gestart?")';
-  code += 'end\n';
-  code += 'if Detection:is_color_detected("'+color+'") then\n';
-=======
   code += 'print("Something went wrong. Did you perhaps forget to start the camera? (or did you get an error earlier in the script?)")';
   code += 'end\n';
-  code += 'if Detection:is_color("'+color+'") then\n';
->>>>>>> origin/NMCT12_EmoDetection
+  code += 'if Detection:is_color_detected("'+color+'") then\n';
   code += statements_body;
   code += 'end\n';
   return code;
 };
-<<<<<<< HEAD
 
-=======
->>>>>>> origin/NMCT12_EmoDetection
 Blockly.Blocks['detection_start_stream'] = {
   init: function() {
     this.appendDummyInput()
@@ -192,19 +137,12 @@ Blockly.Blocks['detection_start_stream'] = {
 Blockly.Lua['detection_start_stream'] = function(block) {
   var code = '';
   code += 'if (Detection:start_stream() == null) then\n';
-<<<<<<< HEAD
-  code += 'print("er is iets misgelopen heeft u de camera wel gestart?")\n';
-=======
   code += 'print("Something went wrong. Is the camera broken, disabled or disconnected? (or did you get an error earlier in the script?)")\n';
->>>>>>> origin/NMCT12_EmoDetection
   code += 'else Detection:start_stream()\n'
   code += 'end\n';
   return code;
 };
-<<<<<<< HEAD
 
-=======
->>>>>>> origin/NMCT12_EmoDetection
 Blockly.Blocks['detection_stop_stream'] = {
   init: function() {
     this.appendDummyInput()
@@ -222,8 +160,6 @@ Blockly.Lua['detection_stop_stream'] = function(block) {
   code += 'end\n';
   return code;
 };
-<<<<<<< HEAD
-
 
 /*---------- nog testen me een bakes ----------*/
 Blockly.Blocks['detection_get_coordinates_face'] = {
@@ -249,9 +185,6 @@ Blockly.Lua['detection_get_coordinates_face'] = function(block) {
   return [code, Blockly.Lua.ORDER_FUNCTION_CALL];
 };
 
-
-=======
->>>>>>> origin/NMCT12_EmoDetection
 Blockly.Blocks['detection_initialize_predictor'] = {
   init: function() {
     this.appendDummyInput()
@@ -263,7 +196,6 @@ Blockly.Blocks['detection_initialize_predictor'] = {
   }
 };
 Blockly.Lua['detection_initialize_predictor'] = function(block) {
-<<<<<<< HEAD
   var code = ''
   code += 'if (Detection:initialize_predictor() == null) then\n';
   code += 'print("Something went wrong. There is a corrupt file path inside the filesystem. Contact a developer for more info.")\n';
@@ -527,11 +459,4 @@ Blockly.Lua['detection_mirror_face'] = function(block) {
   }
   return [code, Blockly.Lua.ORDER_FUNCTION_CALL];
 };
-=======
-  var code = 'Detection:initialize_predictor()\n'
-  code += 'if (Detection:initialize_predictor() == null) then\n';
-  code += 'print("Something went wrong. There is a corrupt file path inside the filesystem. Contact a developer for more info.")';
-  code += 'end\n';
-  return code;
-};
->>>>>>> origin/NMCT12_EmoDetection
+>>>>>>> Blockly blocks toegevoegd
