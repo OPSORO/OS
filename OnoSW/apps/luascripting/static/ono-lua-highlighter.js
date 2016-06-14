@@ -29,7 +29,8 @@ var OnoLuaHighlightRules = function() {
 		"get_emotion_complex|set_emotion_r_phi|set_emotion_val_ar|update|empty_config|load_config|dofs|add_overlay|remove_overlay|clear_overlays|"+
 
 		//detection class methods
-		"is_color|stop_stream|start_stream|get_coord_x|get_coord_y|folow_object|get_face_coord_x|get_face_coord_y|"+
+		"start_stream|stop_stream|is_color_detected|get_color_coords|get_color_coord_x|get_color_coord_y|get_face_coords|"+
+		"get_face_coord_x|get_face_coord_y|initialize_predictor|receive_face_points|follow_object|"+
 
 		// Animate class methods
 		"has_ended"

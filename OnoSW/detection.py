@@ -16,24 +16,64 @@ import sys
 class _Detection(object):
     vs = None
     def start_stream(self):
-        global vs
-        PiCamera.vflip = True
-        vs = PiVideoStream().start()
-        print("Camera opstarten...")
-        time.sleep(1)
-        print("Camera streaming gestart!")
-        return vs
+        try:
+            global vs
+            PiCamera.vflip = False
+            vs = PiVideoStream().start()
+            time.sleep(1)
+            return vs
+        except Exception as e:
+            return None
 
     def stop_stream(self):
         global vs
         vs.stop()
-        print("De camera is gestopt!")
 
-    def is_color(self,color):
+    def is_color_detected(self,color):
+        try:
+            global vs
+            def check_for_color(vs):
+                frame = vs.read()
+                frame = imutils.resize(frame, width=400)
+                if args["display"] > 0:
+                    blurred = cv2.GaussianBlur(frame, (11,11),0)
+                    mask = cv2.inRange(frame, colorLower, colorUpper)
+                    mask = cv2.erode(mask, None, iterations=2)
+                    mask = cv2.dilate(mask, None, iterations=2)
+                    cnts = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2]
+                    if len(cnts) > 0:
+                        return True
+                    else:
+                        return False
+            ap = argparse.ArgumentParser()
+            ap.add_argument("-d", "--display", type=int, default=1, help="Wheter or not frames should be displayed")
+            ap.add_argument("-b", "--buffer", type=int, default=2500, help="Max buffer size")
+            args = vars(ap.parse_args())
+            if color == "#ff0000":
+                colorLower = np.array([145, 69, 20])
+                colorUpper = np.array([192, 255,255])
+            if color == "#00ff00":
+                colorLower = np.array([29, 86, 20])
+                colorUpper = np.array([64, 255,255])
+            if color == "#0000ff":
+                colorLower = np.array([100, 86, 20])
+                colorUpper = np.array([130, 255,255])
+            if color == "#ffff00":
+                colorLower = np.array([20, 86, 20])
+                colorUpper = np.array([40, 255,255])
+
+            pts = deque(maxlen=args["buffer"])
+            return check_for_color(vs)
+        except Exception as e:
+            return None
+
+
+    def get_color_coords(self, color):
         global vs
-        def check_for_color(vs):
+        def check_for_color_coords(vs):
+            arrCoords = [175,175]
             frame = vs.read()
-            frame = imutils.resize(frame, width=400)
+            frame = imutils.resize(frame, width=350)
             if args["display"] > 0:
                 blurred = cv2.GaussianBlur(frame, (11,11),0)
                 mask = cv2.inRange(frame, colorLower, colorUpper)
@@ -41,32 +81,39 @@ class _Detection(object):
                 mask = cv2.dilate(mask, None, iterations=2)
                 cnts = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2]
                 if len(cnts) > 0:
-                    return True
+                    c = max(cnts, key=cv2.contourArea)
+                    ((x,y),radius) = cv2.minEnclosingCircle(c)
+                    if radius > 0:
+                        arrCoords[0] = x
+                        arrCoords[1] = y
+                        return arrCoords
+                    else:
+                        return arrCoords
                 else:
-                    return False
+                    return arrCoords
         ap = argparse.ArgumentParser()
         ap.add_argument("-d", "--display", type=int, default=1, help="Wheter or not frames should be displayed")
         ap.add_argument("-b", "--buffer", type=int, default=2500, help="Max buffer size")
         args = vars(ap.parse_args())
         if color == "#ff0000":
-            colorLower = np.array([130, 69, 6])
-            colorUpper = np.array([178, 255,255])
+            colorLower = np.array([145, 69, 20])
+            colorUpper = np.array([192, 255,255])
         if color == "#00ff00":
-            colorLower = np.array([29, 86, 6])
+            colorLower = np.array([29, 86, 20])
             colorUpper = np.array([64, 255,255])
         if color == "#0000ff":
-            colorLower = np.array([280, 86, 6])
-            colorUpper = np.array([150, 255,255])
+            colorLower = np.array([100, 86, 20])
+            colorUpper = np.array([130, 255,255])
         if color == "#ffff00":
-            colorLower = np.array([29, 86, 6])
-            colorUpper = np.array([64, 255,255])
-
+            colorLower = np.array([20, 86, 20])
+            colorUpper = np.array([40, 255,255])
         pts = deque(maxlen=args["buffer"])
-        return check_for_color(vs)
+        arrCoords = check_for_color_coords(vs)
+        return arrCoords
 
-    def get_coord_x(color):
+    def get_color_coord_x(self, color):
         global vs
-        def check_for_green_coord_x(vs):
+        def check_for_color_coord_x(vs):
             frame = vs.read()
             frame = imutils.resize(frame, width=350)
             if args["display"] > 0:
@@ -88,24 +135,25 @@ class _Detection(object):
         ap.add_argument("-d", "--display", type=int, default=1, help="Wheter or not frames should be displayed")
         ap.add_argument("-b", "--buffer", type=int, default=2500, help="Max buffer size")
         args = vars(ap.parse_args())
-        #if color == "#ff0000":
-        #    colorLower = np.array([29, 86, 6])
-        #    colorUpper = np.array([64, 255,255])
-        #if color == "#00ff00":
-        colorLower = np.array([29, 86, 6])
-        colorUpper = np.array([64, 255,255])
-        #if color == "#0000ff":
-        #    colorLower = np.array([29, 86, 6])
-        #    colorUpper = np.array([64, 255,255])
-        #if color == "#ffff00":
-        #    colorLower = np.array([29, 86, 6])
-        #    colorUpper = np.array([64, 255,255])
+        if color == "#ff0000":
+            colorLower = np.array([145, 69, 20])
+            colorUpper = np.array([192, 255,255])
+        if color == "#00ff00":
+            colorLower = np.array([29, 86, 20])
+            colorUpper = np.array([64, 255,255])
+        if color == "#0000ff":
+            colorLower = np.array([100, 86, 20])
+            colorUpper = np.array([130, 255,255])
+        if color == "#ffff00":
+            colorLower = np.array([20, 86, 20])
+            colorUpper = np.array([40, 255,255])
         pts = deque(maxlen=args["buffer"])
-        x = check_for_green_coord_x(vs)
+        x = check_for_color_coord_x(vs)
         return x
-    def get_coord_y(color):
+
+    def get_color_coord_y(self, color):
         global vs
-        def check_for_green_coord_y(vs):
+        def check_for_color_coord_y(vs):
             frame = vs.read()
             frame = imutils.resize(frame, width=350)
             if args["display"] > 0:
@@ -127,21 +175,36 @@ class _Detection(object):
         ap.add_argument("-d", "--display", type=int, default=1, help="Wheter or not frames should be displayed")
         ap.add_argument("-b", "--buffer", type=int, default=2500, help="Max buffer size")
         args = vars(ap.parse_args())
-        #if color == "#ff0000":
-        #    colorLower = np.array([350, 86, 6])
-        #    colorUpper = np.array([300, 255,255])
-        #if color == "#00ff00":
-        colorLower = np.array([29, 86, 6])
-        colorUpper = np.array([64, 255,255])
-        #if color == "#0000ff":
-        #    colorLower = np.array([280, 86, 6])
-        #    colorUpper = np.array([150, 255,255])
-        #if color == "#ffff00":
-        #    colorLower = np.array([29, 86, 6])
-        #    colorUpper = np.array([64, 255,255])
+        if color == "#ff0000":
+            colorLower = np.array([145, 69, 20])
+            colorUpper = np.array([192, 255,255])
+        if color == "#00ff00":
+            colorLower = np.array([29, 86, 20])
+            colorUpper = np.array([64, 255,255])
+        if color == "#0000ff":
+            colorLower = np.array([100, 86, 20])
+            colorUpper = np.array([130, 255,255])
+        if color == "#ffff00":
+            colorLower = np.array([20, 86, 20])
+            colorUpper = np.array([40, 255,255])
         pts = deque(maxlen=args["buffer"])
-        y = check_for_green_coord_y(vs)
+        y = check_for_color_coord_y(vs)
         return y
+
+    def get_face_coords(self):
+        arrCoords = [175,175]
+        face = cv2.CascadeClassifier('data/visprog/scripts/haarcascade_frontalface_default')
+        frame = vs.read()
+        frame = imutils.resize(frame, width=350)
+        gray = cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
+        facedet = face.detectMultiScale(gray, 1.3,5)
+        if facedet != ():
+            for(x,y,w,h) in facedet:
+                arrCoords[0] = x + (w/2)
+                arrCoords[1] = y + (h/2)
+                return arrCoords
+        else:
+            return arrCoords
 
     def get_face_coord_x(self):
         face = cv2.CascadeClassifier('data/visprog/scripts/haarcascade_frontalface_default')
@@ -171,7 +234,45 @@ class _Detection(object):
             yValue = 175
             return yValue
 
-    def folow_object(self,xCoord,yCoord):
+
+    def initialize_predictor(self):
+        global predictor
+        predictor = dlib.shape_predictor("shape_predictor_68_face_landmarks.dat")
+
+
+    def receive_face_points(self, numberLandmark):
+        global vs
+        global predictor
+        def get_landmarks(im):
+            rects = cascade.detectMultiScale(im, 1.3,5)
+            x,y,w,h = rects[0]
+            if len(rects) >= 1:
+                rect=dlib.rectangle(int(x),int(y),int(x+w),int(y+h))
+                return np.matrix([[p.x,p.y] for p in predictor(im, rect).parts()])
+
+        def annotate_landmarks(im, landmarks, numberLandmark):
+            arrCoords = [175,175]
+            for idx, point in enumerate(landmarks):
+                pos = (point[0, 0], point[0, 1])
+                if idx == numberLandmark:
+                    arrCoords[0] = landmarks[numberLandmark,0]
+                    arrCoords[1] = landmarks[numberLandmark,1]
+            return arrCoords
+        frame = vs.read()
+        cascade = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
+        frame = imutils.resize(frame, width=350)
+        blurred = cv2.GaussianBlur(frame, (11,11),0)
+        hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+        try:
+            landmarks = get_landmarks(frame)
+            arrCoords = annotate_landmarks(frame, landmarks, numberLandmark)
+            return arrCoords
+
+        except:
+            return [175,175]
+
+
+    def follow_object(self,xCoord,yCoord):
         rechter_x = 1350 + (xCoord * 2)
         rechter_y = 1875 - (yCoord * 2)
 
