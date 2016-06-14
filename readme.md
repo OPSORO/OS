@@ -205,6 +205,7 @@ This step is not strictly necessary, but will result in a massive speedup when p
     ```
     
     Configure the DHCP server and DNS redirect
+    
     Create new config file (```sudo nano /etc/dnsmasq.d/dnsmasq.opsoro.conf```) and paste following lines
     
     ```
