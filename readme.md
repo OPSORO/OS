@@ -35,16 +35,18 @@ This step is not strictly necessary, but will result in a massive speedup when p
 8. Install Python packages (flask, flask-login, pyyaml, pluginbase, sockjs-tornado, simplejson, lupa, numpy, scipy, spidev)
 
     ```
-    sudo pip install flask flask-login pyyaml pluginbase sockjs-tornado simplejson lupa numpy scipy spidev
+    sudo pip install flask flask-login pyyaml pluginbase sockjs-tornado simplejson lupa numpy spidev
+    sudo apt-get install -y python-smbus i2c-tools
+    sudo apt-get install -y python-scipy
     ```
 
-9. Disable Device Tree, enable SPI and I2C.
+9. Enable SPI and I2C.
 
     ```
     sudo raspi-config
     ```
     
-    Go to advanced, A5 Device Tree --> Disable, A6 SPI --> Enable, A7 --> I2C enable.
+    Go to advanced, A5 SPI --> Enable, A6 --> I2C enable.
 
 10. Edit /etc/modules:
 
@@ -125,13 +127,27 @@ This step is not strictly necessary, but will result in a massive speedup when p
     ```
     
 12. [Install PicoTTS](http://rpihome.blogspot.be/2015/02/installing-pico-tts.html)
+    
+    ```
+    sudo apt-get install libttspico-utils
+    ```
+
 13. Install the eSpeak TTS engine
 
     ```
     sudo apt-get install espeak
     ```
-14. [Setup and configure the WiFi dongle](http://elinux.org/RPI-Wireless-Hotspot)  
-Use the following configuration for /etc/hostapd/hostapd.conf:
+    
+14. [Setup and configure the WiFi dongle](http://elinux.org/RPI-Wireless-Hotspot)
+
+    ```
+    sudo apt-get install -y hostapd dnsmasq
+    ```
+    
+    Update ```/etc/network/interfaces``` so it contains following lines
+    
+    
+    Use the following configuration for /etc/hostapd/hostapd.conf:
 
     ```
     interface=wlan0
@@ -143,13 +159,19 @@ Use the following configuration for /etc/hostapd/hostapd.conf:
     auth_algs=1
     ignore_broadcast_ssid=0
     wpa=2
-    wpa_passphrase=opsoro123
     wpa_key_mgmt=WPA-PSK
-    wpa_pairwise=TKIP
+    wpa_passphrase=opsoro123
     rsn_pairwise=CCMP
     ```
 
-15. [Change the host name to "opsoro"](http://www.raspians.com/Knowledgebase/how-to-change-hostname-on-raspberrypi/)
+15. Change the host name to "opsoro"
+    In the files '/etc/hostname' and '/etc/hosts', change 'raspberrypi' to 'opsoro'
+
+    ```
+    sudo nano /etc/hostname
+    sudo nano /etc/hosts
+    ```
+    
 16. Setup Opsoro service  
 The script for setting up opsoro can be found in /Scripts/.  
 Follow next steps to setup OpSoRo:
