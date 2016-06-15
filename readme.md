@@ -31,13 +31,12 @@ OnoSW is the software framework for [OPSORO](http://www.opsoro.be/), to be used 
     ```
 
 7. [Compile and install LibYAML](http://pyyaml.org/wiki/LibYAML)  
-Or run following command:  
+    Or run following command:  
     ```
     sudo apt-get install python-yaml
     ```
     
-This step is not strictly necessary, but will result in a massive speedup when parsing config files. The python version of PyYAML takes well over 3 seconds to parse the configs, the C version takes only a fraction of that.
-
+    This step is not strictly necessary, but will result in a massive speedup when parsing config files. The python version of PyYAML takes well over 3 seconds to parse the configs, the C version takes only a fraction of that.
 
 8. Install Python packages (flask, flask-login, pyyaml, pluginbase, sockjs-tornado, simplejson, lupa, numpy, scipy, spidev)
 
