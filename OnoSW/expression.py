@@ -206,15 +206,13 @@ class _Expression(object):
 	    #max: +350
 		#
 		#rezolutie width =350 hieght = 350
-
-		#reghter oog horizontaal
-		Hardware.servo_set(3,1350)
-		#reghter oog verticaal
+		Hardware.servo_set(3,2050)
 		Hardware.servo_set(2,1525)
-		#linker oog horizontaal
 		Hardware.servo_set(13,1900)
-		#linker ook vertikaal
 		Hardware.servo_set(12,1525)
+
+	#def test2():
+	#	print("de test is sucsesvol")
 
 	def get_emotion_complex(self):
 		"""

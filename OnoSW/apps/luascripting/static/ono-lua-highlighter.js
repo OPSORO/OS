@@ -30,7 +30,7 @@ var OnoLuaHighlightRules = function() {
 
 		//detection class methods
 		"start_stream|stop_stream|is_color_detected|get_color_coords|get_color_coord_x|get_color_coord_y|get_face_coords|"+
-		"get_face_coord_x|get_face_coord_y|initialize_predictor|receive_face_points|follow_object|"+
+		"get_face_coord_x|get_face_coord_y|initialize_predictor|receive_face_points|follow_object|test|is_face_detected|"+
 
 		// Animate class methods
 		"has_ended"

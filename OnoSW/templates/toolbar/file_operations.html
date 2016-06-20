@@ -1,0 +1,233 @@
+<div class="filebox">
+  <span data-bind="text: fileName" class="filename"></span> <span data-bind="visible: fileIsModified()" class="fa fa-asterisk"></span><br>
+  <span class="fa" data-bind="css: { 'fa-lock': fileIsLocked(), 'fa-pencil': !fileIsLocked() && !isRunning(), 'fa-circle-o-notch fa-spin': isRunning() }" style="font-size: 0.75rem;"></span>  <span class="status" data-bind="text: fileStatus"></span>
+</div>
+<div class="spacer"></div>
+
+<a href="#" class="action" data-bind="click: saveFile">
+  <span class="fa fa-save"></span><br/>
+  <span class="text">Save</span>
+</a>
+<a href="#" class="action" data-bind="click: openFile">
+  <span class="fa fa-folder"></span><br/>
+  <span class="text">Open</span>
+</a>
+<a href="#" class="action" data-bind="click: newFile">
+  <span class="fa fa-file"></span><br/>
+  <span class="text">New</span>
+</a>
+<div class="spacer"></div>
+
+<script>
+fileName = "Untitled";
+fileIsModified = function(){
+  if ($(".filebox .fa-asterisk").css("display") == "none"){
+    return false
+  }
+  return true;
+};
+fileIsLocked = function(){
+  return false;
+};
+isRunning = function(){
+  return false;
+};
+fileStatus = "Editing";
+
+// Config parameters ----------------------------------------------------------------------------------
+var path = "";
+var extension = "";
+var saveFileHandler = function(filename){
+  showMainError("No save handler defined.<br/>Please configurate file_operations.");
+  return;
+};
+var loadFileHandler = function(filename){
+  showMainError("No load handler defined.<br/>Please configurate file_operations.");
+  return;
+};
+var newFileHandler = function(){
+  showMainError("No new handler defined.<br/>Please configurate file_operations.");
+  return;
+};
+// ----------------------------------------------------------------------------------------------------
+
+var _CurrentPath = "";
+var _OnlyFolders = 0;
+var _SaveFileView = 0;
+var saveFile = function(){
+  if ($(".filebox .filename").text() == "Untitled"){
+    showFiles(path, 0, 1);
+  }else{
+    saveItem($(".filebox .filename").text(), 1, 1);
+  }
+  return;
+};
+var openFile = function(){
+  _CurrentPath = path;
+  _OnlyFolders = 0;
+  _SaveFileView = 0;
+  if (fileIsModified()){
+    showMessagePopup("fa-folder-open", "Open file?", "Unsaved changes will be lost. Are you sure you wish to continue?", { btnYes: ReopenPopup, btnCancel: closeMessagePopup});
+  }
+  else {
+    ReopenPopup();
+  }
+  return;
+};
+var newFile = function(){
+  var yesHandler = function(){
+    window.history.pushState("", "New", "?");
+    newFileHandler();
+    closeMessagePopup();
+  };
+  if (fileIsModified()){
+    showMessagePopup("fa-file", "New file?", "Unsaved changes will be lost. Are you sure you wish to continue?", { btnYes: yesHandler, btnCancel: closeMessagePopup});
+  }
+  else {
+    yesHandler();
+  }
+  return;
+};
+var showFiles = function(currentpath, onlyFolders = 0, saveFileView = 0){
+  if (currentpath[currentpath.length -1] != "/"){
+    currentpath += "/";
+  }
+  if (currentpath == "/"){
+    currentpath = "";
+  }
+  _CurrentPath = currentpath;
+  _OnlyFolders = onlyFolders;
+  _SaveFileView = saveFileView;
+  showPopup("fa-folder-open", "{{ toolbar.full_name }}" + "/" + currentpath, "filebrowser");
+  $("#popup .content").load("files/show", { path: currentpath, extension: extension, onlyfolders: onlyFolders, savefileview: saveFileView }, function(){
+    // Delete and Open button events need to be rebound here
+    // because filelist is loaded via AJAX
+    $("#popup .btnDeleteFile").off("click");
+    $("#popup .btnDeleteFile").on("click", function(){
+      filename = $(this).closest("div.browseritem").data("path");
+      deleteItem(filename);
+    });
+
+    $("#popup .btnOpenFolder").off("click");
+    $("#popup .btnOpenFolder").on("click", function(){
+      folderpath = $(this).closest("div.folder").data("path");
+      showFiles(folderpath, _OnlyFolders, _SaveFileView);
+    });
+
+    $("#popup .btnOpenFile").off("click");
+    $("#popup .btnOpenFile").on("click", function(){
+      filename = $(this).closest("div.file").data("path");
+      openItem(filename);
+      closePopup();
+      return;
+    });
+
+    $("#popup .btnNewFolder").off("click");
+    $("#popup .btnNewFolder").on("click", function(){
+      newFolder(currentpath);
+    });
+
+    $("#popup .btnSaveFile").off("click");
+    $("#popup .btnSaveFile").on("click", function(){
+      filename = $(this).closest("div.browseritem").data("path");
+      saveItem(filename);
+    });
+
+    $("#popup .btnSaveFileAs").off("click");
+    $("#popup .btnSaveFileAs").on("click", function(){
+      saveItem(currentpath);
+    });
+  });
+};
+var deleteItem = function(filename) {
+  var yesHandler = function(){
+    $.ajax({
+      dataType: "json",
+      type: "POST",
+      url: "files/delete",
+      data: {path: filename},
+      success: function(data){
+        if(data.status == "error"){
+          addError(data.message);
+        }else{
+          addMessage(data.message);
+        }
+      }
+    });
+    ReopenPopup();
+  };
+  showMessagePopup("fa-trash", "Delete?", "Are you sure you wish to delete this item?", { btnYes: yesHandler, btnCancel: ReopenPopup});
+};
+var saveItem = function(folderPath, overwrite = 0, isCurrentFile = 0) {
+  if (isCurrentFile == 1){
+    saveFileHandler(folderPath);
+    openItem(folderPath, 1);
+  }else{
+    if (folderPath.indexOf(".") > 0){
+      var yesHandler = function(){
+        saveFileHandler(folderPath);
+        closeMessagePopup();
+        closePopup();
+        openItem(folderPath, 1);
+      };
+      if (overwrite){
+        yesHandler();
+      }else{
+        showMessagePopup("fa-save", "Overwrite file?", "Are you sure you wish to overwrite this file?", { btnYes: yesHandler, btnCancel: ReopenPopup});
+      }
+    } else{
+      var saveHandler = function(){
+        saveFileHandler(folderPath + data["inputText"]);
+        closeMessagePopup();
+        closePopup();
+        openItem(folderPath + data["inputText"], 1);
+      };
+      var inputTextHandler = function(e){
+        data["inputText"] = $(this).val();
+      };
+      showMessagePopup("fa-save", "Save file?", "Please enter a name and press save.", { inputText: inputTextHandler, btnSave: saveHandler, btnCancel: ReopenPopup});
+    }
+  }
+};
+var newFolder = function(folderPath){
+  var okHandler = function(){
+    newFolderPath = folderPath + data["inputText"];
+    $.ajax({
+      dataType: "json",
+      type: "POST",
+      url: "files/newfolder",
+      data: {path: newFolderPath},
+      success: function(data){
+        if(data.status == "error"){
+          addError(data.message);
+        }else{
+          addMessage(data.message);
+        }
+      }
+    });
+    ReopenPopup();
+  };
+  var inputTextHandler = function(e){
+    data["inputText"] = $(this).val();
+  };
+  showMessagePopup("fa-plus", "New folder?", "Please enter a name and press OK.", { inputText: inputTextHandler, btnOk: okHandler, btnCancel: ReopenPopup });
+};
+var openItem = function(filename, onlyChangeUrl = 0){
+  window.history.pushState("", "Open", "?action=openfile&param=" + filename);
+  if (onlyChangeUrl == 1){ return; }
+  loadFileHandler(filename);
+};
+var ReopenPopup = function(){
+  closeMessagePopup();
+  setTimeout(function() { showFiles(_CurrentPath, _OnlyFolders, _SaveFileView); }, 200);
+};
+
+function config_file_operations(sPath, sExtension, oSaveHandler, oLoadHandler, oNewHandler){
+  path = sPath;
+  _CurrentPath = path;
+  extension = sExtension;
+  saveFileHandler = oSaveHandler;
+  loadFileHandler = oLoadHandler;
+  newFileHandler = oNewHandler;
+}
+</script>

@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block body %}
+<div class="row">
+	<div class="large-12 columns">
+		<div id="topbar">
+			<div class="row">
+				<div class="small-12 medium-6 columns">
+					<div id="activity">
+						{% if toolbar.active %}
+							<span id="statusicon"><i class="fa fa-cog fa-spin"></i></span>
+							<span id="status">{{ opsoro.robot_name }} is currently running:</span><br/>
+							<span id="currentapp"><i class="fa {{ toolbar.icon }}"></i> {{ toolbar.full_name }}</span>
+						{% else %}
+							<span id="statusicon"><i class="fa fa-check-circle"></i></span>
+							<span id="status">{{ opsoro.robot_name }} ready</span><br/>
+							<span id="currentapp">No active apps</span>
+						{% endif %}
+					</div>
+				</div>
+				<div class="small-12 medium-6 columns clearfix">
+					<a href="#" data-reveal-id="ShutdownModal" class="action has-tip" data-tooltip aria-haspopup="true" data-options="disable_for_touch:true" title="Shut down"><div class="icon fa-power-off"></div></a>
+					<a href="/logout" class="action has-tip" data-tooltip aria-haspopup="true" data-options="disable_for_touch:true" title="Log out"><div class="icon fa-sign-out"></div></a>
+					<a href="/preferences" class="action has-tip" data-tooltip aria-haspopup="true" data-options="disable_for_touch:true" title="Preferences"><div class="icon fa-cog"></div></a>
+					<a href="/" class="action has-tip" data-tooltip aria-haspopup="true" data-options="disable_for_touch:true" title="Home"><div class="icon fa-home"></div></a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% block base_systembar_body %}
+{% endblock %}
+
+{% endblock %}
+
+
+{% block modals %}
+{{ super() }}
+
+<div id="ShutdownModal" class="reveal-modal tiny" data-reveal>
+	<div class="titlebar red">
+		<a class="close-reveal-modal"><span class="fa fa-close"></span></a>
+		<span class="fa fa-power-off"></span> Shut down
+	</div>
+	<div class="content">
+		<p>
+			Are you sure you wish to shut down {{ opsoro.robot_name }}?<br/>
+			<span class="note">
+				<strong>Note:</strong> Never power off {{ opsoro.robot_name }} without completely shutting down first! Cutting power without properly shutting down the operating system can result in a corrupt file system.
+			</span>
+		</p>
+		<div class="text-center">
+			<a href="#" class="button" id="btnShutdown"><span class="fa fa-power-off"></span> Yes, shut down {{ opsoro.robot_name }}</a>
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(document).ready(function() {
+	$("#btnShutdown").click(function(){
+		$("#ShutdownModal .content").load("/shutdown");
+	});
+});
+</script>
+{% endblock %}

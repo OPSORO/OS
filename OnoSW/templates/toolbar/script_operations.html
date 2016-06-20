@@ -1,0 +1,35 @@
+<a href="#" class="action" data-bind="click: startStopScript">
+  <span class="fa" data-bind="css : { 'fa-stop': isRunning(), 'fa-play': !isRunning()}"></span><br/>
+  <span class="text" data-bind="text: isRunning() ? 'Stop' : 'Run'"></span>
+</a>
+<a href="#" class="action" data-bind="click: scriptUI, visible: isUI()">
+  <span class="fa fa-gamepad"></span><br/>
+  <span class="text">Script UI</span>
+</a>
+<a href="#" class="action" data-bind="click: clearLog">
+  <span class="fa fa-magic"></span><br/>
+  <span class="text">Clear log</span>
+</a>
+
+<script>
+startStopScript = function(){
+  showMainError("The function startStopScript is not yet defined.");
+  return;
+};
+isRunning = function(){
+  showMainError("The function isRunning is not yet defined.");
+  return false;
+};
+scriptUI = function(){
+  showMainError("The function scriptUI is not yet defined.");
+  return;
+};
+isUI = function(){
+  showMainError("The function isUI is not yet defined.");
+  return false;
+};
+clearLog = function(){
+  showMainError("The function clearLog is not yet defined.");
+  return;
+};
+</script>

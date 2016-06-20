@@ -1,0 +1,404 @@
+body {
+	background: #524F45;
+	font-family: "Roboto", sans-serif;
+}
+
+@media only screen and (min-width: 64.063em) {
+	body {
+		padding: 3rem;
+	}
+}
+@media only screen and (min-width: 40.063em) and (max-width: 64em) {
+	body {
+		padding: 2rem;
+	}
+}
+
+@media only screen and (max-width: 40em) {
+	body {
+		padding: 1rem 0rem 0rem 0rem;
+	}
+}
+
+#topbar {
+	background: #FCD017;
+	border-radius: 0.75rem;
+	height: 4rem;
+	padding: 0.75rem;
+	margin-bottom: 1rem;
+
+	box-shadow: 0.5rem 0.5rem 0 0 rgba(50, 50, 50, 0.75);
+	-moz-box-shadow: 0.5rem 0.5rem 0 0 rgba(50, 50, 50, 0.75);
+	-webkit-box-shadow: 0.5rem 0.5rem 0 0 rgba(50, 50, 50, 0.75);
+}
+
+@media only screen and (max-width: 40em) {
+	#topbar {
+		height: 7rem;
+	}
+}
+
+#topbar #activity {
+	height: 2.5rem;
+	border-radius: 0.5rem;
+	background: #FFFFFF;
+	color: #4D4D4D;
+	line-height: 1rem;
+	position: relative;
+}
+
+#topbar #activity #status {
+	font-weight: bold;
+	text-transform: uppercase;
+	position: absolute;
+	left: 2.75rem;
+	top: 0.25rem;
+}
+
+#topbar #activity #currentapp {
+	position: absolute;
+	left: 2.75rem;
+	top: 1.25rem;
+}
+
+#topbar #activity #statusicon {
+	font-size: 2rem;
+	position: absolute;
+	top: 0.25rem;
+	left: 0.5rem;
+}
+
+#topbar #activity #statusicon .fa-spin {
+	-webkit-animation: fa-spin 8s infinite linear;
+	animation: fa-spin 8s infinite linear;
+}
+
+#topbar .action {
+	width: 2.5rem;
+	height: 2.5rem;
+	background: #FFFFFF;
+	border-radius: 1.25rem;
+	text-align: center;
+	padding-top: 0.5rem;
+	margin-left: 0.5rem;
+	float: right !important;
+	border-bottom: none; /* For tooltips*/
+}
+
+#topbar .action:hover {
+	width: 3rem;
+	height: 3rem;
+	border-radius: 1.5rem;
+	margin-top: -0.25rem;
+	margin-left: 0.25rem;
+	margin-right: -0.25rem;
+}
+
+@media only screen and (max-width: 40em) {
+	#topbar .action {
+		margin-top: 0.5rem;
+	}
+	#topbar .action:hover {
+		margin-top: 0.25rem;
+		margin-bottom: -0.25rem;
+	}
+}
+
+#topbar .action .icon {
+	display: inline-block;
+	font: normal normal normal 14px/1 FontAwesome;
+	font-size: inherit;
+	text-rendering: auto;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+
+	font-size: 1.5rem;
+	color: #4D4D4D;
+}
+
+#topbar .action:hover .icon{
+	font-size: 2rem;
+}
+
+#topbar .action .nudge{
+	margin-right: 0.2rem;
+}
+
+
+.appbutton {
+	background: #B2AFA1;
+	color: #222222;
+	border-radius: 0.75rem;
+
+	box-shadow: 0.5rem 0.5rem 0 0 rgba(50, 50, 50, 0.75);
+	-moz-box-shadow: 0.5rem 0.5rem 0 0 rgba(50, 50, 50, 0.75);
+	-webkit-box-shadow: 0.5rem 0.5rem 0 0 rgba(50, 50, 50, 0.75);
+
+	text-align: center;
+	display: block;
+	margin: 0;
+	padding: 1rem 0 1rem 0;
+	position: relative;
+}
+.appbutton.selected {
+	background: #22B573;
+}
+
+.appbutton:hover {
+	margin: -0.5rem;
+}
+
+.appbutton .icon {
+	display: inline-block;
+	font: normal normal normal 14px/1 FontAwesome;
+	font-size: inherit;
+	text-rendering: auto;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+
+	font-size: 7rem;
+	color: #FFFFFF;
+	text-shadow: 0.4rem 0.4rem 0 rgba(0, 0, 0, 0.33);
+	padding: 2rem;
+	width: 100%;
+}
+
+.appbutton:hover .icon {
+	font-size: 8rem;
+}
+
+.appbutton .closebutton {
+	color: #FFFFFF;
+	position: absolute;
+	left: 1rem;
+	top: 0.4rem;
+	font-size: 2rem;
+	text-shadow: 0.14rem 0.14rem 0 rgba(0, 0, 0, 0.33);
+}
+
+.appbutton .closebutton:hover {
+	font-size: 2.5rem;
+	top: 0;
+	left: 0.75rem;
+}
+
+.applabel {
+	color: #FFFFFF;
+	text-shadow: 0.14rem 0.14rem 0 rgba(0, 0, 0, 0.33);
+	font-size: 1.2rem;
+	font-weight: bold;
+	text-aligh: center;
+}
+
+@media only screen and (max-width: 64em) {
+	.appbutton {
+		padding-top: 0rem;
+		padding-bottom: 1rem;
+	}
+
+	.appbutton .icon {
+		font-size: 5rem;
+		padding: 1.5rem 1.5rem 1rem 1.5rem;
+	}
+
+	.appbutton:hover .icon {
+		font-size: 6rem;
+	}
+
+	.applabel {
+		font-size: 1.2rem;
+		line-height: 1.2rem;
+		display: block;
+		height: 2.4rem;
+		padding: 0 0.5rem;
+	}
+}
+
+.smallwidth {
+	max-width: 30rem;
+}
+
+.page {
+	background: #ffffff;
+	border-radius: 0.75rem;
+
+	box-shadow: 0.5rem 0.5rem 0 0 rgba(50, 50, 50, 0.75);
+	-moz-box-shadow: 0.5rem 0.5rem 0 0 rgba(50, 50, 50, 0.75);
+	-webkit-box-shadow: 0.5rem 0.5rem 0 0 rgba(50, 50, 50, 0.75);
+}
+
+.page .titlebar {
+	background: #22B573;
+	border-bottom: 0.25rem solid #23774E;
+	padding: 0.5rem;
+	text-align: center;
+	color: #ffffff;
+	font-size: 2rem;
+	font-weight: bold;
+	text-shadow: 0.2rem 0.2rem 0 rgba(0, 0, 0, 0.33);
+	-webkit-border-top-left-radius: 0.5rem;
+	-webkit-border-top-right-radius: 0.5rem;
+	-moz-border-radius-topleft: 0.5rem;
+	-moz-border-radius-topright: 0.5rem;
+	border-top-left-radius: 0.5rem;
+	border-top-right-radius: 0.5rem;
+	position: relative;
+}
+
+.page .titlebar .closebutton {
+	color: #FFFFFF;
+	display: inline;
+	position: absolute;
+	left: 1rem;
+	top: 0.5rem;
+	font-size: 2rem;
+}
+
+.page .titlebar .closebutton:hover {
+	font-size: 2.5rem;
+	left: 0.75rem;
+	top: 0.125rem;
+}
+
+.page .content {
+	padding: 1rem;
+	/*background: #FFFFFF;*/
+}
+
+.actionbar {
+	background: #23774E;
+	margin: -1rem -1rem 1rem -1rem;
+	padding: 0.5rem 1rem;
+}
+
+.actionbar .action {
+	-webkit-border-radius: 0.25rem;
+	-moz-border-radius: 0.25rem;
+	border-radius: 0.25rem;
+	color: #FFFFFF;
+	padding: 0 0.5rem;
+	text-align: center;
+	display: inline-block;
+}
+
+.actionbar .action:hover, .actionbar .action.active {
+	background: #FFFFFF;
+	color: #4D4D4D;
+}
+
+.actionbar .action .text {
+	text-transform: uppercase;
+	font-size: 0.75rem;
+	font-weight: bold;
+}
+
+.actionbar .spacer {
+	display: inline-block;
+	width: 2rem;
+}
+
+.tooltip {
+	font-family: "Roboto", sans-serif;
+	font-weight: bold;
+	-webkit-border-radius: 0.25rem;
+	-moz-border-radius: 0.25rem;
+	border-radius: 0.25rem;
+}
+
+.tooltip > .nub {
+	left: 1.25rem;
+}
+
+.note {
+	font-size: 0.75rem;
+	line-height: 1rem;
+	font-weight: 300;
+	padding-top: 0.5rem;
+	padding-bottom: 0.5rem;
+	display: block;
+}
+
+.reveal-modal {
+	background: #ffffff;
+	border-radius: 0.75rem;
+	color: #4D4D4D;
+	padding: 0;
+	border: 0;
+
+	box-shadow: 0.5rem 0.5rem 0 0 rgba(50, 50, 50, 0.75);
+	-moz-box-shadow: 0.5rem 0.5rem 0 0 rgba(50, 50, 50, 0.75);
+	-webkit-box-shadow: 0.5rem 0.5rem 0 0 rgba(50, 50, 50, 0.75);
+}
+
+.reveal-modal .titlebar {
+	background: #B2AFA1;
+	border-bottom: 0.25rem solid #545454;
+	padding: 0.5rem;
+	text-align: center;
+	color: #ffffff;
+	font-size: 2rem;
+	font-weight: bold;
+	text-shadow: 0.2rem 0.2rem 0 rgba(0, 0, 0, 0.33);
+	-webkit-border-top-left-radius: 0.5rem;
+	-webkit-border-top-right-radius: 0.5rem;
+	-moz-border-radius-topleft: 0.5rem;
+	-moz-border-radius-topright: 0.5rem;
+	border-top-left-radius: 0.5rem;
+	border-top-right-radius: 0.5rem;
+	position: relative;
+}
+
+.reveal-modal .titlebar.red {
+	background: #B2382A;
+	border-bottom: 0.25rem solid #79261D;
+}
+
+.reveal-modal .content {
+	padding: 1rem;
+}
+
+.reveal-modal .close-reveal-modal {
+	font-size: 2rem;
+	position: absolute;
+	top: 1rem;
+	left: 1rem;
+	right: auto;
+	color: #ffffff;
+	font-weight: normal;
+	cursor: pointer;
+}
+
+.reveal-modal .close-reveal-modal:hover {
+	font-size: 2.5rem;
+	left: 0.75rem;
+	top: 0.75rem;
+}
+
+.button {
+	background: #B2AFA1;
+	border-radius: 0.25rem;
+	padding: 0.5rem 1rem;
+	font-family: "Roboto", sans-serif;
+	font-weight: bold;
+	margin-bottom: 0.75rem;
+}
+
+.button:hover{
+	background: #545454;
+}
+
+.range-slider-handle {
+	background-color: #22B573;
+	border-radius: 0.25rem;
+	box-shadow: 0 0.25rem 0 0 #23774E;
+	-moz-box-shadow: 0 0.25rem 0 0 #23774E;
+	-webkit-box-shadow: 0 0.25rem 0 0 #23774E;
+}
+
+.range-slider-handle:hover {
+	background-color: #22B573;
+	height: 1.65rem;
+	width: 2.4rem;
+	top: -0.45rem;
+	margin-left: -0.2rem;
+}

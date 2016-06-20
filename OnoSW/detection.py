@@ -50,6 +50,7 @@ class _Detection(object):
         try:
             #gathering videostream
             global vs
+            #check which color and get its upper/lower
             if color == "#ff0000":
                 colorLower = np.array([145, 69, 20])
                 colorUpper = np.array([192, 255,255])
@@ -77,78 +78,47 @@ class _Detection(object):
             else:
                 return False
         except Exception as e:
-            return None
+            return "exit"
 
     #RECEIVE ARRAY OF X , Y COORDINATE OF COLOR FOR LATER PROGRAMMING
     def get_color_coords(self, color):
-        #gathering videostream
-        global vs
-        def check_for_color_coords(vs):
+        try:
+            #gathering videostream
+            global vs
+            if color == "#ff0000":
+                colorLower = np.array([145, 69, 20])
+                colorUpper = np.array([192, 255,255])
+            if color == "#00ff00":
+                colorLower = np.array([29, 86, 20])
+                colorUpper = np.array([64, 255,255])
+            if color == "#0000ff":
+                colorLower = np.array([105, 86, 20])
+                colorUpper = np.array([130, 255,255])
+            if color == "#ffff00":
+                colorLower = np.array([20, 86, 20])
+                colorUpper = np.array([40, 255,255])
+            pts = deque(maxlen=2500)
             arrCoords = [175,175]
             frame = vs.read()
             frame = imutils.resize(frame, width=350)
-            if args["display"] > 0:
-                blurred = cv2.GaussianBlur(frame, (11,11),0)
-                mask = cv2.inRange(frame, colorLower, colorUpper)
-                mask = cv2.erode(mask, None, iterations=2)
-                mask = cv2.dilate(mask, None, iterations=2)
-                cnts = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2]
-                if len(cnts) > 0:
-                    c = max(cnts, key=cv2.contourArea)
-                    ((x,y),radius) = cv2.minEnclosingCircle(c)
-                    if radius > 0:
-                        arrCoords[0] = x
-                        arrCoords[1] = y
-                        return arrCoords
-                    else:
-                        return arrCoords
-                else:
-                    return arrCoords
-        ap = argparse.ArgumentParser()
-        ap.add_argument("-d", "--display", type=int, default=1, help="Wheter or not frames should be displayed")
-        ap.add_argument("-b", "--buffer", type=int, default=2500, help="Max buffer size")
-        args = vars(ap.parse_args())
-        if color == "#ff0000":
-            colorLower = np.array([145, 69, 20])
-            colorUpper = np.array([192, 255,255])
-        if color == "#00ff00":
-            colorLower = np.array([29, 86, 20])
-            colorUpper = np.array([64, 255,255])
-        if color == "#0000ff":
-            colorLower = np.array([105, 86, 20])
-            colorUpper = np.array([130, 255,255])
-        if color == "#ffff00":
-            colorLower = np.array([20, 86, 20])
-            colorUpper = np.array([40, 255,255])
-        pts = deque(maxlen=args["buffer"])
-        arrCoords = check_for_color_coords(vs)
-        return arrCoords
+            blurred = cv2.GaussianBlur(frame, (11,11),0)
+            mask = cv2.inRange(frame, colorLower, colorUpper)
+            mask = cv2.erode(mask, None, iterations=2)
+            mask = cv2.dilate(mask, None, iterations=2)
+            cnts = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2]
+            if len(cnts) > 0:
+                c = max(cnts, key=cv2.contourArea)
+                ((x,y),radius) = cv2.minEnclosingCircle(c)
+                if radius > 0:
+                    arrCoords[0] = x
+                    arrCoords[1] = y
+            return arrCoords
+        except Exception as e:
+            return "exit"
     #RECEIVE X COORDINATE OF A CERTAIN COLOR
     def get_color_coord_x(self, color):
         #gathering videostream
         global vs
-        def check_for_color_coord_x(vs):
-            frame = vs.read()
-            frame = imutils.resize(frame, width=350)
-            if args["display"] > 0:
-                blurred = cv2.GaussianBlur(frame, (11,11),0)
-                mask = cv2.inRange(frame, colorLower, colorUpper)
-                mask = cv2.erode(mask, None, iterations=2)
-                mask = cv2.dilate(mask, None, iterations=2)
-                cnts = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2]
-                if len(cnts) > 0:
-                    c = max(cnts, key=cv2.contourArea)
-                    ((x,y),radius) = cv2.minEnclosingCircle(c)
-                    if radius > 0:
-                        return x
-                    else:
-                        return 175
-                else:
-                    return 175
-        ap = argparse.ArgumentParser()
-        ap.add_argument("-d", "--display", type=int, default=1, help="Wheter or not frames should be displayed")
-        ap.add_argument("-b", "--buffer", type=int, default=2500, help="Max buffer size")
-        args = vars(ap.parse_args())
         if color == "#ff0000":
             colorLower = np.array([145, 86, 20])
             colorUpper = np.array([192, 255,255])
@@ -161,35 +131,28 @@ class _Detection(object):
         if color == "#ffff00":
             colorLower = np.array([20, 86, 20])
             colorUpper = np.array([40, 255,255])
-        pts = deque(maxlen=args["buffer"])
-        x = check_for_color_coord_x(vs)
-        return x
+        pts = deque(maxlen=2500)
+        xValue = 175
+        frame = vs.read()
+        frame = imutils.resize(frame, width=350)
+        blurred = cv2.GaussianBlur(frame, (11,11),0)
+        mask = cv2.inRange(frame, colorLower, colorUpper)
+        mask = cv2.erode(mask, None, iterations=2)
+        mask = cv2.dilate(mask, None, iterations=2)
+        cnts = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2]
+        if len(cnts) > 0:
+            c = max(cnts, key=cv2.contourArea)
+            ((x,y),radius) = cv2.minEnclosingCircle(c)
+            if radius > 0:
+                xValue = x
+        
+        return xValue
+        
+
     #RECEIVE Y COORDINATE OF A CERTAIN COLOR
     def get_color_coord_y(self, color):
-        #gathering videostream
+       #gathering videostream
         global vs
-        def check_for_color_coord_y(vs):
-            frame = vs.read()
-            frame = imutils.resize(frame, width=350)
-            if args["display"] > 0:
-                blurred = cv2.GaussianBlur(frame, (11,11),0)
-                mask = cv2.inRange(frame, colorLower, colorUpper)
-                mask = cv2.erode(mask, None, iterations=2)
-                mask = cv2.dilate(mask, None, iterations=2)
-                cnts = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2]
-                if len(cnts) > 0:
-                    c = max(cnts, key=cv2.contourArea)
-                    ((x,y),radius) = cv2.minEnclosingCircle(c)
-                    if radius > 0:
-                        return y
-                    else:
-                        return 175
-                else:
-                    return 175
-        ap = argparse.ArgumentParser()
-        ap.add_argument("-d", "--display", type=int, default=1, help="Wheter or not frames should be displayed")
-        ap.add_argument("-b", "--buffer", type=int, default=2500, help="Max buffer size")
-        args = vars(ap.parse_args())
         if color == "#ff0000":
             colorLower = np.array([145, 69, 20])
             colorUpper = np.array([192, 255,255])
@@ -202,12 +165,25 @@ class _Detection(object):
         if color == "#ffff00":
             colorLower = np.array([20, 86, 20])
             colorUpper = np.array([40, 255,255])
-        pts = deque(maxlen=args["buffer"])
-        y = check_for_color_coord_y(vs)
-        return y
-
+        pts = deque(maxlen=2500)
+        yValue = 175
+        frame = vs.read()
+        frame = imutils.resize(frame, width=350)
+        blurred = cv2.GaussianBlur(frame, (11,11),0)
+        mask = cv2.inRange(frame, colorLower, colorUpper)
+        mask = cv2.erode(mask, None, iterations=2)
+        mask = cv2.dilate(mask, None, iterations=2)
+        cnts = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2]
+        if len(cnts) > 0:
+            c = max(cnts, key=cv2.contourArea)
+            ((x,y),radius) = cv2.minEnclosingCircle(c)
+            if radius > 0:
+                yValue = y
+        return yValue
+        
     #CHECK IF FACE IS DETECTED > If structure - true/false
     def is_face_detected(self):
+        
         face = cv2.CascadeClassifier('/home/pi/OnoSW/haarcascade_frontalface_default.xml')
         frame = vs.read()
         frame = imutils.resize(frame, width=350)
@@ -222,7 +198,7 @@ class _Detection(object):
 
     #RECEIVE ARRAY OF X , Y COORDINATE OF FACE FOR LATER PROGRAMMING
     def get_face_coords(self):
-        #gathering videostream
+        
         global vs
         arrCoords = [175,175]
         face = cv2.CascadeClassifier('/home/pi/OnoSW/haarcascade_frontalface_default.xml')
@@ -261,6 +237,7 @@ class _Detection(object):
 
     #RECEIVE Y COORDINATE OF A FACE
     def get_face_coord_y(self):
+       
         #gathering videostream
         global vs
         face = cv2.CascadeClassifier('/home/pi/OnoSW/haarcascade_frontalface_default.xml')
@@ -280,13 +257,14 @@ class _Detection(object):
     def initialize_predictor(self):
         global predictor
         predictor = dlib.shape_predictor("/home/pi/OnoSW/shape_predictor_68_face_landmarks.dat")
-
+        
     #GET REQUEST FOR PREDICTED FACEPOINTS
     def receive_face_points(self, numberLandmark, coord):
+        
         #gathering videostream
         global vs
         global predictor
-
+    
         ############################################
         #RECEIVE LANDMARKS WITH ALL COORDS                                         #
         ############################################
@@ -297,7 +275,7 @@ class _Detection(object):
                 rect=dlib.rectangle(int(x),int(y),int(x+w),int(y+h))
                 return np.matrix([[p.x,p.y] for p in predictor(im, rect).parts()])
 
-        ############################################
+        ###########################################
         #GET NECESSARY CONTENT FROM LANDMARKS                                 #
         ############################################
         def annotate_landmarks(im, landmarks, numberLandmark, coord):

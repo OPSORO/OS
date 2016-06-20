@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block body %}
+<div class="row smallwidth">
+	<div class="small-12 columns">
+		<div class="page">
+			<div class="titlebar">
+				<span class="fa fa-lock"></span> Login
+			</div>
+			<div class="content">
+				<div class="row">
+					<div class="small-12 columns" style="text-align: justify;">
+						{% with messages = get_flashed_messages() %}
+							{% if messages %}
+								{% for message in messages %}
+								<div data-alert class="alert-box secondary radius">
+									{{ message }}
+								</div>
+								{% endfor %}
+							{% endif %}
+						{% endwith %}
+						{% if error %}
+							<div data-alert class="alert-box secondary radius">
+								{{ error }}
+							</div>
+						{% endif %}
+						<p>
+							Enter the password to access the OpSoRo web interface.<br/>
+							<span class="note"><strong>Note:</strong> Only one user can be logged in at a time. If another user is active, they will be logged out.</span>
+						</p>
+						<form id="login_form" method="post">
+							<div class="row">
+								<div class="large-12 columns">
+									<div class="row collapse">
+										<div class="small-10 columns">
+											<input type="password" name="password">
+										</div>
+										<div class="small-2 columns">
+											<button type="send" class="button" style="width: 100%;"><span class="fa fa-arrow-right"></span></button>
+										</div>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}

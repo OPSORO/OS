@@ -1,0 +1,67 @@
+{% extends "page.html" %}
+
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" href="static/app.css" />
+{% endblock %}
+
+{% block closebutton %}<a href="#" data-reveal-id="CloseAppModal" class="closebutton"><span class="fa fa-close"></span></a>{% endblock %}
+
+{% block modals %}
+{{ super() }}
+
+<div id="CloseAppModal" class="reveal-modal small" data-reveal>
+	<div class="titlebar">
+		<a class="close-reveal-modal"><span class="fa fa-close"></span></a>
+		<span class="fa fa-power-off"></span> Confirm
+	</div>
+	<div class="content">
+		<p>
+			Are you sure you wish to close this app?
+		</p>
+		<div class="text-center">
+			<a href="/closeapp" class="button"><span class="fa fa-close"></span> Yes, close app.</a>
+		</div>
+	</div>
+</div>
+
+<div id="popup" class="reveal-modal" data-reveal>
+	<div class="titlebar">
+		<a class="btnClose"><span class="fa fa-close"></span></a>
+		<span class="titleicon"><span class="fa"></span></span> <span class="title"></span>
+	</div>
+	<div class="content">
+    <div class="spinner" style="text-align: center;">
+			<span class="fa fa-circle-o-notch fa-spin fa-2x"></span>
+		</div>
+	</div>
+</div>
+
+<div id="message_popup" class="reveal-modal small" data-reveal>
+	<div class="titlebar">
+		<a class="btnClose"><span class="fa fa-close"></span></a>
+		<span class="titleicon"><span class="fa"></span></span> <span class="title"></span>
+	</div>
+	<div class="content">
+		<p class="text">
+
+		</p>
+		<div class="inputs">
+			<input type="text" name="inputText" class="hide input inputText" style="width: 100%;">
+		</div>
+		<div class="buttons">
+			<a href="#" class="hide button btnOk"><span class="fa fa-check"></span> OK</a>
+			<a href="#" class="hide button btnYes"><span class="fa fa-check"></span> Yes</a>
+			<a href="#" class="hide button btnNo"><span class="fa fa-close"></span> No</a>
+			<a href="#" class="hide button btnSave"><span class="fa fa-save"></span> Save</a>
+			<a href="#" class="hide button btnCancel"><span class="fa fa-close"></span> Cancel</a>
+		</div>
+	</div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script src="static/app.js"></script>
+{% endblock %}

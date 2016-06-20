@@ -18,13 +18,14 @@ Blockly.Blocks['detection_follow_color'] = {
 Blockly.Lua['detection_follow_color'] = function(block) {
   var color = block.getFieldValue('COLOUR')
   var code = '';
-  code += 'if (Detection:is_color_detected("'+color+'") == null) then\n';
-  code += 'print("Something went wrong. Did you perhaps forget to start the camera? (or did you get an error earlier in the script?)")';
-  code += 'end\n';
+  code += 'print("[CHECK] Making sure a color is detected...")\n';
   code += 'if Detection:is_color_detected("'+color+'") then\n';
+  code += 'print("[FOUND] Preparing to track color...")\n';
   code += 'x = Detection:get_color_coord_x("'+color+'")\n';
   code += 'y = Detection:get_color_coord_y("'+color+'")\n';
-  code += 'Detection:follow_object(x,y)\n';
+  code += 'print("Preparing done! Following color!")\n';
+  code += 'Detection:follow_object(x,y) else\n';
+  code += 'print("No color found.")\n';
   code += 'end\n';
   return code;
 };
@@ -42,8 +43,14 @@ Blockly.Blocks['detection_follow_face'] = {
 };
 Blockly.Lua['detection_follow_face'] = function(block) {
   var code = '';
+  code += 'print("[CHECK] Making sure a face is detected...")\n';
+  code += 'if Detection:is_face_detected() then\n';
+  code += 'print("[FOUND] Preparing to track face...")\n';
   code += 'coords = Detection:get_face_coords()\n';
-  code += 'Detection:follow_object(coords[0],coords[1])\n';
+  code += 'print("Preparing done! Following face!")\n';
+  code += 'Detection:follow_object(coords[0],coords[1]) else\n';
+  code += 'print("No face found...")\n';
+  code += 'end\n';
   return code;
 };
 
@@ -107,12 +114,13 @@ Blockly.Lua['detection_color_check'] = function(block) {
   var color = block.getFieldValue('COLOUR')
   this.setFieldValue(color,'COLOUR')
   var code = '';
-  //code += 'if (Detection:is_color_detected("'+color+'") == null) then\n';
-  //code += 'print("Something went wrong. Did you perhaps forget to start the camera? (or did you get an error earlier in the script?)")';
-  //code += 'end\n';
-  //code += 'if Detection:is_color_detected("'+color+'") then\n';
-  //code += statements_body;
-  //code += 'end\n';
+  code += 'if (Detection:is_color_detected("'+color+'") == null) then\n';
+  code += 'print("Something went wrong. Did you perhaps forget to start the camera? (or did you get an error earlier in the script?)")';
+  code += 'end\n';
+  code += 'if Detection:is_color_detected("'+color+'") then\n';
+  code += statements_body;
+  code += 'end\n';
+  code += 'print("Detecting color...")\n';
   code += 'print(Detection:is_color_detected("'+color+'"))\n'
   return code;
 };
@@ -120,7 +128,6 @@ Blockly.Lua['detection_color_check'] = function(block) {
 Blockly.Blocks['detection_face_check'] = {
   init: function() {
     var colour = new Blockly.FieldColour('#ff0000');
-    colour.setColours(['#f00','#0f0','#00f','#ff0']).setColumns(2);
     this.appendDummyInput()
         .appendField('If face is detected.');
     this.appendField
@@ -134,16 +141,15 @@ Blockly.Blocks['detection_face_check'] = {
 };
 Blockly.Lua['detection_face_check'] = function(block) {
   var statements_body = Blockly.Lua.statementToCode(block, 'BODY');
-  var color = block.getFieldValue('COLOUR')
-  this.setFieldValue(color,'COLOUR')
   var code = '';
-  //code += 'if (Detection:is_face_detected() == null) then\n';
-  //code += 'print("Something went wrong. Did you perhaps forget to start the camera? (or did you get an error earlier in the script?)")';
-  //code += 'end\n';
-  //code += 'if Detection:is_face_detected() then\n';
-  //code += statements_body;
-  //code += 'end\n';
-  code += 'print(Detection:is_face_detected())\n'
+  code += 'if (Detection:is_face_detected() == null) then\n';
+  code += 'print("Something went wrong. Did you perhaps forget to start the camera? (or did you get an error earlier in the script?)")';
+  code += 'end\n';
+  code += 'if Detection:is_face_detected() then\n';
+  code += statements_body;
+  code += 'end\n';
+  code += 'print("Detecting face...")\n';
+  code += 'print(Detection:is_face_detected())\n';
   return code;
 };
 
@@ -223,7 +229,9 @@ Blockly.Lua['detection_start_predictor'] = function(block) {
   //code += 'if (Detection:initialize_predictor() == null) then\n';
   //code += 'print("Something went wrong. There is a corrupt file path inside the filesystem. Contact a developer for more info.")\n';
   //code += 'else Detection:initialize_predictor()\n'
+  code += 'print("Loading predictor file... Might take up to 10 seconds!")';
   code += 'Detection:initialize_predictor()\n'
+  code += 'print("Done loading! Mirroring face and detecting face points can now be used.")';
   //code += 'end\n';
   return code;
 };
