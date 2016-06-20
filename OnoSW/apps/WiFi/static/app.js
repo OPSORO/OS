@@ -231,7 +231,7 @@ $(document).ready(function(){
   		document.cookie = "ssid=";
   	}
 
-  }
+  };
 
 // window.onload = function(){
 // 	$.ajax({

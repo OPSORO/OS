@@ -130,6 +130,7 @@ $(document).ready(function(){
 				});
 
 		};
+
   };
   // This makes Knockout get to work
   var model = new Model();

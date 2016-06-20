@@ -9,7 +9,7 @@ function showMainMessage(msg){
   $(document).foundation("alert", "reflow");
 }
 
-function showPopup(sIcon, sTitle, sClass, sContent) {
+function showPopup(sIcon, sTitle, sClass, sContent = "") {
   $("#popup").addClass(sClass);
   $("#popup .titlebar .titleicon span").addClass(sIcon);
   $("#popup .titlebar .title").html(sTitle);

@@ -4,11 +4,29 @@ from __future__ import with_statement
 from flask import Blueprint, render_template, request, redirect, url_for, flash, send_from_directory
 from werkzeug import secure_filename
 from sound import Sound
-
 from subprocess import Popen, PIPE, STDOUT
+from apscheduler.schedulers.blocking import BlockingScheduler
 import subprocess
+import imp
+import requests
+
+#import for recording from ifttt.py
+from pytz import utc
 
 
+import subprocess
+import requests
+from subprocess import call
+import subprocess
+import logging
+import datetime
+import os
+import sys
+import time
+from subprocess import Popen, PIPE, STDOUT
+import re
+
+#end import
 
 import math
 import cmath
@@ -25,16 +43,7 @@ import shutil
 import time
 import yaml
 import subprocess
-
-#import IFTTT
-from azure.servicebus import ServiceBusService , Message , Queue
-from apscheduler.schedulers.blocking import BlockingScheduler
-from pytz import utc
-
-
-import threading
-import subprocess
-import requests
+# import IFTTT
 
 
 
@@ -121,64 +130,88 @@ def setup_pages(opsoroapp):
 	@app_bp.route("/saytts", methods=["GET"])
 	@opsoroapp.app_api
 	def saytts():
-		#subprocess.call("sudo halt", shell=True)
-		text = request.args.get("text", None)
-		if text is not None:
-			Sound.say_tts(text)
+	    subprocess.call("sudo halt", shell=True)
+	    text = request.args.get("text", None)
+	    if text is not None:
+		    Sound.say_tts("Content Cursor Candidate")
 
-		return {"status": "success"}
+	    return {"status": "successs"}
 		
 
 	@app_bp.route("/on", methods=["POST"])
 	@opsoroapp.app_api
 	def on():
-		AZURE_SERVICEBUS_NAMESPACE='oassistant'
-		AZURE_SERVICEBUS_ISSUER='RootManageSharedAccessKey'
-		AZURE_SERVICEBUS_ACCOUNT_KEY='ma3ulhX5/kvLijAcgKC4MS58NT5etxbw0WPGJnbobqs='
+		print("ON Selected")
+		record()
+		# if  __name__ == "__main__":
+		# 	logging.basicConfig(filename='sound.log', format='%(filename)s [%(lineno)d] %(message)s',level=logging.INFO)
 
-		bus_service = ServiceBusService(
-			service_namespace=AZURE_SERVICEBUS_NAMESPACE,
-			shared_access_key_name=AZURE_SERVICEBUS_ISSUER,
-			shared_access_key_value=AZURE_SERVICEBUS_ACCOUNT_KEY
-					)
-
-		def GetCalenderMessages():
-			CalenderMessage = bus_service.receive_queue_message('calendar', peek_lock=True)
-			if CalenderMessage != None:
-				message = str(CalenderMessage.body)
-				queuemessage = message.split('|')[1]
-				#r = requests.get('http://172.23.36.28/app/assistant/saytts', json={"text": queuemessage})
-				#print(r.status_code)
-				Sound.say_tts(queuemessage)
-				CalenderMessage.delete()
+  #  		 #value = [];
 
 
-		def GetNewsMessages():
-			NewsMessage  = bus_service.receive_queue_message('news', peek_lock=True)
-			if NewsMessage != None:
-				message = str(NewsMessage.body)
-				queuemessage = message.split('|')[1]
-				print(queuemessage)
-				NewsMessage.delete()
+		# def record():
+  #  			while (True):
+
+  #  			    start_now = datetime.datetime.now().strftime('%Y%m%d-%H%M%S')
+		#         start_time = datetime.datetime.now()
+		#         start = start_time.strftime('%Y-%m-%d %H:%M:%S')
+		#         output_filename = 'rec.wav'
+
+		    
+		#         cmd = ['rec', '-c', '2', output_filename, 'rate', '8k', 'trim', '0', '10']
+		#         call(cmd)
+
+		#         os.rename("rec.wav", "/home/pi/OnoSW/data/assistant/rec.wav")
+
+		#         end_time = datetime.datetime.now()
+		#         end = end_time.strftime('%Y-%m-%d %H:%M:%S')
+		#         logging.info("%s ~ %s (%f)" %(start, end,(end_time-start_time).total_seconds()))
+		#         time.sleep(1)
 
 
-		def GetWeatherMessages():
-			WeatherMessage  = bus_service.receive_queue_message('weather', peek_lock=True)
-			if WeatherMessage != None:
-				message = str(WeatherMessage.body)
-				queuemessage = message.split('|')[1]
-				print(queuemessage)
-				WeatherMessage.delete()
+		#         output = subprocess.check_output("sox /home/pi/OnoSW/data/assistant/rec.wav -n stat 2>&1 | grep 'RMS     amplitude:'",stderr= subprocess.STDOUT, shell=True)
+		#         value = output.split('     ')[2]
+		        
+		#         value = float(value)
+		#         value = value * 10000
+		#         print(value)
+		#         if(value < 100):
+		#             print("stil")
+		#             record()
+		#             time.sleep(10)
+		            
+		            
+		            
+		            
+		#         else:
+		#             print("luid")
+		#             record()
+		#             time.sleep(10)
+		            
+		            
+		#         time.sleep(5)
 
-		threading.Timer(1.0, GetCalenderMessages).start()
+		# record()
 
+
+	# @app_bp.route("/off", methods=["POST"])
+	# @opsoroapp.app_api
+	# def off():
+	#     cmd = "sudo pkill -f __init__.py"
+	    #output = call(cmd, shell=True)
+	    #subprocess.call("sudo service opsoro stop", shell=True)
+	    
+
+	    
+	    #subprocess.call("sudo sh /home/pi/OnoSW/restart_opsoro_service.sh", shell=True)
+	   
 
 
 	    
-	    #cmd = "sudo python /home/pi/OnoSW/apps/assistant/IFTTT.py"
-	    #output = subprocess.check_output(cmd, shell=True)
+
 	    
-	    
+
+
 	    #p = subprocess.Popen(cmd, shell=True, stdout=PIPE, stderr=STDOUT)
 	    
 	    #print(output)
@@ -210,4 +243,114 @@ def stop(opsoroapp):
 	# global app_t
 	# if app_t is not None:
 	# 	app_t.stop()
+	pass
+
+
+
+def record():
+    while (True):
+    	#if cookie status=off > break, return
+
+
+        sched= BlockingScheduler(timezone=utc)
+
+        start_now = datetime.datetime.now().strftime('%Y%m%d-%H%M%S')
+        start_time = datetime.datetime.now()
+        start = start_time.strftime('%Y-%m-%d %H:%M:%S')
+        output_filename = 'rec.wav'
+
+    
+        cmd = ['rec', '-c', '2', output_filename, 'rate', '8k', 'trim', '0', '10']
+        call(cmd)
+
+        os.rename("rec.wav", "/home/pi/OnoSW/data/assistant/rec.wav")
+
+        end_time = datetime.datetime.now()
+        end = end_time.strftime('%Y-%m-%d %H:%M:%S')
+        logging.info("%s ~ %s (%f)" %(start, end,(end_time-start_time).total_seconds()))
+        time.sleep(1)
+
+
+        output = subprocess.check_output("sox /home/pi/OnoSW/data/assistant/rec.wav -n stat 2>&1 | grep 'RMS     amplitude:'",stderr= subprocess.STDOUT, shell=True)
+        value = output.split('     ')[2]
+        
+        value = float(value)
+        value = value * 10000
+        # print value
+        if(value < 100):
+            print("stil")
+            def GetCalenderMessages():
+			    payload={'subject':'CALENDER'}
+			    head={'Connection':'close'}
+			    r = requests.get('http://opsoroassistant.azurewebsites.net/api/assistant',params=payload,headers=head)
+			    r= str(r.text)
+			    if r is 'null':
+				    print("No Message")
+			    if r != None:
+				    message=r.split('|')[1]
+				    Sound.say_tts(message)
+				    print(message)
+				    record()
+		   		
+
+            def GetNewsMessages():
+			    payload={'subject':'NEWS'}
+			    r = requests.get('http://opsoroassistant.azurewebsites.net/api/assistant',params=payload)
+			    r= r.text
+			    if r is 'null':
+				    print("No Message")
+			    if r != None:
+				    message=r.split('|')[1]
+				    Sound.say_tts(message)
+				    print(message)
+				    record()
+				
+
+            def GetWeatherMessages():
+	            payload={'subject':'WEATHER'}
+	            head={'Connection':'close'}
+	            r = requests.get('http://opsoroassistant.azurewebsites.net/api/assistant',params=payload, headers=head)
+	            r= str(r.text)
+	            if r is 'null':
+				    print("No Message")
+	            if r != None:
+		            message=r.split('|')[1]
+		            Sound.say_tts(message)
+		            print(message)
+		            record()
+
+		    sched= BlockingScheduler(timezone=utc)
+            sched.add_job(GetCalenderMessages,'interval',id="calendarmessage_job",seconds=3)
+            sched.add_job(GetNewsMessages,'interval', id='newsmessage_job',seconds=10)
+            sched.add_job(GetWeatherMessages,'cron',day_of_week='mon-sun',hour=10,minute=5)
+            sched.start()
+            time.sleep(10)
+
+
+		            
+        else:
+            print("luid")
+            def GetCalenderMessages():
+			payload={'subject':'CALENDER'}
+			r = requests.get('http://opsoroassistant.azurewebsites.net/api/assistant',params=payload)
+			r= str(r.text)
+			if r is 'null':
+				print("No Message")
+			if r != None:
+			    if(len(r.split('|')) > 1):
+				    message=r.split('|')[1]
+		            print(message)
+			record()
+
+
+            sched=BlockingScheduler(timezone=utc)
+            sched.add_job(GetCalenderMessages,'interval',id="calendarmessage_job",seconds=1)
+            sched.start()	
+            time.sleep(10)
+            
+        time.sleep(5)
+
+
+
+def function():
 	pass

@@ -2,51 +2,35 @@ var knobx = 0.5;
 var knoby = 0.5;
 var r_factor = 0.4;
 var w;
-
-var dof_names = [
-	"r_eb_inner",
-	"r_eb_outer",
-	"r_e_ver",
-	"r_e_hor",
-	"r_e_lid",
-	"m_l",
-	"m_mid",
-	"m_r",
-	"l_e_lid",
-	"l_e_ver",
-	"l_e_hor",
-	"l_eb_inner",
-	"l_eb_outer",
-];
-
-var previous_dofs = {};
-// // dofs["r_eb_inner"] 	= 0.0;
-// // dofs["r_eb_outer"] 	= 0.0;
-// // dofs["r_e_ver"] 		= 0.0;
-// // dofs["r_e_hor"] 		= 0.0;
-// // dofs["r_e_lid"] 		= 0.0;
-// // dofs["m_l"] 				= 0.0;
-// // dofs["m_mid"]				= 0.0;
-// // dofs["m_r"] 				= 0.0;
-// // dofs["l_e_lid"] 		= 0.0;
-// // dofs["l_e_ver"] 		= 0.0;
-// // dofs["l_e_hor"] 		= 0.0;
-// // dofs["l_eb_inner"] 	= 0.0;
-// // dofs["l_eb_outer"] 	= 0.0;
+// var dofs = {};
 //
-// dofs["r_eb_inner"] 	= 0.74;
-// dofs["r_eb_outer"] 	= 0.42;
-// dofs["r_e_ver"] 		= 0.61;
-// dofs["r_e_hor"] 		= -0.27;
-// dofs["r_e_lid"] 		= 1.0;
-// dofs["m_l"] 				= -0.01;
-// dofs["m_mid"]				= -0.01;
-// dofs["m_r"] 				= -1.0;
-// dofs["l_e_lid"] 		= 0.63;
-// dofs["l_e_ver"] 		= 0.61;
-// dofs["l_e_hor"] 		= 0.26;
-// dofs["l_eb_inner"] 	= -1.0;
-// dofs["l_eb_outer"] 	= -0.03;
+// // dofs["R_EB_INNER"] 	= 0.0;
+// // dofs["R_EB_OUTER"] 	= 0.0;
+// // dofs["R_E_VER"] 		= 0.0;
+// // dofs["R_E_HOR"] 		= 0.0;
+// // dofs["R_E_LID"] 		= 0.0;
+// // dofs["M_L"] 				= 0.0;
+// // dofs["M_MID"]				= 0.0;
+// // dofs["M_R"] 				= 0.0;
+// // dofs["L_E_LID"] 		= 0.0;
+// // dofs["L_E_VER"] 		= 0.0;
+// // dofs["L_E_HOR"] 		= 0.0;
+// // dofs["L_EB_INNER"] 	= 0.0;
+// // dofs["L_EB_OUTER"] 	= 0.0;
+//
+// dofs["R_EB_INNER"] 	= 0.74;
+// dofs["R_EB_OUTER"] 	= 0.42;
+// dofs["R_E_VER"] 		= 0.61;
+// dofs["R_E_HOR"] 		= -0.27;
+// dofs["R_E_LID"] 		= 1.0;
+// dofs["M_L"] 				= -0.01;
+// dofs["M_MID"]				= -0.01;
+// dofs["M_R"] 				= -1.0;
+// dofs["L_E_LID"] 		= 0.63;
+// dofs["L_E_VER"] 		= 0.61;
+// dofs["L_E_HOR"] 		= 0.26;
+// dofs["L_EB_INNER"] 	= -1.0;
+// dofs["L_EB_OUTER"] 	= -0.03;
 
 
 function resizeCanvas(){
@@ -65,9 +49,9 @@ $.jCanvas.extend({
   fn: function(ctx, params) {
   	// Just to keep our lines short
   	var p = params;
+
 		p.mouth_right = -p.mouth_right;
 		p.mouth_left = -p.mouth_left;
-		p.mouth_mid = -p.mouth_mid;
 
   	// Enable layer transformations like scale and rotate
   	$.jCanvas.transformShape(this, ctx, p);
@@ -94,6 +78,27 @@ $.jCanvas.extend({
         p.x-8*p.size, p.y+(3*p.size*p.mouth_left)+1*p.size,
         p.x-8*p.size, p.y+(3*p.size*p.mouth_left)
       );
+			// ctx.moveTo(p.x-8*p.size, p.y+(3*p.size*p.mouth_left));
+      // ctx.bezierCurveTo(
+      //   p.x-8*p.size, p.y+(3*p.size*p.mouth_left)-1*p.size,
+      //   p.x-4*p.size, p.y,
+      //   p.x, p.y
+      // );
+      // ctx.bezierCurveTo(
+      //   p.x+4*p.size, p.y,
+      //   p.x+8*p.size, p.y+(3*p.size*p.mouth_right)-1*p.size,
+      //   p.x+8*p.size, p.y+(3*p.size*p.mouth_right)
+      // );
+      // ctx.bezierCurveTo(
+      //   p.x+8*p.size, p.y+(3*p.size*p.mouth_right)+1*p.size,
+      //   p.x+4*p.size, p.y+(3*p.size*(p.mouth_mid+1)),
+      //   p.x, 					p.y+(3*p.size*(p.mouth_mid+1))
+      // );
+      // ctx.bezierCurveTo(
+      //   p.x-4*p.size, p.y+(3*p.size*(p.mouth_mid+1)),
+      //   p.x-8*p.size, p.y+(3*p.size*p.mouth_left)+1*p.size,
+      //   p.x-8*p.size, p.y+(3*p.size*p.mouth_left)
+      // );
   	ctx.closePath();
   	// Call the detectEvents() function to enable jCanvas events
   	// Be sure to pass it these arguments, too!
@@ -165,8 +170,8 @@ $.jCanvas.extend({
   fn: function(ctx, params) {
   	// Just to keep our lines short
   	var p = params;
-
   	// Draw eyeBrow
+
 		// Side: 0 = right, 1 = left
 		p.y = p.y - 2*p.size*((p.inner + p.outer)/2);
 		p.rotate = 30*((p.inner-p.outer)/2);
@@ -177,6 +182,17 @@ $.jCanvas.extend({
   	$.jCanvas.transformShape(this, ctx, p);
 
   	ctx.beginPath();
+      // ctx.moveTo(X_outer, Y_outer);
+      // ctx.bezierCurveTo(
+  	  // 	X_outer, p.y-p.size,
+      //   X_inner, p.y-p.size,
+      //   X_inner, Y_inner
+      // );
+      // ctx.bezierCurveTo(
+      //   X_inner, p.y+p.size,
+      //   X_outer, p.y-p.size,
+      //   X_outer, Y_outer
+      // );
 			ctx.moveTo(p.x-2*p.size, p.y-p.size);
 			ctx.bezierCurveTo(
 		  	p.x-p.size, p.y-p.size,
@@ -229,9 +245,9 @@ function setupVirtualModel(){
     fillStyle: '#000000',
     size: w/60,
     x: w/2, y: w*0.375,
-  	mouth_mid: dofs["m_mid"],
-    mouth_left: dofs["m_l"],
-  	mouth_right: dofs["m_r"]
+  	mouth_mid: dofs["M_MID"],
+    mouth_left: dofs["M_L"],
+  	mouth_right: dofs["M_R"]
 	})
 	.drawEllipse({
   	layer:true,
@@ -253,7 +269,7 @@ function setupVirtualModel(){
     fillStyle: '#FFD63D',
     size: w/65,
   	x: w*0.405, y: w*0.2,
-  	eyeLidOpen: dofs["r_e_lid"]
+  	eyeLidOpen: dofs["R_E_LID"]
 	})
 	.drawEyeLid({
     layer: true,
@@ -261,7 +277,7 @@ function setupVirtualModel(){
     fillStyle: '#FFD63D',
     size: w/65,
   	x: w*0.605, y: w*0.2,
-  	eyeLidOpen: dofs["l_e_lid"]
+  	eyeLidOpen: dofs["L_E_LID"]
 	})
 	.drawEyeBrow({
     layer: true,
@@ -270,8 +286,8 @@ function setupVirtualModel(){
     size: w/65,
   	x: w*0.605, y: w*0.16,
   	side: 0,
-  	outer: dofs["r_eb_outer"],
-  	inner: dofs["r_eb_inner"]
+  	outer: dofs["R_EB_OUTER"],
+  	inner: dofs["R_EB_INNER"]
 	})
 	.drawEyeBrow({
     layer: true,
@@ -280,8 +296,8 @@ function setupVirtualModel(){
     size: w/65,
   	x: w*0.605, y: w*0.16,
   	side: 1,
-  	outer: dofs["l_eb_outer"],
-  	inner: dofs["l_eb_inner"]
+  	outer: dofs["L_EB_OUTER"],
+  	inner: dofs["L_EB_INNER"]
 	})
   updateVirtualModel();
 }
@@ -295,74 +311,41 @@ function updateVirtualModel(){
 	.setLayer("mouthlayer", {
     x: w/2, y: w*0.375,
   	size: w/60,
-		mouth_mid: dofs["m_mid"],
-		mouth_left: dofs["m_l"],
-		mouth_right: dofs["m_r"]
+		mouth_mid: dofs["M_MID"],
+		mouth_left: dofs["M_L"],
+		mouth_right: dofs["M_R"]
 	})
 	.setLayer("rightEyePupil", {
-		x: w*0.405 + (w/35 * dofs["r_e_hor"]), y: w*0.25 - (w/35 * dofs["r_e_ver"]),
+		x: w*0.405 + (w/35 * dofs["R_E_HOR"]), y: w*0.25 - (w/35 * dofs["R_E_VER"]),
 		width: w/30, height: w/30
 	})
 	.setLayer("rightEyeLidlayer", {
 		size: w/65,
 		x: w*0.405, y: w*0.2,
-		eyeLidOpen: dofs["r_e_lid"]
+		eyeLidOpen: dofs["R_E_LID"]
 	})
 	.setLayer("rightEyeBrowlayer", {
 		size: w/65,
 		x: w*0.405, y: w*0.16,
-		outer: dofs["r_eb_outer"],
-		inner: dofs["r_eb_inner"]
+		outer: dofs["R_EB_OUTER"],
+		inner: dofs["R_EB_INNER"]
 	})
 	.setLayer("leftEyePupil", {
-		x: w*0.605 - (w/35 * dofs["l_e_hor"]), y: w*0.25 - (w/35 * dofs["l_e_ver"]),
+		x: w*0.605 - (w/35 * dofs["L_E_HOR"]), y: w*0.25 - (w/35 * dofs["L_E_VER"]),
 		width: w/30, height: w/30
 	})
 	.setLayer("leftEyeLidlayer", {
 		size: w/65,
 		x: w*0.605, y: w*0.2,
-		eyeLidOpen: dofs["l_e_lid"]
+		eyeLidOpen: dofs["L_E_LID"]
 	})
 	.setLayer("leftEyeBrowlayer", {
 		size: w/65,
 		x: w*0.605, y: w*0.16,
-		outer: dofs["l_eb_outer"],
-		inner: dofs["l_eb_inner"]
+		outer: dofs["L_EB_OUTER"],
+		inner: dofs["L_EB_INNER"]
 	})
 	.drawLayers();
-}
-
-function checkData(){
-	for (var i = 0; i<13; i++) {
-  	if (dofs[dof_names[i]] == undefined){
-			if (previous_dofs[dof_names[i]] == undefined){
-				dofs[dof_names[i]] = 0.0;
-			}else{
-				dofs[dof_names[i]] = previous_dofs[dof_names[i]];
-			}
-		}
-	}
-	previous_dofs = dofs;
-}
-
-updateData = function(){
-	$.ajax({
-		dataType: "text",
-		type: "POST",
-		url: "/virtual",
-		data: { getdata: 1 },
-		success: function(data){
-			//alert(data);
-
-			dofs = JSON.parse(data)["dofs"];
-
-			//alert(dofs["l_eb_inner"]);
-			checkData();
-			updateVirtualModel();
-			$("#virtualModelCanvas").drawLayers();
-		}
-	});
-	setTimeout(updateData, 50);
 }
 
 $(document).ready(function(){
@@ -374,6 +357,6 @@ $(document).ready(function(){
 
 	setupVirtualModel();
 
-	updateData();
+	$("#virtualModelCanvas").drawLayers();
 
 });

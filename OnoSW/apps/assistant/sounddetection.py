@@ -37,16 +37,17 @@ if  __name__ == "__main__":
         time.sleep(1)
 
 
-        output = subprocess.check_output("sox /home/pi/OnoSW/data/opsoroassistant/rec.wav -n stat 2>&1 | grep 'RMS     amplitude:'",stderr= subprocess.STDOUT, shell=True)
+        output = subprocess.check_output("sox /home/pi/OnoSW/data/assistant/rec.wav -n stat 2>&1 | grep 'RMS     amplitude:'",stderr= subprocess.STDOUT, shell=True)
         value = output.split('     ')[2]
         
         value = float(value)
         value = value * 10000
         print value
         if(value < 100):
-             print 'stil'
+            print 'stil'
         else:
             print 'luid'
+            
         
        
 

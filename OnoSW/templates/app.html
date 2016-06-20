@@ -2,7 +2,11 @@
 
 {% block head %}
 {{ super() }}
+
 <link rel="stylesheet" href="static/app.css" />
+<script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+<script type="text/javascript" src="/static/js/wifi.js"></script>
+<script type="text/javascript" src="/static/js/activities.js"></script>
 {% endblock %}
 
 {% block closebutton %}<a href="#" data-reveal-id="CloseAppModal" class="closebutton"><span class="fa fa-close"></span></a>{% endblock %}

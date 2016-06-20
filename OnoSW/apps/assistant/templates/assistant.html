@@ -15,14 +15,12 @@
 			<div class="content">
 				<label for="btngroup">ASSISTANT</label>
 				<div class="btn-group" role="group" id="btngroup">
-				  <button type="submit" id="on" data-bind="click: pressOn" class="btn btn-secondary">ON</button>
+				  <button type="submit" id="on" data-bind="click: pressOn"  class="btn btn-secondary">ON</button>
 				  <button type="submit" id="off" class="btn btn-secondary">OFF</button>
 				</div>
 			</div>
 	</div>
 	</br>
-
-
 	<h5>Maak uw eigen Assistant</h5>
 <fieldset>
 	<legend>Stap 1 : IFTTT account</legend>
@@ -39,8 +37,12 @@
 	<div class="row">
 		<div class="content">
 			<img src="../assistant/static/images/ifttt.png" align="left" style="height:100px; position:relative; margin-top:-20px" alt="">
-			<p style="margin-right:7%" align="right">Maak nieuwe recepten voor je assistant</p><br>
-			<div style="margin-right:7%" align="right">Voorbeeld Recept :
+			<p style="margin-right:7%" align="right"><b>Maak nieuwe recepten voor je assistant</b></p><br>
+			<p align="right" style="width:80%;margin-left:110px" >
+			Met behulp van IFTTT Recepten kun je heel eenvoudig de Robot koppelen met het internet en heel eenvoudig berichtjes doorsturen naar de Robot die je op de hoogte houden over het nieuws van de dag of je gemaakte afspraken bijhoudt
+			</p>
+			<p style="width:80%;margin-left:130px">Alle info over recepten, hoe je ze aanmaakt en koppelt kunt u ook vinden in <a href="file//../assistant/static/documents/OPSORO_Maak-uw-eigen-recept.pdf">dit</a> document</p>
+			<div style="margin-right:7%" align="right">Aanmaken Recept voor :
 			<select name="recipe" class="fa-list-ul" style="width:150px; max-width:150px" id="dropdown_recept">
 				<option value="null">Kies Recept</option>
 				<option value="calender">Kalender</option>
@@ -50,17 +52,64 @@
 			</div>
 
 			<div style="margin-right:7%;display:none" align="right" id="Kalender">
-				</br>
-				<p>Om uw robot succesvol te kunnen koppelen aan uw Google Calender, volg onderstaande video's</p></br>
-					<iframe width="560" height="315" src="https://www.youtube.com/embed/MlkG07Bmui0" frameborder="0" allowfullscreen></iframe>
-					<iframe width="560" height="315" src="https://www.youtube.com/embed/ylzkv43egqc" frameborder="0" allowfullscreen></iframe>
+			</br>
+
+			<b>Reeds aangemaakte recepten</b>
+			<p >Onderstaande recepten zijn al voor u aangemaakt en hoeft u enkel nog mee te connecteren</p>
+			
+			<div style="overflow:hidden;margin-bottom:5px">
+			<a href="https://ifttt.com/recipes/429482-opsoro-calendar" target="blank"><img src="../assistant/static/images/Opsoro_Calendar_Recipe_EveryEvent.png" style="height:100px;float:right" alt="Elk Event ontvangen"></a></br>
+			<p style="float:right;margin-right:20px" >Ontvang elk event van de gekoppelde kalender op de Robot</p>				
 			</div>
+			<div style="overflow:hidden;margin-bottom:5px">
+			<a href="https://ifttt.com/recipes/429481-opsoro-calendar-with-keyword" target="blank"><img src="../assistant/static/images/Opsoro_Calendar_Recipe_EveryEvent.png" style="height:100px;float:right" alt="Elk Event met bepaalde tag ontvangen"></a></br>
+			<p style="float:right;margin-right:20px">Ontvang enkel events met een bepaald woord in de titel </p>
+			</div></br></br>
+			<b>Zelf Recepten aanmaken</b>
+			<p>Volg onderstaande video's om uw eigen recepten aan te maken</p><br>
+				<iframe width="560" height="315" src="https://www.youtube.com/embed/7Vb0nvshOU4" frameborder="0" allowfullscreen></iframe>
+				<iframe width="560" height="315" src="https://www.youtube.com/embed/ylzkv43egqc" frameborder="0" allowfullscreen></iframe>
+			</div>
+
+
 			<div style="margin-right:7%;display:none" align="right" id="Nieuws" >
-				<p>Dit is de News video feed</p>
+			</br>
+			<b>Reeds aangemaakte recepten</b></br>
+			<p>Onderstaande recepten zijn al voor u aangemaakt en hoeft u enkel nog mee te connecteren</p>
+			<div style="overflow:hidden; margin-bottom:5px">
+			<a href="https://ifttt.com/recipes/429478-opsoro-hln-sport-nieuws" target="blank"><img src="../assistant/static/images/Opsoro_Rss_Recipe.png" style="height:100px;float:right"></a><br>
+			<p style="float:right;margin-right:20px" >Hln Sport</p>
 			</div>
+			<div style="overflow:hidden;margin-bottom:5px">
+			<a href="https://ifttt.com/recipes/429479-opsoro-hln-binnenlands-nieuws" target="blank"><img src="../assistant/static/images/Opsoro_Rss_Recipe.png" style="height:100px;float:right"></a><br>
+			<p style="float:right;margin-right:20px">Hln Binnenland</p>
+			</div>
+			<div style="overflow:hidden;margin-bottom:5px">
+			<a href="https://ifttt.com/recipes/429480-opsoro-hln-bizar-nieuws" target="blank"><img src="../assistant/static/images/Opsoro_Rss_Recipe.png" style="height:100px;float:right"></a></br>
+			<p style="float:right;margin-right:20px">Hln Bizar</p>
+			</div>
+			</br>
+			<b>Zelf Recepten aanmaken</b>
+			<p>Volg onderstaande video's om uw eigen recepten aan te maken</p><br>
+				<iframe width="560" height="315" src="https://www.youtube.com/embed/GVRHdNRLOHc" frameborder="0" allowfullscreen></iframe>
+				<iframe width="560" height="315" src="https://www.youtube.com/embed/vAD8BxvNALE" frameborder="0" allowfullscreen></iframe>
+			</div>
+
+
 			<div style="margin-right:7%;display:none" align="right" id="Weerbericht">
-			<p>Dit is de Weerbericht Video Feed</p>
+			<b>Reeds aangemaakte recepten</b></br>
+			<p>Onderstaande recepten zijn al voor u aangemaakt en hoeft u enkel nog mee te connecteren</p>
+			<div style="overflow:hidden;margin-bottom:5px">
+			
+			<a href="https://ifttt.com/recipes/429474-opsoro-weather-recipe" target="blank"><img src="../assistant/static/images/Opsoro_Weather_Recipe.png" style="height:100px;float:right"></a></br>
+			<p style="float:right;margin-right:20px">Weerbericht elke dag om 10u</p>
 			</div>
+			</br>
+			<b>Zelf Recepten aanmaken</b>
+			<p>Volg onderstaande video's om uw eigen recepten aan te maken</p><br>
+			<iframe width="560" height="315" src="https://www.youtube.com/embed/nTbHAHusqXo" frameborder="0" allowfullscreen></iframe>
+			<iframe width="560" height="315" src="https://www.youtube.com/embed/ANcELLIZQTk" frameborder="0" allowfullscreen></iframe>
+		</div>
 		
 	</div>
 </fieldset>
@@ -75,10 +124,10 @@
 	</div>
 </fieldset> -->
 <fieldset>
-	<legend>Stap 4 : Klaar voor gebruik</legend>
+	<legend>Stap 3 : Klaar voor gebruik</legend>
 	<div class="row">
 		<div class="content">
-			<img src="../assistant/static/images/ifttt.png" align="left" style="height:100px; position:relative;margin-top:-20px" alt="">
+			<img src="../assistant/static/images/ifttt.png" align="left" style="height:100px; position:relative; margin-top:-20px" alt="">
 	
 			<p style="margin-right:7%" align="right">Uw robot is nu volledig klaar voor gebruik</p>
 		</div>
@@ -101,7 +150,7 @@
 					  		off.style.background = "#008CBA";
 					  		off.style.borderColor = "#007095";
 
-					    };
+					    }
 
 					    var on = document.getElementById("on");
 					    var off = document.getElementById("off");
@@ -110,38 +159,37 @@
 					   	var divNieuws = document.getElementById("Nieuws");
 					   	var divWeerbericht = document.getElementById("Weerbericht");
 
-					  	$('#dropdown_recept').change(function(){	     		
-					  		var optionSelected = $(this).find("option:selected");
-	     					var valueSelected  = optionSelected.val();
-	     					if(valueSelected == "calender")
-	     					{
-	     						console.log("Kalender selected");
-	     						divKalender.style.display="block";
-	     						divNieuws.style.display="none";
-	     						divWeerbericht.style.display="none";
-	     							
-	     						
-	     					}
-	     					if(valueSelected=="null")
-	     					{
-	     						divKalender.style.display="none";
-	     						divWeerbericht.style.display="none";
-	     						divNieuws.style.display="none";
-	     					}
-	     					if(valueSelected=="nieuws")
-	     					{
-	     						console.log("nieuws");
-	     						divKalender.style.display="none";
-	     						divNieuws.style.display="block";
-	     						divWeerbericht.style.dispay="none";
-	     					}
-	     					if(valueSelected=="weerbericht")
-	     					{
-	     						console.log("weer");
-	     						divWeerbericht.style.display="block";
-	     						divNieuws.style.display="none";
-	     						divKalender.style.display="none";
-	     					}
+					  	$('#dropdown_recept').change(function () {
+     					var optionSelected = $(this).find("option:selected");
+     					var valueSelected  = optionSelected.val();
+     					if(valueSelected == "calender")
+     					{
+     						console.log("Kalender selected");
+     						divKalender.style.display="block";
+     						divNieuws.style.display="none";
+     						divWeerbericht.style.display="none";
+     							
+     						
+     					}
+     					if(valueSelected=="null")
+     					{
+     						divKalender.style.display="none";
+     						divWeerbericht.style.display="none";
+     						divNieuws.style.display="none";
+     					}
+     					if(valueSelected=="nieuws")
+     					{
+     						divKalender.style.display="none";
+     						divNieuws.style.display="block";
+     						divWeerbericht.style.display="none";
+     					}
+     					if(valueSelected=="weerbericht")
+     					{
+     						divWeerbericht.style.display="block";	
+     						divNieuws.style.display="none";
+     						divKalender.style.display="none";
+
+     					}
  						});
 
 
@@ -169,7 +217,24 @@
 					  		document.cookie = "status=off";
 					  	});
 						
-											
+						$("#save").click(function(){
+							var text=document.getElementById("inputlg").value;
+							var input = document.getElementById("inputlg");
+							
+						
+
+							if(text != null && text != " "){
+								document.cookie = "keyapi="+text;
+
+							}else{
+								document.cookie = "keyapi=";
+								input.placeholder = "Vul een geldige key in."
+							}
+
+						});
+
+
+						
 					    </script>
 					    
 					    

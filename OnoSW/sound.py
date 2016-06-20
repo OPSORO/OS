@@ -27,7 +27,7 @@ class _Sound(object):
 			self.playProcess = subprocess.Popen(["aplay", full_path], stdout=FNULL, stderr=subprocess.STDOUT)
 		else:
 			# self.playProcess = subprocess.Popen(["aplay", "-D", "hw:0,0", full_path], stdout=FNULL, stderr=subprocess.STDOUT)
-			self.playProcess = subprocess.Popen(["aplay", "-D", "hw:0,0", full_path], stdout=FNULL, stderr=subprocess.STDOUT)
+			self.playProcess = subprocess.Popen(["aplay", "-D", "hw:1,0", full_path], stdout=FNULL, stderr=subprocess.STDOUT)
 
 	def play_file(self, filename):
 		self.stop_sound();
@@ -44,7 +44,7 @@ class _Sound(object):
 			self.playProcess = subprocess.Popen(["aplay", path], stdout=FNULL, stderr=subprocess.STDOUT)
 		else:
 			# self.playProcess = subprocess.Popen(["aplay", "-D", "hw:0,0", path], stdout=FNULL, stderr=subprocess.STDOUT)
-			self.playProcess = subprocess.Popen(["aplay", "-D", "hw:0,0", path], stdout=FNULL, stderr=subprocess.STDOUT)
+			self.playProcess = subprocess.Popen(["aplay", "-D", "hw:1,0", path], stdout=FNULL, stderr=subprocess.STDOUT)
 
 	def stop_sound(self):
 		if self.playProcess == None:
