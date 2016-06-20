@@ -1,6 +1,6 @@
 audio:
-  master_volume: 91
-  tts_engine: !!python/unicode pico
+  master_volume: 75
+  tts_engine: !!python/unicode espeak
   tts_gender: !!python/unicode m
   tts_language: !!python/unicode nl
 general:

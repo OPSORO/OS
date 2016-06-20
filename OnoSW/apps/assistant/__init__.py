@@ -290,6 +290,8 @@ def record():
 				    message=r.split('|')[1]
 				    Sound.say_tts(message)
 				    print(message)
+				    with open("/home/pi/OnoSW/apps/assistant/static/activities", "a") as myfile:
+					    myfile.write("calender --> " + message + "\n")
 				    record()
 		   		
 
@@ -303,6 +305,8 @@ def record():
 				    message=r.split('|')[1]
 				    Sound.say_tts(message)
 				    print(message)
+				    with open("/home/pi/OnoSW/apps/assistant/static/activities", "a") as myfile:
+					    myfile.write("news --> " + message + "\n")
 				    record()
 				
 
@@ -331,20 +335,21 @@ def record():
         else:
             print("luid")
             def GetCalenderMessages():
-			payload={'subject':'CALENDER'}
-			r = requests.get('http://opsoroassistant.azurewebsites.net/api/assistant',params=payload)
-			r= str(r.text)
-			if r is 'null':
-				print("No Message")
-			if r != None:
-			    if(len(r.split('|')) > 1):
+			    payload={'subject':'CALENDER'}
+			    r = requests.get('http://opsoroassistant.azurewebsites.net/api/assistant',params=payload)
+			    r= str(r.text)
+			    if r is 'null':
+				    print("No Message")
+			    if r != None:
 				    message=r.split('|')[1]
-		            print(message)
-			record()
+				    print(message)
+				    with open("/home/pi/OnoSW/apps/assistant/static/activities", "a") as myfile:
+					    myfile.write("calender --> " + message + "\n")
+				    record()
 
 
             sched=BlockingScheduler(timezone=utc)
-            sched.add_job(GetCalenderMessages,'interval',id="calendarmessage_job",seconds=1)
+            sched.add_job(GetCalenderMessages,'interval',id="calendarmessage_job",seconds=3)
             sched.start()	
             time.sleep(10)
             

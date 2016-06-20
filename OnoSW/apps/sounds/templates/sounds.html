@@ -47,7 +47,7 @@
 		<div class="row">
 			<div class="large-9 medium-8 small-12 columns">
 				<input type="file" name="soundfile" style="margin-bottom: 0.25rem;" accept="audio/*;capture=microphone"><br>
-				<span class="note"><strong>Note:</strong> Only .wav and .ogg are allowed.</span>
+				<span class="note"><strong>Note:</strong> Only .wav, .ogg and .mp3 files are allowed.</span>
 			</div>
 			<div class="large-3 medium-4 small-12 columns">
 				<button type="send" class="button" style="width: 100%;"><span class="fa fa-upload"></span> Upload</button>
@@ -58,7 +58,6 @@
 
 <fieldset>
 	<legend><span class="fa fa-microphone"></span> Upload recording</legend>
-	<p>This functionality only works in Firefox. More browsers will be supported soon.</p>
 	<div div class="large-9 medium-8 small-12 columns">
 		<canvas id="analyser" width="200" height="150"></canvas>
 		<canvas id="wavedisplay" width="200" height="150"></canvas>
@@ -75,6 +74,8 @@
 		</a>
 
  		<a href="#" class="button" data-bind="visible: isRecorded() && !isRecording()"><span class="fa fa-download"> Download</span></a>
+
+
 		<audio width="100%" id="recordingAudio" src="" controls data-bind="visible: isRecorded() && !isRecording()"></audio>
 
 		<input type="text" name="text" class="text" style="width: 100%;" data-bind="value: fileName, visible: isRecorded() && !isRecording()"/>
