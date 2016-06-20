@@ -1,0 +1,25 @@
+{
+  "voice_lines": [
+    {
+      "emotion": "Angry",
+      "output": {
+        "type": "tts",
+        "data": "Ouch!"
+      }
+    },
+    {
+      "emotion": "Happy",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "Happy",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    }
+  ]
+}

@@ -1,0 +1,69 @@
+# Right eyebrow
+r_eb_inner:
+  mid: 1625
+  min: +200
+  max: -300
+
+r_eb_outer:
+  mid: 1625
+  min: -200
+  max: +250
+
+# Right eye
+r_e_ver:
+  mid: 1525
+  min: +350
+  max: -350
+
+r_e_hor:
+  mid: 1700
+  min: -350
+  max: +350
+
+r_e_lid:
+  mid: 1500
+  min: +300
+  max: -350
+
+# Mouth
+m_l:
+  mid: 1550
+  min: +400
+  max: -300
+
+m_mid:
+  mid: 1525
+  min: +400
+  max: -250
+
+m_r:
+  mid: 1600
+  min: -400
+  max: +300
+
+# Left eye
+l_e_lid:
+  mid: 1525
+  min: -300
+  max: +350
+
+l_e_ver:
+  mid: 1525
+  min: -350
+  max: +350
+
+l_e_hor:
+  mid: 1550
+  min: -350
+  max: +350
+
+# Left eyebrow
+l_eb_inner:
+  mid: 1525
+  min: -200
+  max: +300
+
+l_eb_outer:
+  mid: 1550
+  min: +200
+  max: -250

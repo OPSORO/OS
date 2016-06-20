@@ -1,0 +1,179 @@
+{% extends "app.html" %}
+
+{% block head %}
+{{ super() }}
+{% endblock %}
+
+{% block page_content %}
+<div id="errors">
+	{% with messages = get_flashed_messages(category_filter=["message"]) %}
+		{% if messages %}
+			{% for message in messages %}
+				<div data-alert class="alert-box secondary radius">
+					{{ message }}
+					<a href="#" class="close">&times;</a>
+				</div>
+			{% endfor %}
+		{% endif %}
+	{% endwith %}
+	{% with messages = get_flashed_messages(category_filter=["error"]) %}
+		{% if messages %}
+			{% for message in messages %}
+				<div data-alert class="alert-box alert radius">
+					{{ message }}
+					<a href="#" class="close">&times;</a>
+				</div>
+			{% endfor %}
+		{% endif %}
+	{% endwith %}
+	{% with messages = get_flashed_messages(category_filter=["success"]) %}
+		{% if messages %}
+			{% for message in messages %}
+				<div data-alert class="alert-box success radius">
+					{{ message }}
+					<a href="#" class="close">&times;</a>
+				</div>
+			{% endfor %}
+		{% endif %}
+	{% endwith %}
+</div>
+
+<div class="row">
+	<div class="small-6 columns">
+		<a href="#" id="btnEnable" class="button" style="width: 100%;"><span class="fa fa-check"></span> Enable Servos</a>
+	</div>
+	<div class="small-6 columns">
+		<a href="#" id="btnDisable" class="button" style="width: 100%;"><span class="fa fa-close"></span> Disable Servos</a>
+	</div>
+</div>
+
+{% if dofs %}
+	{% for dof in dofs %}
+		<div class="sliderrow row">
+			<div class="small-12 columns hide-for-medium-up"><strong>{{ dof.name|upper }}</strong></div>
+			<div class="medium-3 large-2 show-for-medium-up columns">
+				<strong>{{ dof.name|upper }}</strong><br>
+				<span class="note" style="padding: 0;">
+					<strong>Pin:</strong> {{ dof.pin }}<br>
+					<strong>DOF:</strong> <span data-dof>0</span><br>
+					<strong>Servo:</strong> <span data-us>0</span> &micro;s<br>
+				</span>
+			</div>
+			<div class="small-12 medium-9 large-10 columns">
+				<div class="row numberstop">
+					<div class="small-3 text-left columns">-1.0</div>
+					<div class="small-6 text-center columns">0.0</div>
+					<div class="small-3 text-right columns">+1.0</div>
+				</div>
+				<div class="range-slider" data-slider="{{ dof.current }}" data-options="start: -100; end: 100;" data-dofname="{{ dof.name }}" data-dofmin="{{ dof.min }}" data-dofmid="{{ dof.mid }}" data-dofmax="{{ dof.max }}">
+					<span class="range-slider-handle" role="slider" tabindex="0"></span>
+					<span class="range-slider-active-segment"></span>
+					<input type="hidden">
+				</div>
+				<div class="row numbersbottom">
+					<div class="small-3 text-left columns">{{ dof.mid + dof.min }} &micro;s</div>
+					<div class="small-6 text-center columns">{{ dof.mid }} &micro;s</div>
+					<div class="small-3 text-right columns">{{ dof.mid + dof.max }} &micro;s</div>
+				</div>
+			</div>
+		</div>
+
+	{% endfor %}
+{% endif %}
+
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+
+<script src="/static/js/sockjs.min.js"></script>
+<script src="/static/js/numeral.min.js"></script>
+<script>
+
+	function addError(msg){
+		$("#errors").append("<div data-alert class=\"alert-box alert\">" + msg + "<a href=\"#\" class=\"close\">&times;</a></div>");
+		$(document).foundation("alert", "reflow");
+	}
+
+	function addMessage(msg){
+		$("#errors").append("<div data-alert class=\"alert-box success\">" + msg + "<a href=\"#\" class=\"close\">&times;</a></div>");
+		$(document).foundation("alert", "reflow");
+	}
+
+	$(document).ready(function(){
+		// Setup websocket connection.
+		var conn = null;
+		var connReady = false;
+		conn = new SockJS("http://" + window.location.host + "/sockjs");
+
+		conn.onopen = function(){
+			console.log("SockJS connected.");
+			$.ajax({
+				url: "/sockjstoken",
+				cache: false
+			})
+			.done(function(data) {
+				conn.send(JSON.stringify({action: "authenticate", token: data}));
+				connReady = true;
+				console.log("SockJS authenticated.");
+			});
+		};
+
+		conn.onmessage = function(e){
+			var msg = $.parseJSON(e.data);
+
+			switch(msg.action){
+				case "error":
+					addError(msg.message);
+					break;
+			}
+		};
+
+		conn.onclose = function(){
+			console.log("SockJS disconnected.");
+			conn = null;
+			connReady = false;
+		};
+
+		$("[data-slider]").on("change.fndtn.slider", function(){
+			if( $(this).attr("data-slider") != $(this).data("lastpos") ){
+				var dofpos = $(this).attr("data-slider");
+				var dofmin = $(this).data("dofmin");
+				var dofmid = $(this).data("dofmid");
+				var dofmax = $(this).data("dofmax");
+				var dofus = dofmid;
+
+				$(this).closest(".sliderrow").find("[data-dof]").html(numeral(dofpos/100).format("+0.00"));
+
+				if(dofpos < 0){
+					dofus += (-dofpos / 100) * dofmin
+				}else if(dofpos > 0){
+					dofus += (dofpos / 100) * dofmax
+				}
+				$(this).closest(".sliderrow").find("[data-us]").html(numeral(dofus).format("0"));
+
+				if(connReady){
+					console.log("SET " + $(this).data("dofname") + " TO POS " + $(this).attr("data-slider")/100);
+					conn.send(JSON.stringify({
+						action: "setDofPos",
+						dofname: $(this).data("dofname"),
+						pos: $(this).attr("data-slider") / 100
+					}));
+				}
+
+				$(this).data("lastpos", dofpos);
+			}
+		});
+		$("#btnEnable").click(function(){
+			if(connReady){
+				conn.send(JSON.stringify({action: "servosEnable"}));
+			}
+		});
+		$("#btnDisable").click(function(){
+			if(connReady){
+				conn.send(JSON.stringify({action: "servosDisable"}));
+			}
+		});
+	});
+</script>
+{% endblock %}

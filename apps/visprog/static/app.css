@@ -1,0 +1,139 @@
+#errors .alert-box:first-child {
+	margin-top: 2rem;
+}
+
+#pnlCode, #pnlBlockly {
+	margin: 0 -1rem 0rem -1rem;
+	height: calc(100vh - 24.15rem);
+}
+
+#blocklyFrame {
+	width: 100%;
+	height: 100%;
+	border: 0;
+	margin: 0;
+}
+
+#editor {
+	width: 100%;
+	height: 100%;
+	border: 0;
+	margin: 0;
+}
+
+#console {
+	color: #888888;
+	background-color: #0f0f0f;
+	border-top: 2px solid #232323;
+	margin: 0 -1rem -1rem -1rem;
+	height: 4.15rem;
+	padding: 0.5rem 1rem;
+	border-bottom-left-radius: 0.75rem;
+	border-bottom-right-radius: 0.75rem;
+	font-family: "Lucida Console", Monaco, monospace;
+	font-size: 0.75rem;
+	overflow: scroll;
+}
+
+.fullscreen {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+}
+
+.fullscreen #pnlCode, .fullscreen #pnlBlockly {
+	height: calc(100vh - 4rem - 4.15rem);
+}
+
+.fullscreen #console {
+	border-bottom-left-radius: 0;
+	border-bottom-right-radius: 0;
+}
+
+.actionbar .filebox {
+	color: #fff;
+	display: inline-block;
+}
+
+.actionbar .filebox .filename {
+	font-weight: bold;
+	text-transform: uppercase;
+}
+
+.actionbar .filebox .status {
+	font-size: 0.75rem;
+	font-weight: bold;
+	text-transform: uppercase;
+}
+
+div.page {
+	background-color: #0f0f0f;
+}
+
+.reveal-modal .file:last-child {
+	margin-bottom: -0.75rem;
+}
+
+.reveal-modal .filename {
+	background: rgba(178, 175, 161, 0.5);
+	padding: 0.5rem 1rem;
+	border-radius: 0.25rem;
+	font-weight: bold;
+	color: #545454;
+	display: inline-block;
+	width: calc(100% - 8rem);
+}
+.reveal-modal .btnDeleteFile, .reveal-modal .btnOpenFile {
+	width: 3rem;
+	margin-right: 0.75rem;
+}
+
+#FilesModal .content {
+	overflow-y: scroll;
+	max-height: 70vh;
+}
+
+#ScriptUIModal .btnScriptUI {
+	width: 100%;
+	margin-bottom: 0;
+}
+
+#ScriptUIModal .btnScriptUI.toggled {
+	background: #22B573;
+}
+
+#ScriptUIModal .btnScriptUI.toggled:hover {
+	background: #23774E;
+}
+
+#ScriptUIModal .keyboardKey {
+	padding: 0.25rem 0rem;
+	width: 3rem;
+	text-align: center;
+	margin: 0.5rem 0.5rem 0.5rem 0;
+	background-color: #ddd;
+	display: inline-block;
+	border-radius: 0.5rem;
+	font-size: 1.5rem;
+	box-shadow: 0 0.3rem 0 rgba(0, 0, 0, 0.33);
+	border: 1px solid rgba(0, 0, 0, 0.15);
+}
+#ScriptUIModal .keyboardKey.down {
+	box-shadow: 0 0.15rem 0 rgba(0, 0, 0, 0.33);
+	background: #ccc;
+
+	-webkit-transform: translate(0, 0.15rem);
+	-moz-transform: translate(0, 0.15rem);
+	-ms-transform: translate(0, 0.15rem);
+	-o-transform: translate(0, 0.15rem);
+	transform: translate(0, 0.15rem);
+}
+#ScriptUIModal .keyboardKey.space {
+	width: 15rem;
+}
+#ScriptUIModal .keyboardKey.letter {
+	font-weight: bold;
+	text-transform: uppercase;
+}

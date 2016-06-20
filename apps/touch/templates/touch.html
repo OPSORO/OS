@@ -1,0 +1,221 @@
+{% extends "app.html" %}
+
+{% block head %}
+{{ super() }}
+<style>
+.legend table {
+	margin: 0;
+}
+.legend table tr th, .legend table tr td {
+	padding: 0.1rem;
+}
+.legend td.legendLabel {
+	padding-right: 1rem;
+}
+</style>
+{% endblock %}
+
+{% block page_content %}
+<div class="actionbar">
+	<div style="width: 12rem; margin-right: 1rem;" class="left">
+		<form>
+			<select id="lstElectrodes" style="margin: 0.25rem 0 0 0;">
+				<option value="1">1 electrode (E0)</option>
+				<option value="2">2 electrodes (E0 - E1)</option>
+				<option value="3">3 electrodes (E0 - E2)</option>
+				<option value="4">4 electrodes (E0 - E3)</option>
+				<option value="5">5 electrodes (E0 - E4)</option>
+				<option value="6">6 electrodes (E0 - E5)</option>
+				<option value="7">7 electrodes (E0 - E6)</option>
+				<option value="8">8 electrodes (E0 - E7)</option>
+				<option value="9">9 electrodes (E0 - E8)</option>
+				<option value="10">10 electrodes (E0 - E9)</option>
+				<option value="11">11 electrodes (E0 - E10)</option>
+				<option value="12">12 electrodes (E0 - E11)</option>
+			</select>
+		</form>
+	</div>
+	<a href="#" id="btnStartStop" class="action">
+		<span class="fa fa-play"></span><br/>
+		<span class="text">Start</span>
+	</a>
+</div>
+<div id="errors">
+	{% with messages = get_flashed_messages(category_filter=["message"]) %}
+		{% if messages %}
+			{% for message in messages %}
+				<div data-alert class="alert-box secondary radius">
+					{{ message }}
+					<a href="#" class="close">&times;</a>
+				</div>
+			{% endfor %}
+		{% endif %}
+	{% endwith %}
+	{% with messages = get_flashed_messages(category_filter=["error"]) %}
+		{% if messages %}
+			{% for message in messages %}
+				<div data-alert class="alert-box alert radius">
+					{{ message }}
+					<a href="#" class="close">&times;</a>
+				</div>
+			{% endfor %}
+		{% endif %}
+	{% endwith %}
+	{% with messages = get_flashed_messages(category_filter=["success"]) %}
+		{% if messages %}
+			{% for message in messages %}
+				<div data-alert class="alert-box success radius">
+					{{ message }}
+					<a href="#" class="close">&times;</a>
+				</div>
+			{% endfor %}
+		{% endif %}
+	{% endwith %}
+</div>
+<div id="chart" style="width: 100%; height: calc(100vh - 20rem);"></div>
+
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+
+<script src="/static/js/sockjs.min.js"></script>
+<script src="/static/js/flot/jquery.flot.min.js"></script>
+<script src="/static/js/flot/jquery.flot.resize.min.js"></script>
+<script type="text/javascript" charset="utf-8">
+	$(document).ready(function(){
+		var maxPts = 200;
+		var electrodeData = {
+			0: [],
+			1: [],
+			2: [],
+			3: [],
+			4: [],
+			5: [],
+			6: [],
+			7: [],
+			8: [],
+			9: [],
+			10: [],
+			11: []
+		};
+		var chartOptions = {
+			xaxis: {
+				show: true,
+				min: 0,
+				max: maxPts - 1,
+				tickFormatter: function(val, axis){
+					return (maxPts - val)/10 + "s"
+				}
+			},
+			yaxis: {
+				min: 0,
+				max: 1024,
+				ticks: [0, 128, 256, 384, 512, 640, 768, 896, 1024]
+			},
+			legend: {
+				position: "sw",
+				noColumns: 3
+			}
+		};
+
+		var plot;
+		var runningStatus = false;
+
+		var conn = null;
+		var connReady = false;
+		conn = new SockJS("http://" + window.location.host + "/sockjs");
+
+		conn.onopen = function(){
+			console.log("SockJS connected.");
+			$.ajax({
+				url: "/sockjstoken",
+				cache: false
+			})
+			.done(function(data) {
+				conn.send(JSON.stringify({action: "authenticate", token: data}));
+				connReady = true;
+				console.log("SockJS authenticated.");
+			});
+		};
+
+		conn.onmessage = function(e){
+			var msg = $.parseJSON(e.data);
+
+			if(msg.action == "updateelectrodes"){
+				$.each(msg.electrodedata, function(idx, val){
+					if(idx >= 0 && idx < 12){
+						electrodeData[idx].push(val);
+						if(electrodeData[idx].length > maxPts){
+							electrodeData[idx] = electrodeData[idx].slice(-maxPts);
+						}
+					}
+				});
+
+
+				updateChart();
+			}
+		};
+		conn.onclose = function(){
+			console.log("SockJS disconnected.");
+			conn = null;
+			connReady = false;
+		};
+
+		function formatData(){
+			var result = [];
+
+			$.each(electrodeData, function(idx, val){
+				var series = {};
+				series.label = "E" + idx;
+				series.data = [];
+
+				for(var i = 0; i < val.length; i++){
+					series.data.push([maxPts - val.length + i, val[i]]);
+				}
+
+				result.push(series);
+			})
+
+			return result;
+		}
+
+		function updateChart(){
+			plot.setData(formatData());
+			plot.draw();
+		}
+
+		function toggleStartStop(){
+			if(runningStatus){
+				// Change status to stopped
+				$("#btnStartStop .fa").removeClass("fa-stop");
+				$("#btnStartStop .fa").addClass("fa-play");
+				$("#btnStartStop .text").html("Start");
+				conn.send(JSON.stringify({action: "stopcapture"}));
+			}else{
+				// Change status to running
+				$("#btnStartStop .fa").removeClass("fa-play");
+				$("#btnStartStop .fa").addClass("fa-stop");
+				$("#btnStartStop .text").html("Stop");
+				electrodeData = {
+					0: [], 1: [], 2: [], 3: [], 4: [], 5: [],
+					6: [], 7: [], 8: [], 9: [], 10: [], 11: []
+				};
+				conn.send(JSON.stringify({action: "startcapture", electrodes: $("#lstElectrodes").val()}));
+			}
+			runningStatus = !runningStatus;
+		}
+
+		function changeElectrodes(){
+			if(runningStatus){
+				conn.send(JSON.stringify({action: "startcapture", electrodes: $("#lstElectrodes").val()}));
+			}
+		}
+
+		$("#btnStartStop").on("click", toggleStartStop);
+		$("#lstElectrodes").change(changeElectrodes);
+
+		plot = $.plot($("#chart"), formatData(), chartOptions);
+	});
+</script>
+{% endblock %}

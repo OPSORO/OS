@@ -1,0 +1,136 @@
+{% extends "app.html" %}
+
+{% block head %}
+{{ super() }}
+<script src="static/recorderjs/audiodisplay.js"></script>
+<script src="static/recorderjs/recorder.js"></script>
+<script src="static/recorderjs/main.js"></script>
+{% endblock %}
+
+{% block page_content %}
+<div id="errors">
+	{% with messages = get_flashed_messages(category_filter=["message"]) %}
+		{% if messages %}
+			{% for message in messages %}
+				<div data-alert class="alert-box secondary radius">
+					{{ message }}
+					<a href="#" class="close">&times;</a>
+				</div>
+			{% endfor %}
+		{% endif %}
+	{% endwith %}
+	{% with messages = get_flashed_messages(category_filter=["error"]) %}
+		{% if messages %}
+			{% for message in messages %}
+				<div data-alert class="alert-box alert radius">
+					{{ message }}
+					<a href="#" class="close">&times;</a>
+				</div>
+			{% endfor %}
+		{% endif %}
+	{% endwith %}
+	{% with messages = get_flashed_messages(category_filter=["success"]) %}
+		{% if messages %}
+			{% for message in messages %}
+				<div data-alert class="alert-box success radius">
+					{{ message }}
+					<a href="#" class="close">&times;</a>
+				</div>
+			{% endfor %}
+		{% endif %}
+	{% endwith %}
+</div>
+
+<fieldset>
+	<legend><span class="fa fa-upload"></span> Upload file</legend>
+	<form action="upload" method="post" enctype="multipart/form-data" style="margin-bottom: 1rem;">
+		<div class="row">
+			<div class="large-9 medium-8 small-12 columns">
+				<input type="file" name="soundfile" style="margin-bottom: 0.25rem;" accept="audio/*;capture=microphone"><br>
+				<span class="note"><strong>Note:</strong> Only .wav, .ogg and .mp3 files are allowed.</span>
+			</div>
+			<div class="large-3 medium-4 small-12 columns">
+				<button type="send" class="button" style="width: 100%;"><span class="fa fa-upload"></span> Upload</button>
+			</div>
+		</div>
+	</form>
+</fieldset>
+
+<fieldset>
+	<legend><span class="fa fa-microphone"></span> Upload recording</legend>
+	<div div class="large-9 medium-8 small-12 columns">
+		<canvas id="analyser" width="200" height="150"></canvas>
+		<canvas id="wavedisplay" width="200" height="150"></canvas>
+	</div>
+	<div class="large-3 medium-4 small-12 columns">
+		<a href="#" class="button alert" data-bind="visible: !isRecordingEnabled(), click: enableRecording">
+			<span class="fa fa-microphone-slash"></span>
+			<span class="text">Enable microphone</span>
+		</a>
+		<a href="#" class="button alert" data-bind="visible: isRecordingEnabled(), click: toggleRecording">
+			<span class="fa fa-microphone"></span>
+			<span class="fa fa-circle-o-notch fa-spin" data-bind="visible: isRecording()"></span>
+			<span class="text" data-bind="text: isRecording() ? 'Stop' : 'Record'"></span>
+		</a>
+
+ 		<a href="#" class="button" data-bind="visible: isRecorded() && !isRecording()"><span class="fa fa-download"> Download</span></a>
+
+
+		<audio width="100%" id="recordingAudio" src="" controls data-bind="visible: isRecorded() && !isRecording()"></audio>
+
+		<input type="text" name="text" class="text" style="width: 100%;" data-bind="value: fileName, visible: isRecorded() && !isRecording()"/>
+		<a href="#" class="button" data-bind="click: uploadRecording, visible: isRecorded() && !isRecording()"><span class="fa" data-bind="css { 'fa-upload': !isUploading(), 'fa-circle-o-notch': isUploading(), 'fa-spin': isUploading() }"></span> Upload recording</a>
+
+	</div>
+</fieldset>
+
+<fieldset>
+	<legend><span class="fa fa-commenting"></span> Text to speech</legend>
+	<form id="formTTS">
+		<div class="row">
+			<div class="large-9 medium-8 small-12 columns">
+				<input type="text" name="txtTTS" id="txtTTS" style="width: 100%;" placeholder="Hello World!">
+			</div>
+			<div class="large-3 medium-4 small-12 columns">
+				<a href="#" id="btnTTS" class="button" style="width: 100%;"><span class="fa fa-volume-up"></span> Say it!</a>
+			</div>
+		</div>
+	</form>
+</fieldset>
+
+{% if soundfiles %}
+	{% for soundfile in soundfiles %}
+		<span class="file" data-soundfile="{{ soundfile }}">
+			<a href="#" class="button btnDelSnd"><span class="fa fa-trash"></span></a>
+			<a href="#" class="button btnPlaySnd"><span class="fa fa-play"></span></a>
+			<span class="filename">{{ soundfile }}</span><br>
+		</span>
+	{% endfor %}
+{% endif %}
+
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+	function addError(msg){
+		$("#errors").append("<div data-alert class=\"alert-box alert\">" + msg + "<a href=\"#\" class=\"close\">&times;</a></div>");
+		$(document).foundation("alert", "reflow");
+	}
+
+	function addMessage(msg){
+		$("#errors").append("<div data-alert class=\"alert-box success\">" + msg + "<a href=\"#\" class=\"close\">&times;</a></div>");
+		$(document).foundation("alert", "reflow");
+	}
+
+	function doTTS(){
+		//alert($("#txtTTS").val());
+		$.ajax({
+			dataType: "json",
+			type: "GET",
+			url: "saytts",
+			data: {text: $("#txtTTS").val()}
+		});
+	}
+</script>
+{% endblock %}

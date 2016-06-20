@@ -1,0 +1,67 @@
+{% extends "app.html" %}
+
+
+{% block base_toolbar %}
+<!--
+{% include "toolbar/file_operations.html" %}
+{% include "toolbar/script_operations.html" %}
+{% include "toolbar/lock_unlock.html" %}
+-->
+{% endblock %}
+
+
+{% block page_content %}
+{{ super() }}
+
+<div class="foo">
+
+</div>
+
+
+
+<div id="verhaal"></div>
+
+<h2 class="back"> terug</h2>
+
+<h2 class="next"> aap</h2>
+
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<!--
+<script src="static/javascript.js"></script>
+-->
+
+<script>
+var action_data = {{ actions|tojson|safe }};
+
+var data = {{ data|tojson|safe }};
+</script>
+
+{% endblock %}
+
+{% block modals %}
+{{ super() }}
+<div id="popup_window" class="reveal-modal" data-reveal>
+	<div class="titlebar">
+		<a class="close-reveal-modal"><span class="fa fa-close"></span></a>
+		<span class="fa fa-cogs"></span> Popup window!
+	</div>
+	<div class="content">
+		<p>This is a popup window.</p>
+		<form>
+			<div class="row collapse">
+				<div class="small-9 columns">
+					<input type="text" name="text" class="error" style="width: 100%;" data-bind="value: popupTextInput">
+					<small class="error hide"></small>
+				</div>
+				<div class="small-3 columns">
+					<a href="#" class="button" style="width: 100%;" data-bind="click: popupButtonHandler()"><span class="fa fa-save"></span> Save</a>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+
+{% endblock %}

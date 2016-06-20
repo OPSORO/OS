@@ -1,0 +1,712 @@
+{% extends "app.html" %}
+
+{% block head %}
+{{ super() }}
+{% endblock %}
+
+{% block base_toolbar %}
+{% include "toolbar/file_operations.html" %}
+{% include "toolbar/script_operations.html" %}
+{% include "toolbar/expand_collapse.html" %}
+{% endblock %}
+
+{% block page_content %}
+{{ super() }}
+
+<div id="errors" style="margin-top: -1rem;">
+	{% with messages = get_flashed_messages(category_filter=["message"]) %}
+		{% if messages %}
+			{% for message in messages %}
+				<div data-alert class="alert-box secondary radius">
+					{{ message }}
+					<a href="#" class="close">&times;</a>
+				</div>
+			{% endfor %}
+		{% endif %}
+	{% endwith %}
+	{% with messages = get_flashed_messages(category_filter=["error"]) %}
+		{% if messages %}
+			{% for message in messages %}
+				<div data-alert class="alert-box alert radius">
+					{{ message }}
+					<a href="#" class="close">&times;</a>
+				</div>
+			{% endfor %}
+		{% endif %}
+	{% endwith %}
+	{% with messages = get_flashed_messages(category_filter=["success"]) %}
+		{% if messages %}
+			{% for message in messages %}
+				<div data-alert class="alert-box success radius">
+					{{ message }}
+					<a href="#" class="close">&times;</a>
+				</div>
+			{% endfor %}
+		{% endif %}
+	{% endwith %}
+</div>
+<div id="editorWrapper">
+	<pre id="editor">{{ script }}</pre>
+</div>
+<div id="console"></div>
+
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+
+<script src="/static/js/sockjs.min.js"></script>
+<script src="/static/js/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script src="/static/js/ace/mode-lua.js" type="text/javascript" charset="utf-8"></script>
+<script src="static/ono-lua-highlighter.js" type="text/javascript" charset="utf-8"></script>
+<script>
+	var action_data = {{ actions|tojson|safe }};
+	var isFullscreen = false;
+	var scriptname = {% if script_name %}"{{ script_name }}"{% else %}null{% endif %};
+	var isScriptModified = {{ "true" if script_modified else "false" }};
+	var isScriptRunning = {{ "true" if script_running else "false" }};
+	var monitorKeypresses = false;
+	var boilerplate = "";
+
+	function addError(msg){
+		$("#console").append("<span style=\"color: #ab3226;\">" + msg + "</span><br>");
+		$("#console").scrollTop($("#console").prop("scrollHeight"));
+	}
+
+	function addMessage(msg){
+		$("#console").append(msg + "<br>");
+		$("#console").scrollTop($("#console").prop("scrollHeight"));
+	}
+
+	function addConsole(msg, color, icon){
+		var line = "";
+		if(color){
+			line += "<span style=\"color: " + color + ";\">";
+		}
+		if(icon){
+			line += "<span class=\"fa " + icon + "\"></span> ";
+		}
+		line += msg;
+		if(color){
+			line += "</span>";
+		}
+		line += "<br>";
+
+		$("#console").append(line);
+		$("#console").scrollTop($("#console").prop("scrollHeight"));
+	}
+
+	$(document).ready(function(){
+		var Model = function(){
+			var self = this;
+
+			// File operations toolbar item
+			self.fileIsModified = ko.observable(isScriptModified);
+			self.fileName = ko.observable("Untitled");
+			self.fileStatus = ko.observable("Stopped");
+
+			// Script operations toolbar item
+			self.isRunning = ko.observable(isScriptRunning);
+			self.isUI = ko.observable(false);
+
+
+			// Setup ACE editor.
+			var editor = ace.edit("editor");
+			editor.setTheme("ace/theme/twilight");
+
+			var LuaMode = require("ace/mode/lua").Mode;
+			var mode = new LuaMode();
+			var Tokenizer = require("ace/tokenizer").Tokenizer;
+			var OnoLuaHighlightRules = require("ace/mode/onolua_highlight_rules").OnoLuaHighlightRules;
+			mode.$tokenizer = new Tokenizer(new OnoLuaHighlightRules().getRules());
+			editor.session.setMode(mode);
+
+			editor.getSession().setUseSoftTabs(false);
+			editor.getSession().setTabSize(4);
+			editor.$blockScrolling = Infinity; // Disable warning
+
+			editor.getSession().on("change", function(e){
+				$(".filebox .fa-asterisk").removeClass("hide");
+				self.fileIsModified(true);
+			});
+
+			editor.commands.addCommand({
+				name: "save",
+				bindKey: {win: "Ctrl-S",  mac: "Command-S"},
+				exec: function(editor) {
+					doSave();
+				},
+				readOnly: true // false if this command should not apply in readOnly mode
+			});
+
+			// Setup websocket connection.
+			var conn = null;
+			var connReady = false;
+			conn = new SockJS("http://" + window.location.host + "/sockjs");
+
+			conn.onopen = function(){
+				console.log("SockJS connected.");
+				$.ajax({
+					url: "/sockjstoken",
+					cache: false
+				})
+				.done(function(data) {
+					conn.send(JSON.stringify({action: "authenticate", token: data}));
+					connReady = true;
+					console.log("SockJS authenticated.");
+				});
+			};
+
+			conn.onmessage = function(e){
+				var msg = $.parseJSON(e.data);
+
+				switch(msg.action){
+					case "addConsole":
+						addConsole(msg.message, msg.color, msg.icon);
+						break;
+					case "scriptStarted":
+						addConsole("Script started.", "#888888", "fa-play");
+						self.fileStatus("Running");
+						self.isRunning(true);
+						break;
+					case "scriptStopped":
+						addConsole("Script stopped.", "#888888", "fa-stop");
+						self.fileStatus("Stopped");
+						self.isRunning(false);
+						self.isUI(false);
+						break;
+					case "initUI":
+						self.isUI(true);
+						$("#ScriptUIWrench").removeClass("hide");
+						$("#ScriptUIButtons").addClass("hide");
+						$("#ScriptUIButtons").html("");
+						$("#ScriptUIKeys").addClass("hide");
+						$("#ScriptUIKeys").html("");
+						$("#ScriptUIModal hr").addClass("hide");
+						break;
+					case "UIAddButton":
+						$("#ScriptUIWrench").addClass("hide");
+						$("#ScriptUIButtons").removeClass("hide");
+
+						if(!$("#ScriptUIKeys").hasClass("hide")){
+							$("#ScriptUIModal hr").removeClass("hide");
+						}
+
+						var li = "<li>";
+						li += "<a href=\"#\" class=\"button btnScriptUI\" data-toggle=\"" + msg.toggle + "\" data-buttonname=\"" + msg.name + "\">";
+						li += "<span class=\"fa " + msg.icon + " fa-2x\"></span><br>"
+						li += msg.caption;
+						li += "</a>";
+						li += "</li>";
+						$("#ScriptUIButtons").append(li);
+						break;
+					case "UIAddKey":
+						var div = "";
+						var arrows = ["up", "down", "left", "right"];
+						var alphabet = "abcdefghijklmnopqrstuvwxyz";
+						var keymap = {
+							"up": 38, "down": 40, "left": 37, "right": 39, "space": 32,
+							"a": 65, "b": 66, "c": 67, "d": 68, "e": 69, "f": 70,
+							"g": 71, "h": 72, "i": 73, "j": 74, "k": 75, "l": 76,
+							"m": 77, "n": 78, "o": 79, "p": 80, "q": 81, "r": 82,
+							"s": 83, "t": 84, "u": 85, "v": 86, "w": 87, "x": 88,
+							"y": 89, "z": 90
+						};
+
+						if(msg.key == "space"){
+							// Key is space bar
+							div = "<div class=\"keyboardKey space\" data-key=\"" + msg.key + "\" data-keycode=\"" + keymap[msg.key] + "\">&nbsp;</div>";
+						}else if(arrows.indexOf(msg.key) > -1){
+							// Key is an arrow
+							div = "<div class=\"keyboardKey\"  data-key=\"" + msg.key + "\" data-keycode=\"" + keymap[msg.key] + "\"><span class=\"fa fa-caret-" + msg.key + "\"></span></div>";
+						}else if(alphabet.indexOf(msg.key) > -1){
+							// Key is a letter
+							div = "<div class=\"keyboardKey letter\"  data-key=\"" + msg.key + "\" data-keycode=\"" + keymap[msg.key] + "\">" + msg.key + "</div>";
+						}else{
+							return;
+						}
+
+						$("#ScriptUIWrench").addClass("hide");
+						$("#ScriptUIKeys").removeClass("hide");
+						$("#ScriptUIKeys").append(div);
+
+						if(!$("#ScriptUIButtons").hasClass("hide")){
+							$("#ScriptUIModal hr").removeClass("hide");
+						}
+
+						break;
+				}
+			};
+
+			conn.onclose = function(){
+				console.log("SockJS disconnected.");
+				conn = null;
+				connReady = false;
+			};
+
+			// Don't submit form on enter
+			$("input,select").keypress(function(evt){
+				return evt.keyCode != 13;
+			});
+
+			// Toolbar buttons
+			self.loadFileData = function(filename){
+				if (filename == "") {
+					return;
+				}
+				$.ajax({
+					dataType: "text",
+					type: "POST",
+					url: "files/get",
+					cache: false,
+					data: {path: filename, extension: ".lua"},
+					success: function(data){
+						// Load script
+							editor.setValue(data);
+							editor.gotoLine(1, 0, false);
+
+							// Update filename and asterisk
+							var filename_no_ext = filename;
+							if(filename_no_ext.slice(-4) == ".lua" || filename_no_ext.slice(-4) == ".LUA"){
+								filename_no_ext = filename_no_ext.slice(0, -4);
+							}
+							self.fileName(filename_no_ext);
+							self.fileIsModified(false);
+					},
+					error: function(){
+						window.location.href = "?";
+					}
+				});
+			};
+
+			self.saveFileData = function(filename){
+				if(filename == ""){
+					addError("No filename!");
+					return;
+				}else{
+					var luacode = editor.getValue();
+
+					$.ajax({
+						dataType: "json",
+						data: {
+							path: filename,
+							filedata: luacode,
+							overwrite: 1,
+							extension: ".lua"
+						},
+						type: "POST",
+						url: "files/save",
+						success: function(data){
+							var filename_no_ext = filename;
+							if(filename_no_ext.slice(-4) == ".lua" || filename_no_ext.slice(-4) == ".LUA"){
+								filename_no_ext = filename_no_ext.slice(0, -4);
+							}
+							self.fileName(filename_no_ext);
+							self.fileIsModified(false);
+						}
+					});
+				}
+			};
+			// // Save
+			// self.saveFile = function(){
+			// 	if(scriptname == null){
+			// 		// Untitled script
+			// 		$("#txtFilename").val("");
+			// 		$("#SaveAsModal small.error").addClass("hide");
+			// 		$("#SaveAsModal").foundation("reveal", "open");
+			// 	}else{
+			// 		// Don't show modal, overwrite script file
+			// 		var luacode = editor.getValue();
+			//
+			// 		$.ajax({
+			// 			dataType: "json",
+			// 			data: {
+			// 				file: luacode,
+			// 				filename: scriptname,
+			// 				overwrite: 1
+			// 			},
+			// 			type: "POST",
+			// 			url: "save",
+			// 			success: function(data){
+			// 				if(data.status == "error"){
+			// 					addError(data.message);
+			// 				}else if(data.status == "success"){
+			// 					scriptname = data.filename;
+			// 					isScriptModified = false;
+			//
+			// 					var filename_no_ext = data.filename;
+			// 					if(filename_no_ext.slice(-4) == ".lua" || filename_no_ext.slice(-4) == ".LUA"){
+			// 						filename_no_ext = filename_no_ext.slice(0, -4);
+			// 					}
+			//
+			// 					$(".filebox .fa-asterisk").addClass("hide");
+			// 					$(".filebox .filename").html(filename_no_ext);
+			// 				}
+			// 			}
+			// 		});
+			// 	}
+			// }
+			//
+			// $("#btnSaveAsModalSave").click(function(){
+			// 	var filename = $("#txtFilename").val();
+			//
+			// 	$("#SaveAsModal small.error").addClass("hide");
+			//
+			// 	var luacode = editor.getValue();
+			//
+			// 	$.ajax({
+			// 		dataType: "json",
+			// 		data: {
+			// 			file: luacode,
+			// 			filename: filename,
+			// 			overwrite: 0
+			// 		},
+			// 		type: "POST",
+			// 		url: "save",
+			// 		success: function(data){
+			// 			if(data.status == "error"){
+			// 				$("#SaveAsModal small.error").html(data.message).removeClass("hide");
+			// 			}else if(data.status == "success"){
+			// 				scriptname = data.filename;
+			// 				isScriptModified = false;
+			//
+			// 				var filename_no_ext = data.filename;
+			// 				if(filename_no_ext.slice(-4) == ".lua" || filename_no_ext.slice(-4) == ".LUA"){
+			// 					filename_no_ext = filename_no_ext.slice(0, -4);
+			// 				}
+			//
+			// 				$(".filebox .fa-asterisk").addClass("hide");
+			// 				$(".filebox .filename").html(filename_no_ext);
+			//
+			// 				$("#SaveAsModal").foundation("reveal", "close");
+			// 			}
+			// 		}
+			// 	});
+			// 	return 0;
+			// });
+
+			// All files
+			// self.openFileList = function(){
+			// 	$("#FilesModalSpinner").removeClass("hide");
+			// 	$("#FilesModalFilelist").html("");
+			// 	$("#FilesModalFilelist").load("filelist", function(){
+			// 		$("#FilesModalSpinner").addClass("hide");
+			//
+			// 		// Delete and Open button events need to be rebound here
+			// 		// because filelist is loaded via AJAX
+			// 		$(".btnDeleteFile").off("click");
+			// 		$(".btnDeleteFile").on("click", function(){
+			// 			filename = $(this).closest("div.file").data("scriptfile");
+			// 			$("#ConfirmDeleteModal").foundation("reveal", "open");
+			//
+			// 			$("#btnConfirmDelete").off("click");
+			// 			$("#btnConfirmDelete").on("click", function(){
+			// 				$.ajax({
+			// 					dataType: "json",
+			// 					type: "POST",
+			// 					url: "delete/" + filename,
+			// 					success: function(data){
+			// 						$("#ConfirmDeleteModal").foundation("reveal", "close");
+			// 						if(data.status == "error"){
+			// 							addError(data.message);
+			// 						}else{
+			// 							addMessage(data.message);
+			// 						}
+			// 					}
+			// 				});
+			// 			});
+			// 		});
+			//
+			// 		$(".btnOpenFile").off("click");
+			// 		$(".btnOpenFile").on("click", function(){
+			// 			filename = $(this).closest("div.file").data("scriptfile");
+			//
+			// 			var do_load = function(){
+			// 				$.ajax({
+			// 					url: "scripts/" + filename,
+			// 					dataType: "text",
+			// 					cache: false,
+			// 					success: function(data){
+			// 						// Load script
+			// 						editor.setValue(data);
+			// 						editor.gotoLine(1, 0, false);
+			//
+			// 						// Update filename and asterisk
+			// 						var filename_no_ext = filename;
+			// 						if(filename_no_ext.slice(-4) == ".lua" || filename_no_ext.slice(-4) == ".LUA"){
+			// 							filename_no_ext = filename_no_ext.slice(0, -4);
+			// 						}
+			// 						$(".filebox .filename").text(filename_no_ext);
+			// 						$(".filebox .fa-asterisk").addClass("hide");
+			// 						isScriptModified = false;
+			// 						scriptname = filename;
+			//
+			// 						$("#FilesModal").foundation("reveal", "close");
+			// 					}
+			// 				});
+			// 			}
+			//
+			// 			if(isScriptModified){
+			// 				$("#btnConfirmLoad").off("click");
+			// 				$("#btnConfirmLoad").on("click", do_load);
+			// 				$("#ConfirmLoadModal").foundation("reveal", "open");
+			// 			}else{
+			// 				do_load();
+			// 			}
+			//
+			// 		});
+			// 	});
+			//
+			// 	$("#FilesModal").foundation("reveal", "open");
+			// };
+
+			// New
+			// Load boilerplate from server
+			$.get("static/boilerplate.lua", function(data){
+				boilerplate = data;
+			});
+
+			self.init = function(){
+				editor.setValue(boilerplate);
+				editor.gotoLine(1, 0, false);
+
+				self.fileName("Untitled");
+				self.fileIsModified(false);
+			};
+
+			self.startStopScript = function(){
+				if(!self.isRunning()){
+					// Start the script
+					var luacode = editor.getValue();
+
+					$.ajax({
+						dataType: "json",
+						data: {
+							file: luacode,
+							name: self.fileName(),
+							modified: self.fileIsModified() ? 1 : 0
+						},
+						type: "POST",
+						url: "startscript",
+						success: function(data){
+							if(data.status == "error"){
+								addError(data.message);
+							}
+						}
+					});
+				}else{
+					// Stop the script
+					$.ajax({
+						dataType: "json",
+						data: {},
+						type: "POST",
+						url: "stopscript",
+						success: function(data){
+							if(data.status == "error"){
+								addError(data.message);
+							}
+						}
+					});
+				}
+			};
+
+			// Clear log
+			self.clearLog = function(){
+				$("#console").html("");
+			};
+
+			// Expand/Collapse
+			// self.expandCollapse = function(){
+			// 	if(isFullscreen){
+			// 		$("#btnExpandCollapse .fa").removeClass("fa-compress");
+			// 		$("#btnExpandCollapse .fa").addClass("fa-expand");
+			// 		$("#btnExpandCollapse .text").html("Expand view");
+			// 		$("#content").removeClass("fullscreen");
+			// 	}else{
+			// 		$("#btnExpandCollapse .fa").removeClass("fa-expand");
+			// 		$("#btnExpandCollapse .fa").addClass("fa-compress");
+			// 		$("#btnExpandCollapse .text").html("Collapse view");
+			// 		$("#content").addClass("fullscreen");
+			// 	}
+			// 	editor.resize();
+			// 	isFullscreen = !isFullscreen;
+			// };
+
+			// ScriptUI
+			// Set a flag to capture keypresses when ScriptUI is opened
+			$(document).on("opened.fndtn.reveal", "#ScriptUIModal[data-reveal]", function(){
+				monitorKeypresses = true;
+			});
+			$(document).on("closed.fndtn.reveal", "#ScriptUIModal[data-reveal]", function(){
+				monitorKeypresses = false;
+			});
+
+			// Monitor keypresses
+			var keysDown = {};
+			$(document).keydown(function(evt){
+				if(!monitorKeypresses){
+					return;
+				}
+
+				var keycode = (event.keyCode ? event.keyCode : event.which);
+
+				if(keysDown[keycode] == null){
+					// First press
+					var elem = $("#ScriptUIKeys .keyboardKey[data-keycode=" + keycode + "]");
+					elem.addClass("down");
+
+					if(connReady){
+						conn.send(JSON.stringify({action: "keyDown", key: elem.data("key")}));
+					}
+
+					keysDown[keycode] = true;
+				}
+			});
+
+			$(document).keyup(function(evt){
+				if(!monitorKeypresses){
+					return;
+				}
+				var keycode = (event.keyCode ? event.keyCode : event.which);
+				keysDown[keycode] = null;
+
+				var elem = $("#ScriptUIKeys .keyboardKey[data-keycode=" + keycode + "]");
+				elem.removeClass("down");
+
+				if(connReady){
+					conn.send(JSON.stringify({action: "keyUp", key: elem.data("key")}));
+				}
+			});
+
+			$("#ScriptUIModal").on("mousedown", "a.btnScriptUI", function(){
+				var elem = $(this);
+				if(connReady && !elem.hasClass("toggled")){
+					conn.send(JSON.stringify({action: "buttonDown", button: elem.data("buttonname")}));
+					console.log("button down");
+				}
+			});
+
+			$("#ScriptUIModal").on("mouseup", "a.btnScriptUI", function(){
+				var elem = $(this);
+
+				if(elem.data("toggle")){
+					// Toggle button
+					if(elem.hasClass("toggled")){
+						if(connReady){
+							conn.send(JSON.stringify({action: "buttonUp", button: elem.data("buttonname")}));
+							console.log("button up");
+						}
+					}
+					elem.toggleClass("toggled");
+				}else{
+					// Regular button
+					if(connReady){
+						conn.send(JSON.stringify({action: "buttonUp", button: elem.data("buttonname")}));
+					}
+				}
+			});
+
+			self.scriptUI = function(){
+				$("#ScriptUIModal").foundation("reveal", "open");
+			};
+
+			if (action_data.openfile) {
+				self.loadFileData(action_data.openfile || "");
+			} else {
+				self.init();
+			}
+
+		};
+		// This makes Knockout get to work
+		var model = new Model();
+		ko.applyBindings(model);
+		model.fileIsModified(false);
+
+		config_file_operations("scripts", ".lua", model.saveFileData, model.loadFileData, model.init);
+	});
+</script>
+
+{% endblock %}
+
+{% block modals %}
+{{ super() }}
+
+<!-- <div id="SaveAsModal" class="reveal-modal tiny" data-reveal>
+	<div class="titlebar">
+		<a class="close-reveal-modal"><span class="fa fa-close"></span></a>
+		<span class="fa fa-save"></span> Save as
+	</div>
+	<div class="content">
+		<p>Please enter a name for this script.</p>
+		<form>
+			<div class="row collapse">
+				<div class="small-9 columns">
+					<input type="text" name="txtFilename" id="txtFilename" class="error" style="width: 100%;">
+					<small class="error hide"></small>
+				</div>
+				<div class="small-3 columns">
+					<a href="#" class="button" id="btnSaveAsModalSave" style="width: 100%;"><span class="fa fa-save"></span> Save</a>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+
+<div id="FilesModal" class="reveal-modal small" data-reveal>
+	<div class="titlebar">
+		<a class="close-reveal-modal"><span class="fa fa-close"></span></a>
+		<span class="fa fa-folder"></span> All files
+	</div>
+	<div class="content">
+		<div id="FilesModalSpinner" style="text-align: center;">
+			<span class="fa fa-circle-o-notch fa-spin fa-2x"></span>
+		</div>
+		<div id="FilesModalFilelist"></div>
+	</div>
+</div>
+
+<div id="ConfirmNewModal" class="reveal-modal tiny" data-reveal>
+	<div class="titlebar">
+		<a class="close-reveal-modal"><span class="fa fa-close"></span></a>
+		<span class="fa fa-file"></span> New
+	</div>
+	<div class="content">
+		<p>The script was modified. Are you sure you wish to continue without saving?</p>
+		<div class="text-center">
+			<a href="#" id="btnConfirmNew" class="button"><span class="fa fa-file"></span> Yes, discard changes</a>
+		</div>
+	</div>
+</div>
+
+
+
+<div id="ConfirmLoadModal" class="reveal-modal tiny" data-reveal>
+	<div class="titlebar">
+		<a class="close-reveal-modal"><span class="fa fa-close"></span></a>
+		<span class="fa fa-folder-open"></span> Load
+	</div>
+	<div class="content">
+		<p>The script was modified, unsaved changes will be lost. Are you sure you wish to continue?</p>
+		<div class="text-center">
+			<a href="#" id="btnConfirmLoad" class="button"><span class="fa fa-folder-open"></span> Yes, load file</a>
+		</div>
+	</div>
+</div> -->
+
+<div id="ScriptUIModal" class="reveal-modal small" data-reveal>
+	<div class="titlebar">
+		<a class="close-reveal-modal"><span class="fa fa-close"></span></a>
+		<span class="fa fa-gamepad"></span> Script UI
+	</div>
+	<div class="content">
+		<div id="ScriptUIWrench" style="text-align: center;">
+			<span class="fa fa-wrench" style="font-size: 5rem; color: #B2AFA1;"></span><br><br>
+			The script has not created any UI elements yet!
+		</div>
+		<ul id="ScriptUIButtons" class="small-block-grid-4 hide" style="margin-bottom: -1.25rem;"></ul>
+		<hr>
+		<div id="ScriptUIKeys"></div>
+	</div>
+</div>
+
+{% endblock %}

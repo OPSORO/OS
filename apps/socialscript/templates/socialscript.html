@@ -1,0 +1,148 @@
+{% extends "app.html" %}
+
+{% block base_toolbar %}
+{{ super() }}
+{% include "toolbar/file_operations.html" %}
+{% include "toolbar/lock_unlock.html" %}
+{% endblock %}
+
+{% block page_content %}
+{{ super() }}
+
+<div id="voicelines" data-bind="sortable: { data: voiceLines, options: {handle: '.gripper', axis: 'y', opacity: 0.75} }">
+	<div class="voiceline" data-bind="css: {locked: $root.fileIsLocked(), unlocked: !$root.fileIsLocked()}">
+		<div class="gripper"></div>
+		<div class="avatar">
+				<div data-bind="avatar: avatar, click: pickEmotion"></div>
+		</div>
+		<div class="content">
+			<span class="bubble" data-bind="html: contentPreview"></span>
+		</div>
+		<form>
+			<select data-bind="visible: output() != 'tts', options: $root.sounds, value: wav, click: modified">
+			<input type="text" placeholder="Enter text to be spoken..." data-bind="value: tts, visible: output() == 'tts', click: modified()"></input>
+			<div class="leftcontrols">
+				<div class="switch round tts-switch">
+					<input type="checkbox" data-bind="outputswitch: output, attr: {id: switchID} ">
+					<label data-bind="attr: {for: switchID}"></label>
+					<span class="switch-tts fa fa-comment"></span>
+					<span class="switch-wav fa fa-music"></span>
+				</div>
+			</div>
+			<div class="rightcontrols">
+				<a href="#" class="button round alert" data-bind="click: $root.removeLine"><span class="fa fa-trash"></span></a>
+				<a href="#" class="button round secondary" data-bind="click: pressPlay"><span class="fa fa-play" style="margin-right: 0.5rem;"></span> test</a>
+			</div>
+		</form>
+		<div class="playbutton" data-bind="css: {active: isPlaying, used: hasPlayed}">
+			<div class="bg"></div>
+			<a href="#" class="button" data-bind="click: pressPlay">
+				<span class="fa fa-fw fa-play" style="font-size: 1.5rem"></span>
+			</a>
+		</div>
+	</div>
+</div>
+<div class="rightcontrols" data-bind="visible: !$root.fileIsLocked()">
+	<a href="#" id="btnAdd" class="button round info" data-bind="click: $root.addLine">
+		<span class="fa fa-plus"></span><span class="text"> Add Line</span>
+	</a>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script src="../../static/js/jquery-ui-sortable/jquery-ui.js"></script>
+<script src="../../static/js/knockout-sortable.min.js"></script>
+<script>
+var action_data = {{ actions|tojson|safe }};
+var emotions_data = {{ emotions|tojson|safe }};
+var sounds_data = {{ sounds|tojson|safe }};
+</script>
+{% endblock %}
+
+{% block modals %}
+{{ super() }}
+<div id="PickEmotionModal" class="reveal-modal" data-reveal>
+	<div class="content">
+		<ul class="small-block-grid-5" data-bind="foreach: emotions">
+			<li>
+				<div class="avatar" data-bind="click: $root.changeEmotion"><div data-bind="avatar: image"></div></div>
+				<div class="avatarcaption" data-bind="text: name"></div>
+			</li>
+		</ul>
+	</div>
+</div>
+
+<!-- <div id="SaveAsModal" class="reveal-modal tiny" data-reveal>
+	<div class="titlebar">
+		<a class="close-reveal-modal"><span class="fa fa-close"></span></a>
+		<span class="fa fa-save"></span> Save as
+	</div>
+	<div class="content">
+		<p>Please enter a name for this script.</p>
+		<form>
+			<div class="row collapse">
+				<div class="small-9 columns">
+					<input type="text" name="txtFilename" id="txtFilename" class="error" style="width: 100%;">
+					<small class="error hide"></small>
+				</div>
+				<div class="small-3 columns">
+					<a href="#" class="button" style="width: 100%;" data-bind="click: saveFileAs"><span class="fa fa-save"></span> Save</a>
+				</div>
+			</div>
+		</form>
+	</div>
+</div> -->
+
+<!-- <div id="FilesModal" class="reveal-modal small" data-reveal>
+	<div class="titlebar">
+		<a class="close-reveal-modal"><span class="fa fa-close"></span></a>
+		<span class="fa fa-folder"></span> All files
+	</div>
+	<div class="content">
+		<div id="FilesModalSpinner" style="text-align: center;">
+			<span class="fa fa-circle-o-notch fa-spin fa-2x"></span>
+		</div>
+		<div id="FilesModalFilelist"></div>
+	</div>
+</div> -->
+<!--
+<div id="ConfirmNewModal" class="reveal-modal tiny" data-reveal>
+	<div class="titlebar">
+		<a class="close-reveal-modal"><span class="fa fa-close"></span></a>
+		<span class="fa fa-file"></span> New
+	</div>
+	<div class="content">
+		<p>Changes could be lost. Are you sure you wish to continue without saving?</p>
+		<div class="text-center">
+			<a href="#" class="button" data-bind="click: createNewFile"><span class="fa fa-file"></span> Yes, discard changes</a>
+		</div>
+	</div>
+</div> -->
+
+<!-- <div id="ConfirmDeleteModal" class="reveal-modal tiny" data-reveal>
+	<div class="titlebar">
+		<a class="close-reveal-modal"><span class="fa fa-close"></span></a>
+		<span class="fa fa-trash"></span> Delete
+	</div>
+	<div class="content">
+		<p>Are you sure you wish to delete this file?</p>
+		<div class="text-center">
+			<a href="#" class="button" data-bind="click: deleteFile"><span class="fa fa-trash"></span> Yes, delete file</a>
+		</div>
+	</div>
+</div> -->
+
+<!-- <div id="ConfirmLoadModal" class="reveal-modal tiny" data-reveal>
+	<div class="titlebar">
+		<a class="close-reveal-modal"><span class="fa fa-close"></span></a>
+		<span class="fa fa-folder-open"></span> Load
+	</div>
+	<div class="content">
+		<p>Unsaved changes will be lost. Are you sure you wish to continue?</p>
+		<div class="text-center">
+			<a href="#" id="btnConfirmLoad" class="button"><span class="fa fa-folder-open"></span> Yes, load file</a>
+		</div>
+	</div>
+</div> -->
+{% endblock %}

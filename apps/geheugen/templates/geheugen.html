@@ -1,0 +1,158 @@
+{% extends "app.html" %}
+
+{% block base_toolbar %}
+{{ super() }}
+
+<a href="#" class="button start">
+<span class="fa fa-play"></span> 
+<span class="starttxt">Start</span></a>
+<span class="points">Druk op start</span> 
+{% endblock %}
+
+{% block page_content %}
+{{ super() }}
+<div class="gamesettings">
+	<div class="uitleg">
+		<h1>Werking geheugenkoning</h1>
+		<p>Welkom bij de geheugenkoning. Behaal zoveel mogelijk punten door de juiste kleurencombinatie aan te duiden. Diegene met de meeste punten belandt in de lijst met topscores.</p> 
+			<h2>Hoe gaat dit te werk?</h2>
+<ol>
+<li>Plaats het geheugenkoningdeksel op de doos</li>
+<li>Voer de naam van de speler in</li>
+<li>Druk op start</li>
+<li>De robot zegt een kleurencombinatie waarna de speler deze ook aanduidt op het spelbord</li>
+<li>Bij elke correct antwoord verdient men punten naargelang de lengte van de combinatie</li>
+<li>Hoe meer correcte antwoorden hoe moeilijker de combinatie</li>
+</ol>
+<h2>Veel plezier!</h2>
+	</div>
+	<div class="invoer">
+    <input type="text" id="naam" name="FirstName" placeholder="Typ hier je naam">
+    <button disabled id="invoerKnop"> start</button>
+    <button id="verander"> verander</button>
+</div>
+	<div class="question"></div>
+	</div>
+<table class="highscore" style="width:100%">
+   <th></th><th>Naam</th><th>Punten</th>
+
+	<tr><td class="firstRow">1</td><td><span class="high high0"></span></td>	<td><span class="high score0"></span></td></tr>
+
+    <tr><td class="firstRow">2</td><td><span class="high high1"></span></td>	<td><span class="high score1"></span></td></tr>
+
+    <tr><td class="firstRow">3</td><td><span class="high high2"></span></td>	<td><span class="high score2"></span></td></tr>
+
+    <tr><td class="firstRow">4</td><td><span class="high high3"></span></td>	<td><span class="high score3"></span></td></tr>
+
+    <tr><td class="firstRow">5</td><td><span class="high high4"></span></td>	<td><span class="high score4"></span></td></tr>
+
+    <tr><td class="firstRow">6</td><td><span class="high high5"></span></td>	<td><span class="high score5"></span></td></tr>
+
+    <tr><td class="firstRow">7</td><td><span class="high high6"></span></td>	<td><span class="high score6"></span></td></tr>
+
+    <tr><td class="firstRow">8</td><td><span class="high high7"></span></td>	<td><span class="high score7"></span></td></tr>
+
+    <tr><td class="firstRow">9</td><td><span class="high high8"></span></td>	<td><span class="high score8"></span></td></tr>
+
+    <tr><td class="firstRow">10</td><td><span class="high high9"></span></td>	<td><span class="high score9"></span></td></tr>
+
+</table>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script src="../../static/js/jquery-ui-sortable/jquery-ui.js"></script>
+<script src="../../static/js/knockout-sortable.min.js"></script>
+<script>
+var action_data = {{ actions|tojson|safe }};
+var emotions_data = {{ emotions|tojson|safe }};
+var sounds_data = {{ sounds|tojson|safe }};
+</script>
+{% endblock %}
+
+{% block modals %}
+{{ super() }}
+<div id="PickEmotionModal" class="reveal-modal" data-reveal>
+	<div class="content">
+		<ul class="small-block-grid-5" data-bind="foreach: emotions">
+			<li>
+				<div class="avatar" data-bind="click: $root.changeEmotion"><div data-bind="avatar: image"></div></div>
+				<div class="avatarcaption" data-bind="text: name"></div>
+			</li>
+		</ul>
+	</div>
+</div>
+
+<!-- <div id="SaveAsModal" class="reveal-modal tiny" data-reveal>
+	<div class="titlebar">
+		<a class="close-reveal-modal"><span class="fa fa-close"></span></a>
+		<span class="fa fa-save"></span> Save as
+	</div>
+	<div class="content">
+		<p>Please enter a name for this script.</p>
+		<form>
+			<div class="row collapse">
+				<div class="small-9 columns">
+					<input type="text" name="txtFilename" id="txtFilename" class="error" style="width: 100%;">
+					<small class="error hide"></small>
+				</div>
+				<div class="small-3 columns">
+					<a href="#" class="button" style="width: 100%;" data-bind="click: saveFileAs"><span class="fa fa-save"></span> Save</a>
+				</div>
+			</div>
+		</form>
+	</div>
+</div> -->
+
+<!-- <div id="FilesModal" class="reveal-modal small" data-reveal>
+	<div class="titlebar">
+		<a class="close-reveal-modal"><span class="fa fa-close"></span></a>
+		<span class="fa fa-folder"></span> All files
+	</div>
+	<div class="content">
+		<div id="FilesModalSpinner" style="text-align: center;">
+			<span class="fa fa-circle-o-notch fa-spin fa-2x"></span>
+		</div>
+		<div id="FilesModalFilelist"></div>
+	</div>
+</div> -->
+<!--
+<div id="ConfirmNewModal" class="reveal-modal tiny" data-reveal>
+	<div class="titlebar">
+		<a class="close-reveal-modal"><span class="fa fa-close"></span></a>
+		<span class="fa fa-file"></span> New
+	</div>
+	<div class="content">
+		<p>Changes could be lost. Are you sure you wish to continue without saving?</p>
+		<div class="text-center">
+			<a href="#" class="button" data-bind="click: createNewFile"><span class="fa fa-file"></span> Yes, discard changes</a>
+		</div>
+	</div>
+</div> -->
+
+<!-- <div id="ConfirmDeleteModal" class="reveal-modal tiny" data-reveal>
+	<div class="titlebar">
+		<a class="close-reveal-modal"><span class="fa fa-close"></span></a>
+		<span class="fa fa-trash"></span> Delete
+	</div>
+	<div class="content">
+		<p>Are you sure you wish to delete this file?</p>
+		<div class="text-center">
+			<a href="#" class="button" data-bind="click: deleteFile"><span class="fa fa-trash"></span> Yes, delete file</a>
+		</div>
+	</div>
+</div> -->
+
+<!-- <div id="ConfirmLoadModal" class="reveal-modal tiny" data-reveal>
+	<div class="titlebar">
+		<a class="close-reveal-modal"><span class="fa fa-close"></span></a>
+		<span class="fa fa-folder-open"></span> Load
+	</div>
+	<div class="content">
+		<p>Unsaved changes will be lost. Are you sure you wish to continue?</p>
+		<div class="text-center">
+			<a href="#" id="btnConfirmLoad" class="button"><span class="fa fa-folder-open"></span> Yes, load file</a>
+		</div>
+	</div>
+</div> -->
+{% endblock %}

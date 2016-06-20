@@ -1,0 +1,259 @@
+{% extends "page.html" %}
+
+{% block head %}
+{{ super() }}
+
+{% endblock %}
+
+{% block page_content %}
+{% with messages = get_flashed_messages(category_filter=["message"]) %}
+	{% if messages %}
+		{% for message in messages %}
+			<div data-alert class="alert-box secondary radius">
+				{{ message }}
+				<a href="#" class="close">&times;</a>
+			</div>
+		{% endfor %}
+	{% endif %}
+{% endwith %}
+{% with messages = get_flashed_messages(category_filter=["error"]) %}
+	{% if messages %}
+		{% for message in messages %}
+			<div data-alert class="alert-box alert radius">
+				{{ message }}
+				<a href="#" class="close">&times;</a>
+			</div>
+		{% endfor %}
+	{% endif %}
+{% endwith %}
+{% with messages = get_flashed_messages(category_filter=["success"]) %}
+	{% if messages %}
+		{% for message in messages %}
+			<div data-alert class="alert-box success radius">
+				{{ message }}
+				<a href="#" class="close">&times;</a>
+			</div>
+		{% endfor %}
+	{% endif %}
+{% endwith %}
+
+<form data-abide method="post">
+	<fieldset data-bind="with: general">
+		<legend><span class="fa fa-cog"></span> General</legend>
+
+		<div class="row">
+			<div class="small-4 medium-3 large-4 columns">
+				<label for="robotName" class="right inline">Robot name</label>
+			</div>
+			<div class="small-8 medium-6 large-4 columns end">
+				<input type="text" id="robotName" name="robotName" value="" data-bind="value: robotName" required pattern="[a-zA-Z]+">
+				<small class="error">A valid name is required</small>
+			</div>
+		</div>
+		<div class="row">
+			<div class="small-4 medium-3 large-4 columns">
+				<label for="robotPassword" class="right inline">Password</label>
+			</div>
+			<div class="small-8 medium-6 large-4 columns end">
+				<input type="password" id="robotPassword" name="robotPassword" placeholder="Enter new password to change" data-bind="value: password">
+			</div>
+		</div>
+		<div class="row">
+			<div class="small-4 medium-3 large-4 columns">
+				<label for="robotPasswordConfirm" class="right inline">Confirm password</label>
+			</div>
+			<div class="small-8 medium-6 large-4 columns end">
+				<input type="password" id="robotPasswordConfirm" name="robotPasswordConfirm" placeholder="Enter new password to change" data-equalto="robotPassword" data-bind="value: passwordConfirm">
+				<small class="error">The password did not match</small>
+				<span class="note">
+					<strong>Note:</strong> Passwords is stored in a plain text file and are <u>not secure</u>! Do not use this password for anything else!
+				</span>
+			</div>
+		</div>
+	</fieldset>
+
+	<fieldset data-bind="with: audio">
+		<legend><span class="fa fa-volume-up"></span> Audio</legend>
+
+		<div class="row">
+			<div class="small-4 medium-3 large-4 columns">
+				<label class="right inline">Master volume</label>
+			</div>
+			<div class="small-8 medium-6 large-4 columns">
+				<div class="range-slider" id="volumeSlider" style="margin-top: 0.5625rem;" data-slider data-options="display_selector: #volumeSliderOutput; start: 0; end: 100;" data-bind="slider: volume">
+					<span class="range-slider-handle" role="slider" tabindex="0"></span>
+					<span class="range-slider-active-segment"></span>
+					<input type="hidden" id="volume" name="volume">
+				</div>
+			</div>
+			<div class="medium-1 show-for-medium-up columns end">
+				<label class="left inline"><span id="volumeSliderOutput" class="inline"></span>%</label>
+			</div>
+		</div>
+		<div class="row">
+			<div class="small-4 medium-3 large-4 columns">
+				<label for="ttsEngine" class="right inline">Text-to-speech engine</label>
+			</div>
+			<div class="small-8 medium-6 large-4 columns end">
+				<select id="ttsEngine" name="ttsEngine" data-bind="value: ttsEngine">
+					<option value="pico">PicoTTS</option>
+					<option value="espeak">eSpeak</option>
+				</select>
+			</div>
+		</div>
+		<div class="row" data-bind="visible: ttsEngine() == 'espeak'">
+			<div class="small-4 medium-3 large-4 columns">
+				<label for="ttsLanguage" class="right inline">Text-to-speech language</label>
+			</div>
+			<div class="small-8 medium-6 large-4 columns end">
+				<select id="ttsLanguage" name="ttsLanguage" data-bind="value: ttsLanguage">
+					<option value="en">English</option>
+					<option value="nl">Dutch</option>
+					<option value="fr">French</option>
+				</select>
+			</div>
+		</div>
+		<div class="row" data-bind="visible: ttsEngine() == 'espeak'">
+			<div class="small-4 medium-3 large-4 columns">
+				<label for="ttsGender" class="right inline">Text-to-speech gender</label>
+			</div>
+			<div class="small-8 medium-6 large-4 columns end">
+				<select id="ttsGender" name="ttsGender" data-bind="value: ttsGender">
+					<option value="m">Male</option>
+					<option value="f">Female</option>
+				</select>
+			</div>
+		</div>
+
+	</fieldset>
+
+	<fieldset data-bind="with: wireless">
+		<legend><span class="fa fa-wifi"></span> Wireless</legend>
+
+		<div data-alert class="alert-box info" data-bind="visible: settingsChanged">
+			<span class="fa fa-info-circle"></span> Wireless settings have been changed. They will take effect the next time the robot is started.
+		</div>
+		<div class="row">
+			<div class="small-4 medium-3 large-4 columns">
+				<label for="wirelessSsid" class="right inline">Network name (SSID)</label>
+			</div>
+			<div class="small-8 medium-6 large-4 columns end">
+				<input type="text" id="wirelessSsid" name="wirelessSsid" value="" data-bind="value: ssid" required pattern=".+">
+				<small class="error">A valid ssid is required</small>
+			</div>
+		</div>
+		<div class="row" data-bind="visible: !samePassword()">
+			<div class="small-4 medium-3 large-4 columns">
+				<label for="wirelessPassword" class="right inline">Password</label>
+			</div>
+			<div class="small-8 medium-6 large-4 columns end">
+				<input type="password" id="wirelessPassword" name="wirelessPassword" placeholder="Enter new password to change" data-bind="value: password">
+			</div>
+		</div>
+		<div class="row" data-bind="visible: !samePassword()">
+			<div class="small-4 medium-3 large-4 columns">
+				<label for="wirelessPasswordConfirm" class="right inline">Confirm password</label>
+			</div>
+			<div class="small-8 medium-6 large-4 columns end">
+				<input type="password" id="wirelessPasswordConfirm" name="wirelessPasswordConfirm" placeholder="Enter new password to change" data-equalto="wirelessPassword" data-bind="value: passwordConfirm">
+				<small class="error">The password did not match</small>
+			</div>
+		</div>
+		<div class="row">
+			<div class="small-push-4 small-8 medium-push-3 medium-6 large-push-4 large-4 columns end">
+				<input id="wirelessSamePass" name="wirelessSamePass" type="checkbox" data-bind="checked: samePassword"><label for="wirelessSamePass">Use same password as web interface</label>
+			</div>
+		</div>
+		<div class="row">
+			<div class="small-4 medium-3 large-4 columns">
+				<label for="wirelessChannel" class="right inline">Channel</label>
+			</div>
+			<div class="small-8 medium-6 large-4 columns end">
+				<select id="wirelessChannel" name="wirelessChannel" data-bind="value: channel">
+					<option value="1">1</option>
+					<option value="2">2</option>
+					<option value="3">3</option>
+					<option value="4">4</option>
+					<option value="5">5</option>
+					<option value="6">6</option>
+					<option value="7">7</option>
+					<option value="8">8</option>
+					<option value="9">9</option>
+					<option value="10">10</option>
+					<option value="11">11</option>
+				</select>
+			</div>
+		</div>
+	</fieldset>
+
+	<div class="text-center">
+		<button type="submit" class="button success" style="margin-right: 2rem; padding-left: 2rem; padding-right: 2rem;"><span class="fa fa-check-circle"></span> Submit</button>
+		<a href="/preferences" class="button" style="padding-left: 2rem; padding-right: 2rem;"><span class="fa fa-undo"></span> Revert</a>
+	</div>
+</form>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>var prefsJson = {{ prefs|tojson|safe }};</script>
+<script src="/static/js/knockout-slider-binding.js"></script>
+<script>
+$(document).ready(function(){
+	var GeneralSettings = function(){
+		var self = this;
+
+		self.robotName = ko.observable("");
+		self.password = ko.observable("");
+		self.passwordConfirm = ko.observable("");
+	};
+
+	var AudioSettings = function(){
+		var self = this;
+
+		self.volume = ko.observable(0);
+		self.ttsEngine = ko.observable("pico");
+		self.ttsLanguage = ko.observable("nl");
+		self.ttsGender = ko.observable("m");
+	};
+
+	var WirelessSettings = function(){
+		var self = this;
+
+		self.ssid = ko.observable("OpSoRo_AP");
+
+		self.password = ko.observable("");
+		self.passwordConfirm = ko.observable("");
+		self.samePassword = ko.observable(true);
+		self.channel = ko.observable("0");
+		self.settingsChanged = ko.observable(false);
+
+		var changed_fn = function(){ self.settingsChanged(true); };
+		self.ssid.subscribe(changed_fn);
+		self.password.subscribe(changed_fn);
+		self.samePassword.subscribe(changed_fn);
+		self.channel.subscribe(changed_fn);
+		self.settingsChanged(false);
+	};
+
+	var SettingsModel = function(){
+		var self = this;
+
+		self.general = ko.observable(new GeneralSettings());
+		self.audio = ko.observable(new AudioSettings());
+		self.wireless = ko.observable(new WirelessSettings());
+	};
+
+	var viewmodel = new SettingsModel();
+	ko.applyBindings(viewmodel);
+	viewmodel.general().robotName(prefsJson.general.robotName || "Ono");
+	viewmodel.audio().volume(prefsJson.audio.volume || 50);
+	viewmodel.audio().ttsEngine(prefsJson.audio.ttsEngine || "pico");
+	viewmodel.audio().ttsLanguage(prefsJson.audio.ttsLanguage || "nl");
+	viewmodel.audio().ttsGender(prefsJson.audio.ttsGender || "m");
+	viewmodel.wireless().ssid(prefsJson.wireless.ssid || "OpSoRo_AP");
+	viewmodel.wireless().samePassword(prefsJson.wireless.samePassword || true);
+	viewmodel.wireless().channel(prefsJson.wireless.channel || 6);
+	viewmodel.wireless().settingsChanged(false);
+});
+</script>
+{% endblock %}

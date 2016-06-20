@@ -1,0 +1,174 @@
+{% extends "app.html" %}
+
+{% block head %}
+{{ super() }}
+<style>
+#pnlPinmap, #pnlLimits, #pnlFunctions {
+	margin: 0 -1rem -0.25rem -1rem;
+	height: calc(100vh - 20rem);
+}
+
+.editor {
+	width: 100%;
+	height: 100%;
+	border: 0;
+	margin: 0;
+}
+
+div.page {
+	background-color: #141414;
+}
+
+#errors {
+	margin: -1rem -1rem -1rem -1rem;
+}
+</style>
+{% endblock %}
+
+{% block page_content %}
+<div class="actionbar">
+	<a href="#" id="btnPinmap" class="action active">
+		<span class="fa fa-file-text"></span><br/>
+		<span class="text">Pinmap</span>
+	</a>
+	<a href="#" id="btnLimits" class="action">
+		<span class="fa fa-file-text"></span><br/>
+		<span class="text">Limits</span>
+	</a>
+	<a href="#" id="btnFunctions" class="action">
+		<span class="fa fa-file-text"></span><br/>
+		<span class="text">Functions</span>
+	</a>
+	<div class="spacer"></div>
+	<a href="#" id="btnDefaults" class="action">
+		<span class="fa fa-undo"></span><br/>
+		<span class="text">Get defaults</span>
+	</a>
+	<a href="#"  id="btnSave" class="action">
+		<span class="fa fa-save"></span><br/>
+		<span class="text">Save config</span>
+	</a>
+</div>
+<div id="errors"></div>
+<div id="pnlPinmap">
+	<pre id="editor_pinmap" class="editor">{{ file_pinmap }}</pre>
+</div>
+<div id="pnlLimits" class="hide">
+	<pre id="editor_limits" class="editor">{{ file_limits }}</pre>
+</div>
+<div id="pnlFunctions" class="hide">
+	<pre id="editor_functions" class="editor">{{ file_functions }}</pre>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+
+<script src="/static/js/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script src="/static/js/ace/mode-yaml.js" type="text/javascript" charset="utf-8"></script>
+<script>
+function addError(msg){
+	$("#errors").append("<div data-alert class=\"alert-box alert\">" + msg + "<a href=\"#\" class=\"close\">&times;</a></div>");
+	$(document).foundation("alert", "reflow");
+}
+
+function addMessage(msg){
+	$("#errors").append("<div data-alert class=\"alert-box success\">" + msg + "<a href=\"#\" class=\"close\">&times;</a></div>");
+	$(document).foundation("alert", "reflow");
+}
+
+$(document).ready(function(){
+	var editor_pinmap = ace.edit("editor_pinmap");
+	editor_pinmap.setTheme("ace/theme/twilight");
+	editor_pinmap.getSession().setMode("ace/mode/yaml");
+	editor_pinmap.getSession().setTabSize(2);
+
+	var editor_limits = ace.edit("editor_limits");
+	editor_limits.setTheme("ace/theme/twilight");
+	editor_limits.getSession().setMode("ace/mode/yaml");
+	editor_limits.getSession().setTabSize(2);
+
+	var editor_functions = ace.edit("editor_functions");
+	editor_functions.setTheme("ace/theme/twilight");
+	editor_functions.getSession().setMode("ace/mode/yaml");
+	editor_functions.getSession().setTabSize(2);
+
+
+	$("#btnPinmap").click(function(){
+		$("#btnPinmap").addClass("active");
+		$("#btnLimits").removeClass("active");
+		$("#btnFunctions").removeClass("active");
+
+		$("#pnlPinmap").removeClass("hide");
+		$("#pnlLimits").addClass("hide");
+		$("#pnlFunctions").addClass("hide");
+
+		editor_pinmap.resize();
+	});
+	$("#btnLimits").click(function(){
+		$("#btnPinmap").removeClass("active");
+		$("#btnLimits").addClass("active");
+		$("#btnFunctions").removeClass("active");
+
+		$("#pnlPinmap").addClass("hide");
+		$("#pnlLimits").removeClass("hide");
+		$("#pnlFunctions").addClass("hide");
+
+		editor_limits.resize();
+	});
+	$("#btnFunctions").click(function(){
+		$("#btnPinmap").removeClass("active");
+		$("#btnLimits").removeClass("active");
+		$("#btnFunctions").addClass("active");
+
+		$("#pnlPinmap").addClass("hide");
+		$("#pnlLimits").addClass("hide");
+		$("#pnlFunctions").removeClass("hide");
+
+		editor_functions.resize();
+	});
+
+	$("#btnDefaults").click(function(){
+		$.get("default/pinmap.yaml", function(data){
+			editor_pinmap.setValue(data);
+			editor_pinmap.gotoLine(1, 0, false);
+			editor_pinmap.resize();
+		});
+		$.get("default/limits.yaml", function(data){
+			editor_limits.setValue(data);
+			editor_limits.gotoLine(1, 0, false);
+			editor_limits.resize();
+		});
+		$.get("default/functions.yaml", function(data){
+			editor_functions.setValue(data);
+			editor_functions.gotoLine(1, 0, false);
+			editor_limits.resize();
+		});
+	});
+
+	$("#btnSave").click(function(){
+		var pinmap_yaml = editor_pinmap.getValue();
+		var limits_yaml = editor_limits.getValue();
+		var functions_yaml = editor_functions.getValue();
+
+		$.ajax({
+				dataType: "json",
+				data: {
+					pinmap: pinmap_yaml,
+					limits: limits_yaml,
+					functions: functions_yaml
+				},
+				type: "POST",
+				url: "saveconfig",
+				success: function(data){
+					if(data.status == "error"){
+						addError(data.message);
+					}else{
+						addMessage(data.message);
+					}
+				}
+			});
+	});
+});
+</script>
+{% endblock %}

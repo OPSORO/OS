@@ -1,0 +1,43 @@
+{% extends "app.html" %}
+
+{% block page_content %}
+<div class="row">
+	<div class="large-7 large-push-5 columns">
+		<canvas id="circumplex" width="600" height="600" style="width: 100%;"></canvas>
+	</div>
+	<div class="large-5 large-pull-7 columns" style="text-align: justify;">
+		<div style="height: 10rem;" class="show-for-large-up"></div>
+		<div class="panel">
+			<div class="row">
+				<div class="small-6 columns">
+					<strong>Valence:</strong> <span id="lblVal">0.000</span><br/>
+					<strong>Arousal:</strong> <span id="lblAr">0.000</span>
+				</div>
+				<div class="small-6 columns">
+					<strong>Phi:</strong> <span id="lblPhi">0.000°</span><br/>
+					<strong>R:</strong> <span id="lblR">0.000</span>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="small-6 columns">
+				<a href="#" id="btnEnable" class="button" style="width: 100%;"><span class="fa fa-check"></span> Enable Servos</a>
+			</div>
+			<div class="small-6 columns">
+				<a href="#" id="btnDisable" class="button" style="width: 100%;"><span class="fa fa-close"></span> Disable Servos</a>
+			</div>
+		</div>
+		<div class="row">
+			<div class="small-12 columns" id="errors"></div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+
+<script src="/static/js/jcanvas.min.js"></script>
+<script src="/static/js/numeral.min.js"></script>
+<script src="static/circumplex.js"></script>
+{% endblock %}

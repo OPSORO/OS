@@ -1,0 +1,151 @@
+{% extends "page.html" %}
+
+{% block head %}
+{{ super() }}
+
+{% endblock %}
+
+{% block page_content %}
+<fieldset>
+	<legend><span class="fa fa-cog"></span> Options</legend>
+	<a href="#" class="button alert"><span class="fa fa-trash"></span></a>
+	<a href="#" class="button open_folder"><span class="fa fa-folder-open"></span></a>
+	<span class="foldername" data-bind="text: path"></span>
+
+</fieldset>
+
+
+<fieldset>
+	<legend><span class="fa fa-folder"></span> Folders</legend>
+	<div data-bind="sortable: { data: folderCollection }">
+		<div class="folder">
+			<a href="#" class="button alert" data-bind="click: remove"><span class="fa fa-trash"></span></a>
+			<a href="#" class="button open_folder" data-bind="click: open"><span class="fa fa-folder-open"></span></a>
+			<span class="foldername" data-bind="text: name"></span>
+		</div>
+	</div>
+</fieldset>
+
+
+<fieldset>
+	<legend><span class="fa fa-file"></span> Files</legend>
+	<div data-bind="sortable: { data: fileCollection }">
+		<div class="file">
+
+			<a href="#" class="button alert" data-bind="click: remove"><span class="fa fa-trash"></span></a>
+			<a href="#" class="button open_folder" data-bind="click: open"><span class="fa fa-file-text"></span></a>
+
+			<span class="filename" data-bind="text: name"></span>
+		</div>
+	</div>
+</fieldset>
+
+{% with messages = get_flashed_messages(category_filter=["message"]) %}
+	{% if messages %}
+		{% for message in messages %}
+			<div data-alert class="alert-box secondary radius">
+				{{ message }}
+				<a href="#" class="close">&times;</a>
+			</div>
+		{% endfor %}
+	{% endif %}
+{% endwith %}
+{% with messages = get_flashed_messages(category_filter=["error"]) %}
+	{% if messages %}
+		{% for message in messages %}
+			<div data-alert class="alert-box alert radius">
+				{{ message }}
+				<a href="#" class="close">&times;</a>
+			</div>
+		{% endfor %}
+	{% endif %}
+{% endwith %}
+{% with messages = get_flashed_messages(category_filter=["success"]) %}
+	{% if messages %}
+		{% for message in messages %}
+			<div data-alert class="alert-box success radius">
+				{{ message }}
+				<a href="#" class="close">&times;</a>
+			</div>
+		{% endfor %}
+	{% endif %}
+{% endwith %}
+
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script src="../../static/js/jquery-ui-sortable/jquery-ui.js"></script>
+<script src="../../static/js/knockout-sortable.min.js"></script>
+<script>
+var prefsJson = {{ prefs|tojson|safe }};
+var folders_data = {{ folders|tojson|safe }};
+var files_data = {{ files|tojson|safe }};
+</script>
+<script>
+$(document).ready(function(){
+	var FolderModel = function(name, path){
+		var self = this;
+		self.name = ko.observable(name);
+		self.path = ko.observable(path);
+
+		self.open = function(){
+			$.ajax({
+				dataType: "json",
+				type: "POST",
+				url: "",
+				data: {"action": "openfolder", "name": self.name(), "path": self.path()},
+				success: function(data){
+					alert("ddddd");
+				}
+			});
+		};
+		self.remove = function(){
+
+		};
+		self.new = function(){
+
+		};
+	};
+	var FileModel = function(name, path, extension){
+		var self = this;
+		self.name = ko.observable(name);
+		self.path = ko.observable(path);
+		self.extension = ko.observable(extension);
+
+		self.open = function(){
+
+		};
+		self.remove = function(){
+
+		};
+		self.new = function(){
+
+		};
+	};
+	var ViewModel = function(){
+		var self = this;
+		self.folder = ko.observable("");
+		self.path = ko.observable("");
+		self.extension = ko.observable("");
+
+		self.folderCollection = ko.observableArray();
+		self.fileCollection = ko.observableArray();
+
+		$.each(folders_data, function(idx, folder){
+			self.folderCollection.push(new FolderModel(folder, self.path()));
+		});
+		$.each(files_data, function(idx, file){
+			self.fileCollection.push(new FileModel(file, self.path(), self.extension()));
+		});
+
+	};
+
+	var viewmodel = new ViewModel();
+	ko.applyBindings(viewmodel);
+	viewmodel.folder(prefsJson.folder || "");
+	viewmodel.path(prefsJson.path || "");
+	viewmodel.extension(prefsJson.extension || "");
+});
+</script>
+{% endblock %}

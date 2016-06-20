@@ -1,0 +1,70 @@
+
+<div class="actionbar">
+	{% if previouspath %}
+		<div class="actionBarItem folder" data-path="{{ previouspath }}">
+			<a href="#" class="action btnOpenFolder">
+				<span class="fa fa-backward"></span><br/>
+			  <span class="text">Back</span>
+			</a>
+		</div>
+	{% else %}
+		<div class="actionBarItem spacer"></div>
+	{% endif %}
+		<div class="actionBarItem spacer"></div>
+
+	{% if savefileview %}
+		<div class="actionBarItem" >
+			<a href="#" class="action btnSaveFileAs">
+				<span class="fa fa-save"></span><br/>
+				<span class="text">Save</span>
+			</a>
+		</div>
+	{% endif %}
+
+	<div class="actionBarItem spacer"></div>
+	<div class="actionBarItem">
+		<a href="#" class="action btnNewFolder">
+			<span class="fa fa-plus"></span> <span class="fa fa-folder"></span><br/>
+			<span class="text">New folder</span>
+		</a>
+	</div>
+
+</div>
+<div class="foldercontent">
+	{% if folders %}
+		{% for folder in folders|sort %}
+			<div class="folder browseritem" data-path="{{ path + folder }}">
+				<!-- <a href="#" class="button btnDeleteFile"><span class="fa fa-trash"></span></a> -->
+
+				<a href="#" class="button btnOpenFolder info" title="Open folder"><span class="fa fa-folder-open"></span></a>
+				<span class="foldername browseritemname"> {{ folder }}</span>
+
+				<div class="browseritemoptions">
+					<a href="#" class="button btnDeleteFile alert" title="Delete folder"><span class="fa fa-trash"></span></a>
+				</div>
+			</div>
+		{% endfor %}
+	{% endif %}
+
+	{% if files %}
+		{% for file in files|sort %}
+			<div class="file browseritem" data-path="{{ path + file }}">
+				<!-- <a href="#" class="button btnDeleteFile"><span class="fa fa-trash"></span></a> -->
+
+				{% if savefileview %}
+					<a href="#" class="button btnSaveFile info" title="Save file"><span class="fa fa-save"></span></a>
+
+				{% else %}
+					<a href="#" class="button btnOpenFile success" title="Open file"><span class="fa fa-file-text"></span></a>
+
+				{% endif %}
+
+				<span class="filename browseritemname"> {{ file }}</span>
+
+				<div class="browseritemoptions">
+					<a href="#" class="button btnDeleteFile alert" title="Delete file"><span class="fa fa-trash"></span></a>
+				</div>
+			</div>
+		{% endfor %}
+	{% endif %}
+</div>

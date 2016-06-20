@@ -1,0 +1,23 @@
+{% extends "base_systembar.html" %}
+{% block base_systembar_body %}
+	<div class="row">
+		<div class="small-12 columns">
+			<div class="page">
+				<div class="titlebar">
+					{% block closebutton %}{% endblock %}
+					<span class="fa {{ page_icon }}"></span> {{ page_caption }}
+				</div>
+				<div class="content" id="content">
+					{% block page_content %}
+						<div class="actionbar">
+							{% block base_toolbar %}
+
+							{% endblock %}
+						</div>
+						{{ page_content }}
+					{% endblock %}
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}

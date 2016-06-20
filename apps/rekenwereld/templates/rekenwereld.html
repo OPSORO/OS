@@ -1,0 +1,114 @@
+{% extends "app.html" %}
+
+
+{% block base_toolbar %}
+<!--
+{% include "toolbar/file_operations.html" %}
+{% include "toolbar/script_operations.html" %}
+{% include "toolbar/lock_unlock.html" %}
+-->
+<span class="points">Druk op start</span>
+{% endblock %}
+
+
+{% block page_content %}
+{{ super() }}
+
+<div class="uitleg">
+		<h1>Werking rekenwereld</h1>
+	<p>Welkom in de rekenwereld. Behaal zoveel mogelijk punten door de juiste oplossing te kiezen. Diegene met de meeste punten belandt in de lijst met topscores. </p>
+	<h2>Hoe gaat dit te werk?</h2>
+<ol>
+<li>Voer de naam van de speler in</li>
+<li>Druk op start</li>
+<li>De robot geeft een oefening waarna de speler deze oplost</li>
+<li>Elke knop staat voor een oplossing, deze kan je horen door er op te klikken</li>
+<li>Wanneer je zeker bent van het antwoord klik je dit aan, gevolgd door het bevestigen met de enterknop.</li>
+<li>Bij elke correct antwoord verdient men 5 punten</li>
+<li>Er zijn verschillende soorten niveau die gelijkaardig te werk gaan</li>
+</ol>
+<h2>Veel plezier!</h2>
+</div>        
+<div class="invoer">
+    <input type="text" id="naam" name="FirstName" placeholder="Typ hier je naam">
+    <button disabled id="invoerKnop"> start</button>
+    <button id="verander"> verander</button>
+	<button class="back btn btn-primary">Kies level</button>
+</div>
+
+
+        
+<div class="levelselect">	
+	<div class="levels">
+		<a href="#"><div class="level level1">Tot 10</div></a>
+		<a href="#"><div class="level level4">Tot 20</div></a>
+		<a href="#"><div class="level level2">Tot 100</div></a>
+		<a href="#"><div class="level level3">Tafels</div></a>
+	</div>
+</div>
+<div class="maths">
+	<div class="exercise">
+        <span class="exe number1">1</span>
+	<span class="exe sign">+</span>
+	<span class="exe number2">6</span>
+	<span class="exe is">=</span></div>
+	<div class="answers">
+
+        <a href="#"><div class="answer answer0"></div></a>
+
+        <a href="#"><div class="answer answer1"></div></a>
+
+        <a href="#"><div class="answer answer2"></div></a>
+
+
+
+
+	</div>
+</div>
+
+<table class="highscore" style="width:100%">
+   <th></th><th>Naam</th><th>Punten</th>
+
+	<tr><td class="firstRow">1</td><td><span class="high high0"></span></td>	<td><span class="high score0"></span></td></tr>
+
+    <tr><td class="firstRow">2</td><td><span class="high high1"></span></td>	<td><span class="high score1"></span></td></tr>
+
+    <tr><td class="firstRow">3</td><td><span class="high high2"></span></td>	<td><span class="high score2"></span></td></tr>
+
+    <tr><td class="firstRow">4</td><td><span class="high high3"></span></td>	<td><span class="high score3"></span></td></tr>
+
+    <tr><td class="firstRow">5</td><td><span class="high high4"></span></td>	<td><span class="high score4"></span></td></tr>
+
+    <tr><td class="firstRow">6</td><td><span class="high high5"></span></td>	<td><span class="high score5"></span></td></tr>
+
+    <tr><td class="firstRow">7</td><td><span class="high high6"></span></td>	<td><span class="high score6"></span></td></tr>
+
+    <tr><td class="firstRow">8</td><td><span class="high high7"></span></td>	<td><span class="high score7"></span></td></tr>
+
+    <tr><td class="firstRow">9</td><td><span class="high high8"></span></td>	<td><span class="high score8"></span></td></tr>
+
+    <tr><td class="firstRow">10</td><td><span class="high high9"></span></td>	<td><span class="high score9"></span></td></tr>
+
+</table>
+
+
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<!--
+<script src="static/javascript.js"></script>
+-->
+
+<script>
+var action_data = {{ actions|tojson|safe }};
+
+var data = {{ data|tojson|safe }};
+</script>
+
+{% endblock %}
+
+{% block modals %}
+{{ super() }}
+
+{% endblock %}
