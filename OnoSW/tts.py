@@ -51,9 +51,10 @@ class _TTS(object):
 			filename = filename[:250]
 		full_path = os.path.join(get_path("/tmp/OpsoroTTS/"), filename + ".wav")
 
-		if os.path.isfile(full_path):
-			# Sound file already exists
-			return full_path
+		# # Sound buffering
+		# if os.path.isfile(full_path):
+		# 	# Sound file already exists
+		# 	return full_path
 
 		self.engine = Preferences.get("audio", "tts_engine", self.engine)
 		self.language = Preferences.get("audio", "tts_language", self.language)
