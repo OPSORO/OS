@@ -248,7 +248,7 @@ OnoSW is the software framework for [OPSORO](http://www.opsoro.be/), to be used 
 OnoSW and its dependencies should now all be installed and working. Reboot the Raspberry Pi to test. Please let us know if any steps are missing!
 
 # Use
-If everything was configured correctly, the Raspberry Pi should create a WiFi hotspot (OpSoRo_Robot) at startup (Default password: opsoro123). This network lets access the robot's web interface. Once connected to the network, open a browser and go to http://opsoro.local. If you configured the DHCP and DNS server correctly http://play.opsoro.be should also work. You will be presented with a login screen, the default password is "opsoro". The main interface lets you control the robot through a number of apps.
+If everything was configured correctly, the Raspberry Pi should create a WiFi hotspot (OPSORO_Robot) at startup (Default password: opsoro123). This network lets access the robot's web interface. Once connected to the network, open a browser and go to http://opsoro.local. If you configured the DHCP and DNS server correctly http://play.opsoro.be should also work. You will be presented with a login screen, the default password is: opsoro123. The main interface lets you control the robot through a number of apps.
 
 ### Notes:
 - Be sure to properly shut down the operating system! Cutting power without performing a proper shutdown can corrupt the file system on the SD card, requiring a reinstall.
