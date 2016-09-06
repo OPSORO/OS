@@ -1,6 +1,6 @@
 general:
   robot_name: Ono
-  password: opsoro
+  password: opsoro123
 
 audio:
   master_volume: 50
@@ -9,6 +9,6 @@ audio:
   tts_gender: m
 
 wireless:
-  ssid: OpSoRo_Robot
+  ssid: OPSORO_Robot
   password: opsoro123
   channel: 6
