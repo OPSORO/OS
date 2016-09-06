@@ -1,0 +1,14 @@
+general:
+  robot_name: Ono
+  password: opsoro123
+
+audio:
+  master_volume: 50
+  tts_engine: picotts
+  tts_language: nl
+  tts_gender: m
+
+wireless:
+  ssid: OPSORO-bot
+  password: opsoro123
+  channel: 6
