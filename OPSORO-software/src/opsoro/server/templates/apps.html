@@ -1,36 +1,47 @@
 {% extends "base_systembar.html" %}
 {% block base_systembar_body %}
 	<div class="row">
-		<div class="small-12 columns">
-			<ul class="small-block-grid-2 medium-block-grid-3 large-block-grid-4">
+		<div class="large-12 medium-12 small-12 columns">
+			<!-- <div class="small-2 medium-4 large-2"> -->
 				{% for app in apps -%}
-					<li>
+					<!-- <li> -->
+						<div class="large-2 medium-3 small-6 columns">
 						{% if app.active %}
-							<div class="appbutton selected">
-								<a href="#" data-reveal-id="CloseAppModal" class="closebutton">
+							<div class="selected">
+								<!-- <a href="#" data-reveal-id="CloseAppModal" class="closebutton">
 									<span class="fa fa-close"></span>
-								</a>
-								<a href="/app/{{ app.name }}/">
-									<div class="icon {{ app.icon }}"></div>
+								</a> -->
+								<a href="/apps/{{ app.name }}/">
+									<div class="appbutton">
+										<div class="icon {{ app.icon }}"></div>
+										<div class="app_banner" style="background-color: {{ app.color }}"></div>
+									</div>
 									<div class="applabel">{{ app.full_name }}</div>
 								</a>
 							</div>
 						{% else %}
 							{% if activeapp %}
-								<a href="#" class="appbutton" id="AppBtn_{{ app.name }}">
-									<div class="icon {{ app.icon }}"></div>
+								<a href="#" class="" id="AppBtn_{{ app.name }}">
+									<div class="appbutton">
+										<div class="icon {{ app.icon }}"></div>
+										<div class="app_banner" style="background-color: {{ app.color }}"></div>
+									</div>
 									<div class="applabel">{{ app.full_name }}</div>
 								</a>
 							{% else %}
-								<a href="/openapp/{{ app.name }}" class="appbutton">
-									<div class="icon {{ app.icon }}"></div>
+								<a href="/openapp/{{ app.name }}" class="">
+									<div class="appbutton">
+										<div class="icon {{ app.icon }}"></div>
+										<div class="app_banner" style="background-color: {{ app.color }}"></div>
+									</div>
 									<div class="applabel">{{ app.full_name }}</div>
 								</a>
 							{% endif %}
 						{% endif %}
-					</li>
+					<!-- </li> -->
+				</div>
 				{%- endfor %}
-			</ul>
+			<!-- </div> -->
 		</div>
 	</div>
 {% endblock %}

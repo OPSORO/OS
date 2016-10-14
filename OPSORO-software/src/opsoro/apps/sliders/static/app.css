@@ -9,9 +9,11 @@
 
 .sliderrow .range-slider{
 	margin: 0;
+	/*margin-top: 0.5rem;*/
 }
 
 .sliderrow .numberstop {
+	margin-top: 1.5rem;
 	font-size: 0.75rem;
 	line-height: 1rem;
 	font-weight: bold;

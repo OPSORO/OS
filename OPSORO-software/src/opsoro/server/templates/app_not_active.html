@@ -7,13 +7,13 @@
 				<br/>
 				This app is currently not active.
 				<br/>
-				{% if toolbar.active %}
+				{% if app.active %}
 					Activating it will close the current app:
-					<span class="fa {{ toolbar.icon }}"></span>
-					{{ toolbar.full_name }}.
+					<span class="fa {{ app.icon }}"></span>
+					{{ app.name }}.
 				{% endif %}
 			</p>
-			<a href="/openapp/{{ appname }}" class="button">
+			<a href="/openapp/{{ app.name }}" class="button">
 				<span class="fa fa-check"></span>
 				Activate app</a>
 			<a href="/" class="button">

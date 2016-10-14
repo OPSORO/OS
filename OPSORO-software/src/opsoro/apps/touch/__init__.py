@@ -8,7 +8,9 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash
 from opsoro.stoppable_thread import StoppableThread
 from opsoro.hardware import Hardware
 
-config = {"full_name": "Touch Graph", "icon": "fa-hand-o-down"}
+config = {"full_name": "Touch Graph",
+          "icon": "fa-hand-o-down",
+          'color': '#ffaf19'}
 
 touch_t = None
 clientconn = None
@@ -17,6 +19,7 @@ numelectrodes = 0
 
 
 def TouchLoop():
+    time.sleep(0.05)
     global running
     global clientconn
 
@@ -54,14 +57,18 @@ def stopcap():
 
 def setup_pages(opsoroapp):
     touch_bp = Blueprint(
-        "touch", __name__, template_folder="templates", static_folder="static")
+        config['full_name'].lower(),
+        __name__,
+        template_folder="templates",
+        static_folder="static")
 
     @touch_bp.route("/")
     @opsoroapp.app_view
     def index():
         data = {}
 
-        return opsoroapp.render_template("touch.html", **data)
+        return opsoroapp.render_template(config['full_name'].lower() + ".html",
+                                         **data)
 
     @opsoroapp.app_socket_connected
     def s_connected(conn):
@@ -93,7 +100,7 @@ def start(opsoroapp):
     global touch_t
 
     touch_t = StoppableThread(target=TouchLoop)
-    touch_t.start()
+    # touch_t.start()
 
 
 def stop(opsoroapp):

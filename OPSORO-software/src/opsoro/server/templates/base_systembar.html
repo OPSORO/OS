@@ -2,11 +2,12 @@
 {% block body %}
 	<div class="row">
 		<div class="large-12 columns">
-			<div id="topbar">
+
+			<div id="header_play">
 				<div class="row">
 					<div class="small-12 medium-6 columns">
 						<div id="activity">
-							{% if toolbar.active %}
+							{% if app.active %}
 								<span id="statusicon">
 									<i class="fa fa-cog fa-spin"></i>
 								</span>
@@ -14,8 +15,8 @@
 									is currently running:</span>
 								<br/>
 								<span id="currentapp">
-									<i class="fa {{ toolbar.icon }}"></i>
-									{{ toolbar.full_name }}</span>
+									<i class="fa {{ app.icon }}"></i>
+									{{ app.name }}</span>
 							{% else %}
 								<span id="statusicon">
 									<i class="fa fa-check-circle"></i>
@@ -34,7 +35,7 @@
 						<a href="/logout" class="action has-tip" data-tooltip aria-haspopup="true" data-options="disable_for_touch:true" title="Log out">
 							<div class="icon fa-sign-out"></div>
 						</a>
-						<a href="/preferences" class="action has-tip" data-tooltip aria-haspopup="true" data-options="disable_for_touch:true" title="Preferences">
+						<a href="/openapp/preferences" class="action has-tip" data-tooltip aria-haspopup="true" data-options="disable_for_touch:true" title="Preferences">
 							<div class="icon fa-cog"></div>
 						</a>
 						<a href="/virtual" class="action has-tip" data-tooltip aria-haspopup="true" data-options="disable_for_touch:true" title="Virtual model" onClick="return popupWindow(this, 'Virtual model');">

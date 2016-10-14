@@ -69,17 +69,25 @@ var MappingGraph = function() {
     var Ys = [
         self.nodeSize, self.centerY, self.height - self.nodeSize
     ];
-    line = self.svg.line(startX * 2, Ys[0], startX * 2, Ys[2]).stroke({width: 0.5});
-    line = self.svg.line(self.width - 1, Ys[0], self.width - 1, Ys[2]).stroke({width: 0.5});
+    line = self.svg.line(startX * 2, Ys[0], startX * 2, Ys[2]).stroke({
+        width: 0.5
+    });
+    line = self.svg.line(self.width - 1, Ys[0], self.width - 1, Ys[2]).stroke({
+        width: 0.5
+    });
 
     for (var i = Ys[0]; i < Ys[2]; i += self.height / 40) {
-        self.svg.line(startX * 2, i, self.width - 1, i).stroke({width: 0.2});
+        self.svg.line(startX * 2, i, self.width - 1, i).stroke({
+            width: 0.2
+        });
     }
 
     for (var i = 0; i < texts.length; i++) {
         text = self.svg.plain(texts[i]);
         text.center(startX, Ys[i]);
-        line = self.svg.line(startX * 2, Ys[i], self.width - 1, Ys[i]).stroke({width: 0.5});
+        line = self.svg.line(startX * 2, Ys[i], self.width - 1, Ys[i]).stroke({
+            width: 0.5
+        });
     }
 
     var updateInfoTxt = function(circ) {
@@ -101,7 +109,9 @@ var MappingGraph = function() {
     };
 
     for (var i = 0; i < 20; i++) {
-        line = self.svg.line(self.startX * 2 + self.stepWidth * i, Ys[0], self.startX * 2 + self.stepWidth * i, Ys[2]).stroke({width: 0.2});
+        line = self.svg.line(self.startX * 2 + self.stepWidth * i, Ys[0], self.startX * 2 + self.stepWidth * i, Ys[2]).stroke({
+            width: 0.2
+        });
         var circle = self.svg.circle(self.nodeSize);
         circle.fill('#286')
         circle.center(self.startX * 2 + self.stepWidth * i, self.centerY);
@@ -111,7 +121,9 @@ var MappingGraph = function() {
                 y: y > self.nodeSize / 2 - 1 && y < (self.height - self.nodeSize * 3 / 2)
             }
         });
-        circle.attr({index: i});
+        circle.attr({
+            index: i
+        });
         circle.on('mouseover', function() {
             updateInfoTxt(this);
         });
@@ -135,7 +147,11 @@ var MappingGraph = function() {
     self.infoRect = self.info.rect(30, 12);
     self.infoRect.move(-2, -10);
     self.infoRect.fill('#fff');
-    self.infoRect.stroke({color: '#222', opacity: 0.8, width: 1});
+    self.infoRect.stroke({
+        color: '#222',
+        opacity: 0.8,
+        width: 1
+    });
     self.infoTxt = self.info.plain('');
     self.infoTxt.move(0, 0);
     self.infoTxt.fill('#000');
@@ -191,7 +207,7 @@ var Module = function(type, name, x, y, width, height, rotation) {
         self.update(self.x(), self.y(), self.width(), self.height(), self.rotation());
         self.drawObject = new module_function[self.module()](virtualModel.svg, self.x(), self.y(), self.width(), self.height());
         self.image = self.drawObject.image;
-        // self.drawObject.Update();
+
         self.updateImage();
     };
 
@@ -200,9 +216,14 @@ var Module = function(type, name, x, y, width, height, rotation) {
             return;
         }
         var values = [];
+
         $.each(self.dofs(), function(idx, dof) {
             if (dof_values != undefined) {
-                values.push(dof_values[self.name() + "_" + dof.name()]);
+                if (dof.isServo()) {
+                    values.push(dof_values[dof.servo().pin()]);
+                } else {
+                    values.push(0);
+                }
             } else {
                 if (dof.isMap() && dof.isServo()) {
                     if (mapIndex < 0) {
@@ -216,18 +237,25 @@ var Module = function(type, name, x, y, width, height, rotation) {
             }
         });
         if (values.length == self.drawObject.dofs.length) {
+            self.drawObject.x = self.x();
+            self.drawObject.y = self.y();
+            self.drawObject.width = self.width();
+            self.drawObject.height = self.height();
             self.drawObject.Set(values)
             self.drawObject.Update();
+        }
+        if (mapIndex < 0) {
+            self.snapToGrid();
         }
     };
 
     self.update = function(x, y, w, h, r) {
         r = Math.round(r / 90) * 90;
         self.rotation(r);
-        self.x(virtualModel.centerX + x * virtualModel.refSize);
-        self.y(virtualModel.centerY + y * virtualModel.refSize);
-        self.width(w * virtualModel.refSize);
-        self.height(h * virtualModel.refSize);
+        self.x(Math.ceil(virtualModel.centerX + x * virtualModel.refSize));
+        self.y(Math.ceil(virtualModel.centerY + y * virtualModel.refSize));
+        self.width(Math.ceil(w * virtualModel.refSize));
+        self.height(Math.ceil(h * virtualModel.refSize));
     };
     self.updateImage = function() {
         if (!virtualModel.editable) {
@@ -236,9 +264,10 @@ var Module = function(type, name, x, y, width, height, rotation) {
         if (self.image == undefined) {
             return;
         }
-        self.image.attr({preserveAspectRatio: "none"});
-        // self.image.size(self.width(), self.height());
-        // self.image.center(self.x(), self.y());
+        self.image.attr({
+            preserveAspectRatio: "none"
+        });
+
         self.image.style('cursor', 'grab');
         self.image.draggable();
         self.snapToGrid();
@@ -249,9 +278,9 @@ var Module = function(type, name, x, y, width, height, rotation) {
             virtualModel.setSelectedModule(self);
         });
         self.image.on('dragend', function(e) {
+            self.snapToGrid();
             self.x(this.cx());
             self.y(this.cy());
-            self.snapToGrid();
             self.drawObject.x = self.x();
             self.drawObject.y = self.y();
             self.drawObject.width = self.width();
@@ -279,7 +308,8 @@ function DrawMouth(svg, x, y, width, height) {
     self.base(svg, x, y, width, height);
 
     self.dofs = ['Left Vertical', 'Middle Vertical', 'Right Vertical', 'Left Rotation', 'Right Rotation'];
-    self.increase = 30;
+
+    self.increase = self.height / 2;
 
     self.Set = function(values) {
         self.left_Y = constrain(values[0] || 0, -1, 1); // -1.0 -> 1.0
@@ -297,52 +327,75 @@ function DrawMouth(svg, x, y, width, height) {
     self.curve = new SVG.PathArray([
         ['M', 0, 0]
     ]);
-    self.image = self.svg.path(self.curve);
+    self.image = self.svg.nested();
+    self.image.attr({
+        x: self.x - self.width / 2,
+        y: self.y - self.height / 2,
+        width: self.width,
+        height: self.height
+    });
+    self.image_mouth = self.image.path(self.curve);
 
     self.Update = function() {
         var leftX,
             rightX,
             topY,
             middleY1,
-            middleY2;
-        leftX = self.x - self.width / 2;
-        rightX = leftX + self.width;
-        topY = self.y - self.height / 2;
-        middleY1 = self.left_R * 90 * 100;
-        middleY2 = self.right_R * 90 * 100;
+            middleY2,
+            centerY;
+
+        leftX = 0;
+        rightX = self.width;
+        middleY1 = self.left_R * 90;
+        middleY2 = self.right_R * 90;
+
+        centerY = self.height / 2;
+
+        self.increase = self.height / 2;
 
         self.curve = new SVG.PathArray([
             [
-                'M', leftX, self.y + (self.left_Y * self.increase)
+                'M', leftX, centerY + (self.left_Y * self.increase)
             ],
             [
                 'C', leftX + self.width / 4,
-                self.y + middleY1,
+                centerY + middleY1,
                 rightX - self.width / 4,
-                self.y + middleY2,
+                centerY + middleY2,
                 rightX,
-                self.y + (self.right_Y * self.increase)
+                centerY + (self.right_Y * self.increase)
             ],
             [
                 'C', rightX - self.width / 4,
-                self.y + (self.middle_Y * self.increase) + self.increase + middleY2,
+                centerY + (self.middle_Y * self.increase / 2) + middleY2 + self.increase / 2,
                 leftX + self.width / 4,
-                self.y + (self.middle_Y * self.increase) + self.increase + middleY1,
+                centerY + (self.middle_Y * self.increase / 2) + middleY1 + self.increase / 2,
                 leftX,
-                self.y + (self.left_Y * self.increase)
+                centerY + (self.left_Y * self.increase)
             ],
             ['z']
         ]);
 
-        self.image.plot(self.curve);
+        self.image_mouth.plot(self.curve);
         // // Round bezier corners
         var endsize = 1;
         var marker = self.svg.marker(endsize, endsize, function(add) {
             add.circle(endsize).fill('#C00');
         })
-        self.image.marker('start', marker);
-        self.image.marker('mid', marker);
-        self.image.fill('#222').stroke({width: 7, color: '#C00'});
+        self.image_mouth.marker('start', marker);
+        self.image_mouth.marker('mid', marker);
+        self.image_mouth.fill('#222').stroke({
+            width: Math.min(self.width, self.height) / 8,
+            color: '#C00'
+        });
+
+
+        self.image.attr({
+            x: self.x - self.width / 2,
+            y: self.y - self.height / 2,
+            width: self.width,
+            height: self.height
+        });
     };
     self.Update();
 }
@@ -357,7 +410,7 @@ function DrawEyebrow(svg, x, y, width, height) {
     self.base(svg, x, y, width, height);
 
     self.dofs = ['Left Vertical', 'Right Vertical', 'Rotation'];
-    self.increase = 20;
+    self.increase = self.height / 2;
 
     self.Set = function(values) {
         self.left_Y = constrain(values[0] || 0, -1, 1); // -1.0 -> 1.0
@@ -373,39 +426,58 @@ function DrawEyebrow(svg, x, y, width, height) {
     self.curve = new SVG.PathArray([
         ['M', 0, 0]
     ]);
-    self.image = self.svg.path(self.curve);
+    self.image = self.svg.nested();
+    self.image.attr({
+        x: self.x - self.width / 2,
+        y: self.y - self.height / 2,
+        width: self.width,
+        height: self.height
+    });
+    self.image_eyebrow = self.image.path(self.curve);
 
     self.Update = function() {
         var leftX,
-            rightX;
-        leftX = self.x - self.width / 2;
-        rightX = leftX + self.width;
-
+            rightX,
+            centerY;
+        leftX = 0;
+        rightX = self.width;
+        self.increase = self.height / 2;
+        centerY = self.height / 2;
         self.curve = new SVG.PathArray([
             [
-                'M', leftX, self.y + (self.left_Y * self.increase)
+                'M', leftX, centerY + (self.left_Y * self.increase)
             ],
             [
                 'C', leftX + self.width / 4,
-                self.y + (self.left_Y * self.increase) - 10,
+                centerY + (self.left_Y * self.increase) - self.increase / 2,
                 rightX - self.width / 4,
-                self.y + (self.right_Y * self.increase) - 10,
+                centerY + (self.right_Y * self.increase) - self.increase / 2,
                 rightX,
-                self.y + (self.right_Y * self.increase)
+                centerY + (self.right_Y * self.increase)
             ]
         ]);
 
-        self.image.plot(self.curve);
+        self.image_eyebrow.plot(self.curve);
         // Round bezier corners
         var endsize = 1;
         var marker = self.svg.marker(endsize, endsize, function(add) {
             add.circle(endsize).fill('#222');
         })
-        self.image.marker('start', marker);
-        self.image.marker('end', marker);
-        self.image.fill('none').stroke({width: 8, color: '#222'});
+        self.image_eyebrow.marker('start', marker);
+        self.image_eyebrow.marker('end', marker);
+        self.image_eyebrow.fill('none').stroke({
+            width: Math.min(self.width, self.height) / 6,
+            color: '#222'
+        });
 
-        self.image.rotate(self.rotation);
+        self.image_eyebrow.rotate(self.rotation * 45);
+
+        self.image.attr({
+            x: self.x - self.width / 2,
+            y: self.y - self.height / 2,
+            width: self.width,
+            height: self.height
+        });
     };
     self.Update();
 }
@@ -446,7 +518,7 @@ function DrawEye(svg, x, y, width, height) {
     self.image_eye = self.image.ellipse(self.width, self.height);
     self.image_eye.fill('#DDD');
 
-    self.image_pupil = self.image.circle((self.width + self.height) / 5);
+    self.image_pupil = self.image.ellipse(self.width / 5, self.height / 5); //((parseInt(self.width) + parseInt(self.height)) / 5);
     self.image_pupil.center(self.width / 2, self.height / 2);
     self.image_pupil.fill('#000');
 
@@ -455,14 +527,17 @@ function DrawEye(svg, x, y, width, height) {
     self.Update = function() {
         var leftX,
             rightX,
-            topY;
-        leftX = 0; //self.x - self.width / 2;
-        rightX = leftX + self.width;
-        topY = 0; //self.y - self.height / 2;
+            topY,
+            pupil_factor;
+        leftX = 0;
+        rightX = self.width;
+        topY = 0;
+        pupil_factor = 2.5;
 
         self.image_eye.size(self.width, self.height);
-        self.image_pupil.radius((self.width + self.height) / 10);
-        self.image_pupil.center(self.width / 2 - self.pupil_X * (self.width / 2 - self.image_pupil.width() / 1.4), self.width / 2 - self.pupil_Y * (self.height / 2 - self.image_pupil.height() / 1.4));
+        self.image_eye.center(self.width / 2, self.height / 2);
+        self.image_pupil.size(self.width / pupil_factor, self.height / pupil_factor);
+        self.image_pupil.center(self.width / 2 - self.pupil_X * (self.width / 2 - self.image_pupil.width() / 1.4), self.height / 2 - self.pupil_Y * (self.height / 2 - self.image_pupil.height() / 1.4));
 
         self.curve = new SVG.PathArray([
             [
@@ -487,14 +562,21 @@ function DrawEye(svg, x, y, width, height) {
         self.image_lid.plot(self.curve);
 
         // Round bezier corners
-        var endsize = 1;
-        var marker = self.svg.marker(endsize, endsize, function(add) {
-            add.circle(endsize).fill('#999');
-        })
-        self.image_lid.marker('start', marker);
-        self.image_lid.marker('mid', marker);
+        // var endsize = 1;
+        // var marker = self.svg.marker(endsize, endsize, function(add) {
+        //     add.circle(endsize).fill('#999');
+        // })
+        // self.image_lid.marker('start', marker);
+        // self.image_lid.marker('mid', marker);
         self.image_lid.fill('#444'); //.stroke({ width: 1, color: '#999' });
 
+
+        self.image.attr({
+            x: self.x - self.width / 2,
+            y: self.y - self.height / 2,
+            width: self.width,
+            height: self.height
+        });
         // self.image.size(self.width, self.height);
         // self.image.move(self.x, self.y);
     };
@@ -512,14 +594,14 @@ var VirtualModel = function() {
     self.fileStatus = ko.observable("");
     self.fileExtension = ko.observable(".conf");
 
-    self.config = (config_data == undefined
-        ? undefined
-        : JSON.parse(config_data));
-    self.allModules = modules_name;
-    self.allSkins = skins_name;
-    self.skin = ko.observable((self.allSkins == undefined
-        ? 'ono'
-        : self.allSkins[0]));
+    self.config = (config_data == undefined ?
+        undefined :
+        config_data); //JSON.parse(config_data));
+    self.allModules = ['eye', 'eyebrow', 'mouth']; //modules_name;
+    self.allSkins = ['ono', 'nmct', 'robo']; //skins_name;
+    self.skin = ko.observable((self.allSkins == undefined ?
+        'ono' :
+        self.allSkins[0]));
     self.name = ko.observable("OPSORO robot");
 
     self.isSelectedModule = ko.observable(false);
@@ -550,14 +632,26 @@ var VirtualModel = function() {
     self.mappingGraph = new MappingGraph();
 
     self.clearDraw = function() {
-        self.resetSelect();
+        console.log('Clear');
         self.svg.clear();
+        self.modelwidth = $('#model_screen svg').width();
+        self.modelheight = self.svg.height();
+        self.refSize = Math.max(self.modelwidth, self.modelheight) / 2;
+        self.screenGridSize = Math.min(self.modelwidth, self.modelheight) / self.gridSize();
+        self.centerX = self.modelwidth / 2;
+        self.centerY = self.modelheight / 2;
+
+
+        self.resetSelect();
         if (self.config != undefined) {
             if (self.config.grid != undefined) {
                 self.gridSize(self.config.grid);
             }
         }
         self.screenGridSize = Math.min(self.modelwidth, self.modelheight) / self.gridSize();
+        if (!self.editable) {
+            return;
+        }
         var pattern = self.svg.pattern(self.screenGridSize, self.screenGridSize, function(add) {
             // add.rect(self.screenGridSize, self.screenGridSize).fill('#eee');
             // add.rect(10,10);
@@ -567,7 +661,9 @@ var VirtualModel = function() {
             add.rect(size, size).move(0, self.screenGridSize - size).fill('#444');
             add.rect(size, size).move(self.screenGridSize - size, self.screenGridSize - size).fill('#444');
         })
-        self.grid = self.svg.rect(self.modelwidth, self.modelheight).attr({fill: pattern});
+        self.grid = self.svg.rect(self.modelwidth, self.modelheight).attr({
+            fill: pattern
+        });
     };
     self.setSelectedModule = function(module) {
         self.selectedModule(module);
@@ -575,6 +671,7 @@ var VirtualModel = function() {
         if (!self.editable) {
             return;
         }
+        self.fileIsModified(true);
         self.isSelectedModule(true);
         self.mappingGraph.updateGraph();
     };
@@ -605,6 +702,7 @@ var VirtualModel = function() {
     };
 
     self.saveConfig = function() {
+        console.log('Save');
         if (!self.editable) {
             return;
         }
@@ -624,8 +722,8 @@ var VirtualModel = function() {
             module_data['canvas'] = {
                 x: (singleModule.image.cx() - self.centerX) / self.refSize,
                 y: (singleModule.image.cy() - self.centerY) / self.refSize,
-                width: singleModule.image.width() / self.refSize,
-                height: singleModule.image.height() / self.refSize,
+                width: singleModule.width() / self.refSize,
+                height: singleModule.height() / self.refSize,
                 rotation: matrix.extract().rotation
             };
             if (singleModule.dofs() != undefined) {
@@ -646,109 +744,91 @@ var VirtualModel = function() {
             }
             svg_data['modules'].push(module_data);
         }
-
         return svg_data;
     };
 
     self.init = function() {
         // Clear data, new file, ...
         self.fileName("Untitled");
-        self.fileIsModified(false);
         // if (self.config != undefined) {
         //     alert('init');
         // }
         self.redraw();
     };
 
-    self.loadFileData = function(filename) {
-        if (filename == "") {
-            //("No filename!");
+    self.loadFileData = function(data) {
+        if (data == undefined) {
             return;
         }
-        $.ajax({
-            dataType: "text",
-            type: "POST",
-            url: "files/get",
-            cache: false,
-            data: {
-                path: filename,
-                extension: self.fileExtension()
-            },
-            success: function(data) {
-                // Load data
-                var dataobj = JSON.parse(data);
-                // Do something with the data
-                self.newConfig = true;
-                self.config = dataobj;
-                self.redraw();
-                // Update filename and asterisk
-                var filename_no_ext = filename;
-                if (filename_no_ext.toLowerCase().slice(-4) == self.fileExtension()) {
-                    filename_no_ext = filename_no_ext.slice(0, -4);
-                }
-                self.fileName(filename_no_ext);
-                self.fileIsModified(false);
-            },
-            error: function() {
-                window.location.href = "?";
-            }
-        });
+
+        // Load data
+        var dataobj = JSON.parse(data);
+        // Do something with the data
+        self.newConfig = true;
+        self.config = dataobj;
+        self.redraw();
+        // Update filename and asterisk
+        // var filename_no_ext = filename;
+        // if (filename_no_ext.toLowerCase().slice(-4) == self.fileExtension()) {
+        //     filename_no_ext = filename_no_ext.slice(0, -4);
+        // }
+        // self.fileName(filename_no_ext);
+        self.fileIsModified(false);
+
+
     };
 
-    self.saveFileData = function(filename) {
+    self.saveFileData = function() {
         if (!self.editable) {
             return;
         }
-        if (filename == "") {
-            //("No filename!");
-            return;
-        } else {
-            // Convert data
-            file_data = self.saveConfig();
+        file_data = self.saveConfig();
 
-            var data = ko.toJSON(file_data, null, 2);
-            // var data = file_data;
-            // alert(data);
+        var data = ko.toJSON(file_data, null, 2);
+        // var data = file_data;
+        // alert(data);
 
-            // Send data
-            $.ajax({
-                dataType: "json",
-                data: {
-                    path: filename,
-                    filedata: data,
-                    overwrite: 1,
-                    extension: self.fileExtension()
-                },
-                type: "POST",
-                url: "files/save",
-                success: function(data) {
-                    var filename_no_ext = filename;
-                    if (filename_no_ext.toLowerCase().slice(-4) == self.fileExtension()) {
-                        filename_no_ext = filename_no_ext.slice(0, -4);
-                    }
-                    self.fileName(filename_no_ext);
-                    self.fileIsModified(false);
-                }
-            });
-        }
+				self.fileIsModified(false);
+				return data;
     };
 
-    self.setDefault = function() {
+    self.saveMainConfig = function() {
+        if (!self.editable) {
+            return;
+        }
+        // Convert data
+        file_data = self.saveConfig();
+        var data = ko.toJSON(file_data, null, 2);
+
+        // Send data
         $.ajax({
             dataType: "json",
             data: {
-                filename: self.fileName() + self.fileExtension()
+                'config_data': data
             },
             type: "POST",
-            url: "setDefault",
-            success: function(data) {
-                if (data.status == "error") {
-                    // addError(data.message);
-                    alert('Error setting default configuration.');
-                }
-            }
+            url: "/robot/config/",
+            success: function(data) {}
         });
+
     };
+
+    // self.setDefault = function() {
+    //     $.ajax({
+    //         dataType: "json",
+    //         data: {
+    //             filename: self.fileName() + self.fileExtension()
+    //         },
+    //         type: "POST",
+    //         url: "setDefault",
+    //         success: function(data) {
+    //             if (data.status == "error") {
+    //                 // addError(data.message);
+    //                 alert('Error setting default configuration.');
+    //             }
+    //         }
+    //     });
+    // };
 
     //-------------------------------------------------------------------------------
     // SVG stuff
@@ -760,27 +840,34 @@ var VirtualModel = function() {
 
     // Draw skin & modules
     self.redraw = function() {
-        if (!self.newConfig) {
-            self.config = self.saveConfig();
+        console.log('Redraw');
+        if (!self.newConfig && self.fileIsModified()) {
+            // Convert and convert back, bad reading otherwise
+            self.config = JSON.parse(ko.toJSON(self.saveConfig()));
             //alert('not good');
         } else {
             self.newConfig = false;
         }
         self.clearDraw();
         if (self.config != undefined) {
-            self.skin_image = self.svg.image('/static/img/skins/' + self.config.skin + '.svg').loaded(self.drawModules);
+            self.skin_image = self.svg.image('/site_media/static/images/skins/' + self.config.skin + '.svg').loaded(self.drawModules);
         } else {
-            self.skin_image = self.svg.image('/static/img/skins/' + self.skin() + '.svg').loaded(self.drawModules);
+            self.skin_image = self.svg.image('/site_media/static/images/skins/' + self.skin() + '.svg').loaded(self.drawModules);
         }
+
+        self.fileIsModified(false);
     };
 
     var previousMapIndex = -1;
     self.updateDofVisualisation = function(mapIndex) {
-        if (mapIndex == -2 || previousMapIndex != mapIndex) {
+        // alert('');
+        if (mapIndex < -1 || previousMapIndex != mapIndex) {
+            // Update all modules (when selecting new emotion for mapping)
             $.each(self.modules(), function(idx, mod) {
                 mod.updateDofVisualisation(mapIndex);
             });
         } else {
+            // Update single module (when changing mapping)
             self.selectedModule().updateDofVisualisation(mapIndex);
         }
         previousMapIndex = mapIndex;
@@ -834,8 +921,10 @@ var VirtualModel = function() {
         for (var i = 0; i < self.modules().length; i++) {
             // self.modules()[i].image.selectize(false);
             self.modules()[i].image.opacity(0.8);
+            // self.modules()[i].image.stroke('#000')
         }
         self.isSelectedModule(false);
+        self.updateDofVisualisation(-2);
     };
 
     // Create modules
@@ -890,8 +979,11 @@ var VirtualModel = function() {
                 // alert(mod);
                 // var moduleImage = self.svg.image('static/images/' + mod + '.svg').loaded(function() {
 
-                var moduleImage = self.svg_modules.image('static/images/' + mod + '.svg').loaded(function() {
-                    this.attr({preserveAspectRatio: "none", type: mod});
+                var moduleImage = self.svg_modules.image('/site_media/static/images/modules/' + mod + '.svg').loaded(function() {
+                    this.attr({
+                        preserveAspectRatio: "none",
+                        type: mod
+                    });
                     var h = 50;
                     var w = 50;
                     var increase = 5;

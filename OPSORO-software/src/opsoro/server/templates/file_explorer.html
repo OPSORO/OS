@@ -53,7 +53,7 @@
 		</div>
 	</fieldset>
 
-	{% with messages = get_flashed_messages(category_filter = ["message"]) %}
+	<!-- {% with messages = get_flashed_messages(category_filter = ["message"]) %}
 	{% if messages %}
 		{% for message in messages %}
 			<div data-alert class="alert-box secondary radius">
@@ -82,7 +82,7 @@
 			</div>
 		{% endfor %}
 	{% endif %}
-	{% endwith %}
+	{% endwith %} -->
 {% endblock %}
 {% block scripts %}
 	{{ super() }}

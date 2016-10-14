@@ -1,27 +1,33 @@
 <div class="filebox">
-  <span data-bind="text: fileName" class="filename"></span> <span data-bind="visible: fileIsModified()" class="fa fa-asterisk"></span><br>
+  <span data-bind="text: file_name" class="filename"></span> <span data-bind="visible: fileIsModified()" class="fa fa-asterisk"></span><br>
   <span class="fa" data-bind="css: { 'fa-lock': fileIsLocked(), 'fa-pencil': !fileIsLocked() && !isRunning(), 'fa-circle-o-notch fa-spin': isRunning() }" style="font-size: 0.75rem;"></span>  <span class="status" data-bind="text: fileStatus"></span>
 </div>
 <div class="spacer"></div>
+
+<a href="#" class="action" data-bind="click: newFile">
+  <span class="fa fa-file"></span><br/>
+  <span class="text">New</span>
+</a>
+
+<a href="#" class="action" data-bind="click: openFile">
+  <span class="fa fa-folder"></span><br/>
+  <span class="text">Open</span>
+</a>
 
 <a href="#" class="action" data-bind="click: saveFile">
   <span class="fa fa-save"></span><br/>
   <span class="text">Save</span>
 </a>
-<a href="#" class="action" data-bind="click: openFile">
-  <span class="fa fa-folder"></span><br/>
-  <span class="text">Open</span>
-</a>
-<a href="#" class="action" data-bind="click: newFile">
-  <span class="fa fa-file"></span><br/>
-  <span class="text">New</span>
+<a href="#" class="action" data-bind="click: saveAsFile">
+  <span class="fa fa-save"></span><br/>
+  <span class="text">Save As...</span>
 </a>
 
 <div class="spacer"></div>
 
 <script>
 
-fileName = "Untitled";
+file_name = "Untitled";
 fileIsModified = function(){
   if ($(".filebox .fa-asterisk").css("display") == "none"){
     return false
@@ -39,13 +45,13 @@ fileStatus = "Editing";
 // Config parameters ----------------------------------------------------------------------------------
 var folderpath = "";
 var extension = "";
-var saveFileHandler = function(filename){
+var saveDataHandler = function(){
   showMainError("No save handler defined.<br/>Please configurate file_operations.");
-  return;
+  return undefined;
 };
-var loadFileHandler = function(filename){
+var loadDataHandler = function(data){
   showMainError("No load handler defined.<br/>Please configurate file_operations.");
-  return;
+  return false;
 };
 var newFileHandler = function(){
   showMainError("No new handler defined.<br/>Please configurate file_operations.");
@@ -65,6 +71,10 @@ var saveFile = function(){
   }
   return;
 };
+var saveAsFile = function(){
+  showFiles(folderpath, 0, 1);
+  return;
+};
 var openFile = function(){
   _CurrentPath = folderpath;
   _OnlyFolders = 0;
@@ -79,6 +89,7 @@ var openFile = function(){
 };
 var newFile = function(){
   var yesHandler = function(){
+    $(".filebox .filename").text(file_name);
     window.history.pushState("", "New", "?");
     newFileHandler();
     closeMessagePopup();
@@ -101,8 +112,8 @@ var showFiles = function(currentpath, onlyFolders, saveFileView){
   _CurrentPath = currentpath;
   _OnlyFolders = onlyFolders;
   _SaveFileView = saveFileView;
-  showPopup("fa-folder-open", "{{ toolbar.full_name }}" + "/" + currentpath, "filebrowser", "");
-  $("#popup .content").load("files/show", { path: currentpath, extension: extension, onlyfolders: onlyFolders, savefileview: saveFileView }, function(){
+  showPopup("fa-folder-open", "{{ app.full_name }}" + "/" + currentpath, "filebrowser", "");
+  $("#popup .content").load("/docs/list/?" + $.param({ a: "{{ app.full_name }}", p: currentpath, e: extension, f: onlyFolders, s: saveFileView }), function(){
     // Delete and Open button events need to be rebound here
     // because filelist is loaded via AJAX
     $("#popup .btnDeleteFile").off("click");
@@ -216,8 +227,11 @@ var newFolder = function(folderPath){
   showMessagePopup("fa-plus", "New folder?", "Please enter a name and press OK.", { inputText: inputTextHandler, btnOk: okHandler, btnCancel: ReopenPopup });
 };
 var openItem = function(filename, onlyChangeUrl){
-  window.history.pushState("", "Open", "?action=openfile&param=" + filename);
-  if (onlyChangeUrl == 1){ return; }
+  if (filename.indexOf(".") < 0) {
+    filename += extension;
+  }
+  window.history.pushState("", "Open", "?f=" + filename);
+  // if (onlyChangeUrl == 1){ return; }
   loadFileHandler(filename);
 };
 var ReopenPopup = function(){
@@ -225,13 +239,85 @@ var ReopenPopup = function(){
   setTimeout(function() { showFiles(_CurrentPath, _OnlyFolders, _SaveFileView); }, 200);
 };
 
+var saveFileHandler = function(filename){
+  if(filename == ""){
+    addError("No filename!");
+    return;
+  }else{
+    save_data = saveDataHandler();
+    if (save_data == undefined) { return; }
+    //console.log(file_data);
+    var json_data = ko.toJSON(save_data, null, 2);
+    $.ajax({
+      dataType: "json",
+      data: {
+        filename: filename,
+        filedata: json_data,
+        fileextension: extension
+      },
+      type: "POST",
+      url: "/docs/save/{{ app.full_name }}/",
+      success: function(data){
+        var filename_no_ext = filename;
+        if(filename_no_ext.toLowerCase().slice(-4) == extension){
+          filename_no_ext = filename_no_ext.slice(0, -4);
+        }
+        $(".filebox .filename").text(filename_no_ext);
+        // fileIsModified(false);
+        showMainSuccess('File is saved!');
+      }
+    });
+  }
+};
+
+var loadFileHandler = function(filename){
+  if (filename == "") {
+    return undefined;
+  }
+  loaded_data = undefined
+  $.ajax({
+    dataType: "text",
+    type: "GET",
+    url: "/docs/data/{{ app.full_name }}/",
+    cache: false,
+    data: { f: filename },
+    success: function(data){
+      loaded_data = data;
+      // Load script
+      loadDataHandler(data)
+
+      // Update filename and asterisk
+      var filename_no_ext = filename;
+      if(filename_no_ext.toLowerCase().slice(-4) == extension){
+        filename_no_ext = filename_no_ext.slice(0, -4);
+      }
+      $(".filebox .filename").text(filename_no_ext);
+      // fileIsModified(false);
+      // lockFile();
+    },
+    error: function(){
+      window.location.href = "?";
+    }
+  });
+  return loaded_data;
+};
+
 function config_file_operations(sPath, sExtension, oSaveHandler, oLoadHandler, oNewHandler){
   folderpath = sPath;
   _CurrentPath = folderpath;
   extension = sExtension;
-  saveFileHandler = oSaveHandler;
-  loadFileHandler = oLoadHandler;
+  saveDataHandler = oSaveHandler;
+  loadDataHandler = oLoadHandler;
   newFileHandler = oNewHandler;
+
+  if (action_data != undefined && action_data.openfile) {
+      loadFileHandler(action_data.openfile || "");
+  } else {
+      newFileHandler();
+  }
 }
+
+
+
 
 </script>

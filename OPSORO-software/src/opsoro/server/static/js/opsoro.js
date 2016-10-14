@@ -1,12 +1,16 @@
 
 
 function showMainError(msg){
-  $("#error_list").append("<div data-alert class=\"alert-box alert\">" + msg + "<a href=\"#\" class=\"close\">&times;</a></div>");
-  $(document).foundation("alert", "reflow");
+  $("#errors").append("<div data-alert class='alert-box alert'>" + msg + "<a href='#' class='close'>&times;</a></div>");
+  $(document).foundation('alert', 'reflow');
 }
 function showMainMessage(msg){
-  $("#error_list").append("<div data-alert class=\"alert-box info\">" + msg + "<a href=\"#\" class=\"close\">&times;</a></div>");
-  $(document).foundation("alert", "reflow");
+  $("#errors").append("<div data-alert class='alert-box info'>" + msg + "<a href='#' class='close'>&times;</a></div>");
+  $(document).foundation('alert', 'reflow');
+}
+function showMainSuccess(msg){
+  $("#errors").append("<div data-alert class='alert-box success'>" + msg + "<a href='#' class='close'>&times;</a></div>");
+  $(document).foundation('alert', 'reflow');
 }
 
 function showPopup(sIcon, sTitle, sClass, sContent) {
@@ -122,3 +126,90 @@ function popupWindow(mylink, windowname)
 	window.open(href, windowname, 'width=400,height=400,scrollbars=no');
 	return false;
 }
+
+
+// -------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------
+// Robot control functions
+// -------------------------------------------------------------------------------------------------------
+function robotSendEmotionRPhi(r, phi, time)
+{
+  $.ajax({
+    dataType: 'json',
+    type: 'POST',
+    url: '/robot/emotion/',
+    data: {'r': r, 'phi': phi, 'time': time},
+    success: function(data){
+      if(data.status == 'error'){
+        showMainError(data.message);
+      }
+    }
+  });
+}
+
+function robotSendDOF(moduleName, dofName, dofValue)
+{
+  $.ajax({
+    dataType: 'json',
+    type: 'POST',
+    url: '/robot/dof/',
+    data: {'module_name': moduleName, 'dof_name': dofName, 'value': dofValue},
+    success: function(data){
+      if(data.status == 'error'){
+        showMainError(data.message);
+      }
+    }
+  });
+}
+
+function robotSendAllDOF(dofData)
+{
+  var json_data = ko.toJSON(dofData, null, 2);
+  $.ajax({
+    dataType: 'json',
+    type: 'POST',
+    url: '/robot/dofs/',
+    data: { dofdata: json_data },
+    success: function(data){
+      if(data.status == 'error'){
+        showMainError(data.message);
+      }
+    }
+  });
+}
+
+function robotSendTTS(text)
+{
+  $.ajax({
+    dataType: "json",
+    type: "GET",
+    url: "/robot/tts/",
+    data: {t: text},
+    success: function(data){
+      if(data.status == 'error'){
+        showMainError(data.message);
+      }
+    }
+  });
+}
+
+function robotSendSound(soundName)
+{
+  $.ajax({
+    dataType: "json",
+    type: "GET",
+    url: "/robot/sound/",
+    data: {s: soundName},
+    success: function(data){
+      if(data.status == "error"){
+        showMainError(data.message);
+      }
+
+    }
+  });
+}
+
+// -------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------
+
+$(document).foundation();

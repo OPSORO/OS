@@ -1,71 +1,36 @@
-// Create modules
-// self.createModules = function() {
-// 	self.modules.removeAll();
-// 	if (self.config != undefined) {
-// 		$.each(self.config.modules, function(idx, mod) {
-// 			var newModule = new Module(mod.module, mod.name, mod.canvas.x, mod.canvas.y, mod.canvas.width, mod.canvas.height, mod.canvas.rotation);
-//
-// 			$.each(mod.dofs, function(idx, dof) {
-// 				var newDof = new Dof(dof.name);
-// 				if (dof.servo != undefined) {
-// 					newDof.setServo(dof.servo.pin, dof.servo.mid, dof.servo.min, dof.servo.max);
-// 				}
-// 				if (dof.mapping != undefined) {
-// 					newDof.setMap(dof.mapping.neutral);
-// 					newDof.map().poly(dof.mapping.poly);
-// 				}
-// 				newModule.dofs.push(newDof);
-// 			});
-// 			self.modules.push(newModule);
-// 			if (self.selectedModule() == undefined) {
-// 				self.setSelectedModule(newModule);
-// 				self.isSelectedModule(false);
-// 			}
-// 		});
-// 	} else {
-// 		var newModule = new Module('', '', 0, 0, 0, 0, 0);
-// 		var newDof = new Dof('');
-// 		newModule.dofs.push(newDof);
-// 		self.setSelectedModule(newModule);
-// 		self.isSelectedModule(false);
-// 	}
-// };
 
 function updateVirtualModel() {
     virtualModel.updateDofVisualisation(-2);
 }
 
-function resizeCanvas() {
-    // Resize model to fit screen
-    // var w = $("#virtualModelDiv").width();
-    // var h = $("#virtualModelDiv").height();
-    // size = w;
-    // if (h < size) { size = h; }
-    // $("#model_screen svg").attr("width", size);
-    // $("#model_screen svg").attr("height", size);
-    updateVirtualModel();
-}
-
 updateData = function() {
+    var timeOut = 500;
     $.ajax({
         dataType: "text",
         type: "POST",
-        url: "/virtual",
+        url: "/robot/dofs/",
         data: {
             getdata: 1
         },
         success: function(data) {
             //alert(data);
             // console.log(data);
-            dof_values = JSON.parse(data)["dofs"];
+            prev_dof_values = dof_values;
+            dof_values = data.split(','); //JSON.parse(data);
             // console.log(dof_values);
-
+            if (prev_dof_values != undefined) {
+              for (var i = 0; i < prev_dof_values.length; i++) {
+                if (prev_dof_values[i] != dof_values[i]) {
+                  timeOut = 100;
+                }
+              }
+            }
             // checkData();
             updateVirtualModel();
             // $("#virtualModelCanvas").drawLayers();
         }
     });
-    setTimeout(updateData, 50);
+    setTimeout(updateData, timeOut);
 }
 
 // // Setup websocket connection.
@@ -102,14 +67,7 @@ $(document).ready(function() {
 
     virtualModel = new VirtualModel();
 
-    $(window).resize(resizeCanvas);
-
-    resizeCanvas();
-    // w = $("#virtualModelCanvas").width();
-    // $("#virtualModelCanvas").attr("width", w);
-    // $("#virtualModelCanvas").attr("height", w);
-
-    // setupVirtualModel();
+    $(window).resize(virtualModel.redraw);
 
     updateData();
 

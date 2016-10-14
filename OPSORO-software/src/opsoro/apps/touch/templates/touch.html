@@ -1,4 +1,4 @@
-{% extends "app.html" %}
+{% extends "app_base.html" %}
 
 {% block head %}
 {{ super() }}
@@ -40,7 +40,7 @@
 		<span class="text">Start</span>
 	</a>
 </div>
-<div id="errors">
+<!-- <div id="errors">
 	{% with messages = get_flashed_messages(category_filter=["message"]) %}
 		{% if messages %}
 			{% for message in messages %}
@@ -71,7 +71,7 @@
 			{% endfor %}
 		{% endif %}
 	{% endwith %}
-</div>
+</div> -->
 <div id="chart" style="width: 100%; height: calc(100vh - 20rem);"></div>
 
 {% endblock %}

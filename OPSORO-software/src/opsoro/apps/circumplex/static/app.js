@@ -185,26 +185,4 @@ $(document).ready(function(){
 
 	$("#circumplex").drawLayers();
 
-	$("#btnEnable").click(function(){
-		$.ajax({
-			dataType: "json",
-			url: "servos/enable",
-			success: function(data){
-				if(data.status == "error"){
-					addError(data.message);
-				}
-			}
-		});
-	});
-	$("#btnDisable").click(function(){
-		$.ajax({
-			dataType: "json",
-			url: "servos/disable",
-			success: function(data){
-				if(data.status == "error"){
-					addError(data.message);
-				}
-			}
-		});
-	});
 });

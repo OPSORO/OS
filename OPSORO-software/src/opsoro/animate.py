@@ -18,6 +18,11 @@ class Animate(object):
 		"""
         self._start_time = time.time()
         self._end_time = self._start_time + times[-1]
+        self._end_value = values[-1]
+
+        # if animation time is < or = 0, do not interpolate
+        if times[-1] <= 0:
+            return
 
         times_offset = [t + self._start_time for t in times]
 
@@ -32,6 +37,9 @@ class Animate(object):
         """
 		Calculates and returns the current value of the animation.
 		"""
+        if self.has_ended():
+            return self._end_value
+
         # .item() is called so that a values type is returned. Otherwise _iplt
         # returns a 0D numpy array.
         return self._iplt(time.time()).item()

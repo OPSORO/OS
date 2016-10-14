@@ -7,14 +7,14 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash
 from werkzeug import secure_filename
 from opsoro.sound import Sound
 
-config = {"full_name": "Sounds", "icon": "fa-volume-up"}
+config = {"full_name": "Sounds", "icon": "fa-volume-up", 'color': '#15e678'}
 
 get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 
 
 def setup_pages(opsoroapp):
     sounds_bp = Blueprint(
-        "sounds",
+        config['full_name'].lower(),
         __name__,
         template_folder="templates",
         static_folder="static")
@@ -36,7 +36,8 @@ def setup_pages(opsoroapp):
         for filename in filenames:
             data["soundfiles"].append(os.path.split(filename)[1])
 
-        return opsoroapp.render_template("sounds.html", **data)
+        return opsoroapp.render_template(config['full_name'].lower() + ".html",
+                                         **data)
 
     @sounds_bp.route("/upload", methods=["POST"])
     @opsoroapp.app_view

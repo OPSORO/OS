@@ -2,13 +2,14 @@ from __future__ import with_statement
 
 from opsoro.console_msg import *
 from opsoro.expression import Expression
+from opsoro.robot import Robot
 from opsoro.hardware import Hardware
 
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 
 constrain = lambda n, minn, maxn: max(min(maxn, n), minn)
 
-config = {"full_name": "Sliders", "icon": "fa-sliders"}
+config = {"full_name": "Sliders", "icon": "fa-sliders", 'color': '#15e678'}
 
 clientconn = None
 # dof_positions = {}
@@ -26,7 +27,7 @@ except ImportError:
 
 def setup_pages(opsoroapp):
     sliders_bp = Blueprint(
-        "sliders",
+        config['full_name'].lower(),
         __name__,
         template_folder="templates",
         static_folder="static")
@@ -54,10 +55,11 @@ def setup_pages(opsoroapp):
         # 			"current":	dof_positions[servo.dofname]
         # 		})
 
-        with open(get_path("../../config/modules_configs/ono.yaml")) as f:
+        with open(get_path("../../config/default.conf")) as f:
             data["config"] = yaml.load(f, Loader=Loader)
 
-        return opsoroapp.render_template("sliders.html", **data)
+        return opsoroapp.render_template(config['full_name'].lower() + ".html",
+                                         **data)
 
     @opsoroapp.app_socket_connected
     def s_connected(conn):
@@ -69,17 +71,17 @@ def setup_pages(opsoroapp):
         global clientconn
         clientconn = None
 
-    @opsoroapp.app_socket_message("servosEnable")
-    def s_servosenable(conn, data):
-        print_info("Servos enabled")
-        with Hardware.lock:
-            Hardware.servo_enable()
-
-    @opsoroapp.app_socket_message("servosDisable")
-    def s_servosdisable(conn, data):
-        print_info("Servos disabled")
-        with Hardware.lock:
-            Hardware.servo_disable()
+    # @opsoroapp.app_socket_message("servosEnable")
+    # def s_servosenable(conn, data):
+    #     print_info("Servos enabled")
+    #     with Hardware.lock:
+    #         Hardware.servo_enable()
+    #
+    # @opsoroapp.app_socket_message("servosDisable")
+    # def s_servosdisable(conn, data):
+    #     print_info("Servos disabled")
+    #     with Hardware.lock:
+    #         Hardware.servo_disable()
 
     @opsoroapp.app_socket_message("setDofPos")
     def s_setdofpos(conn, data):
@@ -90,27 +92,27 @@ def setup_pages(opsoroapp):
         if modulename is None or dofname is None:
             conn.send_data("error", {"message": "No valid dof name given."})
 
-            # global dof_positions
-            # if dofname not in dof_positions:
-            # conn.send_data("error", {"message": "Unknown DOF name."})
-            # else:
-            pos = constrain(pos, -1.0, 1.0)
-            dof_positions[dofname] = pos
+        Robot.set_dof_value(modulename, dofname, pos, 0)
+        # global dof_positions
+        # if dofname not in dof_positions:
+        # conn.send_data("error", {"message": "Unknown DOF name."})
+        # else:
+        # pos = constrain(pos, -1.0, 1.0)
+        # dof_positions[dofname] = pos
 
-            with Expression.lock:
-                Expression.update()
+        # with Expression.lock:
+        # Expression.update()
 
     opsoroapp.register_app_blueprint(sliders_bp)
 
-
-def overlay_fn(dof_pos, dof):
-    # Overwrite all DOFs to use the ones from the slider app
-    global dof_positions
-
-    if dof.name in dof_positions:
-        return dof_positions[dof.name]
-    else:
-        return dof_pos
+# def overlay_fn(dof_pos, dof):
+#     # Overwrite all DOFs to use the ones from the slider app
+#     global dof_positions
+#
+#     if dof.name in dof_positions:
+#         return dof_positions[dof.name]
+#     else:
+#         return dof_pos
 
 
 def setup(opsoroapp):
@@ -118,32 +120,34 @@ def setup(opsoroapp):
 
 
 def start(opsoroapp):
-    global dof_positions
-    dof_positions = {}
-
-    # Apply overlay function
-    for servo in Expression.servos:
-        if servo.pin < 0 or servo.pin > 15:
-            continue  # Skip invalid pins
-        dof_positions[servo.dofname] = 0.0
-        if servo.dofname in Expression.dofs:
-            Expression.dofs[servo.dofname].overlays.append(overlay_fn)
+    # global dof_positions
+    # dof_positions = {}
+    #
+    # # Apply overlay function
+    # for servo in Expression.servos:
+    #     if servo.pin < 0 or servo.pin > 15:
+    #         continue  # Skip invalid pins
+    #     dof_positions[servo.dofname] = 0.0
+    #     if servo.dofname in Expression.dofs:
+    #         Expression.dofs[servo.dofname].overlays.append(overlay_fn)
 
     # Turn servo power off, init servos, update expression
-    with Hardware.lock:
-        Hardware.servo_disable()
-        Hardware.servo_init()
-        Hardware.servo_neutral()
-
-    with Expression.lock:
-        Expression.update()
+    # with Hardware.lock:
+    #     Hardware.servo_disable()
+    #     Hardware.servo_init()
+    #     Hardware.servo_neutral()
+    #
+    # # with Expression.lock:
+    # Robot.update()
+    pass
 
 
 def stop(opsoroapp):
-    with Hardware.lock:
-        Hardware.servo_disable()
+    # with Hardware.lock:
+    #     Hardware.servo_disable()
 
     # Remove all overlay functions
-    for dofname, dof in Expression.dofs.iteritems():
-        if overlay_fn in dof.overlays:
-            dof.overlays.remove(overlay_fn)
+    # for dofname, dof in Expression.dofs.iteritems():
+    #     if overlay_fn in dof.overlays:
+    #         dof.overlays.remove(overlay_fn)
+    pass

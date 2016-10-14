@@ -5,29 +5,28 @@ import time
 from opsoro.console_msg import *
 from opsoro.expression import Expression
 from opsoro.hardware import Hardware
-from opsoro.stoppable_thread import StoppableThread
+# from opsoro.stoppable_thread import StoppableThread
 
 from flask import Blueprint, render_template, request
 
 constrain = lambda n, minn, maxn: max(min(maxn, n), minn)
 
-config = {"full_name": "Circumplex Interface", "icon": "fa-meh-o"}
+config = {"full_name": "Circumplex", "icon": "fa-meh-o", 'color': '#15e678'}
 
-
-def CircumplexLoop():
-    while not circumplex_t.stopped():
-        with Expression.lock:
-            Expression.update()
-
-        circumplex_t.sleep(0.015)
-
-
-circumplex_t = None
+# def CircumplexLoop():
+#     while not circumplex_t.stopped():
+#         #with Expression.lock:
+#         Expression.update()
+#
+#         circumplex_t.sleep(0.015)
+#
+#
+# circumplex_t = None
 
 
 def setup_pages(opsoroapp):
     circumplex_bp = Blueprint(
-        "circumplex",
+        config['full_name'].lower(),
         __name__,
         template_folder="templates",
         static_folder="static")
@@ -36,21 +35,22 @@ def setup_pages(opsoroapp):
     @opsoroapp.app_view
     def index():
         data = {}
-        return opsoroapp.render_template("circumplex.html", **data)
+        return opsoroapp.render_template(config['full_name'].lower() + ".html",
+                                         **data)
 
-    @circumplex_bp.route("/servos/enable")
-    @opsoroapp.app_api
-    def servosenable():
-        print_info("Servos enabled")
-        with Hardware.lock:
-            Hardware.servo_enable()
-
-    @circumplex_bp.route("/servos/disable")
-    @opsoroapp.app_api
-    def servosdisable():
-        print_info("Servos disabled")
-        with Hardware.lock:
-            Hardware.servo_disable()
+    # @circumplex_bp.route("/servos/enable")
+    # @opsoroapp.app_api
+    # def servosenable():
+    #     print_info("Servos enabled")
+    #     with Hardware.lock:
+    #         Hardware.servo_enable()
+    #
+    # @circumplex_bp.route("/servos/disable")
+    # @opsoroapp.app_api
+    # def servosdisable():
+    #     print_info("Servos disabled")
+    #     with Hardware.lock:
+    #         Hardware.servo_disable()
 
     @circumplex_bp.route("/setemotion", methods=["POST"])
     @opsoroapp.app_api
@@ -61,17 +61,10 @@ def setup_pages(opsoroapp):
         phi = constrain(phi, 0.0, 360.0)
         r = constrain(r, 0.0, 1.0)
 
-        phi = phi * math.pi / 180.0
-
-        # Calculate distance between old and new emotions.
-        # Shorter emotional distances are animated faster than longer distances.
-        e_old = Expression.get_emotion_complex()
-        e_new = cmath.rect(r, phi)
-        dist = abs(e_new - e_old)
-
-        with Expression.lock:
-            Expression.set_emotion(phi=phi, r=r, anim_time=dist)
-            # Expression is updated in separate thread, no need to do this here.
+        # Set emotion with time -1 for smooth animation based on distance of previous emotion
+        #with Expression.lock:
+        Expression.set_emotion_r_phi(r, phi, True, -1)
+        # Expression is updated in separate thread, no need to do this here.
 
     opsoroapp.register_app_blueprint(circumplex_bp)
 
@@ -82,25 +75,28 @@ def setup(opsoroapp):
 
 def start(opsoroapp):
     # Turn servo power off, init servos, update expression
-    with Hardware.lock:
-        Hardware.servo_disable()
-        Hardware.servo_init()
-        Hardware.servo_neutral()
+    # with Hardware.lock:
+    #     Hardware.servo_disable()
+    #     Hardware.servo_init()
+    #     Hardware.servo_neutral()
 
-    with Expression.lock:
-        Expression.set_emotion(valence=0.0, arousal=0.0)
-        Expression.update()
+    # with Expression.lock:
+    # Neutral emotion
+    # Expression.set_emotion_e()
+    # Expression.update()
 
     # Start update thread
-    global circumplex_t
-    circumplex_t = StoppableThread(target=CircumplexLoop)
-    circumplex_t.start()
+    # global circumplex_t
+    # circumplex_t = StoppableThread(target=CircumplexLoop)
+    # circumplex_t.start()
+    pass
 
 
 def stop(opsoroapp):
-    with Hardware.lock:
-        Hardware.servo_disable()
+    # with Hardware.lock:
+    #     Hardware.servo_disable()
 
-    global circumplex_t
-    if circumplex_t is not None:
-        circumplex_t.stop()
+    # global circumplex_t
+    # if circumplex_t is not None:
+    #     circumplex_t.stop()
+    pass

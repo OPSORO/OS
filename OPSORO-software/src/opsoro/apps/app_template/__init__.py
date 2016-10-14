@@ -8,7 +8,9 @@ import cmath
 
 from opsoro.console_msg import *
 from opsoro.hardware import Hardware
-from opsoro.stoppable_thread import StoppableThread
+from opsoro.robot import Robot
+from opsoro.expression import Expression
+# from opsoro.stoppable_thread import StoppableThread
 from opsoro.sound import Sound
 
 from functools import partial
@@ -24,29 +26,15 @@ try:
 except ImportError:
     from yaml import Loader
 
-from flask import Blueprint, render_template, request, send_from_directory
-
 constrain = lambda n, minn, maxn: max(min(maxn, n), minn)
-
-from opsoro.expression import Expression
-
-config = {"full_name": "App Template", "icon": "fa-info"}
-
 get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 
-# def AppLoop():
-# 	while not app_t.stopped():
-# 		with Expression.lock:
-# 			Expression.update()
-#
-# 		app_t.sleep(0.015)
-#
-# app_t = None
+config = {"full_name": "App_Template", "icon": "fa-info", 'color': '#15e678'}
 
 
 def setup_pages(opsoroapp):
     app_bp = Blueprint(
-        "app_template",
+        config['full_name'].lower(),
         __name__,
         template_folder="templates",
         static_folder="static")
@@ -63,7 +51,8 @@ def setup_pages(opsoroapp):
         if action != None:
             data["actions"][action] = request.args.get("param", None)
 
-        return opsoroapp.render_template("app_template.html", **data)
+        return opsoroapp.render_template(config['full_name'].lower() + ".html",
+                                         **data)
 
     # @app_bp.route("/demo")
     # @opsoroapp.app_view
@@ -81,16 +70,8 @@ def setup(opsoroapp):
 
 
 def start(opsoroapp):
-    # Start update thread
-    # global app_t
-    # app_t = StoppableThread(target=AppLoop)
-    # app_t.start();
     pass
 
 
 def stop(opsoroapp):
-    # Stop update thread
-    # global app_t
-    # if app_t is not None:
-    # 	app_t.stop()
     pass
