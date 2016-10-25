@@ -8,7 +8,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash
 from opsoro.stoppable_thread import StoppableThread
 from opsoro.hardware import Hardware
 
-config = {"full_name": "Touch Graph",
+config = {"full_name": "Touch_Graph",
           "icon": "fa-hand-o-down",
           'color': '#ffaf19'}
 

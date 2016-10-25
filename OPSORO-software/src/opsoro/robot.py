@@ -6,6 +6,7 @@ from opsoro.console_msg import *
 from opsoro.stoppable_thread import StoppableThread
 from opsoro.hardware import Hardware
 
+from random import randint
 import time
 import json
 import yaml
@@ -31,13 +32,7 @@ class _Robot(object):
         self._config = {}
         self.load_config()
         self._dof_t = None
-
-        # with Hardware.lock:
-        #     Hardware.servo_disable()
-        #     Hardware.servo_init()
-        #     Hardware.servo_neutral()
-
-        # self.stop()
+        self._alive_t = None
 
     def start(self):
         print_info('Start Robot')
@@ -50,6 +45,15 @@ class _Robot(object):
         if self._dof_t is not None:
             self._dof_t.stop()
         self._dof_t = StoppableThread(target=self.dof_update_loop)
+
+    def start_alive_loop(self):
+        if self._alive_t is not None:
+            self._alive_t.stop()
+        self._alive_t = StoppableThread(target=self.alive_loop)
+
+    def stop_alive_loop(self):
+        if self._alive_t is not None:
+            self._alive_t.stop()
 
     def stop(self):
         print_info('Stop Robot')
@@ -100,9 +104,12 @@ class _Robot(object):
 
     def get_dof_values(self):
         dofs = []
+        for i in range(16):
+            dofs.append(0)
         for module_name, module in self.modules.iteritems():
             for dof_name, dof in module.dofs.iteritems():
-                dofs.append(dof.value)
+                if hasattr(dof, 'pin'):
+                    dofs[int(dof.pin)] = float(dof.value)
 
         return dofs
 
@@ -123,6 +130,15 @@ class _Robot(object):
             if not self.update():
                 self._dof_t.stop()
             self._dof_t.sleep(0.02)
+
+    def alive_loop(self):
+        time.sleep(0.05)  # delay
+        if self._alive_t is None:
+            return
+
+        while not self._alive_t.stopped():
+
+            self._alive_t.sleep(randint(0, 9))
 
     def update(self):
         updated = False
@@ -160,15 +176,18 @@ class _Robot(object):
             return False
 
         try:
-            with open(get_path("../config/" + file_name), "w") as f:
-                f.write(
-                    yaml.dump(
-                        self._config, default_flow_style=False, Dumper=Dumper))
+            with open(get_path("config/" + file_name), "w") as f:
+                f.write(json.dumps(self._config))
             print_info("Modules saved: " + file_name)
         except IOError:
             print_warning("Could not save " + file_name)
             return False
         return True
+
+    def blink(self, speed):
+        for name, module in self.modules.iteritems():
+            if hasattrib(module, 'blink'):
+                module.blink(speed)
 
 # Global instance that can be accessed by apps and scripts
 Robot = _Robot()

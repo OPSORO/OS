@@ -63,11 +63,18 @@ class DOF(object):
     def calc(self, r, phi, anim_time=-1):
         # print_info('Calc; r: %d, phi: %d, time: %i' % (r, phi, anim_time))
         # Calculate DOF position at max intensity
-        dof_at_max_r = self._interp_poly(phi)
+
+        if phi > 0:
+            phi -= math.pi
+        elif phi <= 0:
+            phi += math.pi
+
+        dof_at_max_r = float(self._interp_poly(phi))
 
         # Interpolate between neutral DOF pos and max intensity DOF pos
-        self.set_value(self._neutral + (r * (dof_at_max_r - self._neutral)),
-                       anim_time)
+        self.set_value(
+            float(self._neutral) + (r * (dof_at_max_r - float(self._neutral))),
+            anim_time)
 
         # Execute overlays
         for overlay_fn in self.overlays:
@@ -82,10 +89,10 @@ class DOF(object):
     def set_value(self, dof_value=0, anim_time=-1):
         # print_info('Set value: %d, time: %i' % (dof_value, anim_time))
 
-        dof_value = constrain(dof_value, -1.0, 1.0)
+        dof_value = float(constrain(float(dof_value), -1.0, 1.0))
         # Apply transition animation
         if anim_time < 0:
-            anim_time = float(abs(dof_value - self.value)) / 3.0
+            anim_time = float(abs(dof_value - float(self.value))) / 3.0
 
         self._anim = Animate([0, anim_time], [self.value, dof_value])
 
@@ -98,7 +105,7 @@ class DOF(object):
                     False if dof value did not change
         """
         if self._anim is not None:
-            self.value = self._anim()
+            self.value = float(self._anim())
             if self._anim is None or self._anim.has_ended():
                 self._anim = None
             return True

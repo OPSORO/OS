@@ -74,11 +74,12 @@ $(document).ready(function(){
 
 		self.pressPlay = function(){
 			if(self.isPlaying()){
-				$.ajax({
-					dataType: "json",
-					type: "GET",
-					url: "stopsound"
-				});
+				robotSendStop();
+				// $.ajax({
+				// 	dataType: "json",
+				// 	type: "GET",
+				// 	url: "stopsound"
+				// });
 			 	self.isPlaying(false);
 			 	self.hasPlayed(true);
 			}else{
@@ -106,40 +107,44 @@ $(document).ready(function(){
 						dofdata[customControl.dofname] = customControl.pos;
 					});
 					var json_data = ko.toJSON(dofdata, null, 2);
-					$.ajax({
-						dataType: "json",
-						data: { dofdata: json_data },
-						type: "POST",
-						url: "setDofData",
-						success: function(data){
-							if(data.status == "error"){
-								addError(data.message);
-							}
-						}
-					});
+
+					robotSendAllDOF(json_data);
+					// $.ajax({
+					// 	dataType: "json",
+					// 	data: { dofdata: json_data },
+					// 	type: "POST",
+					// 	url: "setDofData",
+					// 	success: function(data){
+					// 		if(data.status == "error"){
+					// 			addError(data.message);
+					// 		}
+					// 	}
+					// });
 				}
 				if(this.output() == "tts"){
-					$.ajax({
-						dataType: "json",
-						type: "GET",
-						url: "saytts",
-						data: {text: self.tts()},
-						success: function(data){
-
-						}
-					});
+					robotSendTTS(self.tts());
+					// $.ajax({
+					// 	dataType: "json",
+					// 	type: "GET",
+					// 	url: "saytts",
+					// 	data: {text: self.tts()},
+					// 	success: function(data){
+					//
+					// 	}
+					// });
 				}else{
-					$.ajax({
-						dataType: "json",
-						type: "GET",
-						url: "play/" + self.wav(),
-						success: function(data){
-							if(data.status == "error"){
-								addError(data.message);
-							}
-
-						}
-					});
+					robotSendSound(self.wav());
+					// $.ajax({
+					// 	dataType: "json",
+					// 	type: "GET",
+					// 	url: "play/" + self.wav(),
+					// 	success: function(data){
+					// 		if(data.status == "error"){
+					// 			addError(data.message);
+					// 		}
+					//
+					// 	}
+					// });
 				}
 				self.isPlaying(true);
 			}
@@ -310,7 +315,7 @@ $(document).ready(function(){
 			});
 			//console.log(file_data);
 			self.fileIsModified(false);
-			return file_data;
+			return ko.toJSON(file_data, null, 2);
 		};
 
 		self.changeEmotion = function(emotion){

@@ -26,12 +26,9 @@ def setup_pages(opsoroapp):
 
         filenames = []
 
-        filenames.extend(
-            glob.glob(get_path("../../data/sounds/soundfiles/*.wav")))
-        filenames.extend(
-            glob.glob(get_path("../../data/sounds/soundfiles/*.mp3")))
-        filenames.extend(
-            glob.glob(get_path("../../data/sounds/soundfiles/*.ogg")))
+        filenames.extend(glob.glob(get_path("../../data/sounds/*.wav")))
+        filenames.extend(glob.glob(get_path("../../data/sounds/*.mp3")))
+        filenames.extend(glob.glob(get_path("../../data/sounds/*.ogg")))
 
         for filename in filenames:
             data["soundfiles"].append(os.path.split(filename)[1])
@@ -47,8 +44,7 @@ def setup_pages(opsoroapp):
             if file.filename.rsplit('.', 1)[1] in ["wav", "mp3", "ogg"]:
                 filename = secure_filename(file.filename)
                 file.save(
-                    os.path.join(
-                        get_path("../../data/sounds/soundfiles/"), filename))
+                    os.path.join(get_path("../../data/sounds/"), filename))
                 flash("%s uploaded successfully." % file.filename, "success")
                 return redirect(url_for(".index"))
             else:
@@ -57,61 +53,6 @@ def setup_pages(opsoroapp):
         else:
             flash("No file selected.", "error")
             return redirect(url_for(".index"))
-
-    @sounds_bp.route("/delete/<soundfile>", methods=["POST"])
-    @opsoroapp.app_api
-    def delete(soundfile):
-        soundfiles = []
-        filenames = []
-
-        filenames.extend(
-            glob.glob(get_path("../../data/sounds/soundfiles/*.wav")))
-        filenames.extend(
-            glob.glob(get_path("../../data/sounds/soundfiles/*.mp3")))
-        filenames.extend(
-            glob.glob(get_path("../../data/sounds/soundfiles/*.ogg")))
-
-        for filename in filenames:
-            soundfiles.append(os.path.split(filename)[1])
-
-        if soundfile in soundfiles:
-            os.remove(
-                os.path.join(
-                    get_path("../../data/sounds/soundfiles/"), soundfile))
-            return {"status": "success",
-                    "message": "File %s deleted." % soundfile}
-        else:
-            return {"status": "error", "message": "Unknown file."}
-
-    @sounds_bp.route("/play/<soundfile>", methods=["GET"])
-    @opsoroapp.app_api
-    def play(soundfile):
-        soundfiles = []
-        filenames = []
-
-        filenames.extend(
-            glob.glob(get_path("../../data/sounds/soundfiles/*.wav")))
-        filenames.extend(
-            glob.glob(get_path("../../data/sounds/soundfiles/*.mp3")))
-        filenames.extend(
-            glob.glob(get_path("../../data/sounds/soundfiles/*.ogg")))
-
-        for filename in filenames:
-            soundfiles.append(os.path.split(filename)[1])
-
-        if soundfile in soundfiles:
-            Sound.play_file(soundfile)
-            return {"status": "success"}
-        else:
-            return {"status": "error", "message": "Unknown file."}
-
-    @sounds_bp.route("/saytts", methods=["GET"])
-    @opsoroapp.app_api
-    def saytts():
-        text = request.args.get("text", None)
-        if text is not None:
-            Sound.say_tts(text)
-        return {"status": "success"}
 
     opsoroapp.register_app_blueprint(sounds_bp)
 

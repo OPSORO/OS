@@ -3,43 +3,63 @@ $(document).ready(function(){
     filename = $(this).closest("span.file").data("soundfile");
     fileElem = $(this).closest("span.file")
     $.ajax({
-      dataType: "json",
-      type: "POST",
-      url: "delete/" + filename,
-      success: function(data){
-        if(data.status == "error"){
-          addError(data.message);
-        }else{
-          addMessage(data.message);
-          fileElem.hide();
+        dataType: "json",
+        type: "POST",
+        url: "/docs/delete/" + app_full_name + "/",
+        data: {
+            file_name_ext: filename
+        },
+        success: function (data) {
+            if (!data.success) {
+              showMainError(data.message);
+              return;
+            }
+
+            fileElem.hide();
+            showMainSuccess('File deleted.');
         }
-      }
     });
+    // $.ajax({
+    //   dataType: "json",
+    //   type: "POST",
+    //   url: "delete/" + filename,
+    //   success: function(data){
+    //     if(data.status == "error"){
+    //       addError(data.message);
+    //     }else{
+    //       addMessage(data.message);
+    //       fileElem.hide();
+    //     }
+    //   }
+    // });
   });
   $("a.btnPlaySnd").click(function(){
     filename = $(this).closest("span.file").data("soundfile");
-    $.ajax({
-      dataType: "json",
-      type: "GET",
-      url: "play/" + filename,
-      success: function(data){
-        if(data.status == "error"){
-          addError(data.message);
-        }
-      }
-    });
+    robotSendSound(filename);
+    // $.ajax({
+    //   dataType: "json",
+    //   type: "GET",
+    //   url: "play/" + filename,
+    //   success: function(data){
+    //     if(data.status == "error"){
+    //       addError(data.message);
+    //     }
+    //   }
+    // });
   });
 
   $("#formTTS").submit(function(e){
     e.preventDefault();
   });
-  $("#btnTTS").click(doTTS);
+  $("#btnTTS").click(function(){
+    robotSendTTS($("#txtTTS").val());
+  });
   $("#txtTTS").bind("keydown", function(e) {
     if (e.keyCode == 13) {
-      doTTS();
+      robotSendTTS($("#txtTTS").val());
     }
   });
-  
+
   var Model = function(){
     var self = this;
 

@@ -135,6 +135,46 @@ class RHandler(object):
             "robot",
             self.page_virtual,
             methods=["GET", "POST"], )
+        self.server.flaskapp.add_url_rule(
+            "/robot/config/",
+            "robot_config",
+            protect(robot_config_data),
+            methods=["GET", "POST"], )
+        self.server.flaskapp.add_url_rule(
+            "/robot/emotion/",
+            "robot_emotion",
+            protect(robot_emotion),
+            methods=["GET", "POST"], )
+        self.server.flaskapp.add_url_rule(
+            "/robot/dof/",
+            "robot_dof",
+            protect(robot_dof_data),
+            methods=["GET", "POST"], )
+        self.server.flaskapp.add_url_rule(
+            "/robot/dofs/",
+            "robot_dofs",
+            protect(robot_dofs_data),
+            methods=["GET", "POST"], )
+        self.server.flaskapp.add_url_rule(
+            "/robot/tts/",
+            "robot_tts",
+            protect(robot_tts),
+            methods=["GET", "POST"], )
+        self.server.flaskapp.add_url_rule(
+            "/robot/sound/",
+            "robot_sound",
+            protect(robot_sound),
+            methods=["GET", "POST"], )
+        self.server.flaskapp.add_url_rule(
+            "/robot/servo/",
+            "robot_servo",
+            protect(robot_servo),
+            methods=["GET", "POST"], )
+        self.server.flaskapp.add_url_rule(
+            "/robot/stop/",
+            "robot_stop",
+            protect(robot_stop),
+            methods=["GET", "POST"], )
 
         for _exc in default_exceptions:
             self.server.flaskapp.errorhandler(_exc)(self.show_errormessage)
@@ -273,32 +313,32 @@ class RHandler(object):
             **data)
 
     def page_virtual(self):
-        clientconn = None
+        # clientconn = None
 
         # def send_stopped():
         #     global clientconn
         #     if clientconn:
         #         clientconn.send_data("soundStopped", {})
 
-        if request.method == "POST":
-            dataOnly = request.form.get("getdata", type=int, default=0)
-            if dataOnly == 1:
-                tempDofs = Robot.dof_values()
-                return json.dumps({'success': True, 'dofs': tempDofs})
-        # 		return Expression.dof_values
-            frameOnly = request.form.get("frame", type=int, default=0)
-            if frameOnly == 1:
-                #return self.render_template("virtual.html", title="Virtual Model", page_caption="Virtual model", page_icon="fa-smile-o", modules=Modules.modules)
-                pass
+        # if request.method == "POST":
+        #     dataOnly = request.form.get("getdata", type=int, default=0)
+        #     if dataOnly == 1:
+        #         tempDofs = Robot.dof_values()
+        #         return json.dumps({'success': True, 'dofs': tempDofs})
+        # # 		return Expression.dof_values
+        #     frameOnly = request.form.get("frame", type=int, default=0)
+        #     if frameOnly == 1:
+        #         #return self.render_template("virtual.html", title="Virtual Model", page_caption="Virtual model", page_icon="fa-smile-o", modules=Modules.modules)
+        #         pass
 
-        file_location = get_path('../config/')
+        file_location = get_path('../../config/')
         file_name = 'default.conf'
         config_data = ''
         if os.path.isfile(file_location + file_name):
             with open(get_path(file_location + file_name), "r") as f:
                 config_data = f.read()
             # config_data = send_from_directory(file_location, file_name)
-            print_info("Default config loaded")
+            # print_info("Default config loaded")
 
         return self.render_template(
             "virtual.html",

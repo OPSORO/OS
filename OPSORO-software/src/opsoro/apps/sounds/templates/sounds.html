@@ -113,15 +113,7 @@
 {{ super() }}
 <script>
 
+var app_full_name = "{{ app.full_name }}";
 
-	function doTTS(){
-		//alert($("#txtTTS").val());
-		$.ajax({
-			dataType: "json",
-			type: "GET",
-			url: "saytts",
-			data: {text: $("#txtTTS").val()}
-		});
-	}
 </script>
 {% endblock %}

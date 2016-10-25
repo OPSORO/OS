@@ -1,10 +1,7 @@
-#errors .alert-box:first-child {
-	margin-top: 2rem;
-}
 
 #pnlCode, #pnlBlockly {
 	margin: 0 -1rem 0rem -1rem;
-	height: calc(100vh - 24.15rem);
+	height: calc(100vh - 26.15rem);
 }
 
 #blocklyFrame {
@@ -35,16 +32,8 @@
 	overflow: scroll;
 }
 
-.fullscreen {
-	position: fixed;
-	top: 0;
-	left: 0;
-	width: 100vw;
-	height: 100vh;
-}
-
 .fullscreen #pnlCode, .fullscreen #pnlBlockly {
-	height: calc(100vh - 4rem - 4.15rem);
+	height: calc(100vh - 6rem - 4.15rem);
 }
 
 .fullscreen #console {

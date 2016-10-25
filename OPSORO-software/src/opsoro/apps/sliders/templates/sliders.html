@@ -47,7 +47,7 @@
 					<div class="medium-3 large-2 show-for-medium-up columns">
 						<strong>{{ module.name|upper + ': ' + dof.name|upper }}</strong><br>
 						<span class="note" style="padding: 0;">
-							<strong>Pin:</strong> {{ dof.servo.pin }}<br>
+							<strong>Pin:</strong> {{ dof.servo.pin|int }}<br>
 							<strong>DOF:</strong> <span data-dof>0</span><br>
 							<strong>Servo:</strong> <span data-us>0</span> &micro;s<br>
 						</span>
@@ -58,15 +58,15 @@
 							<div class="small-6 text-center columns">0.0</div>
 							<div class="small-3 text-right columns">+1.0</div>
 						</div>
-						<div class="range-slider" data-slider="0" data-options="start: -100; end: 100;" data-modulename="{{ module.name }}" data-dofname="{{ dof.name }}" data-dofmin="{{ dof.servo.min }}" data-dofmid="{{ dof.servo.mid }}" data-dofmax="{{ dof.servo.max }}">
+						<div class="range-slider" data-slider="0" data-options="start: -100; end: 100;" data-modulename="{{ module.name }}" data-dofname="{{ dof.name }}" data-dofmin="{{ dof.servo.min|int }}" data-dofmid="{{ dof.servo.mid|int }}" data-dofmax="{{ dof.servo.max|int }}">
 							<span class="range-slider-handle" role="slider" tabindex="0"></span>
 							<span class="range-slider-active-segment"></span>
 							<input type="hidden">
 						</div>
 						<div class="row numbersbottom">
-							<div class="small-3 text-left columns">{{ dof.servo.mid + dof.servo.min }} &micro;s</div>
+							<div class="small-3 text-left columns">{{ dof.servo.mid|int + dof.servo.min|int }} &micro;s</div>
 							<div class="small-6 text-center columns">{{ dof.servo.mid }} &micro;s</div>
-							<div class="small-3 text-right columns">{{ dof.servo.mid + dof.servo.max }} &micro;s</div>
+							<div class="small-3 text-right columns">{{ dof.servo.mid|int + dof.servo.max|int }} &micro;s</div>
 						</div>
 					</div>
 				</div>
@@ -145,7 +145,6 @@
 					dofus += (dofpos / 100) * dofmax
 				}
 				$(this).closest(".sliderrow").find("[data-us]").html(numeral(dofus).format("0"));
-
 				if(connReady){
 					console.log("SET " + $(this).data("dofname") + " TO POS " + $(this).attr("data-slider")/100);
 					conn.send(JSON.stringify({

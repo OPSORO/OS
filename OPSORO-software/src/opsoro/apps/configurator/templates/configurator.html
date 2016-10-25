@@ -2,24 +2,21 @@
 
 {% block base_toolbar %}
 	{% include "toolbar/file_operations.html" %}
+	{% include "toolbar/file_set_default.html" %}
 {% endblock %}
 
 {% block head %}
 	{{ super() }}
-
-	<!-- <script src="/static/js/paper/paper-full.js"></script> -->
-	<!-- <script data-paper-ignore="true" type="text/paperscript" src="static/canvas.js" data-paper-canvas="cnvConfig"></script> -->
-
 	<script src="/static/js/svg/svg.min.js"></script>
 	<script src="/static/js/svg/svg.draggable.min.js"></script>
-	<script src="static/modules.js"></script>
+	<script src="/static/js/robot/modules.js"></script>
 {% endblock %}
 
 {% block page_content %}
 	{{ super() }}
 
-	<div id="model_screen"></div>
-	<div class="config_settings" data-bind="visible: !isSelectedModule()">
+	<div id="model_screen" class='large-6 medium-6 small-12 columns'></div>
+	<div class="config_settings large-6 medium-6 small-12 columns" data-bind="visible: !isSelectedModule()">
 		<form>
 			<span class="setting">
 				<span>Robot:
@@ -49,7 +46,7 @@
 			</span>
 		</form>
 	</div>
-	<div class="config_settings" data-bind="visible: isSelectedModule()">
+	<div class="config_settings large-6 medium-6 small-12 columns" data-bind="visible: isSelectedModule()">
 		<form>
 			<span class="setting">
 				<span>Module:
@@ -64,11 +61,11 @@
 				</span><input type="text" name="name" data-bind="value: selectedModule().name, valueUpdate: 'input'"></span>
 			<span class="setting">
 				<span>Width:</span>
-				<input type="number" min="1" max="2000" step="1" name="mid" data-bind="event: { input: updateDofVisualisation(-1) }, value: selectedModule().width, valueUpdate: 'input'">
+				<input type="number" min="1" max="2000" step="1" name="mid" data-bind="event: { input: updateDofVisualisation(-1, false) }, value: selectedModule().width, valueUpdate: 'input'">
 			</span>
 			<span class="setting">
 				<span>Height:</span>
-				<input type="number" min="1" max="2000" step="1" name="mid" data-bind="event: { input: updateDofVisualisation(-1) }, value: selectedModule().height, valueUpdate: 'input'">
+				<input type="number" min="1" max="2000" step="1" name="mid" data-bind="event: { input: updateDofVisualisation(-1, false) }, value: selectedModule().height, valueUpdate: 'input'">
 			</span>
 			<!-- <span class="setting">
 				<span>Rotate:
@@ -122,7 +119,7 @@
 				<div id="mapping" data-bind="visible: selectedModule_SelectedDof().isMap()">
 					<span class="setting">
 						<span>Neutral:
-						</span><input type="number" min="-1" max="1" step="0.05" name="neutral" data-bind="event: { input: updateDofVisualisation(-1) }, value: selectedModule_SelectedDof().map().neutral, valueUpdate: 'input'"></span>
+						</span><input type="number" min="-1" max="1" step="0.05" name="neutral" data-bind="event: { input: updateDofVisualisation(-1, true) }, value: selectedModule_SelectedDof().map().neutral, valueUpdate: 'input'"></span>
 
 					<div id="poly_screen"></div>
 				</div>

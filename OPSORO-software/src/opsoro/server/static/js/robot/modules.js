@@ -81,7 +81,6 @@ var MappingGraph = function() {
             width: 0.2
         });
     }
-
     for (var i = 0; i < texts.length; i++) {
         text = self.svg.plain(texts[i]);
         text.center(startX, Ys[i]);
@@ -89,7 +88,6 @@ var MappingGraph = function() {
             width: 0.5
         });
     }
-
     var updateInfoTxt = function(circ) {
         self.infoRect.show();
         self.infoTxt.show();
@@ -107,7 +105,6 @@ var MappingGraph = function() {
         self.infoRect.hide();
         self.infoTxt.hide();
     };
-
     for (var i = 0; i < 20; i++) {
         line = self.svg.line(self.startX * 2 + self.stepWidth * i, Ys[0], self.startX * 2 + self.stepWidth * i, Ys[2]).stroke({
             width: 0.2
@@ -133,13 +130,13 @@ var MappingGraph = function() {
         circle.on('dragmove', function() {
             var num = updateInfoTxt(this);
             virtualModel.selectedModule_SelectedDof().map().poly()[this.attr('index')] = num;
-            virtualModel.updateDofVisualisation(this.attr('index'));
+            virtualModel.updateDofVisualisation(this.attr('index'), false);
         });
         circle.on('dragend', function(e) {
             var num = updateInfoTxt(this);
             this.cy(self.centerY - num * (self.centerY - self.nodeSize));
             virtualModel.selectedModule_SelectedDof().map().poly()[this.attr('index')] = num;
-            virtualModel.updateDofVisualisation(this.attr('index'));
+            virtualModel.updateDofVisualisation(this.attr('index'), true);
         });
         self.points.push(circle);
     }
@@ -172,6 +169,7 @@ var Dof = function(name) {
     self.servo = ko.observable(new Servo(0, 1500, 0, 0));
     self.isMap = ko.observable(false);
     self.map = ko.observable(new Mapping(0));
+    self.value = ko.observable(0.0);
 
     self.setServo = function(pin, mid, min, max) {
         self.servo(new Servo(pin, mid, min, max));
@@ -211,30 +209,34 @@ var Module = function(type, name, x, y, width, height, rotation) {
         self.updateImage();
     };
 
-    self.updateDofVisualisation = function(mapIndex) {
+    self.updateDofVisualisation = function(mapIndex, updateRobot) {
         if (self.drawObject == undefined) {
             return;
+        }
+        if (updateRobot == undefined) {
+          updateRobot = false;
         }
         var values = [];
 
         $.each(self.dofs(), function(idx, dof) {
+            dof.value(0);
             if (dof_values != undefined) {
                 if (dof.isServo()) {
-                    values.push(dof_values[dof.servo().pin()]);
-                } else {
-                    values.push(0);
+                    dof.value(dof_values[dof.servo().pin()]);
                 }
             } else {
                 if (dof.isMap() && dof.isServo()) {
                     if (mapIndex < 0) {
-                        values.push(dof.map().neutral());
+                        dof.value(dof.map().neutral());
                     } else {
-                        values.push(dof.map().poly()[mapIndex]);
+                        dof.value(dof.map().poly()[mapIndex]);
                     }
-                } else {
-                    values.push(0);
                 }
             }
+            if (updateRobot) {
+              virtualModel.updateDof(dof);
+            }
+            values.push(parseFloat(dof.value()));
         });
         if (values.length == self.drawObject.dofs.length) {
             self.drawObject.x = self.x();
@@ -307,16 +309,16 @@ function DrawMouth(svg, x, y, width, height) {
     self.base = DrawModule;
     self.base(svg, x, y, width, height);
 
-    self.dofs = ['Left Vertical', 'Middle Vertical', 'Right Vertical', 'Left Rotation', 'Right Rotation'];
+    self.dofs = ['left_vertical', 'middle_vertical', 'right_vertical', 'left_rotation', 'right_rotation'];
 
     self.increase = self.height / 2;
 
     self.Set = function(values) {
-        self.left_Y = constrain(values[0] || 0, -1, 1); // -1.0 -> 1.0
+        self.right_Y = constrain(values[0] || 0, -1, 1); // -1.0 -> 1.0
         self.middle_Y = constrain(values[1] || 0, -1, 1); // -1.0 -> 1.0
-        self.right_Y = constrain(values[2] || 0, -1, 1); // -1.0 -> 1.0
-        self.left_R = constrain(values[3] || 0, -1, 1); // -1.0 -> 1.0
-        self.right_R = constrain(values[4] || 0, -1, 1); // -1.0 -> 1.0
+        self.left_Y = constrain(values[2] || 0, -1, 1); // -1.0 -> 1.0
+        self.right_R = constrain(values[3] || 0, -1, 1); // -1.0 -> 1.0
+        self.left_R = constrain(values[4] || 0, -1, 1); // -1.0 -> 1.0
     }
     self.Set([-0.5, 0.5, -0.5, 0, 0]);
 
@@ -413,8 +415,8 @@ function DrawEyebrow(svg, x, y, width, height) {
     self.increase = self.height / 2;
 
     self.Set = function(values) {
-        self.left_Y = constrain(values[0] || 0, -1, 1); // -1.0 -> 1.0
-        self.right_Y = constrain(values[1] || 0, -1, 1); // -1.0 -> 1.0
+        self.right_Y = constrain(values[0] || 0, -1, 1); // -1.0 -> 1.0
+        self.left_Y = constrain(values[1] || 0, -1, 1); // -1.0 -> 1.0
         self.rotation = constrain(values[2] || 0, -1, 1); // -1.0 -> 1.0
     }
     self.Set([0, 0, 0]);
@@ -617,7 +619,7 @@ var VirtualModel = function() {
     self.modelheight = self.svg.height();
     self.refSize = Math.max(self.modelwidth, self.modelheight) / 2;
 
-    self.gridSize = ko.observable(20);
+    self.gridSize = ko.observable(18);
     self.screenGridSize = Math.min(self.modelwidth, self.modelheight) / self.gridSize();
     self.snap = ko.observable(1);
 
@@ -630,6 +632,87 @@ var VirtualModel = function() {
     self.editable = ($('#poly_screen').length != 0);
 
     self.mappingGraph = new MappingGraph();
+
+    self.updateServoPin = function() {
+
+    }
+    self.updateServoMid = function() {
+        if (!self.selectedModule_SelectedDof().isServo()) {
+            return;
+        }
+        console.log(parseInt(self.selectedModule_SelectedDof().servo().mid()));
+        robotSendServo(self.selectedModule_SelectedDof().servo().pin(), parseInt(self.selectedModule_SelectedDof().servo().mid()));
+    }
+    self.updateServoMin = function() {
+        if (!self.selectedModule_SelectedDof().isServo()) {
+            return;
+        }
+        console.log(parseInt(self.selectedModule_SelectedDof().servo().mid()) + parseInt(self.selectedModule_SelectedDof().servo().min()));
+        robotSendServo(self.selectedModule_SelectedDof().servo().pin(), parseInt(self.selectedModule_SelectedDof().servo().mid()) + parseInt(self.selectedModule_SelectedDof().servo().min()));
+    }
+    self.updateServoMax = function() {
+        if (!self.selectedModule_SelectedDof().isServo()) {
+            return;
+        }
+        console.log(parseInt(self.selectedModule_SelectedDof().servo().mid()) + parseInt(self.selectedModule_SelectedDof().servo().max()));
+        robotSendServo(self.selectedModule_SelectedDof().servo().pin(), parseInt(self.selectedModule_SelectedDof().servo().mid()) + parseInt(self.selectedModule_SelectedDof().servo().max()));
+    }
+    self.updateDofs = function() {
+        if (!self.selectedModule_SelectedDof().isServo()) {
+            return;
+        }
+
+        var dof_values = {};
+
+        for (var i = 0; i < self.modules().length; i++) {
+            var singleModule = self.modules()[i];
+            dof_values[singleModule.name()] = {};
+            for (var j = 0; j < singleModule.dofs().length; j++) {
+                var singleDof = singleModule.dofs()[j];
+                dof_values[singleModule.name()][singleDof.name()] = singleDof.value();
+
+                var value = parseInt(singleDof.servo().mid());
+                if (singleDof.value() >= 0) {
+                    value += parseInt(singleDof.value() * singleDof.servo().max());
+                } else {
+                    value += parseInt(-singleDof.value() * singleDof.servo().min());
+                }
+
+                robotSendServo(singleDof.servo().pin(), value);
+            }
+            console.log(dof_values[singleModule.name()]);
+            // mod_values[singleModule.name()].push(dof_values);
+
+        }
+        // console.log(dof_values[]);
+        // robotSendReceiveAllDOF(dof_values);
+    }
+
+    self.updateDof = function(singleDof) {
+        if (singleDof == undefined) {
+            return;
+        }
+        if (!singleDof.isServo()) {
+            return;
+        }
+
+        if (singleDof.value() > 1.0) {
+          singleDof.value(1.0);
+        }
+        if (singleDof.value() < -1.0) {
+          singleDof.value(-1.0);
+        }
+
+
+        var value = parseInt(singleDof.servo().mid());
+        if (singleDof.value() >= 0) {
+            value += parseInt(singleDof.value() * singleDof.servo().max());
+        } else {
+            value += parseInt(-singleDof.value() * singleDof.servo().min());
+        }
+
+        robotSendServo(singleDof.servo().pin(), value);
+    }
 
     self.clearDraw = function() {
         console.log('Clear');
@@ -674,6 +757,7 @@ var VirtualModel = function() {
         self.fileIsModified(true);
         self.isSelectedModule(true);
         self.mappingGraph.updateGraph();
+        self.updateServoMid();
     };
     self.selectedModule_RotateLeft = function() {
         self.selectedModule().rotation((self.selectedModule().rotation() - 90) % 360);
@@ -748,11 +832,8 @@ var VirtualModel = function() {
     };
 
     self.init = function() {
-        // Clear data, new file, ...
-        self.fileName("Untitled");
-        // if (self.config != undefined) {
-        //     alert('init');
-        // }
+        self.config = undefined;
+        self.newConfig = true;
         self.redraw();
     };
 
@@ -760,75 +841,34 @@ var VirtualModel = function() {
         if (data == undefined) {
             return;
         }
-
         // Load data
         var dataobj = JSON.parse(data);
+        console.log(dataobj);
         // Do something with the data
         self.newConfig = true;
         self.config = dataobj;
         self.redraw();
-        // Update filename and asterisk
-        // var filename_no_ext = filename;
-        // if (filename_no_ext.toLowerCase().slice(-4) == self.fileExtension()) {
-        //     filename_no_ext = filename_no_ext.slice(0, -4);
-        // }
-        // self.fileName(filename_no_ext);
         self.fileIsModified(false);
-
-
     };
 
     self.saveFileData = function() {
         if (!self.editable) {
             return;
         }
-        file_data = self.saveConfig();
-
-        var data = ko.toJSON(file_data, null, 2);
-        // var data = file_data;
-        // alert(data);
-
-				self.fileIsModified(false);
-				return data;
+        return ko.toJSON(self.saveConfig(), null, 2);
     };
 
-    self.saveMainConfig = function() {
+    self.setDefault = function() {
         if (!self.editable) {
             return;
         }
         // Convert data
-        file_data = self.saveConfig();
-        var data = ko.toJSON(file_data, null, 2);
+        // file_data = self.saveConfig();
+        // var data = ko.toJSON(file_data, null, 2);
 
         // Send data
-        $.ajax({
-            dataType: "json",
-            data: {
-                'config_data': data
-            },
-            type: "POST",
-            url: "/robot/config/",
-            success: function(data) {}
-        });
-
+        robotSendReceiveConfig(self.saveConfig());
     };
-
-    // self.setDefault = function() {
-    //     $.ajax({
-    //         dataType: "json",
-    //         data: {
-    //             filename: self.fileName() + self.fileExtension()
-    //         },
-    //         type: "POST",
-    //         url: "setDefault",
-    //         success: function(data) {
-    //             if (data.status == "error") {
-    //                 // addError(data.message);
-    //                 alert('Error setting default configuration.');
-    //             }
-    //         }
-    //     });
-    // };
 
     //-------------------------------------------------------------------------------
     // SVG stuff
@@ -846,31 +886,32 @@ var VirtualModel = function() {
             self.config = JSON.parse(ko.toJSON(self.saveConfig()));
             //alert('not good');
         } else {
-            self.newConfig = false;
+            self.newConfig = true;
         }
         self.clearDraw();
         if (self.config != undefined) {
-            self.skin_image = self.svg.image('/site_media/static/images/skins/' + self.config.skin + '.svg').loaded(self.drawModules);
+            self.skin_image = self.svg.image('/static/images/skins/' + self.config.skin + '.svg').loaded(self.drawModules);
         } else {
-            self.skin_image = self.svg.image('/site_media/static/images/skins/' + self.skin() + '.svg').loaded(self.drawModules);
+            self.skin_image = self.svg.image('/static/images/skins/' + self.skin() + '.svg').loaded(self.drawModules);
         }
 
         self.fileIsModified(false);
     };
 
     var previousMapIndex = -1;
-    self.updateDofVisualisation = function(mapIndex) {
+    self.updateDofVisualisation = function(mapIndex, updateRobot) {
         // alert('');
         if (mapIndex < -1 || previousMapIndex != mapIndex) {
             // Update all modules (when selecting new emotion for mapping)
             $.each(self.modules(), function(idx, mod) {
-                mod.updateDofVisualisation(mapIndex);
+                mod.updateDofVisualisation(mapIndex, updateRobot);
             });
         } else {
             // Update single module (when changing mapping)
-            self.selectedModule().updateDofVisualisation(mapIndex);
+            self.selectedModule().updateDofVisualisation(mapIndex, updateRobot);
         }
         previousMapIndex = mapIndex;
+        // self.updateDofs();
     };
 
     self.drawModules = function() {
@@ -923,8 +964,10 @@ var VirtualModel = function() {
             self.modules()[i].image.opacity(0.8);
             // self.modules()[i].image.stroke('#000')
         }
+        // if (self.isSelectedModule()) {
+        //   self.updateDofVisualisation(-2, true);
+        // }
         self.isSelectedModule(false);
-        self.updateDofVisualisation(-2);
     };
 
     // Create modules
@@ -979,7 +1022,7 @@ var VirtualModel = function() {
                 // alert(mod);
                 // var moduleImage = self.svg.image('static/images/' + mod + '.svg').loaded(function() {
 
-                var moduleImage = self.svg_modules.image('/site_media/static/images/modules/' + mod + '.svg').loaded(function() {
+                var moduleImage = self.svg_modules.image('/static/images/modules/' + mod + '.svg').loaded(function() {
                     this.attr({
                         preserveAspectRatio: "none",
                         type: mod
@@ -1018,12 +1061,80 @@ var VirtualModel = function() {
             });
         }
     }
+    var mousePos;
+    document.onmousemove = handleMouseMove;
+    document.addEventListener('touchmove', handleMouseMove)
 
-    if (action_data != undefined && action_data.openfile) {
-        self.loadFileData(action_data.openfile || "");
-    } else {
-        self.init();
+    setInterval(getMousePosition, 750);
+    function handleMouseMove(event) {
+        var dot, eventDoc, doc, body, pageX, pageY;
+
+        event = event || window.event; // IE-ism
+
+        // If pageX/Y aren't available and clientX/Y are,
+        // calculate pageX/Y - logic taken from jQuery.
+        // (This is to support old IE)
+        if (event.pageX == null && event.clientX != null) {
+            eventDoc = (event.target && event.target.ownerDocument) || document;
+            doc = eventDoc.documentElement;
+            body = eventDoc.body;
+
+            event.pageX = event.clientX +
+              (doc && doc.scrollLeft || body && body.scrollLeft || 0) -
+              (doc && doc.clientLeft || body && body.clientLeft || 0);
+            event.pageY = event.clientY +
+              (doc && doc.scrollTop  || body && body.scrollTop  || 0) -
+              (doc && doc.clientTop  || body && body.clientTop  || 0 );
+        }
+
+        // Use event.pageX / event.pageY here
+        mousePos = {
+            x: event.pageX,
+            y: event.pageY
+        };
     }
+
+    function getMousePosition() {
+        var pos = mousePos;
+        if (!pos) {
+            // We haven't seen any movement yet
+        }
+        else {
+            // Use pos.x and pos.y
+
+            var right_eye_module = undefined;
+            var left_eye_module = undefined;
+
+            for (var i = 0; i < self.modules().length; i++) {
+                // self.modules()[i].image.selectize(false);
+                if (self.modules()[i].name() == 'eye_left') {
+                  left_eye_module = self.modules()[i];
+                }
+                if (self.modules()[i].name() == 'eye_right') {
+                  right_eye_module = self.modules()[i];
+                }
+            }
+
+            var delta = 0.2;
+            var left_eye_dof_x = -(mousePos.x - left_eye_module.x()) / (left_eye_module.x() * delta);
+            var left_eye_dof_y = -(mousePos.y - left_eye_module.y()) / (left_eye_module.y() * delta);
+
+            var right_eye_dof_x = -(mousePos.x - right_eye_module.x()) / (right_eye_module.x() * delta);
+            var right_eye_dof_y = -(mousePos.y - right_eye_module.y()) / (right_eye_module.y() * delta);
+
+            robotSendDOF('eye_left', 'pupil_horizontal', left_eye_dof_x);
+            robotSendDOF('eye_left', 'pupil_vertical', left_eye_dof_y);
+
+            robotSendDOF('eye_right', 'pupil_horizontal', right_eye_dof_x);
+            robotSendDOF('eye_right', 'pupil_vertical', right_eye_dof_y);
+        }
+    }
+    //
+    // if (action_data != undefined && action_data.openfile) {
+    //     self.loadFileData(action_data.openfile || "");
+    // } else {
+    //     self.init();
+    // }
 };
 
 // $(document).ready(function() {

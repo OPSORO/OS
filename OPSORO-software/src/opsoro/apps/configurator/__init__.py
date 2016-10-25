@@ -75,66 +75,6 @@ def setup_pages(opsoroapp):
         return opsoroapp.render_template(config['full_name'].lower() + ".html",
                                          **data)
 
-    @app_bp.route("/setDefault", methods=["POST"])
-    @opsoroapp.app_api
-    def setDefaultConfig():
-        file_location = request.form.get("filename", type=str, default="")
-        if file_location == "":
-            return
-        file_location = "/../data/configurator/" + file_location
-        shutil.copyfile(file_location, '/../config/default.conf')
-
-        return {"status": "success"}
-
-    @app_bp.route("/setServo", methods=["POST"])
-    @opsoroapp.app_api
-    def setServo():
-        servo_pin = request.form.get("servo_pin", type=int, default=0)
-        servo_value = request.form.get("value", type=int, default=1500)
-
-        servo_value = constrain(servo_value, 500, 2500)
-
-        with Hardware.lock:
-            Hardware.servo_set(servo_pin, servo_value)
-
-        return {"status": "success"}
-
-    @app_bp.route("/setDof", methods=["POST"])
-    @opsoroapp.app_api
-    def setDof():
-        module_name = request.form.get("module_name", type=str, default="")
-        dof_name = request.form.get("dof_name", type=str, default="")
-        dof_value = request.form.get("value", type=float, default=0.0)
-
-        dof_value = constrain(dof_value, -1.0, 1.0)
-
-        Robot.set_dof_value(module_name, dof_name, dof_value)
-
-        return {"status": "success"}
-
-    @app_bp.route("/setDofs", methods=["POST"])
-    @opsoroapp.app_api
-    def setDofs():
-        #
-        dof_values = yaml.load(
-            request.form.get("values", type=str, default=""), Loader=Loader)
-
-        # print(dof_values)
-
-        dof_values = request.form.get("values", type=str, default="")
-        # print(dof_values)
-        # Robot.set_dof_values(dof_values)
-
-        return {"status": "success"}
-
-    # @app_bp.route("/demo")
-    # @opsoroapp.app_view
-    # def demo():
-    # 	data = {
-    # 	}
-    #
-    # 	return opsoroapp.render_template("app.html", **data)
-
     opsoroapp.register_app_blueprint(app_bp)
 
 

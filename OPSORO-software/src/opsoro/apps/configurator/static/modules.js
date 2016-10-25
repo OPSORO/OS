@@ -133,13 +133,13 @@ var MappingGraph = function() {
         circle.on('dragmove', function() {
             var num = updateInfoTxt(this);
             virtualModel.selectedModule_SelectedDof().map().poly()[this.attr('index')] = num;
-            virtualModel.updateDofVisualisation(this.attr('index'));
+            virtualModel.updateDofVisualisation(this.attr('index'), false);
         });
         circle.on('dragend', function(e) {
             var num = updateInfoTxt(this);
             this.cy(self.centerY - num * (self.centerY - self.nodeSize));
             virtualModel.selectedModule_SelectedDof().map().poly()[this.attr('index')] = num;
-            virtualModel.updateDofVisualisation(this.attr('index'));
+            virtualModel.updateDofVisualisation(this.attr('index'), true);
         });
         self.points.push(circle);
     }
@@ -212,9 +212,12 @@ var Module = function(type, name, x, y, width, height, rotation) {
         self.updateImage();
     };
 
-    self.updateDofVisualisation = function(mapIndex) {
+    self.updateDofVisualisation = function(mapIndex, updateRobot) {
         if (self.drawObject == undefined) {
             return;
+        }
+        if (updateRobot == undefined) {
+          updateRobot = false;
         }
         var values = [];
 
@@ -224,9 +227,6 @@ var Module = function(type, name, x, y, width, height, rotation) {
                 if (dof.isServo()) {
                     dof.value(dof_values[dof.servo().pin()]);
                 }
-                // else {
-                //     dof.value = 0;
-                // }
             } else {
                 if (dof.isMap() && dof.isServo()) {
                     if (mapIndex < 0) {
@@ -235,9 +235,9 @@ var Module = function(type, name, x, y, width, height, rotation) {
                         dof.value(dof.map().poly()[mapIndex]);
                     }
                 }
-                // else {
-                //     dof.value = 0;
-                // }
+            }
+            if (updateRobot) {
+              virtualModel.updateDof(dof);
             }
             values.push(parseFloat(dof.value()));
         });
@@ -622,7 +622,7 @@ var VirtualModel = function() {
     self.modelheight = self.svg.height();
     self.refSize = Math.max(self.modelwidth, self.modelheight) / 2;
 
-    self.gridSize = ko.observable(20);
+    self.gridSize = ko.observable(18);
     self.screenGridSize = Math.min(self.modelwidth, self.modelheight) / self.gridSize();
     self.snap = ko.observable(1);
 
@@ -643,68 +643,43 @@ var VirtualModel = function() {
         if (!self.selectedModule_SelectedDof().isServo()) {
             return;
         }
-        $.ajax({
-            dataType: "text",
-            type: "POST",
-            url: "setServo",
-            cache: false,
-            data: {
-                servo_pin: self.selectedModule_SelectedDof().servo().pin(),
-                value: self.selectedModule_SelectedDof().servo().mid()
-            },
-            success: function(data) {}
-        });
+        console.log(parseInt(self.selectedModule_SelectedDof().servo().mid()));
+        robotSendServo(self.selectedModule_SelectedDof().servo().pin(), parseInt(self.selectedModule_SelectedDof().servo().mid()));
     }
     self.updateServoMin = function() {
         if (!self.selectedModule_SelectedDof().isServo()) {
             return;
         }
-        $.ajax({
-            dataType: "text",
-            type: "POST",
-            url: "setServo",
-            cache: false,
-            data: {
-                servo_pin: self.selectedModule_SelectedDof().servo().pin(),
-                value: parseInt(self.selectedModule_SelectedDof().servo().mid()) + parseInt(self.selectedModule_SelectedDof().servo().min())
-            },
-            success: function(data) {}
-        });
+        console.log(parseInt(self.selectedModule_SelectedDof().servo().mid()) + parseInt(self.selectedModule_SelectedDof().servo().min()));
+        robotSendServo(self.selectedModule_SelectedDof().servo().pin(), parseInt(self.selectedModule_SelectedDof().servo().mid()) + parseInt(self.selectedModule_SelectedDof().servo().min()));
     }
     self.updateServoMax = function() {
         if (!self.selectedModule_SelectedDof().isServo()) {
             return;
         }
-        $.ajax({
-            dataType: "text",
-            type: "POST",
-            url: "setServo",
-            cache: false,
-            data: {
-                servo_pin: self.selectedModule_SelectedDof().servo().pin(),
-                value: parseInt(self.selectedModule_SelectedDof().servo().mid()) + parseInt(self.selectedModule_SelectedDof().servo().max())
-            },
-            success: function(data) {}
-        });
+        console.log(parseInt(self.selectedModule_SelectedDof().servo().mid()) + parseInt(self.selectedModule_SelectedDof().servo().max()));
+        robotSendServo(self.selectedModule_SelectedDof().servo().pin(), parseInt(self.selectedModule_SelectedDof().servo().mid()) + parseInt(self.selectedModule_SelectedDof().servo().max()));
     }
 
-    self.updateDof = function(mod_name, dof_name, value) {
-        if (!self.selectedModule_SelectedDof().isServo()) {
-            return;
-        }
-        $.ajax({
-            dataType: "text",
-            type: "POST",
-            url: "setDof",
-            cache: false,
-            data: {
-                module_name: mod_name,
-                dof_name: dof_name,
-                value: value
-            },
-            success: function(data) {}
-        });
-    }
+    // self.updateDof = function(mod_name, dof_name, value) {
+    //     if (!self.selectedModule_SelectedDof().isServo()) {
+    //         return;
+    //     }
+    //
+    //     robotSendDOF(mod_name, dof_name, value);
+    //     // $.ajax({
+    //     //     dataType: "text",
+    //     //     type: "POST",
+    //     //     url: "setDof",
+    //     //     cache: false,
+    //     //     data: {
+    //     //         module_name: mod_name,
+    //     //         dof_name: dof_name,
+    //     //         value: value
+    //     //     },
+    //     //     success: function(data) {}
+    //     // });
+    // }
     self.updateDofs = function() {
         if (!self.selectedModule_SelectedDof().isServo()) {
             return;
@@ -718,21 +693,48 @@ var VirtualModel = function() {
             for (var j = 0; j < singleModule.dofs().length; j++) {
                 var singleDof = singleModule.dofs()[j];
                 dof_values[singleModule.name()][singleDof.name()] = singleDof.value();
+
+                var value = parseInt(singleDof.servo().mid());
+                if (singleDof.value() >= 0) {
+                    value += parseInt(singleDof.value() * singleDof.servo().max());
+                } else {
+                    value += parseInt(-singleDof.value() * singleDof.servo().min());
+                }
+
+                robotSendServo(singleDof.servo().pin(), value);
             }
             console.log(dof_values[singleModule.name()]);
             // mod_values[singleModule.name()].push(dof_values);
+
         }
         // console.log(dof_values[]);
-        $.ajax({
-            dataType: "json",
-            type: "POST",
-            url: "setDofs",
-            cache: false,
-            data: {
-                values: dof_values
-            },
-            success: function(data) {}
-        });
+        // robotSendReceiveAllDOF(dof_values);
+    }
+
+    self.updateDof = function(singleDof) {
+        if (singleDof == undefined) {
+            return;
+        }
+        if (!singleDof.isServo()) {
+            return;
+        }
+
+        if (singleDof.value() > 1.0) {
+          singleDof.value(1.0);
+        }
+        if (singleDof.value() < -1.0) {
+          singleDof.value(-1.0);
+        }
+
+
+        var value = parseInt(singleDof.servo().mid());
+        if (singleDof.value() >= 0) {
+            value += parseInt(singleDof.value() * singleDof.servo().max());
+        } else {
+            value += parseInt(-singleDof.value() * singleDof.servo().min());
+        }
+
+        robotSendServo(singleDof.servo().pin(), value);
     }
 
     self.clearDraw = function() {
@@ -853,11 +855,8 @@ var VirtualModel = function() {
     };
 
     self.init = function() {
-        // Clear data, new file, ...
-        // self.fileName("Untitled");
-        // if (self.config != undefined) {
-        //     alert('init');
-        // }
+        self.config = undefined;
+        self.newConfig = true;
         self.redraw();
     };
 
@@ -872,12 +871,6 @@ var VirtualModel = function() {
         self.newConfig = true;
         self.config = dataobj;
         self.redraw();
-        // Update filename and asterisk
-        // var filename_no_ext = filename;
-        // if (filename_no_ext.toLowerCase().slice(-4) == self.fileExtension()) {
-        //     filename_no_ext = filename_no_ext.slice(0, -4);
-        // }
-        // self.fileName(filename_no_ext);
         self.fileIsModified(false);
     };
 
@@ -885,83 +878,37 @@ var VirtualModel = function() {
         if (!self.editable) {
             return;
         }
-        //
-        // file_data = self.saveConfig();
-        //
-        // var data = ko.toJSON(file_data, null, 2);
-
-        return self.saveConfig();
-        // if (filename == "") {
-        //     //("No filename!");
-        //     return;
-        // } else {
-        //     // Convert data
-        //     file_data = self.saveConfig();
-        //
-        //     var data = ko.toJSON(file_data, null, 2);
-        //     // var data = file_data;
-        //     // alert(data);
-        //
-        //     // Send data
-        //     // $.ajax({
-        //     //     dataType: "json",
-        //     //     data: {
-        //     //         path: filename,
-        //     //         filedata: data,
-        //     //         overwrite: 1,
-        //     //         extension: self.fileExtension()
-        //     //     },
-        //     //     type: "POST",
-        //     //     url: "files/save",
-        //     //     success: function(data) {
-        //     //         var filename_no_ext = filename;
-        //     //         if (filename_no_ext.toLowerCase().slice(-4) == self.fileExtension()) {
-        //     //             filename_no_ext = filename_no_ext.slice(0, -4);
-        //     //         }
-        //     //         self.fileName(filename_no_ext);
-        //     //         self.fileIsModified(false);
-        //     //     }
-        //     // });
-        // }
+        return ko.toJSON(self.saveConfig(), null, 2);
     };
 
-    self.saveMainConfig = function() {
+    self.setDefault = function() {
         if (!self.editable) {
             return;
         }
         // Convert data
-        file_data = self.saveConfig();
-        var data = ko.toJSON(file_data, null, 2);
+        // file_data = self.saveConfig();
+        // var data = ko.toJSON(file_data, null, 2);
 
         // Send data
-        $.ajax({
-            dataType: "json",
-            data: {
-                'config_data': data
-            },
-            type: "POST",
-            url: "/robot/config/",
-            success: function(data) {}
-        });
-
+        robotSendReceiveConfig(self.saveConfig());
     };
 
-    self.setDefault = function() {
-        $.ajax({
-            dataType: "json",
-            data: {
-                filename: self.fileName() + self.fileExtension()
-            },
-            type: "POST",
-            url: "setDefault",
-            success: function(data) {
-                if (data.status == "error") {
-                    // addError(data.message);
-                    alert('Error setting default configuration.');
-                }
-            }
-        });
-    };
+    // self.setDefault = function() {
+    //     $.ajax({
+    //         dataType: "json",
+    //         data: {
+    //             filename: self.fileName() + self.fileExtension()
+    //         },
+    //         type: "POST",
+    //         url: "setDefault",
+    //         success: function(data) {
+    //             if (data.status == "error") {
+    //                 // addError(data.message);
+    //                 alert('Error setting default configuration.');
+    //             }
+    //         }
+    //     });
+    // };
 
     //-------------------------------------------------------------------------------
     // SVG stuff
@@ -979,7 +926,7 @@ var VirtualModel = function() {
             self.config = JSON.parse(ko.toJSON(self.saveConfig()));
             //alert('not good');
         } else {
-            self.newConfig = false;
+            self.newConfig = true;
         }
         self.clearDraw();
         if (self.config != undefined) {
@@ -992,19 +939,19 @@ var VirtualModel = function() {
     };
 
     var previousMapIndex = -1;
-    self.updateDofVisualisation = function(mapIndex) {
+    self.updateDofVisualisation = function(mapIndex, updateRobot) {
         // alert('');
         if (mapIndex < -1 || previousMapIndex != mapIndex) {
             // Update all modules (when selecting new emotion for mapping)
             $.each(self.modules(), function(idx, mod) {
-                mod.updateDofVisualisation(mapIndex);
+                mod.updateDofVisualisation(mapIndex, updateRobot);
             });
         } else {
             // Update single module (when changing mapping)
-            self.selectedModule().updateDofVisualisation(mapIndex);
+            self.selectedModule().updateDofVisualisation(mapIndex, updateRobot);
         }
         previousMapIndex = mapIndex;
-        self.updateDofs();
+        // self.updateDofs();
     };
 
     self.drawModules = function() {
@@ -1057,8 +1004,10 @@ var VirtualModel = function() {
             self.modules()[i].image.opacity(0.8);
             // self.modules()[i].image.stroke('#000')
         }
+        // if (self.isSelectedModule()) {
+        //   self.updateDofVisualisation(-2, true);
+        // }
         self.isSelectedModule(false);
-        self.updateDofVisualisation(-2);
     };
 
     // Create modules

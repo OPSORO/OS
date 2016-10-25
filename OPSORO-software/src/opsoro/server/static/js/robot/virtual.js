@@ -1,22 +1,50 @@
 
 function updateVirtualModel() {
-    virtualModel.updateDofVisualisation(-2);
+    virtualModel.updateDofVisualisation(-2, false);
 }
 
 updateData = function() {
     var timeOut = 500;
+
+    // prev_dof_values = dof_values;
+    // dof_values = robotSendReceiveAllDOF(undefined); //JSON.parse(data);
+    // console.log(dof_values);
+    // if (prev_dof_values != undefined) {
+    //   for (var i = 0; i < prev_dof_values.length; i++) {
+    //     if (prev_dof_values[i] != dof_values[i]) {
+    //       timeOut = 100;
+    //     }
+    //   }
+    // }
+    // // checkData();
+    // updateVirtualModel();
+    // $.ajax({
+    //   dataType: 'json',
+    //   type: 'POST',
+    //   url: '/robot/dofs/',
+    //   success: function(data){
+    //     if (!data.success) {
+    //       showMainError(data.message);
+    //     } else {
+    //       return data.dofs;
+    //     }
+    //   }
+    // });
+
+
     $.ajax({
-        dataType: "text",
+        dataType: "json",
         type: "POST",
         url: "/robot/dofs/",
-        data: {
-            getdata: 1
-        },
+        // data: {
+        //     getdata: 1
+        // },
         success: function(data) {
             //alert(data);
             // console.log(data);
             prev_dof_values = dof_values;
-            dof_values = data.split(','); //JSON.parse(data);
+            // dof_values = data.split(','); //JSON.parse(data);
+            dof_values = data.dofs;
             // console.log(dof_values);
             if (prev_dof_values != undefined) {
               for (var i = 0; i < prev_dof_values.length; i++) {
@@ -68,7 +96,8 @@ $(document).ready(function() {
     virtualModel = new VirtualModel();
 
     $(window).resize(virtualModel.redraw);
-
     updateData();
+    virtualModel.redraw();
+
 
 });

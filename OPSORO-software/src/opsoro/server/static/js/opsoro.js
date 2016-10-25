@@ -3,6 +3,9 @@
 function showMainError(msg){
   $("#errors").append("<div data-alert class='alert-box alert'>" + msg + "<a href='#' class='close'>&times;</a></div>");
   $(document).foundation('alert', 'reflow');
+  // setTimeout(function () {
+  //     showFiles(_CurrentPath, _OnlyFolders, _SaveFileView);
+  // }, 200);
 }
 function showMainMessage(msg){
   $("#errors").append("<div data-alert class='alert-box info'>" + msg + "<a href='#' class='close'>&times;</a></div>");
@@ -132,15 +135,34 @@ function popupWindow(mylink, windowname)
 // -------------------------------------------------------------------------------------------------------
 // Robot control functions
 // -------------------------------------------------------------------------------------------------------
+function robotSendReceiveConfig(config_data)
+{
+  var json_data = ko.toJSON(config_data, null, 2);
+  $.ajax({
+    dataType: 'json',
+    type: 'POST',
+    url: '/robot/config/',
+    data: { config_data: json_data },
+    success: function(data){
+      if (!data.success) {
+        showMainError(data.message);
+      } else {
+        return data.config;
+      }
+    }
+  });
+}
+
 function robotSendEmotionRPhi(r, phi, time)
 {
+  // time: -1 for default smooth transition time
   $.ajax({
     dataType: 'json',
     type: 'POST',
     url: '/robot/emotion/',
     data: {'r': r, 'phi': phi, 'time': time},
     success: function(data){
-      if(data.status == 'error'){
+      if (!data.success) {
         showMainError(data.message);
       }
     }
@@ -155,15 +177,31 @@ function robotSendDOF(moduleName, dofName, dofValue)
     url: '/robot/dof/',
     data: {'module_name': moduleName, 'dof_name': dofName, 'value': dofValue},
     success: function(data){
-      if(data.status == 'error'){
+      if (!data.success) {
         showMainError(data.message);
       }
     }
   });
 }
 
-function robotSendAllDOF(dofData)
+function robotSendReceiveAllDOF(dofData)
 {
+  if (dofData == undefined)
+  {
+    $.ajax({
+      dataType: 'json',
+      type: 'POST',
+      url: '/robot/dofs/',
+      success: function(data){
+        if (!data.success) {
+          showMainError(data.message);
+        } else {
+          return data.dofs;
+        }
+      }
+    });
+    return;
+  }
   var json_data = ko.toJSON(dofData, null, 2);
   $.ajax({
     dataType: 'json',
@@ -171,7 +209,24 @@ function robotSendAllDOF(dofData)
     url: '/robot/dofs/',
     data: { dofdata: json_data },
     success: function(data){
-      if(data.status == 'error'){
+      if (!data.success) {
+        showMainError(data.message);
+      } else {
+        return data.dofs;
+      }
+    }
+  });
+}
+
+function robotSendServo(pin, value)
+{
+  $.ajax({
+    dataType: 'json',
+    type: 'POST',
+    url: '/robot/servo/',
+    data: {'pin_number': pin, 'value': value},
+    success: function(data){
+      if (!data.success) {
         showMainError(data.message);
       }
     }
@@ -186,7 +241,7 @@ function robotSendTTS(text)
     url: "/robot/tts/",
     data: {t: text},
     success: function(data){
-      if(data.status == 'error'){
+      if (!data.success) {
         showMainError(data.message);
       }
     }
@@ -200,6 +255,21 @@ function robotSendSound(soundName)
     type: "GET",
     url: "/robot/sound/",
     data: {s: soundName},
+    success: function(data){
+      if(data.status == "error"){
+        showMainError(data.message);
+      }
+
+    }
+  });
+}
+
+function robotSendStop()
+{
+  $.ajax({
+    dataType: "json",
+    type: "GET",
+    url: "/robot/stop/",
     success: function(data){
       if(data.status == "error"){
         showMainError(data.message);

@@ -25,14 +25,18 @@ class Servo(DOF):
         # dofname:   Name of the DOF that controls the position of this servo
         min_value = 500
         max_value = 2500
-        self.pin = pin
+        self.pin = int(pin)
         # self.dofname = dofname
-        self.mid_pos = constrain(mid_pos, min_value, max_value)
-        self.min_range = constrain(min_range, min_value - self.mid_pos,
-                                   max_value - self.mid_pos)
-        self.max_range = constrain(max_range, min_value - self.mid_pos,
-                                   max_value - self.mid_pos)
-        self.position = self.mid_pos
+        self.mid_pos = int(constrain(int(mid_pos), min_value, max_value))
+        self.min_range = int(
+            constrain(
+                int(min_range), min_value - self.mid_pos, max_value -
+                self.mid_pos))
+        self.max_range = int(
+            constrain(
+                int(max_range), min_value - self.mid_pos, max_value -
+                self.mid_pos))
+        self.position = int(self.mid_pos)
 
         # print_info(self.__repr__())
 
@@ -58,11 +62,13 @@ class Servo(DOF):
         returns:
             servo value (us)
         """
-        us = self.mid_pos
+        us = int(self.mid_pos)
+        dof_value = float(dof_value)
+
         if dof_value >= 0:
-            us += int(dof_value * self.max_range)
+            us += int(dof_value * float(self.max_range))
         else:
-            us += int(-dof_value * self.min_range)
+            us += int(-dof_value * float(self.min_range))
 
         return us
 

@@ -62,6 +62,9 @@ class _Expression(object):
         phi = cmath.phase(self._emotion)
         r = abs(self._emotion)
 
+        print_info("Set Emotion; r: " + str(r) + ", phi: " + str(phi) +
+                   ", time: " + str(anim_time))
+
         Robot.apply_poly(r, phi, anim_time)
 
     def set_emotion_val_ar(self, valence, arousal, anim_time=-1):
@@ -69,8 +72,8 @@ class _Expression(object):
 		Set an emotion with valence and arousal, within a certain time.
 		"""
         # Print data to log
-        print_info("Set Emotion; valence: " + str(valence) + ", arousal: " +
-                   str(arousal) + ", time: " + str(anim_time))
+        # print_info("Set Emotion; valence: " + str(valence) + ", arousal: " +
+        #            str(arousal) + ", time: " + str(anim_time))
 
         e = 0 + 0j
         # Emotion from valence and arousal
@@ -88,8 +91,8 @@ class _Expression(object):
 		Set an emotion with r and phi, within a certain time.
 		"""
         # Print data to log
-        print_info("Set Emotion; r: " + str(r) + ", phi: " + str(phi) +
-                   ", deg: " + str(degrees) + ", time: " + str(anim_time))
+        # print_info("Set Emotion; r: " + str(r) + ", phi: " + str(phi) +
+        #            ", deg: " + str(degrees) + ", time: " + str(anim_time))
 
         e = 0 + 0j
         # Emotion from r and phi

@@ -4,7 +4,7 @@ var r_factor = 0.4;
 var w;
 
 function resizeCanvas(){
-	w = $("#circumplex").width()/2;
+	w = $("#circumplex").width();
 
 	$("#circumplex").attr("width", w);
 	$("#circumplex").attr("height", w);
@@ -155,17 +155,7 @@ function sendToServer(){
 	}
 	phi = phi*(180/Math.PI);
 
-	$.ajax({
-		dataType: "json",
-		data: {"phi": phi, "r": r},
-		type: "POST",
-		url: "setemotion",
-		success: function(data){
-			if(data.status == "error"){
-				addError(data.message);
-			}
-		}
-	});
+	robotSendEmotionRPhi(r, phi, -1);
 }
 
 function addError(msg){

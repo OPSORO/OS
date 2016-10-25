@@ -1,11 +1,11 @@
 {% extends "base_systembar.html" %}
 {% block base_systembar_body %}
-	<div class="row">
-		<div class="large-12 medium-12 small-12 columns">
+<div class="row">
+		<div class="large-12 medium-12 small-12 columns applist">
 			<!-- <div class="small-2 medium-4 large-2"> -->
 				{% for app in apps -%}
 					<!-- <li> -->
-						<div class="large-2 medium-3 small-6 columns">
+						<div class="large-2 medium-3 small-6 columns" style='float: left'>
 						{% if app.active %}
 							<div class="selected">
 								<!-- <a href="#" data-reveal-id="CloseAppModal" class="closebutton">

@@ -107,7 +107,7 @@ def setup_pages(opsoroapp):
     def blockly_inner():
         data = {'soundfiles': []}
 
-        filenames = glob.glob(get_path('../../data/sounds/soundfiles/*.wav'))
+        filenames = glob.glob(get_path('../../data/sounds/*.wav'))
 
         for filename in filenames:
             data['soundfiles'].append(os.path.split(filename)[1])

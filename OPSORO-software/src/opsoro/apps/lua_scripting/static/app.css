@@ -1,10 +1,7 @@
-#errors .alert-box:first-child {
-	margin-top: 2rem;
-}
 
 #editorWrapper {
 	margin: 0 -1rem 0rem -1rem;
-	height: calc(100vh - 24.15rem);
+	height: calc(100vh - 26.15rem);
 }
 
 #editor {
