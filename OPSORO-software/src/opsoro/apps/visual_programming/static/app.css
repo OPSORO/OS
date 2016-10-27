@@ -1,6 +1,6 @@
 
-#pnlCode, #pnlBlockly {
-	margin: 0 -1rem 0rem -1rem;
+.contentwrapper {
+	margin: 0;
 	height: calc(100vh - 26.15rem);
 }
 
@@ -22,7 +22,7 @@
 	color: #888888;
 	background-color: #0f0f0f;
 	border-top: 2px solid #232323;
-	margin: 0 -1rem -1rem -1rem;
+	margin: 0;
 	height: 4.15rem;
 	padding: 0.5rem 1rem;
 	border-bottom-left-radius: 0.75rem;
@@ -32,57 +32,9 @@
 	overflow: scroll;
 }
 
-.fullscreen #pnlCode, .fullscreen #pnlBlockly {
-	height: calc(100vh - 6rem - 4.15rem);
-}
-
-.fullscreen #console {
-	border-bottom-left-radius: 0;
-	border-bottom-right-radius: 0;
-}
-/*
-.actionbar .filebox {
-	color: #fff;
-	display: inline-block;
-}
-
-.actionbar .filebox .filename {
-	font-weight: bold;
-	text-transform: uppercase;
-}
-
-.actionbar .filebox .status {
-	font-size: 0.75rem;
-	font-weight: bold;
-	text-transform: uppercase;
-}*/
-
 div.page {
 	background-color: #0f0f0f;
 }
-/*
-.reveal-modal .file:last-child {
-	margin-bottom: -0.75rem;
-}
-
-.reveal-modal .filename {
-	background: rgba(178, 175, 161, 0.5);
-	padding: 0.5rem 1rem;
-	border-radius: 0.25rem;
-	font-weight: bold;
-	color: #545454;
-	display: inline-block;
-	width: calc(100% - 8rem);
-}
-.reveal-modal .btnDeleteFile, .reveal-modal .btnOpenFile {
-	width: 3rem;
-	margin-right: 0.75rem;
-}
-
-#FilesModal .content {
-	overflow-y: scroll;
-	max-height: 70vh;
-}*/
 
 #ScriptUIModal .btnScriptUI {
 	width: 100%;

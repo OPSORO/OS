@@ -2,34 +2,34 @@
     <span data-bind="text: file_name" class="filename"></span>
     <span data-bind="visible: fileIsModified()" class="fa fa-asterisk"></span><br>
     <span class="fa" data-bind="css: { 'fa-lock': fileIsLocked(), 'fa-pencil': !fileIsLocked() && !isRunning(), 'fa-circle-o-notch fa-spin': isRunning() }" style="font-size: 0.75rem;"></span>
-    <span class="status" data-bind="text: fileStatus"></span>
+    <span class="status" data-bind="text: isRunning() ? '{{ _('Running') }}' : fileIsLocked() ? '{{ _('Locked') }}' : '{{ _('Editing') }}'"></span>
 </div>
 <div class="spacer"></div>
 
 <a href="#" class="action" data-bind="click: newFile">
     <span class="fa fa-file"></span><br/>
-    <span class="text">New</span>
+    <span class="text">{{ _('New') }}</span>
 </a>
 
 <a href="#" class="action" data-bind="click: openFile">
     <span class="fa fa-folder"></span><br/>
-    <span class="text">Open</span>
+    <span class="text">{{ _('Open') }}</span>
 </a>
 
 <a href="#" class="action" data-bind="click: saveFile">
     <span class="fa fa-save"></span><br/>
-    <span class="text">Save</span>
+    <span class="text">{{ _('Save') }}</span>
 </a>
 <a href="#" class="action" data-bind="click: saveAsFile">
     <span class="fa fa-save"></span><br/>
-    <span class="text">Save As...</span>
+    <span class="text">{{ _('Save As...') }}</span>
 </a>
 
 <div class="spacer"></div>
 
 <script>
 
-    file_name = "Untitled";
+    file_name = "{{ _('Untitled') }}";
     fileIsModified = function () {
         if ($(".filebox .fa-asterisk").css("display") == "none") {
             return false
@@ -42,7 +42,6 @@
     isRunning = function () {
         return false;
     };
-    fileStatus = "Editing";
 
     // Config parameters ----------------------------------------------------------------------------------
     var folderpath = "";
@@ -66,7 +65,7 @@
     var _SaveFileView = 0;
 
     var saveFile = function () {
-        if ($(".filebox .filename").text() == "Untitled") {
+        if ($(".filebox .filename").text() == "{{ _('Untitled') }}") {
             showFiles(folderpath, 0, 1);
         } else {
             saveItem($(".filebox .filename").text(), 1, 1);
@@ -82,7 +81,7 @@
         _OnlyFolders = 0;
         _SaveFileView = 0;
         if (fileIsModified()) {
-            showMessagePopup("fa-folder-open", "Open file?", "Unsaved changes will be lost. Are you sure you wish to continue?", {
+            showMessagePopup("fa-folder-open", "{{ _('Open file?') }}", "{{ _('Unsaved changes will be lost. Are you sure you wish to continue?') }}", {
                 btnYes: ReopenPopup,
                 btnCancel: closeMessagePopup
             });
@@ -99,7 +98,7 @@
             closeMessagePopup();
         };
         if (fileIsModified()) {
-            showMessagePopup("fa-file", "New file?", "Unsaved changes will be lost. Are you sure you wish to continue?", {
+            showMessagePopup("fa-file", "{{ _('New file?') }}", "{{ _('Unsaved changes will be lost. Are you sure you wish to continue?') }}", {
                 btnYes: yesHandler,
                 btnCancel: closeMessagePopup
             });
@@ -169,16 +168,16 @@
                 },
                 success: function (data) {
                     if (!data.success) {
-                      showMainError(data.message);
-                      return;
+                        showMainError(data.message);
+                        return;
                     }
 
-                    showMainSuccess('File deleted.');
+                    showMainSuccess("{{ _('File deleted.') }}");
                 }
             });
             ReopenPopup();
         };
-        showMessagePopup("fa-trash", "Delete?", "Are you sure you wish to delete this item?", {
+        showMessagePopup("fa-trash", "{{ _('Delete?') }}", "{{ _('Are you sure you wish to delete this item?') }}", {
             btnYes: yesHandler,
             btnCancel: ReopenPopup
         });
@@ -200,7 +199,7 @@
                 if (overwrite) {
                     yesHandler();
                 } else {
-                    showMessagePopup("fa-save", "Overwrite file?", "Are you sure you wish to overwrite this file?", {
+                    showMessagePopup("fa-save", "{{ _('Overwrite file?') }}", "{{ _('Are you sure you wish to overwrite this file?') }}", {
                         btnYes: yesHandler,
                         btnCancel: ReopenPopup
                     });
@@ -215,7 +214,7 @@
                 var inputTextHandler = function (e) {
                     data["inputText"] = $(this).val();
                 };
-                showMessagePopup("fa-save", "Save file?", "Please enter a name and press save.", {
+                showMessagePopup("fa-save", "{{ _('Save file?') }}", "{{ _('Please enter a name and press save.') }}", {
                     inputText: inputTextHandler,
                     btnSave: saveHandler,
                     btnCancel: ReopenPopup
@@ -223,36 +222,35 @@
             }
         }
     };
-    // var newFolder = function (folderPath) {
-    //     var okHandler = function () {
-    //         newFolderPath = folderPath + data["inputText"];
-    //         $.ajax({
-    //             dataType: "json",
-    //             type: "POST",
-    //             url: "files/newfolder",
-    //             data: {
-    //                 path: newFolderPath
-    //             },
-    //             success: function (data) {
-    //                 if (!data.success) {
-    //                   showMainError(data.message);
-    //                   return;
-    //                 }
-    //
-    //                 // showMainSuccess('.');
-    //             }
-    //         });
-    //         ReopenPopup();
-    //     };
-    //     var inputTextHandler = function (e) {
-    //         data["inputText"] = $(this).val();
-    //     };
-    //     showMessagePopup("fa-plus", "New folder?", "Please enter a name and press OK.", {
-    //         inputText: inputTextHandler,
-    //         btnOk: okHandler,
-    //         btnCancel: ReopenPopup
-    //     });
-    // };
+    var newFolder = function (folderPath) {
+        var okHandler = function () {
+            newFolderPath = folderPath + data["inputText"];
+            $.ajax({
+                dataType: "json",
+                type: "POST",
+                url: "files/newfolder",
+                data: {
+                    path: newFolderPath
+                },
+                success: function (data) {
+                    if (data.status == "error") {
+                        addError(data.message);
+                    } else {
+                        addMessage(data.message);
+                    }
+                }
+            });
+            ReopenPopup();
+        };
+        var inputTextHandler = function (e) {
+            data["inputText"] = $(this).val();
+        };
+        showMessagePopup("fa-plus", "{{ _('New folder?') }}", "{{ _('Please enter a name and press OK.') }}", {
+            inputText: inputTextHandler,
+            btnOk: okHandler,
+            btnCancel: ReopenPopup
+        });
+    };
     var openItem = function (filename, onlyChangeUrl) {
         if (filename.indexOf(".") < 0) {
             filename += extension;
@@ -270,15 +268,14 @@
 
     var saveFileHandler = function (filename) {
         if (filename == "") {
-            addError("No filename!");
+            addError("{{ _('No filename!') }}");
             return;
         } else {
             save_data = saveDataHandler();
             if (save_data == undefined) {
                 return;
             }
-            // console.log(file_data);
-            // var json_data = ko.toJSON(save_data, null, 2);
+            // console.log(file_data); var json_data = ko.toJSON(save_data, null, 2);
             var json_data = save_data;
             $.ajax({
                 dataType: "json",
@@ -291,8 +288,8 @@
                 url: "/docs/save/{{ app.full_name }}/",
                 success: function (data) {
                     if (!data.success) {
-                      showMainError(data.message);
-                      return;
+                        showMainError(data.message);
+                        return;
                     }
                     var filename_no_ext = filename;
                     if (filename_no_ext.toLowerCase().slice(-4) == extension) {
@@ -303,7 +300,7 @@
                     }
                     $(".filebox .filename").text(filename_no_ext);
                     // fileIsModified(false);
-                    showMainSuccess('File is saved!');
+                    showMainSuccess("{{ _('File is saved!') }}");
                 }
             });
         }
@@ -323,10 +320,7 @@
                 f: filename
             },
             success: function (data) {
-                // if (!data.success) {
-                //   showMainError(data.message);
-                //   return;
-                // }
+                // if (!data.success) {   showMainError(data.message);   return; }
                 loaded_data = data;
                 // Load script
                 loadDataHandler(data)

@@ -1,12 +1,12 @@
 {% extends "app_base.html" %}
 
 
-{% block base_toolbar %}
-{% include "toolbar/file_operations.html" %}
+{% block app_toolbar %}
+{% include "toolbar/_file_operations.html" %}
 {% endblock %}
 
 {% block head %}
-{{ super() }}
+
 
 <!-- <script src="/static/js/paper/paper-full.js"></script> -->
 <!-- <script data-paper-ignore="true" type="text/paperscript" src="static/canvas.js" data-paper-canvas="cnvConfig"></script> -->
@@ -18,8 +18,8 @@
 <link rel="stylesheet" type="text/css" media="screen" href="/static/js/svg/svg.select.css">
 {% endblock %}
 
-{% block page_content %}
-{{ super() }}
+{% block app_content %}
+
 
 <div id="model_screen"></div>
 <div class="config_settings" data-bind="visible: !isSelectedModule()">
@@ -101,8 +101,8 @@
 
 {% endblock %}
 
-{% block scripts %}
-{{ super() }}
+{% block app_scripts %}
+
 
 
 <script>
@@ -114,8 +114,8 @@ skins_name = {{ skins|tojson|safe }};
 
 {% endblock %}
 
-{% block modals %}
-{{ super() }}
+{% block app_modals %}
+
 
 
 {% endblock %}

@@ -1,8 +1,8 @@
 {% extends "app_base.html" %}
 {% block head %}
-	{{ super() }}
+
 {% endblock %}
-{% block page_content %}
+{% block app_content %}
 	<form data-abide method="post">
 		<fieldset data-bind="with: general">
 			<legend>
@@ -168,14 +168,14 @@
 			<button type="submit" class="button success" style="margin-right: 2rem; padding-left: 2rem; padding-right: 2rem;">
 				<span class="fa fa-check-circle"></span>
 				Submit</button>
-			<a href="/preferences" class="button" style="padding-left: 2rem; padding-right: 2rem;">
+			<a href="/preferences/" class="button" style="padding-left: 2rem; padding-right: 2rem;">
 				<span class="fa fa-undo"></span>
 				Revert</a>
 		</div>
 	</form>
 {% endblock %}
-{% block scripts %}
-	{{ super() }}
+{% block app_scripts %}
+
 	<script>
 		var prefsJson = {{ prefs|tojson|safe }};
 	</script>

@@ -1,4 +1,5 @@
 from flask import Flask, request, render_template, redirect, url_for, flash, session, jsonify, send_from_directory
+from flask_babel import Babel
 from flask_login import LoginManager, login_user, logout_user, current_user, login_required
 from werkzeug.exceptions import default_exceptions
 from tornado.wsgi import WSGIContainer
@@ -63,6 +64,9 @@ class Server(object):
 
         # Create flask instance for webserver
         self.flaskapp = Flask(__name__)
+
+        self.flaskapp.config.from_pyfile('settings.cfg')
+        self.babel = Babel(self.flaskapp)
 
         # Setup key for sessions
         self.flaskapp.secret_key = "5\x075y\xfe$\x1aV\x1c<A\xf4\xc1\xcfst0\xa49\x9e@\x0b\xb2\x17"

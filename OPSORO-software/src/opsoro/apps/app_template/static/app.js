@@ -34,6 +34,7 @@ $(document).ready(function() {
         self.popupTextInput = ko.observable("Hi! This text can be changed. Click on the button to change me!");
         self.showPopup = function() {
             $("#popup_window").foundation("reveal", "open");
+
         };
         self.closePopup = function() {
             $("#popup_window").foundation("reveal", "close");
@@ -54,17 +55,10 @@ $(document).ready(function() {
                 return;
             }
 
-            // Load data
+            // Load data, parse if needed
             var dataobj = JSON.parse(data);
 
-            // Do something with the data
 
-            // Update filename and asterisk
-            // var filename_no_ext = filename;
-            // if (filename_no_ext.toLowerCase().slice(-4) == self.fileExtension()) {
-            //     filename_no_ext = filename_no_ext.slice(0, -4);
-            // }
-            // self.fileName(filename_no_ext);
             self.fileIsModified(false);
             self.lockFile();
         };
@@ -72,9 +66,8 @@ $(document).ready(function() {
         self.saveFileData = function() {
             // Convert data
             file_data = {};
+
             var data = ko.toJSON(file_data, null, 2);
-
-
             self.fileIsModified(false);
             return data;
         };

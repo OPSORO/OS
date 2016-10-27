@@ -1,17 +1,17 @@
 {% extends "app_base.html" %}
 
 {% block head %}
-{{ super() }}
+
 {% endblock %}
 
-{% block page_content %}
+{% block app_content %}
 
 {% include "cockpit/_servo_sliders.html" %}
 
 {% endblock %}
 
-{% block scripts %}
-{{ super() }}
+{% block app_scripts %}
+
 
 <script src="/static/js/sockjs.min.js"></script>
 <script src="/static/js/numeral.min.js"></script>

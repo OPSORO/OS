@@ -1,10 +1,10 @@
 {% extends "app_base.html" %}
 
 {% block head %}
-{{ super() }}
+
 {% endblock %}
 
-{% block page_content %}
+{% block app_content %}
 <!-- <div id="errors">
 	{% with messages = get_flashed_messages(category_filter=["message"]) %}
 		{% if messages %}
@@ -77,8 +77,8 @@
 
 {% endblock %}
 
-{% block scripts %}
-{{ super() }}
+{% block app_scripts %}
+
 
 <script src="/static/js/sockjs.min.js"></script>
 <script src="/static/js/numeral.min.js"></script>

@@ -1,19 +1,19 @@
 {% extends "app_base.html" %}
 
-{% block base_toolbar %}
-	{% include "toolbar/file_operations.html" %}
-	{% include "toolbar/file_set_default.html" %}
+{% block app_toolbar %}
+	{% include "toolbar/_file_operations.html" %}
+	{% include "toolbar/_file_set_default.html" %}
 {% endblock %}
 
 {% block head %}
-	{{ super() }}
+
 	<script src="/static/js/svg/svg.min.js"></script>
 	<script src="/static/js/svg/svg.draggable.min.js"></script>
 	<script src="/static/js/robot/modules.js"></script>
 {% endblock %}
 
-{% block page_content %}
-	{{ super() }}
+{% block app_content %}
+
 
 	<div id="model_screen" class='large-6 medium-6 small-12 columns'></div>
 	<div class="config_settings large-6 medium-6 small-12 columns" data-bind="visible: !isSelectedModule()">
@@ -133,8 +133,8 @@
 
 {% endblock %}
 
-{% block scripts %}
-{{ super() }}
+{% block app_scripts %}
+
 
 <script>
 	action_data = {{ actions|tojson|safe }};
@@ -145,7 +145,7 @@
 
 {% endblock %}
 
-{% block modals %}
-{{ super() }}
+{% block app_modals %}
+
 
 {% endblock %}

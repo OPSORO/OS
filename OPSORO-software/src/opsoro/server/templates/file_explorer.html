@@ -1,8 +1,8 @@
-{% extends "page.html" %}
+{% extends "site_base.html" %}
 {% block head %}
-	{{ super() }}
+
 {% endblock %}
-{% block page_content %}
+{% block app_content %}
 	<fieldset>
 		<legend>
 			<span class="fa fa-cog"></span>
@@ -84,8 +84,8 @@
 	{% endif %}
 	{% endwith %} -->
 {% endblock %}
-{% block scripts %}
-	{{ super() }}
+{% block app_scripts %}
+
 	<script src="/static/js/jquery-ui-sortable/jquery-ui.js"></script>
 	<script src="/static/js/knockout-sortable.min.js"></script>
 	<script>

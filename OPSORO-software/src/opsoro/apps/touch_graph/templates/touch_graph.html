@@ -1,7 +1,7 @@
 {% extends "app_base.html" %}
 
 {% block head %}
-{{ super() }}
+
 <style>
 .legend table {
 	margin: 0;
@@ -15,7 +15,7 @@
 </style>
 {% endblock %}
 
-{% block page_content %}
+{% block app_content %}
 <div class="actionbar">
 	<div style="width: 12rem; margin-right: 1rem;" class="left">
 		<form>
@@ -76,8 +76,8 @@
 
 {% endblock %}
 
-{% block scripts %}
-{{ super() }}
+{% block app_scripts %}
+
 
 <script src="/static/js/sockjs.min.js"></script>
 <script src="/static/js/flot/jquery.flot.min.js"></script>

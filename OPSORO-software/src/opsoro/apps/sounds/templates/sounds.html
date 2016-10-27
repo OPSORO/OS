@@ -1,13 +1,13 @@
 {% extends "app_base.html" %}
 
 {% block head %}
-{{ super() }}
+
 <script src="static/recorderjs/audiodisplay.js"></script>
 <script src="static/recorderjs/recorder.js"></script>
 <script src="static/recorderjs/main.js"></script>
 {% endblock %}
 
-{% block page_content %}
+{% block app_content %}
 <!-- <div id="errors">
 	{% with messages = get_flashed_messages(category_filter=["message"]) %}
 		{% if messages %}
@@ -109,8 +109,8 @@
 
 {% endblock %}
 
-{% block scripts %}
-{{ super() }}
+{% block app_scripts %}
+
 <script>
 
 var app_full_name = "{{ app.full_name }}";

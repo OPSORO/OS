@@ -74,11 +74,11 @@ class RHandler(object):
                                           "index",
                                           protect(self.page_index), )
         self.server.flaskapp.add_url_rule(
-            "/login",
+            "/login/",
             "login",
             self.page_login,
             methods=["GET", "POST"], )
-        self.server.flaskapp.add_url_rule("/logout",
+        self.server.flaskapp.add_url_rule("/logout/",
                                           "logout",
                                           self.page_logout, )
         # self.server.flaskapp.add_url_rule(
@@ -86,16 +86,16 @@ class RHandler(object):
         #     "preferences",
         #     protect(self.page_preferences),
         #     methods=["GET", "POST"], )
-        self.server.flaskapp.add_url_rule("/sockjstoken",
+        self.server.flaskapp.add_url_rule("/sockjstoken/",
                                           "sockjstoken",
                                           self.page_sockjstoken, )
-        self.server.flaskapp.add_url_rule("/shutdown",
+        self.server.flaskapp.add_url_rule("/shutdown/",
                                           "shutdown",
                                           protect(self.page_shutdown), )
-        self.server.flaskapp.add_url_rule("/closeapp",
+        self.server.flaskapp.add_url_rule("/closeapp/",
                                           "closeapp",
                                           protect(self.page_closeapp), )
-        self.server.flaskapp.add_url_rule("/openapp/<appname>",
+        self.server.flaskapp.add_url_rule("/openapp/<appname>/",
                                           "openapp",
                                           protect(self.page_openapp), )
         # self.server.flaskapp.add_url_rule(
@@ -215,6 +215,8 @@ class RHandler(object):
         if "closebutton" not in kwargs:
             kwargs["closebutton"] = True
 
+        kwargs["isuser"] = True
+
         return render_template(template, **kwargs)
 
     def page_index(self):
@@ -239,7 +241,10 @@ class RHandler(object):
 
     def page_login(self):
         if request.method == "GET":
-            return render_template("login.html", title=self.title + " - Login")
+            kwargs = {}
+            kwargs["title"] = self.title + " - Login"
+            kwargs["isuser"] = False
+            return render_template("login.html", **kwargs)
 
         password = request.form["password"]
 
@@ -306,7 +311,7 @@ class RHandler(object):
     def page_file_list(self):
         data = docs_file_list()
         return self.render_template(
-            "filelist.html",
+            "_filelist.html",
             title=self.title + " - Files",
             # page_caption=appSpecificFolderPath,
             page_icon="fa-folder",
@@ -352,22 +357,6 @@ class RHandler(object):
         print_error(error)
         return redirect("/")
         return ""
-
-    def page_login(self):
-        if request.method == "GET":
-            return render_template("login.html", title=self.title + " - Login")
-
-        password = request.form["password"]
-
-        if password == Preferences.get(
-                "general", "password", default="RobotOpsoro"):
-            login_user(AdminUser())
-            self.server.active_session_key = os.urandom(24)
-            session["active_session_key"] = self.server.active_session_key
-            return redirect(url_for("index"))
-        else:
-            flash("Wrong password.")
-            return redirect(url_for("login"))
 
     def inject_opsoro_vars(self):
         opsoro = {"robot_name": Preferences.get("general", "robot_name",

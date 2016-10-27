@@ -1,24 +1,24 @@
-{% extends "page.html" %}
-{% block page_content %}
+{% extends "site_base.html" %}
+{% block app_body %}
 	<div class="row">
 		<div class="large-6 large-centered columns text-center">
 			<p>
 				<span class="fa fa-warning" style="font-size: 5rem; color: #B2AFA1;"></span>
 				<br/>
-				This app is currently not active.
+				{{ _('This app is currently not active.') }}
 				<br/>
 				{% if app.active %}
-					Activating it will close the current app:
-					<span class="fa {{ app.icon }}"></span>
+					{{ _('Activating it will close the current app:') }}
+					<i class="fa {{ app.icon }}"></i>
 					{{ app.name }}.
 				{% endif %}
 			</p>
 			<a href="/openapp/{{ app.name }}" class="button">
 				<span class="fa fa-check"></span>
-				Activate app</a>
+				{{ _('Activate app') }}</a>
 			<a href="/" class="button">
 				<span class="fa fa-home"></span>
-				Return home</a>
+				{{ _('Return home') }}</a>
 		</div>
 	</div>
 {% endblock %}

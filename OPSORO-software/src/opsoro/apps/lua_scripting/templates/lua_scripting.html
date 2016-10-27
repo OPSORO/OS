@@ -1,17 +1,17 @@
 {% extends "app_base.html" %}
 
 {% block head %}
-	{{ super() }}
+
 {% endblock %}
 
-{% block base_toolbar %}
-	{% include "toolbar/file_operations.html" %}
-	{% include "toolbar/script_operations.html" %}
-	{% include "toolbar/expand_collapse.html" %}
+{% block app_toolbar %}
+	{% include "toolbar/_file_operations.html" %}
+	{% include "toolbar/_script_operations.html" %}
+	{% include "toolbar/_expand_collapse.html" %}
 {% endblock %}
 
-{% block page_content %}
-	{{ super() }}
+{% block app_content %}
+
 
 	<!-- <div id="errors" style="margin-top: -1rem;">
 	{% with messages = get_flashed_messages(category_filter=["message"]) %}
@@ -45,15 +45,15 @@
 		{% endif %}
 	{% endwith %}
 </div> -->
-	<div id="editorWrapper">
+	<div id="editorWrapper" class="contentwrapper">
 		<pre id="editor">{{ script }}</pre>
 	</div>
-	<div id="console"></div>
+	<div id="console" class="console"></div>
 
 {% endblock %}
 
-{% block scripts %}
-	{{ super() }}
+{% block app_scripts %}
+
 
 	<script src="/static/js/sockjs.min.js"></script>
 	<script src="/static/js/ace/ace.js" type="text/javascript" charset="utf-8"></script>
@@ -452,8 +452,8 @@
 
 {% endblock %}
 
-{% block modals %}
-	{{ super() }}
+{% block app_modals %}
+
 
 	<div id="ScriptUIModal" class="reveal-modal small" data-reveal>
 		<div class="titlebar">

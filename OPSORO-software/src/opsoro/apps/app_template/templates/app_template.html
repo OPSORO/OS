@@ -1,52 +1,60 @@
 {% extends "app_base.html" %}
+{% block app_head %}
 
+	<!-- <script src="/site_media/static/js/....js"></script> -->
 
-{% block base_toolbar %}
-<p style="color: white">This is the toolbar, you can add/remove options.<br/>To remove the toolbar completely, just remove the blocks: "block base_toolbar" and "endblock".</p>
-<!--
-{% include "toolbar/file_operations.html" %}
-{% include "toolbar/script_operations.html" %}
-{% include "toolbar/lock_unlock.html" %}
+{% endblock %}
+{% block app_toolbar %}
+	<p style="color: white">This is the toolbar, you can add/remove options.<br/>To remove the toolbar completely, just remove the blocks: "block app_toolbar" and "endblock".</p>
+	<!--
+{% include "toolbar/_file_operations.html" %}
+{% include "toolbar/_script_operations.html" %}
+{% include "toolbar/_lock_unlock.html" %}
 -->
 {% endblock %}
 
+<!-- These sidebars can be removed by removing the block tags -->
+{% block sidebar_left %}{% endblock %}
+{% block sidebar_right %}{% endblock %}
 
-{% block page_content %}
-{{ super() }}
-<fieldset>
-	<legend><span class="fa fa-commenting"></span> Popup demo</legend>
-	<div class="row">
+{% block app_content %}
+	<fieldset>
+		<legend>
+			<span class="fa fa-commenting"></span>
+			{{ _('Popup demo') }}</legend>
+		<div class="row">
 			<div class="content">
 				<span class="" data-bind="text: popupTextInput"></span>
 			</div>
-	</div>
-	<div class="row">
+		</div>
+		<div class="row">
 			<div class="content">
-	      <a href="#" class="button" data-bind="click: showPopup">
-					<span class="fa fa-cog" style="font-size: 1.5rem"></span> Change text popup
+				<a href="#" class="button" data-bind="click: showPopup">
+					<span class="fa fa-cog" style="font-size: 1.5rem"></span>
+					{{ _('Change text popup') }}
 				</a>
 			</div>
-	</div>
-</fieldset>
+		</div>
+	</fieldset>
+
+	{% if not online %}
+		<!-- Content in this section is not displayed online, only on the robot. For example: it is a perfect place to put controls that access hardware stuff, which is not available online. -->
+	{% endif %}
 
 {% endblock %}
+{% block app_scripts %}
 
-{% block scripts %}
-{{ super() }}
-<!--
-<script src="static/javascript.js"></script>
--->
+	<script>
+		var action_data = {{ actions|tojson|safe }};
 
-<script>
-var action_data = {{ actions|tojson|safe }};
+		var data = {{ data|tojson|safe }};
+	</script>
 
-var data = {{ data|tojson|safe }};
-</script>
+	<!-- <script src="/site_media/static/js/....js"></script> -->
 
 {% endblock %}
+{% block app_modals %}
 
-{% block modals %}
-{{ super() }}
 <div id="popup_window" class="reveal-modal" data-reveal>
 	<div class="titlebar">
 		<a class="close-reveal-modal"><span class="fa fa-close"></span></a>

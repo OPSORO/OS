@@ -1,8 +1,7 @@
 <a href="#" class="action" style="float:right" data-bind="click: toggleLocked">
   <span class="fa" data-bind="css: { 'fa-pencil': fileIsLocked(), 'fa-check': !fileIsLocked() }"></span><br/>
-  <span class="text" data-bind="text: fileIsLocked() ? 'Edit' : 'OK' "></span>
+  <span class="text" data-bind="text: fileIsLocked() ? '{{ _('Edit') }}' : '{{ _('Lock') }}' "></span>
 </a>
-
 
 <script>
 toggleLocked = function(){

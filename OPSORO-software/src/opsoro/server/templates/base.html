@@ -3,37 +3,40 @@
 
 	<head>
 		<meta charset="utf-8"/>
-		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>{{ title }}</title>
-		<link rel="icon" href="/static/images/logo/opsoro_icon_dark.png">
-		<link rel="stylesheet" href="/static/css/foundation.min.css"/>
-		<link rel="stylesheet" href="/static/css/font-awesome.min.css"/>
-		<link rel="stylesheet" href="/static/css/opsoro.css"/>
 
-		<script src="/static/js/jquery-ui-touch/jquery-1.7.2.min.js"></script>
-		<script src="/static/js/jquery-ui-touch/jquery-ui.min.js"></script>
+		{% block styles %}{% endblock %}
 
-		<script src="/static/js/vendor/modernizr.js"></script>
-
-		<script src="/static/js/vendor/jquery.js"></script>
-
-		{% block head %}{% endblock %}
+		{% block extra_head_base %}
+			{% block extra_head %}{% endblock %}
+		{% endblock %}
 	</head>
 
-	<body>
+	<body class="{% block body_class %}{% endblock %}" id="{% block body_id %}{% endblock %}" {% block body_extra_attributes %} {% endblock %}>
+		<div class="{% block wrapper_class %}{% endblock %}">
+			{% block topbar_base %}{% endblock %}
+			{% block body_base %}
+				<section id="content_body">
+					<div class="container content">
+						{% block body %}{% endblock %}
+					</div>
+				</section>
+			{% endblock %}
 
-		{% block body %}{% endblock %}
-		<img src="/static/images/logo/opsoro_full_dark.png" id="logo">
-		{% block modals %}
-			<div class="reveal-modal-bg" style="position: fixed;"></div>
-		{% endblock %}
-		{% block scripts %}
+			{% block footer_base %}
+				<hr/>
+				<footer>
+					<div class="container">
+						{% block footer %}{% endblock %}
+					</div>
+				</footer>
+			{% endblock %}
+		</div>
 
-			<script src="/static/js/foundation.min.js"></script>
-			<script src="/static/js/knockout-3.4.0.js"></script>
-			<script src="/static/js/opsoro.js"></script>
-
+		{% block scripts %}{% endblock %}
+		{% block extra_body_base %}
+			{% block extra_body %}{% endblock %}
 		{% endblock %}
 	</body>
-
 </html>

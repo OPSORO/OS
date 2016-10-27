@@ -1,4 +1,4 @@
-{% extends "base_systembar.html" %}
+{% extends "site_base.html" %}
 {% block base_systembar_body %}
 	<div class="row">
 		<div class="small-12 columns">
@@ -44,9 +44,9 @@
 				</div>
 				<div class="content" id="content">
 
-					{% block page_content %}
+					{% block app_content %}
 						<div class="actionbar">
-							{% block base_toolbar %}{% endblock %}
+							{% block app_toolbar %}{% endblock %}
 						</div>
 						{{ page_content }}
 					{% endblock %}

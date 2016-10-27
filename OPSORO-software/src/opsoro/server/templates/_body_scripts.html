@@ -1,0 +1,25 @@
+<script src="/static/js/foundation.min.js"></script>
+<script src="/static/js/knockout-3.4.0.js"></script>
+
+<script src="/static/js/opsoro.js"></script>
+
+<script>
+    $(document).ready(function () {
+        var delay = 20;
+        $("#btnShutdown").click(function () {
+            $("#ShutdownModal .content span").load("/shutdown/");
+            var countdownFunction = function () {
+                $("#ShutdownModal .content").html("<span></span><p>{{ _('Shutting down ' + opsoro.robot_name + '.<br/>Please wait <strong>" + delay + "</strong> seconds before unplugging the power.') }}</p>");
+                if (delay == 0) {
+                    clearInterval(countdownInterval);
+                    $("#ShutdownModal .content p").html("{{ _(opsoro.robot_name + ' has been shut down.<br/>You may unplug the power.') }}'");
+                    $(".titlebar").removeClass("red");
+                    $(".titlebar").addClass("green");
+                }
+                delay -= 1;
+            }
+            countdownFunction();
+            var countdownInterval = setInterval(countdownFunction, 1000); //will call the function every 1 sec.
+        });
+    });
+</script>

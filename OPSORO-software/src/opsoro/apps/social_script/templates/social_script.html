@@ -1,13 +1,11 @@
 {% extends "app_base.html" %}
 
-{% block base_toolbar %}
-	{{ super() }}
-	{% include "toolbar/file_operations.html" %}
-	{% include "toolbar/lock_unlock.html" %}
+{% block app_toolbar %}
+	{% include "toolbar/_file_operations.html" %}
+	{% include "toolbar/_lock_unlock.html" %}
 {% endblock %}
 
-{% block page_content %}
-	{{ super() }}
+{% block app_content %}
 	<div class="left-column" data-bind="visible: $root.fileIsLocked()">
 		<div id="fixedavatars">
 			<ul class="small-block-grid-5" data-bind="foreach: emotions">
@@ -32,7 +30,7 @@
 							<span class="switch-wav fa fa-music"></span>
 						</div>
 						<select data-bind="visible: output() != 'tts', options: $root.sounds, value: wav, click: modified">
-							<input type="text" name="tts" placeholder="Enter text to be spoken..." data-bind="value: tts, visible: output() == 'tts', click: modified()" autofocus></input>
+							<input type="text" name="tts" placeholder="{{ _('Enter text to be spoken...') }}" data-bind="value: tts, visible: output() == 'tts', click: modified()" autofocus></input>
 						</div>
 
 						<div class="playbutton" data-bind="css: { active: isPlaying }">
@@ -57,7 +55,7 @@
 					</div>
 					<form>
 						<select data-bind="visible: output() != 'tts', options: $root.sounds, value: wav, click: modified">
-							<input type="text" name="tts" placeholder="Enter text to be spoken..." data-bind="value: tts, visible: output() == 'tts', click: modified()"></input>
+							<input type="text" name="tts" placeholder="{{ _('Enter text to be spoken...') }}" data-bind="value: tts, visible: output() == 'tts', click: modified()"></input>
 							<div class="leftcontrols">
 								<div class="switch round tts-switch">
 									<input type="checkbox" data-bind="outputswitch: output, attr: {id: switchID} ">
@@ -72,7 +70,7 @@
 								</a>
 								<a href="#" class="button round secondary" data-bind="click: pressPlay">
 									<span class="fa" data-bind="css: {'fa-play': !isPlaying(), 'fa-stop': isPlaying()}" style="margin-right: 0.5rem;"></span>
-									test</a>
+									{{ _('test') }}</a>
 							</div>
 						</form>
 						<div class="playbutton" data-bind="css: {active: isPlaying, used: hasPlayed}">
@@ -87,14 +85,13 @@
 					<a href="#" id="btnAdd" class="button round info" data-bind="click: $root.addLine">
 						<span class="fa fa-plus"></span>
 						<span class="text">
-							Add Line</span>
+							{{ _('Add Line') }}</span>
 					</a>
 				</div>
 			</div>
 		{% endblock %}
 
-		{% block scripts %}
-			{{ super() }}
+		{% block app_scripts %}
 
 			<script src="/static/js/jquery-ui-sortable/jquery-ui.js"></script>
 			<script src="/static/js/knockout-sortable.min.js"></script>
@@ -109,8 +106,8 @@
 
 		{% endblock %}
 
-		{% block modals %}
-			{{ super() }}
+		{% block app_modals %}
+
 			<div id="PickEmotionModal" class="reveal-modal" data-reveal>
 				<div class="content">
 					<ul class="small-block-grid-5" data-bind="foreach: emotions">

@@ -5,7 +5,7 @@ $(document).ready(function(){
 		update: function(element, valueAccessor, allBindings) {
 			var value = valueAccessor();
 			var valueUnwrapped = ko.unwrap(value);
-			$(element).css("background", "url('static/avatars/" + valueUnwrapped + "')")
+			$(element).css("background-image", "url('static/avatars/" + valueUnwrapped + "')")
 		}
 	};
 
