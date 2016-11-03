@@ -1,5 +1,5 @@
 # Software
-Software is the software framework for [social robot Ono](http://www.industrialdesigncenter.be/ono/), to be used in conjunction with [Ono2](https://github.com/cesarvandevelde/Ono2) and [OnoHAT](https://github.com/cesarvandevelde/OnoHAT).
+Software is the framework for [social robot Ono](http://www.industrialdesigncenter.be/ono/), to be used in conjunction with [Ono2](https://github.com/cesarvandevelde/Ono2) and [OnoHAT](https://github.com/cesarvandevelde/OnoHAT).
 
 # Hardware Requirements
 - Raspberry Pi model B+ (RPi 2 model B should also work)
