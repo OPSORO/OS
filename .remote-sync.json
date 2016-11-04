@@ -1,0 +1,15 @@
+{
+  "uploadOnSave": true,
+  "useAtomicWrites": true,
+  "deleteLocal": false,
+  "hostname": "opsoro.local",
+  "target": "/home/pi",
+  "ignore": [
+    ".remote-sync.json",
+    ".git/**"
+  ],
+  "username": "pi",
+  "watch": [],
+  "transport": "scp",
+  "password": "raspberry"
+}
