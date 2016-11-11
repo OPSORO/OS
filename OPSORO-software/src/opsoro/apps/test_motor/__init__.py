@@ -29,7 +29,7 @@ except ImportError:
 constrain = lambda n, minn, maxn: max(min(maxn, n), minn)
 get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 
-config = {"full_name": "App_Template", "icon": "fa-info", 'color': '#15e678'}
+config = {"full_name": "Test Moter", "icon": "fa-info", 'color': '#15e678'}
 
 
 def setup_pages(opsoroapp):
@@ -39,7 +39,7 @@ def setup_pages(opsoroapp):
         template_folder="templates",
         static_folder="static")
 
-    @app_bp.route("/", methods=["GET"])
+    @app_bp.route("/testMotor", methods=["GET"])
     @opsoroapp.app_view
     def index():
         data = {

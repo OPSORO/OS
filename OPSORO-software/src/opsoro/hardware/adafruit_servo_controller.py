@@ -2,8 +2,8 @@
 
 import time
 import math
+#from hardware.i2c import I2C
 from opsoro.hardware.i2c import I2C
-
 # ============================================================================
 # Adafruit PCA9685 16-Channel PWM Servo Driver
 # ============================================================================

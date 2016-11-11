@@ -1,6 +1,7 @@
 import time
 import spidev
 import threading
+#from hardware.adafruit_servo_controller import pwm
 from opsoro.hardware.adafruit_servo_controller import pwm
 
 # SPI COMMANDS
@@ -185,6 +186,7 @@ class _Hardware(object):
             CMD_SERVO_SET,
             params=[channel, offtime >> 8, offtime & 0x00FF],
             delay=0.008)
+        # params=[channel, first 8 bits, last 8 bits]
 
     def servo_set_all(self, pos_list):
         """Set position of all 16 servos using a list."""
