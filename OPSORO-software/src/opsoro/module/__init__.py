@@ -64,11 +64,12 @@ class Module(object):
             self.dofs = {}
             # self.servos = []
             for dof_data in data['dofs']:
+                #DOF NAME
                 if 'name' not in dof_data:
                     dof_data['name'] = ""
-                #dof_name = self.name + "_" + dof_data['name']
                 dof_name = dof_data['name']
 
+                #MAPPING
                 neutral = 0.0
                 poly = None
                 if 'mapping' in dof_data:
@@ -79,6 +80,7 @@ class Module(object):
                         poly = mapping_data['poly']
 
                 dof = None
+                #SERVO
                 if 'servo' in dof_data:
                     dof = Servo(dof_name, neutral, poly)
                     servo_data = dof_data['servo']
@@ -87,6 +89,17 @@ class Module(object):
                                    servo_data['min'],
                                    servo_data['mid'],
                                    servo_data['max'], )
+                #ENGINE
+                elif 'engine' in dof_data:
+                    dof = Engine(dof_name, neutral, poly)
+                    engine_data = dof_data['engine']
+                    if ('pin_a' in engine_data) and ('pin_b' in engine_data) and ('min_speed' in engine_data) and ('max_speed' in engine_data) and ('reverse' in engine_data):
+                        dof.config(servo_data['pin_a'],
+                                   servo_data['pin_b'],
+                                   servo_data['min_speed'],
+                                   servo_data['max_speed'],
+                                   servo_data['reverse'], )
+                #NO SERVO OR ENGINE
                 else:
                     dof = DOF(dof_name, neutral, poly)
 

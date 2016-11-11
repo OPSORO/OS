@@ -44,6 +44,7 @@ class Servo(DOF):
         return "Servo(pin=%d, min_range=%d, mid_pos=%d, max_range=%d)" % (
             self.pin, self.min_range, self.mid_pos, self.max_range)
 
+    #deplecated
     def to_us(self):
         """
         Converts DOF pos to microseconds.
@@ -52,7 +53,6 @@ class Servo(DOF):
             servo value (us)
         """
         self.position = self.dof_to_us(self.value)
-
         return self.position
 
     def dof_to_us(self, dof_value):
@@ -80,11 +80,13 @@ class Servo(DOF):
                     True if dof value is updated
                     False if dof value did not change
         """
-        dof_animation_changed = super(Servo, self).update()
+        dof_animation_changed = super(Servo, self).update() #change self.value
 
         # Only update if position is changed
-        if self.position == self.to_us():
+        if self.position == self.dof_to_us(self.value):
             return False
+        else:
+            self.position = self.dof_to_us(self.value)
 
         # print_info('Servo: pin: %i, pos: %f' % (self.pin, self.position))
 

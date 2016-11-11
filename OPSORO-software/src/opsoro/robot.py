@@ -23,7 +23,7 @@ from opsoro.module.eye import Eye
 from opsoro.module.eyebrow import Eyebrow
 from opsoro.module.mouth import Mouth
 
-MODULES = {'eye': Eye, 'eyebrow': Eyebrow, 'mouth': Mouth}
+MODULES = {'eye': Eye, 'eyebrow': Eyebrow, 'mouth': Mouth, 'wheel': Wheel}
 
 
 class _Robot(object):
