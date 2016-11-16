@@ -1,18 +1,16 @@
 from __future__ import with_statement
 
-from flask import Blueprint, render_template, request, redirect, url_for, flash, send_from_directory, Response
+from flask import Blueprint, render_template, request, redirect, url_for, flash, send_from_directory
 from werkzeug import secure_filename
 
 import math
 import cmath
 
 from opsoro.console_msg import *
-from opsoro.hardware import Hardware
-from opsoro.robot import Robot
 from opsoro.expression import Expression
-
+from opsoro.cameraV2 import Camera
 # from opsoro.stoppable_thread import StoppableThread
-from opsoro.sound import Sound
+
 
 from functools import partial
 from exceptions import RuntimeError
@@ -30,9 +28,9 @@ except ImportError:
 constrain = lambda n, minn, maxn: max(min(maxn, n), minn)
 get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 
-config = {"full_name": "test_moter", "icon": "fa-info", 'color': '#15e678'}
+config = {"full_name": "Webcam", "icon": "fa-video-camera", 'color': '#15e678'}
 
-
+clientconn = None
 def setup_pages(opsoroapp):
     app_bp = Blueprint(
         config['full_name'].lower(),
@@ -55,11 +53,25 @@ def setup_pages(opsoroapp):
         return opsoroapp.render_template(config['full_name'].lower() + ".html",
                                          **data)
 
-    @app_bp.route('/videoStream')
-    @opsoroapp.app_view
-    def videoStream():
-        return Response(Camera.stream(),mimetype='multipart/x-mixed-replace; boundary=frame')
+    @opsoroapp.app_socket_connected
+    def s_connected(conn):
+        global clientconn
+        clientconn = conn
 
+    @opsoroapp.app_socket_disconnected
+    def s_disconnected(conn):
+        global clientconn
+        clientconn = None
+
+    @opsoroapp.app_socket_message("startVideo")
+    def getVideo(conn, data):
+        stream = Camera.subscribe(config['full_name'])
+        connection.write(stream.read())
+
+
+    @opsoroapp.app_socket_message("stopVideo")
+    def getVideo(conn, data):
+        Camera.release(config['full_name'])
 
 
     opsoroapp.register_app_blueprint(app_bp)

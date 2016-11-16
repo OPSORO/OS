@@ -1,0 +1,5 @@
+install OpenCV
+sudo apt-get install python-opencv
+
+install picamera
+sudo apt-get install python-picamera

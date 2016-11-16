@@ -1,0 +1,11 @@
+Folder info:
+  scripts:
+    contains files the app can save/edit/use
+  static:
+    contains specific app files; javascript/css/yaml-settings/images/...
+  templates:
+    contains the apps main html file and also other html files the app uses
+
+
+__init__.py:
+  Contains the server-side functionality of the app
