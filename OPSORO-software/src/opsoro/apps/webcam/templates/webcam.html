@@ -29,10 +29,9 @@
 		</div>
 		<div class="row">
 			<div class="content">
-				<a href="#" class="button" data-bind="click: showPopup">
-					<span class="fa fa-cog" style="font-size: 1.5rem"></span>
-					{{ _('Change text popup') }}
-				</a>
+				<div class="flex-video">
+					<iframe src="" width="420" height="315"></iframe>
+				</div>
 			</div>
 		</div>
 	</fieldset>
@@ -51,29 +50,5 @@
 	</script>
 
 	<!-- <script src="/site_media/static/js/....js"></script> -->
-
-{% endblock %}
-{% block app_modals %}
-
-<div id="popup_window" class="reveal-modal" data-reveal>
-	<div class="titlebar">
-		<a class="close-reveal-modal"><span class="fa fa-close"></span></a>
-		<span class="fa fa-cogs"></span> Popup window!
-	</div>
-	<div class="content">
-		<p>This is a popup window.</p>
-		<form>
-			<div class="row collapse">
-				<div class="small-9 columns">
-					<input type="text" name="text" class="error" style="width: 100%;" data-bind="value: popupTextInput">
-					<small class="error hide"></small>
-				</div>
-				<div class="small-3 columns">
-					<a href="#" class="button" style="width: 100%;" data-bind="click: popupButtonHandler()"><span class="fa fa-save"></span> Save</a>
-				</div>
-			</div>
-		</form>
-	</div>
-</div>
 
 {% endblock %}

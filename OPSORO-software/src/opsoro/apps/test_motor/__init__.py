@@ -30,7 +30,9 @@ except ImportError:
 constrain = lambda n, minn, maxn: max(min(maxn, n), minn)
 get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 
-config = {"full_name": "test_moter", "icon": "fa-info", 'color': '#15e678'}
+config = {"full_name": "test_moter", "icon": "fa-car", 'color': '#15e678'}
+
+clientconn = None
 
 
 def setup_pages(opsoroapp):
@@ -52,17 +54,43 @@ def setup_pages(opsoroapp):
         if action != None:
             data["actions"][action] = request.args.get("param", None)
 
+        @opsoroapp.app_socket_connected
+        def s_connected(conn):
+            global clientconn
+            clientconn = conn
+
+        @opsoroapp.app_socket_disconnected
+        def s_disconnected(conn):
+            global clientconn
+            clientconn = None
+
+        @opsoroapp.app_socket_message("navUpdate")
+        def s_arrow_key(conn, data):
+            up = data.pop("up", "")
+            down = data.pop("down", "")
+            left = data.pop("left", "")
+            right = data.pop("right", "")
+            wheelLeft, wheelRight = arrowKey2motion(up,down,left,right)
+            Robot.set_dof_value("wheel_left_front","wheel",wheelLeft)
+            Robot.set_dof_value("wheel_right_front","wheel",wheelRight)
+            Robot.set_dof_value("wheel_left_back","wheel",wheelLeft)
+            Robot.set_dof_value("wheel_right_back","wheel",wheelRight)
+            print_info("{} {}".format(wheelLeft, wheelRight))
+
+        @opsoroapp.app_socket_message("start")
+        def s_start(conn,data):
+            pass
+
+        @opsoroapp.app_socket_message("stop")
+        def s_stop(conn,data):
+            pass
+
         return opsoroapp.render_template(config['full_name'].lower() + ".html",
                                          **data)
 
-    @app_bp.route('/videoStream')
-    @opsoroapp.app_view
-    def videoStream():
-        return Response(Camera.stream(),mimetype='multipart/x-mixed-replace; boundary=frame')
-
-
-
     opsoroapp.register_app_blueprint(app_bp)
+
+###############################################################################
 
 
 def setup(opsoroapp):
@@ -75,3 +103,29 @@ def start(opsoroapp):
 
 def stop(opsoroapp):
     pass
+
+def arrowKey2motion(up, down, left , right):
+    result = (0,0)
+    if (up & down)  | (left & right):
+        result = (0,0)                  #two oposite actions result in no action
+    elif up:
+        if left:
+            result = (0,1)              #soft left turn forward
+        elif right:
+            result = (1,0)              #soft right turn forward
+        else:
+            result = (1,1)              #forward
+    elif down:
+        if left:
+            result = (0,-1)              #soft left turn backward
+        elif right:
+            result = (-1,0)              #soft right turn backward
+        else:
+            result = (-1,-1)              #backward
+    elif left:
+        result = (-1,1)                   #hard left turn
+    elif right:
+        result = (1,-1)                   #hard right turn
+    else:
+        result = (0,0)                    #stand still
+    return result

@@ -18,15 +18,13 @@ class Engine(DOF):
         max_speed: the maximum speed of the engine
         reverse: turning clockwise = False;
 		"""
-        
+
         self.pin_a = int(pin_a)
         self.pin_b = int(pin_b)
         self.min_speed = int(min_speed)
         self.max_speed = int(max_speed)
         self.reverse = boolean(reverse)
-
-        self.speed = 0 #speed in µs
-
+        self.speed = 0
 
 
     def __repr__(self):

@@ -28,7 +28,7 @@ except ImportError:
 constrain = lambda n, minn, maxn: max(min(maxn, n), minn)
 get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 
-config = {"full_name": "Webcam", "icon": "fa-video-camera", 'color': '#15e678'}
+config = {"full_name": "webcam", "icon": "fa-video-camera", 'color': '#15e678'}
 
 clientconn = None
 def setup_pages(opsoroapp):

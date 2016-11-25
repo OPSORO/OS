@@ -1,12 +1,10 @@
-{% extends "app_base.html" %}
-{% block app_head %}
+{% extends "app_base.html" %} {% block app_head %}
 
-	<!-- <script src="/site_media/static/js/....js"></script> -->
+<!-- <script src="/site_media/static/js/....js"></script> -->
 
-{% endblock %}
-{% block app_toolbar %}
-	<p style="color: white">This is the toolbar, you can add/remove options.<br/>To remove the toolbar completely, just remove the blocks: "block app_toolbar" and "endblock".</p>
-	<!--
+{% endblock %} {% block app_toolbar %}
+<p style="color: white">This is the toolbar, you can add/remove options.<br/>To remove the toolbar completely, just remove the blocks: "block app_toolbar" and "endblock".</p>
+<!--
 {% include "toolbar/_file_operations.html" %}
 {% include "toolbar/_script_operations.html" %}
 {% include "toolbar/_lock_unlock.html" %}
@@ -14,46 +12,147 @@
 {% endblock %}
 
 <!-- These sidebars can be removed by removing the block tags -->
-{% block sidebar_left %}{% endblock %}
-{% block sidebar_right %}{% endblock %}
+{% block sidebar_left %}{% endblock %} {% block sidebar_right %}{% endblock %} {% block app_content %}
+<fieldset>
+	<legend><span class="fa fa-car"></span> {{ _('Drive') }}</legend>
 
-{% block app_content %}
-	<fieldset>
-		<legend>
-			<span class="fa fa-commenting"></span>
-			{{ _('Popup demo') }}</legend>
-		<div class="row">
-			<div class="content">
-				<span class="" data-bind="text: popupTextInput"></span>
+
+	<div class="row align-justify">
+		<div class="small-3 columns">
+			<div class="row">
+				<button id="arrow" type="button" class="button" name="up">
+						<span class="fa fa-arrow-up" style="font-size: 1.5rem"></span>
+					</button>
 			</div>
-		</div>
-		<div class="row">
-			<div class="content">
-				<a href="#" class="button" data-bind="click: showPopup">
-					<span class="fa fa-cog" style="font-size: 1.5rem"></span>
-					{{ _('Change text popup') }}
-				</a>
+			<div class="row">
+				<button id="arrow" type="button" class="button" name="left">
+					<span class="fa fa-arrow-left" style="font-size: 1.5rem"></span>
+				</button>
+
+				<span class="fa fa-circle" style="font-size: 1.5rem"></span>
+
+				<button id="arrow" type="button" class="button" name="right">
+							<span class="fa fa-arrow-right" style="font-size: 1.5rem"></span>
+						</button>
 			</div>
+			<div class="row">
+				<button id="arrow" type="button" class="button" name="down">
+					<span class="fa fa-arrow-down" style="font-size: 1.5rem"></span>
+				</button>
+			</div>
+
+
+
 		</div>
-	</fieldset>
+	</div>
 
-	{% if not online %}
-		<!-- Content in this section is not displayed online, only on the robot. For example: it is a perfect place to put controls that access hardware stuff, which is not available online. -->
-	{% endif %}
 
-{% endblock %}
-{% block app_scripts %}
 
-	<script>
-		var action_data = {{ actions|tojson|safe }};
+</fieldset>
 
-		var data = {{ data|tojson|safe }};
-	</script>
+{% if not online %}
+<!-- Content in this section is not displayed online, only on the robot. For example: it is a perfect place to put controls that access hardware stuff, which is not available online. -->
+{% endif %} {% endblock %} {% block app_scripts %}
 
-	<!-- <script src="/site_media/static/js/....js"></script> -->
 
-{% endblock %}
-{% block app_modals %}
+<script src="/static/js/sockjs.min.js"></script>
+<script>
+	$(document).ready(function() {
+
+		// Setup websocket connection.
+		var conn = null;
+		var connReady = false;
+		conn = new SockJS("http://" + window.location.host + "/sockjs");
+
+		conn.onopen = function() {
+			console.log("SockJS connected.");
+			$.ajax({
+				url: "/sockjstoken",
+				cache: false
+			}).done(function(data) {
+				conn.send(JSON.stringify({
+					action: "authenticate",
+					token: data
+				}));
+				connReady = true;
+				console.log("SockJS authenticated.");
+			});
+		};
+
+		conn.onclose = function() {
+			console.log("SockJS disconnected.");
+			conn = null;
+			connReady = false;
+		};
+
+		// Don't submit form on enter
+		$("input,select").keypress(function(evt) {
+			return evt.keyCode != 13;
+		});
+
+		// Monitor keypresses
+		var navDict = {
+			"up": false,
+			"down": false,
+			"left": false,
+			"right": false,
+			"start": false
+		};
+
+		$("button,#arrow").mousedown(function(evt) {
+			var name = $(this).attr('name');
+			navDict[name] = true;
+			sendNav();
+		});
+
+		$("button,#arrow").mouseup(function(evt) {
+			var name = $(this).attr('name');
+			navDict[name] = false;
+			sendNav();
+		});
+
+
+		function sendNav() {
+			if (connReady) {
+				conn.send(JSON.stringify({
+					action: "navUpdate",
+					up: navDict['up'],
+					down: navDict['down'],
+					left: navDict['left'],
+					right: navDict['right']
+				}));
+			};
+		};
+
+
+
+		$(document).keydown(function(evt) {
+			var keycode = (evt.keyCode ?
+				evt.keyCode :
+				evt.which);
+			if ((keycode >= 37) && (keycode <= 40)) {
+				navDict[keycode] = true;
+				sendNav();
+			};
+
+		});
+
+		$(document).keyup(function(evt) {
+			var keycode = (evt.keyCode ?
+				evt.keyCode :
+				evt.which);
+
+			if ((keycode >= 37) && (keycode <= 40)) {
+				navDict[keycode] = false;
+				sendNav();
+			};
+
+		});
+
+	});
+</script>
+
+{% endblock %} {% block app_modals %}
 
 <div id="popup_window" class="reveal-modal" data-reveal>
 	<div class="titlebar">

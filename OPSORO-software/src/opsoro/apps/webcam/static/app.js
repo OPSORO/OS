@@ -30,18 +30,39 @@ $(document).ready(function() {
             self.fileStatus("Editing")
         };
 
-        // Popup window
-        self.popupTextInput = ko.observable("Hi! This text can be changed. Click on the button to change me!");
-        self.showPopup = function() {
-            $("#popup_window").foundation("reveal", "open");
+        // Setup websocket connection.
+        self.conn = null;
+        self.connReady = false;
+        self.conn = new SockJS("http://" + window.location.host + "/sockjs");
 
+        self.conn.onopen = function(){
+          $.ajax({
+            url: "/sockjstoken",
+            cache: false
+          })
+          .done(function(data) {
+            self.conn.send(JSON.stringify({action: "authenticate", token: data}));
+            self.connReady = true;
+          });
         };
-        self.closePopup = function() {
-            $("#popup_window").foundation("reveal", "close");
+
+        self.conn.onmessage = function(e){
+          var msg = $.parseJSON(e.data);
+          switch(msg.action){
+            case "soundStopped":
+              if (self.selectedVoiceLine() != undefined) {
+                self.selectedVoiceLine().isPlaying(false);
+                self.selectedVoiceLine().hasPlayed(true);
+              }
+              break;
+          }
         };
-        self.popupButtonHandler = function() {
-            self.closePopup();
+
+        self.conn.onclose = function(){
+          self.conn = null;
+          self.connReady = false;
         };
+
 
         self.init = function() {
             // Clear data, new file, ...
