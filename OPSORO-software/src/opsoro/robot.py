@@ -24,14 +24,18 @@ from opsoro.module.eyebrow import Eyebrow
 from opsoro.module.mouth import Mouth
 from opsoro.module.wheel import Wheel
 
-MODULES = {'eye': Eye, 'eyebrow': Eyebrow, 'mouth': Mouth, 'wheel': Wheel, 'continu_servo': Wheel}
+# Groups
+from opsoro.moduleGroup import *
+from opsoro.moduleGroup.wheelGroup import wheelGroup
 
+MODULES = {'eye': Eye, 'eyebrow': Eyebrow, 'mouth': Mouth, 'wheel': Wheel, 'continu_servo': Wheel}
+GROUPS = {'wheelgroup': wheelGroup}
 
 class _Robot(object):
     def __init__(self):
         self.modules = {}
+        self.groups = {}
         self._config = {}
-        self.load_config()
         self._dof_t = None
         self._alive_t = None
 
@@ -67,6 +71,7 @@ class _Robot(object):
     def config(self, config=None):
         if config is not None and len(config) > 0:
             self._config = json.loads(config)
+
             # Create all module-objects from data
             self.modules = {}
             modules_count = {}
@@ -80,6 +85,22 @@ class _Robot(object):
                         modules_count[module_data['module']] = 0
                     modules_count[module_data['module']] += 1
                     self.modules[module.name] = module
+
+
+            # Create all groups from data
+            for group_data in self._config['groups']:
+                if group_data['type'] in GROUPS:
+                    name = group_data['name']
+                    type = group_data['type']
+                    self.groups[name] = GROUPS[type](name)
+            for module_data in self._config['modules']:
+                module_name = module_data["name"]
+                if ('group' in module_data):
+                    module_group_data = module_data['group']
+                    group_name = module_group_data['name']
+                    if group_name in self.groups:
+                        self.get_group(group_name).add(self.modules[module_name],module_group_data['tags'])
+
 
             # print module feedback
             print_info("Modules: " + str(modules_count))
@@ -190,5 +211,9 @@ class _Robot(object):
             if hasattrib(module, 'blink'):
                 module.blink(speed)
 
+    def get_group(self, name):
+        return self.groups[name]
+
 # Global instance that can be accessed by apps and scripts
 Robot = _Robot()
+Robot.load_config()

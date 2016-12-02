@@ -12,6 +12,7 @@ import tornado.log
 
 from opsoro.console_msg import *
 from opsoro.server import Server
+from opsoro.robot import Robot
 
 
 # Handle SIGTERM for graceful shutdown of daemon

@@ -10,53 +10,56 @@ constrain = lambda n, minn, maxn: max(min(maxn, n), minn)
 
 
 class ContinuServo(DOF):
-    def config(self, pin=None, min_range=0, mid_pos=1500, max_range=0, reverse=False):
-        #, dofname=None):
+    def config(self, pin=None, forward_pers=0, mid_pos=1500, backward_pers=0, reverse=False):
         """
 		Helper class to turn DOF positions into pulse widths for the servo
 		controller.
 
-		pin:       Servo pin number
-		min_range: Minimum range of the servo, can be positive or negative.
-		           When dof_pos < 0, pulse width = mid_pos + dof_pos*min_range
-		mid_pos:   Pulse width when neutral (DOF position = 0).
-		max_range: Maximum range of the servo, can be positive or negative.
-		           When dof_pos > 0, pulse width = mid_pos + dof_pos*max_range
+		pin:                Servo pin number
+		forward_pers:       percentage forward (fulspeed = 100)
+		mid_pos:            Pulse width when neutral (DOF position = 0).
+		backward_pers:      percentage backward (fulspeed = 100)
+
+        in range from max_range => car drives forward
+        in range from min_range => car drives backward
+
+        |500|-------------------------------------|mid_pos|--------------------------------|2500|
+                    [mid_pos - min_range]                        [mid_pos + max_range]
+                    => backward                                  => forward
 		"""
-        # dofname:   Name of the DOF that controls the position of this servo
         min_value = 500
         max_value = 2500
+        forward_pers = int(forward_pers)
+        backward_pers = int(backward_pers)
+        mid_pos = int(mid_pos)
+
         self.pin = int(pin)
-        # self.dofname = dofname
         self.mid_pos = int(constrain(int(mid_pos), min_value, max_value))
-        self.min_range = int(constrain(int(min_range), min_value - self.mid_pos, max_value - self.mid_pos))
-        self.max_range = int(constrain(int(max_range), min_value - self.mid_pos, max_value - self.mid_pos))
+        self.min_range = int((mid_pos - min_value) * (constrain(backward_pers, 0.0, 100.0)/100.0))
+        self.max_range = int((max_value - mid_pos) * (constrain(forward_pers, 0.0, 100.0)/100.0))
         self.position = int(self.mid_pos)
         self.reverse = bool(reverse)
 
-        # print_info(self.__repr__())
-
     def __repr__(self):
-        return "ContinuServo(pin=%d, min_range=%d, mid_pos=%d, max_range=%d, reverse=%d)" % (
+        return "ContinuServo(pin={}, min_range={}, mid_pos={}, max_range={}, reverse={})".format(
             self.pin, self.min_range, self.mid_pos, self.max_range, self.reverse)
 
     def dof_to_us(self, dof_value):
         """
         Converts DOF pos to microseconds.
+        reverse==True will reverse the direction of rotation, so [min_range,mid_pos] is always backward
 
         returns:
             servo value (us)
         """
         us = int(self.mid_pos)
         dof_value = float(dof_value)
-        #print "{}^{} = {}".format((dof_value >= 0),self.reverse,(self.reverse == False) ^ (dof_value >= 0 ))
-        if (self.reverse == False) ^ (dof_value >= 0 ):
-            us += int(dof_value * float(self.max_range))
-            print "True", us
+        if dof_value == 0:
+            pass
+        elif (self.reverse == False) ^ (dof_value > 0 ):
+            us += int(abs(dof_value) * float(self.max_range))
         else:
-            us += int(-dof_value * float(self.min_range))
-            print "False", us
-
+            us -= int(abs(dof_value) * float(self.min_range))
         return us
 
     def update(self):
@@ -75,7 +78,7 @@ class ContinuServo(DOF):
         else:
             self.position = self.dof_to_us(self.value)
 
-        # print_info('Servo: pin: %i, pos: %f' % (self.pin, self.position))
+
 
         if self.pin is not None:
             with Hardware.lock:

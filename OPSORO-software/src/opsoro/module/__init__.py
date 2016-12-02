@@ -6,6 +6,7 @@ from opsoro.dof.engine import Engine
 from opsoro.dof.continu_servo import ContinuServo
 from opsoro.console_msg import *
 
+
 import numpy as np
 from scipy import interpolate
 
@@ -105,11 +106,11 @@ class Module(object):
                 elif 'continu_servo' in dof_data:
                         dof = ContinuServo(dof_name, neutral, poly)
                         servo_data = dof_data['continu_servo']
-                        if 'pin' in servo_data and 'min' in servo_data and 'mid' in servo_data and 'max' in servo_data:
+                        if 'pin' in servo_data and 'forward_pers' in servo_data and 'mid' in servo_data and 'backward_pers' in servo_data:
                             dof.config(servo_data['pin'],
-                                       servo_data['min'],
+                                       servo_data['forward_pers'],
                                        servo_data['mid'],
-                                       servo_data['max'],
+                                       servo_data['backward_pers'],
                                        servo_data['reverse'])
                 #NO SERVO OR ENGINE
                 else:

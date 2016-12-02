@@ -16,35 +16,39 @@
 <fieldset>
 	<legend><span class="fa fa-car"></span> {{ _('Drive') }}</legend>
 
-
-	<div class="row align-justify">
-		<div class="small-3 columns">
-			<div class="row">
+	<table>
+		<tr>
+			<td></td>
+			<td>
 				<button id="arrow" type="button" class="button" name="up">
-						<span class="fa fa-arrow-up" style="font-size: 1.5rem"></span>
-					</button>
-			</div>
-			<div class="row">
-				<button id="arrow" type="button" class="button" name="left">
-					<span class="fa fa-arrow-left" style="font-size: 1.5rem"></span>
+					<span class="fa fa-arrow-up" style="font-size: 1.5rem"></span>
 				</button>
-
-				<span class="fa fa-circle" style="font-size: 1.5rem"></span>
-
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>
+				<button id="arrow" type="button" class="button" name="left">
+				<span class="fa fa-arrow-left" style="font-size: 1.5rem"></span>
+			</button>
+		</td>
+			<td></td>
+			<td>
 				<button id="arrow" type="button" class="button" name="right">
 							<span class="fa fa-arrow-right" style="font-size: 1.5rem"></span>
-						</button>
-			</div>
-			<div class="row">
+				</button>
+			</td>
+		</tr>
+		<tr>
+			<td></td>
+			<td>
 				<button id="arrow" type="button" class="button" name="down">
 					<span class="fa fa-arrow-down" style="font-size: 1.5rem"></span>
 				</button>
-			</div>
-
-
-
-		</div>
-	</div>
+				</td>
+			<td></td>
+		</tr>
+</table>
 
 
 
@@ -131,7 +135,10 @@
 				evt.keyCode :
 				evt.which);
 			if ((keycode >= 37) && (keycode <= 40)) {
-				navDict[keycode] = true;
+				if (keycode == 37) {navDict['left'] = true;}
+				if (keycode == 38) {navDict['up'] = true;}
+				if (keycode == 39) {navDict['right'] = true;}
+				if (keycode == 40) {navDict['down'] = true;}
 				sendNav();
 			};
 
@@ -143,7 +150,10 @@
 				evt.which);
 
 			if ((keycode >= 37) && (keycode <= 40)) {
-				navDict[keycode] = false;
+				if (keycode == 37) {navDict['left'] = false;}
+				if (keycode == 38) {navDict['up'] = false;}
+				if (keycode == 39) {navDict['right'] = false;}
+				if (keycode == 40) {navDict['down'] = false;}
 				sendNav();
 			};
 

@@ -28,10 +28,7 @@ class Servo(DOF):
         self.pin = int(pin)
         # self.dofname = dofname
         self.mid_pos = int(constrain(int(mid_pos), min_value, max_value))
-        self.min_range = int(
-            constrain(
-                int(min_range), min_value - self.mid_pos, max_value -
-                self.mid_pos))
+        self.min_range = int(constrain(int(min_range),min_value - self.mid_pos,max_value - self.mid_pos))
         self.max_range = int(
             constrain(
                 int(max_range), min_value - self.mid_pos, max_value -
