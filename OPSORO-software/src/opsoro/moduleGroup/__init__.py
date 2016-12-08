@@ -1,4 +1,5 @@
 
+
 class moduleGroup(object):
     """
         this is a help class to contol the modules verry easely. This class
@@ -12,6 +13,8 @@ class moduleGroup(object):
 
         vb. module 'left_front_wheel' heeft tags: left, front, all(default)
     """
+
+
 
     #opm: omdat doorheen het programma meestal 'name' wordt gebruikt gebruik ik nu ook name maar ik denk dat het mischien overzichteliijker zou zijn mar 'id'
     def __init__(self, name):

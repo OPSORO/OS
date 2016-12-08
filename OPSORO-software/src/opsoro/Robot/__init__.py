@@ -39,6 +39,7 @@ class _Robot(object):
         self._dof_t = None
         self._alive_t = None
 
+
     def start(self):
         print_info('Start Robot')
         with Hardware.lock:
@@ -157,7 +158,9 @@ class _Robot(object):
         time.sleep(0.05)  # delay
         if self._alive_t is None:
             return
+
         while not self._alive_t.stopped():
+
             self._alive_t.sleep(randint(0, 9))
 
     def update(self):
@@ -206,31 +209,13 @@ class _Robot(object):
 
     def blink(self, speed):
         for name, module in self.modules.iteritems():
-            if hasattr(module, 'blink'):
+            if hasattrib(module, 'blink'):
                 module.blink(speed)
-
-    def execute(self, function, tags=None, *args):
-        modules = self.getModules(tags)
-        for m in modules:
-            f = getattr(m, function, None)
-            if (f is not None) and callable(f):
-                f(args)
-
-    def getModules(self,tags):
-        result = []
-        for m in self.modules:
-            p = True
-            for t in tags:
-                if t not in m.tags:
-                    p=False
-
-            if p:
-                result = result +m
-
-        return result
 
     def get_group(self, name):
         return self.groups[name]
+    
+    def getModules(self,tags= []):
 
 # Global instance that can be accessed by apps and scripts
 Robot = _Robot()

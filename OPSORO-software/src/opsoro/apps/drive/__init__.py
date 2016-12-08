@@ -30,7 +30,7 @@ except ImportError:
 constrain = lambda n, minn, maxn: max(min(maxn, n), minn)
 get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 
-config = {"full_name": "drive", "icon": "fa-car", 'color': '#15e678'}
+config = {"full_name": "drive.py", "icon": "fa-car", 'color': '#15e678'}
 
 clientconn = None
 

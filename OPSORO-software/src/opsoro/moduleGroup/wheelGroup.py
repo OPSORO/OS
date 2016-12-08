@@ -1,5 +1,5 @@
 from opsoro.moduleGroup import moduleGroup
-from opsoro.robot import Robot
+
 
 constrain = lambda n, minn, maxn: max(min(maxn, n), minn)
 
@@ -24,25 +24,27 @@ class wheelGroup(moduleGroup):
         for w in self.getModules(['all']):
             w.set_dof_value("wheel",0, anim_time)
 
-    def forward(self,speed, anim_time=-1):
+    def forward(self,speed, anim_time=-1, tags=['all']):
         """
             speed = [-1,1]      (-1 means backward)
             anim_time = time to reach the speed
         """
         speed = constrain(speed,-1,1)
 
-        for w in self.getModules(['all']):
+        for w in self.getModules(tags):
             print "forward" + str(speed)
             w.set_dof_value("wheel",speed, anim_time)
 
 
-    def backward(self, speed, anim_time=-1):
+
+
+    def backward(self, speed, anim_time=-1, tags=['all']):
         """
             speed = [-1,1]      (-1 means forward)
             anim_time = time to reach the speed
         """
         speed = constrain(speed,-1,1)
-        for w in self.getModules(['all']):
+        for w in self.getModules(tags):
             w.set_dof_value("wheel", -speed, anim_time)
 
     def shortLeft(self,speed, anim_time=-1):

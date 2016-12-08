@@ -19,6 +19,7 @@ constrain = lambda n, minn, maxn: max(min(maxn, n), minn)
 class Module(object):
     def __init__(self, data=None):
         self.name = ""
+        self.tags = []
         self.position = {}
         self.size = {}
         self.dofs = {}
@@ -53,6 +54,11 @@ class Module(object):
         else:
             self.name = ""
 
+        # TAGS
+        tags = []
+        if 'tags' in data:
+            self.tags = data["tags"]
+
         self.position = {}
         self.size = {}
 
@@ -71,6 +77,8 @@ class Module(object):
                 if 'name' not in dof_data:
                     dof_data['name'] = ""
                 dof_name = dof_data['name']
+
+
 
                 #MAPPING
                 neutral = 0.0
