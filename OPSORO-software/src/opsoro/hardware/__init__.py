@@ -1,5 +1,6 @@
 import time
-import spidev
+#import spidev
+import fake_spidev as spidev
 import threading
 #from hardware.adafruit_servo_controller import pwm
 #from opsoro.hardware.adafruit_servo_controller import pwm

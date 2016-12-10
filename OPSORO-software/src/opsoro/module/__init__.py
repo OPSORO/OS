@@ -7,6 +7,7 @@ from opsoro.dof.continu_servo import ContinuServo
 from opsoro.console_msg import *
 
 
+from inspect import getargspec
 import numpy as np
 from scipy import interpolate
 
@@ -23,10 +24,8 @@ class Module(object):
         self.position = {}
         self.size = {}
         self.dofs = {}
-        # self.servos = []
 
-        if data is not None:
-            self.load_module(data)
+
 
     def apply_poly(self, r, phi, anim_time=-1):
         for name, dof in self.dofs.iteritems():
@@ -41,90 +40,64 @@ class Module(object):
                 updated = True
         return updated
 
+    #not in use
+    def execute(self, function, tags=None, *args):
+        f = getattr(self, function, None)
+        if (f is not None) and callable(f):
+            f(args)
+        else:
+            print_warning(str(type(self)) + "has no funtion '{}'".format(function))
+
+    def execute(self, params):
+        action = (params["action"] if "action" in params else None)
+        if action:
+            f = getattr(self, params["action"], None)
+            if (f is not None) and callable(f):
+                try:
+                    argsList = getargspec(f)[0][1:]
+                    argsValues = []
+                    for a in argsList:
+                        if a in params:
+                            argsValues += [params[str(a)]]
+                        else:
+                            break
+                    f(*[argsValues])
+                    return True
+                except Exception as e:
+                    print_error("Can't find/parse arguments in params")
+                    raise
+            else:
+                print_warning(str(type(self)) + "has no funtion '{}'".format(params["action"]))
+        return False
+
     def set_dof_value(self, dof_name, dof_value, anim_time=-1):
         if dof_name is None:
             for name, dof in self.dofs.iteritems():
                 dof.set_value(dof_value, anim_time)
-        else:
+        elif dof_name in self.dofs:
             self.dofs[dof_name].set_value(dof_value, anim_time)
-
-    def load_module(self, data):
-        if 'name' in data:
-            self.name = data['name']
         else:
-            self.name = ""
-
-        # TAGS
-        tags = []
-        if 'tags' in data:
-            self.tags = data["tags"]
-
-        self.position = {}
-        self.size = {}
-
-        if 'canvas' in data:
-            canvas_data = data['canvas']
-            if 'pos' in canvas_data:
-                self.position = canvas_data['pos']
-            if 'size' in canvas_data:
-                self.size = canvas_data['size']
-
-        if 'dofs' in data:
-            self.dofs = {}
-            # self.servos = []
-            for dof_data in data['dofs']:
-                #DOF NAME
-                if 'name' not in dof_data:
-                    dof_data['name'] = ""
-                dof_name = dof_data['name']
+            print self.name + " has no dof: " + dof_name
 
 
+    def set_dof_values(self, dof_values, anim_time=-1):
+        """
+            set all dofs with same value
+            **Sander: ik ben geen fan van deze methode. In de oude versie zat dit volledig in de Robot classe maar door de wijzigingen lukt dit niet.
+                      ik zou deze methode liever ombouwen tot een methode 'set_dof_med()' omdat de methode hoofdzakelijk bedoeld is om alle dof's op 0 te plaatsen
 
-                #MAPPING
-                neutral = 0.0
-                poly = None
-                if 'mapping' in dof_data:
-                    mapping_data = dof_data['mapping']
-                    if 'neutral' in mapping_data:
-                        neutral = mapping_data['neutral']
-                    if 'poly' in mapping_data:
-                        poly = mapping_data['poly']
+        """
+        for name, dof in self.dofs.iteritems():
+            dof.set_value(name, dof_value, anim_time)
 
-                dof = None
-                #SERVO
-                if 'servo' in dof_data:
-                    dof = Servo(dof_name, neutral, poly)
-                    servo_data = dof_data['servo']
-                    if 'pin' in servo_data and 'min' in servo_data and 'mid' in servo_data and 'max' in servo_data:
-                        dof.config(servo_data['pin'],
-                                   servo_data['min'],
-                                   servo_data['mid'],
-                                   servo_data['max'], )
-                #ENGINE
-                elif 'engine' in dof_data:
-                    dof = Engine(dof_name, neutral, poly)
-                    engine_data = dof_data['engine']
-                    if ('pin_a' in engine_data) and ('pin_b' in engine_data) and ('min_speed' in engine_data) and ('max_speed' in engine_data) and ('reverse' in engine_data):
-                        dof.config(servo_data['pin_a'],
-                                   servo_data['pin_b'],
-                                   servo_data['min_speed'],
-                                   servo_data['max_speed'],
-                                   servo_data['reverse'], )
-                #CONTINU SERVO
-                elif 'continu_servo' in dof_data:
-                        dof = ContinuServo(dof_name, neutral, poly)
-                        servo_data = dof_data['continu_servo']
-                        if 'pin' in servo_data and 'forward_pers' in servo_data and 'mid' in servo_data and 'backward_pers' in servo_data:
-                            dof.config(servo_data['pin'],
-                                       servo_data['forward_pers'],
-                                       servo_data['mid'],
-                                       servo_data['backward_pers'],
-                                       servo_data['reverse'])
-                #NO SERVO OR ENGINE
-                else:
-                    dof = DOF(dof_name, neutral, poly)
 
-                self.dofs[dof.name] = dof
+    def has_tags(self,tags):
+        if (tags is None) or (tags == []):
+            return True
+        else:
+            return all(x in self.tags for x in tags)
+
+
 
     def __str__(self):
         return str(self.name)

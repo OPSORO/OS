@@ -20,3 +20,6 @@ def print_appstarted(appname):
 
 def print_appstopped(appname):
     print "\033[1m[\033[93m APP STOPPED \033[0m\033[1m]\033[0m %s" % appname
+
+def print_todo(msg):
+    print "\033[1m[\033[96m TODO \033[0m\033[1m]\033[0m %s" % msg

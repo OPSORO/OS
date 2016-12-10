@@ -1,6 +1,6 @@
-Blockly.Lua.addReservedWords("Drive");
+Blockly.Lua.addReservedWords("Robot");
 
-Blockly.Blocks['stop'] = {
+Blockly.Blocks['drive_stop'] = {
   init: function() {
     this.appendDummyInput()
         .appendField(new Blockly.FieldImage("static/icons/fa-lightbulb-o.png", 16, 18, ""))
@@ -11,15 +11,12 @@ Blockly.Blocks['stop'] = {
     this.setTooltip('Stop the robot');
   }
 };
-Blockly.Lua['stop'] = function(block) {
-var code = 'Robot:set_dof_value("wheel_left_front","wheel",'+ 0 + ')\n'
-      + 'Robot:set_dof_value("wheel_right_front","wheel",'+ 0 + ')\n'
-      + 'Robot:set_dof_value("wheel_left_back","wheel",'+ 0 + ')\n'
-      + 'Robot:set_dof_value("wheel_right_back","wheel",'+ 0 + ')\n';
-      return code;
+Blockly.Lua['drive_stop'] = function(block) {
+  var code = 'Robot:execute({["action"]="stop", ["tags"]={"wheels"}})\n'
+  return code;
 }
 
-Blockly.Blocks['drive'] = {
+Blockly.Blocks['drive_drive'] = {
   init: function() {
     this.appendDummyInput()
         .appendField(new Blockly.FieldImage("static/icons/fa-lightbulb-o.png", 16, 18, ""))
@@ -35,28 +32,21 @@ Blockly.Blocks['drive'] = {
     this.setTooltip('drive forward of backward with a speed from 0 to 100');
   }
 };
-Blockly.Lua['drive'] = function(block) {
+Blockly.Lua['drive_drive'] = function(block) {
   var code = "";
   var direction = block.getFieldValue('DIRECTION');
   var speed = Blockly.Lua.valueToCode(block, 'SPEED', Blockly.Lua.ORDER_ATOMIC)/100.0;
 
   if(direction == "FORWARD"){
-    code = 'Robot:set_dof_value("wheel_left_front","wheel",'+ speed + ')\n'
-    + 'Robot:set_dof_value("wheel_right_front","wheel",'+ speed + ')\n'
-    + 'Robot:set_dof_value("wheel_left_back","wheel",'+ speed + ')\n'
-    + 'Robot:set_dof_value("wheel_right_back","wheel",'+ speed + ')\n';
+    var code = 'Robot:execute({["action"]="forward", ["tags"]={"wheels"},["speed"]= '+ speed+'})\n'
   }
   else {
-    speed = - speed;
-    code = 'Robot:set_dof_value("wheel_left_front","wheel",'+ speed + ')\n'
-    + 'Robot:set_dof_value("wheel_right_front","wheel",'+ speed + ')\n'
-    + 'Robot:set_dof_value("wheel_left_back","wheel",'+ speed + ')\n'
-    + 'Robot:set_dof_value("wheel_right_back","wheel",'+ speed + ')\n';
+    var code = 'Robot:execute({["action"]="backward", ["tags"]={"wheels"},["speed"]= '+ speed+'})\n'
   }
   return code;
 };
 
-Blockly.Blocks['shortTurn'] = {
+Blockly.Blocks['drive_shortTurn'] = {
   init: function() {
     this.appendDummyInput()
         .appendField(new Blockly.FieldImage("static/icons/fa-lightbulb-o.png", 16, 18, ""))
@@ -72,28 +62,21 @@ Blockly.Blocks['shortTurn'] = {
     this.setTooltip('drive forward of backward with a speed from 0 to 100');
   }
 };
-Blockly.Lua['shortTurn'] = function(block) {
+Blockly.Lua['drive_shortTurn'] = function(block) {
   var code = "";
   var direction = block.getFieldValue('DIRECTION');
   var speed = Blockly.Lua.valueToCode(block, 'SPEED', Blockly.Lua.ORDER_ATOMIC)/100.0;
 
   if(direction == "LEFT"){
-    code = 'Robot:set_dof_value("wheel_left_front","wheel",'+ (string)(-speed) + ')\n'
-    + 'Robot:set_dof_value("wheel_right_front","wheel",'+ speed + ')\n'
-    + 'Robot:set_dof_value("wheel_left_back","wheel",'+ (string)(-speed) + ')\n'
-    + 'Robot:set_dof_value("wheel_right_back","wheel",'+ speed + ')\n';
+    var code = 'Robot:execute({["action"]="shortLeft", ["tags"]={"wheels"},["speed"]= '+ speed+'})\n'
   }
   else {
-    speed = - speed;
-    code = 'Robot:set_dof_value("wheel_left_front","wheel",'+ speed + ')\n'
-    + 'Robot:set_dof_value("wheel_right_front","wheel",'+ (string)(-speed) + ')\n'
-    + 'Robot:set_dof_value("wheel_left_back","wheel",'+ speed + ')\n'
-    + 'Robot:set_dof_value("wheel_right_back","wheel",'+ (string)(-speed) + ')\n';
+    var code = 'Robot:execute({["action"]="shortRight", ["tags"]={"wheels"},["speed"]= '+ (-speed)+'})\n'
   }
   return code;
 };
 
-Blockly.Blocks['longTurn'] = {
+Blockly.Blocks['drive_longTurn'] = {
   init: function() {
     this.appendDummyInput()
         .appendField(new Blockly.FieldImage("static/icons/fa-lightbulb-o.png", 16, 18, ""))
@@ -109,23 +92,16 @@ Blockly.Blocks['longTurn'] = {
     this.setTooltip('drive forward of backward with a speed from 0 to 100');
   }
 };
-Blockly.Lua['shortTurn'] = function(block) {
+Blockly.Lua['drive_longTurn'] = function(block) {
   var code = "";
   var direction = block.getFieldValue('DIRECTION');
   var speed = Blockly.Lua.valueToCode(block, 'SPEED', Blockly.Lua.ORDER_ATOMIC)/100.0;
 
   if(direction == "LEFT"){
-    code = 'Robot:set_dof_value("wheel_left_front","wheel",'+ 0 + ')\n'
-    + 'Robot:set_dof_value("wheel_right_front","wheel",'+ speed + ')\n'
-    + 'Robot:set_dof_value("wheel_left_back","wheel",'+ 0 + ')\n'
-    + 'Robot:set_dof_value("wheel_right_back","wheel",'+ speed + ')\n';
+    var code = 'Robot:execute({["action"]="longLeft", ["tags"]={"wheels"},["speed"]= '+ speed+'})\n'
   }
   else {
-    speed = - speed;
-    code = 'Robot:set_dof_value("wheel_left_front","wheel",'+ speed + ')\n'
-    + 'Robot:set_dof_value("wheel_right_front","wheel",'+ 0 + ')\n'
-    + 'Robot:set_dof_value("wheel_left_back","wheel",'+ speed + ')\n'
-    + 'Robot:set_dof_value("wheel_right_back","wheel",'+ 0 + ')\n';
+    var code = 'Robot:execute({["action"]="longRight", ["tags"]={"wheels"},["speed"]= '+ speed+'})\n'
   }
   return code;
 };

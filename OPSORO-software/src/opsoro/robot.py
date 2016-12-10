@@ -6,6 +6,8 @@ from opsoro.console_msg import *
 from opsoro.stoppable_thread import StoppableThread
 from opsoro.hardware import Hardware
 
+import traceback
+
 from random import randint
 import time
 import json
@@ -18,6 +20,7 @@ except ImportError:
 get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 
 # Modules
+from opsoro.module.moduleFactory import ModuleFactory
 from opsoro.module import *
 from opsoro.module.eye import Eye
 from opsoro.module.eyebrow import Eyebrow
@@ -28,8 +31,6 @@ from opsoro.module.wheel import Wheel
 from opsoro.moduleGroup import *
 from opsoro.moduleGroup.wheelGroup import wheelGroup
 
-MODULES = {'eye': Eye, 'eyebrow': Eyebrow, 'mouth': Mouth, 'wheel': Wheel, 'continu_servo': Wheel}
-GROUPS = {'wheelgroup': wheelGroup}
 
 class _Robot(object):
     def __init__(self):
@@ -72,56 +73,30 @@ class _Robot(object):
         if config is not None and len(config) > 0:
             self._config = json.loads(config)
 
-            # Create all module-objects from data
-            self.modules = {}
-            modules_count = {}
-            for module_data in self._config['modules']:
-                if module_data['module'] in MODULES:
-                    # Create module object
-                    module = MODULES[module_data['module']](module_data)
-
-                    # Count different modules
-                    if module_data['module'] not in modules_count:
-                        modules_count[module_data['module']] = 0
-                    modules_count[module_data['module']] += 1
-                    self.modules[module.name] = module
-
-
-            # Create all groups from data
-            for group_data in self._config['groups']:
-                if group_data['type'] in GROUPS:
-                    name = group_data['name']
-                    type = group_data['type']
-                    self.groups[name] = GROUPS[type](name)
-            for module_data in self._config['modules']:
-                module_name = module_data["name"]
-                if ('group' in module_data):
-                    module_group_data = module_data['group']
-                    group_name = module_group_data['name']
-                    if group_name in self.groups:
-                        self.get_group(group_name).add(self.modules[module_name],module_group_data['tags'])
+            mf = ModuleFactory(self._config['modules'])
+            for i in mf.load_modules():
+                self.modules[str(i.name)] = i
 
 
             # print module feedback
-            print_info("Modules: " + str(modules_count))
+            print_info("Modules: " + str(mf.count_Types()))
         return self._config
 
     def set_dof_value(self, module_name, dof_name, dof_value, anim_time=-1):
         if module_name is None:
             for name, module in self.modules.iteritems():
                 module.set_dof_value(None, dof_value, anim_time)
+        elif module_name in self.modules:
+            self.modules[module_name].set_dof_value(dof_name, dof_value, anim_time)
         else:
-            self.modules[module_name].set_dof_value(dof_name, dof_value,
-                                                    anim_time)
-
+            print_warning("no module " + module_name)
+            traceback.print_exc()
         self.start_update_loop()
 
     def set_dof_values(self, dof_values, anim_time=-1):
         for module_name, dofs in dof_values.iteritems():
             for dof_name, dof_value in dofs.iteritems():
-                self.modules[module_name].set_dof_value(dof_name, dof_value,
-                                                        anim_time)
-
+                self.modules[module_name].set_dof_value(dof_name, dof_value, anim_time)
         self.start_update_loop()
 
     def get_dof_values(self):
@@ -203,29 +178,54 @@ class _Robot(object):
             print_warning("Could not save " + file_name)
             return False
         return True
-
+    #deprecated
     def blink(self, speed):
         for name, module in self.modules.iteritems():
             if hasattr(module, 'blink'):
                 module.blink(speed)
 
-    def execute(self, function, tags=None, *args):
-        modules = self.getModules(tags)
-        for m in modules:
-            f = getattr(m, function, None)
-            if (f is not None) and callable(f):
-                f(args)
+    #not in use
+    def execute(self, action, tags=[], **args):
+        tmp = locals()
+        tmp.pop('self',0)
+        print tmp
+        return self.execute(tmp)
+
+    def execute(self,params):
+        """
+            execute any action implemented in the modules
+
+            params: dictionary with the functionname, tags and the arguments
+                dict= {
+                    "action": "name_of_function_to_execute",
+                    "tags": ["tag1","tag2","tag13"],
+                    "extra_arg": "value_of_arg",
+                    ...
+                }
+        """
+
+        action = (params["action"] if "action" in params else None)
+        tags = (params["tags"] if "tags" in params else [])
+
+        #Dit moet nog opgelost worden. Lua kent geen lijsten enkel dictionary's. Met deze try except verhelp ik die fout maar dit is geen mooie oplossing. Ik kijk nog om dit te fixen
+        try:
+            tags = [] + [i for i in params["tags"].values()]
+        except Exception as e:
+            tags = (params["tags"] if "tags" in params else [])
+            pass
+
+        print tags
+
+        if action and tags:
+            for m in self.getModules(tags):
+                m.execute(params)
+        self.start_update_loop()
 
     def getModules(self,tags):
         result = []
-        for m in self.modules:
-            p = True
-            for t in tags:
-                if t not in m.tags:
-                    p=False
-
-            if p:
-                result = result +m
+        for m in self.modules.values():
+            if m.has_tags(tags):
+                result = result + [m]
 
         return result
 

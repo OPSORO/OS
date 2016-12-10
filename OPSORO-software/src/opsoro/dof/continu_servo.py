@@ -8,7 +8,7 @@ import cmath
 constrain = lambda n, minn, maxn: max(min(maxn, n), minn)
 
 
-
+#wordt niet meer gebruikt
 class ContinuServo(DOF):
     def config(self, pin=None, forward_pers=0, mid_pos=1500, backward_pers=0, reverse=False):
         """

@@ -1,9 +1,19 @@
 
 class a(object):
-    def blink(self):
-        print "uitvoeren van blinkfunctie"
+    def __init__(self):
+        self.count = 1
+
+class b(object):
+    def __init__(self):
+        self.val1 = None
 
 
+i1 = b()
+a  = a()
+i1.val1 = a
+a.count = a.count + 1
+i1.val1.count = i1.val1.count +1
 
-blink = getattr(a, "blink", None)
-print blink
+print a.count
+
+

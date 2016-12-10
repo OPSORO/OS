@@ -15,7 +15,6 @@ from opsoro.animate import Animate
 # from opsoro.hardware.servo import Servo
 from opsoro.console_msg import *
 
-# from opsoro.modules import Modules
 from opsoro.robot import Robot
 
 import yaml

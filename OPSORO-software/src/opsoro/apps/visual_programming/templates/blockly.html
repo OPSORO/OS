@@ -89,6 +89,24 @@
 				</value>
 			</block>
 		</category>
+		<category name="Drive" id="catDrive">
+			<block type="drive_stop">
+				<block type="math_number">
+					<field name="NUM">1</field>
+				</block></block>
+			<block type="drive_drive">
+				<block type="math_number">
+					<field name="NUM">1</field>
+				</block></block>
+			<block type="drive_shortTurn">
+				<block type="math_number">
+					<field name="NUM">1</field>
+				</block></block>
+			<block type="drive_longTurn">
+				<block type="math_number">
+					<field name="NUM">1</field>
+				</block></block>
+		</category>
 		<category name="Touch" id="catTouch">
 			<block type="touch_init"></block>
 			<block type="touch_etouched"></block>
@@ -316,6 +334,7 @@
 	<script src="static/custom_blocks/expression.js"></script>
 	<script src="static/custom_blocks/touch.js"></script>
 	<script src="static/custom_blocks/neopixel.js"></script>
+	<script src="static/custom_blocks/drive.js"></script>
 
 	<script>
 		$(document).ready(function() {

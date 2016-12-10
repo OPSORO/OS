@@ -30,7 +30,7 @@ except ImportError:
 constrain = lambda n, minn, maxn: max(min(maxn, n), minn)
 get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 
-config = {"full_name": "drive.py", "icon": "fa-car", 'color': '#15e678'}
+config = {"full_name": "drive", "icon": "fa-car", 'color': '#15e678'}
 
 clientconn = None
 
@@ -70,13 +70,10 @@ def setup_pages(opsoroapp):
             down = data.pop("down", "")
             left = data.pop("left", "")
             right = data.pop("right", "")
-            wheelLeft, wheelRight = arrowKey2motion(up,down,left,right)
-            Robot.set_dof_value("wheel_left_front","wheel",wheelLeft)
-            Robot.set_dof_value("wheel_right_front","wheel",wheelRight)
-            Robot.set_dof_value("wheel_left_back","wheel",wheelLeft)
-            Robot.set_dof_value("wheel_right_back","wheel",wheelRight)
-            Robot.start_update_loop()
-            print_info("{} {}".format(wheelLeft, wheelRight))
+            instr = arrowKey2motion(up,down,left,right)
+            Robot.execute(instr)
+
+
 
         @opsoroapp.app_socket_message("start")
         def s_start(conn,data):
@@ -106,27 +103,27 @@ def stop(opsoroapp):
     pass
 
 def arrowKey2motion(up, down, left , right):
-    result = (0,0)
+    result = {"action":"stop"}
     if (up & down)  | (left & right):
-        result = (0,0)                  #two oposite actions result in no action
+        result = {"action":"stop","tags":["wheels"], "speed":None}               #two oposite actions results in no action
     elif up:
         if left:
-            result = (0,1)              #soft left turn forward
+            result = {"action":"longLeft","tags":["wheels"], "speed":1}             #soft left turn forward
         elif right:
-            result = (1,0)              #soft right turn forward
+            result = {"action":"longRight","tags":["wheels"], "speed":1}             #soft right turn forward
         else:
-            result = (1,1)              #forward
+            result = {"action":"forward","tags":["wheels"], "speed":1}               #forward
     elif down:
         if left:
-            result = (0,-1)              #soft left turn backward
+            result = {"action":"longLeft","tags":["wheels"], "speed":-1}                #soft left turn backward
         elif right:
-            result = (-1,0)              #soft right turn backward
+            result = {"action":"longRight","tags":["wheels"], "speed":-1}                #soft right turn backward
         else:
-            result = (-1,-1)              #backward
+            result = {"action":"backward","tags":["wheels"], "speed":1}                #backward
     elif left:
-        result = (-1,1)                   #hard left turn
+        result = {"action":"shortLeft","tags":["wheels"], "speed":1}                     #hard left turn
     elif right:
-        result = (1,-1)                   #hard right turn
+        result = {"action":"shortRight","tags":["wheels"], "speed":1}                     #hard right turn
     else:
-        result = (0,0)                    #stand still
+        result = {"action":"stop","tags":["wheels"], "speed":None}                        #stand still
     return result
