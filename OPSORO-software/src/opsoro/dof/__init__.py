@@ -8,23 +8,30 @@ from opsoro.animate import Animate
 
 import math
 import cmath
+import time
 
 constrain = lambda n, minn, maxn: max(min(maxn, n), minn)
 
 
 class DOF(object):
     def __init__(self, name, neutral=0.0, poly=None):
+        """
+        Sets the dof value
+
+        neutral:            neutral dof position
+        poly:               20 dof values linked to emotions
+        """
         self.name = name
         self.value = neutral
 
         # Dict to store any extra data from YAML files
         self.data = {}
 
-        # List of overlay functions
-        # def my_overlay(dofpos, dof):
-        #   new_dof_pos = dofpos
-        #   return my_new_pos
-        self.overlays = []
+        # # List of overlay functions
+        # # def my_overlay(dofpos, dof):
+        # #   new_dof_pos = dofpos
+        # #   return my_new_pos
+        # self.overlays = []
 
         self._neutral = None
         self._interp_poly = None
@@ -34,6 +41,9 @@ class DOF(object):
         # Update control polygon
         self.set_control_polygon(neutral, poly)
 
+        self.last_set_time = int(round(time.time() * 1000))
+        self.last_set_value = neutral
+
     def config(self, **args):
         pass
 
@@ -42,6 +52,12 @@ class DOF(object):
          % (self.name, self._neutral)
 
     def set_control_polygon(self, neutral=0.0, poly=None):
+        """
+        Sets the control polygon, 20 dof values are linked to certain emotions
+
+        neutral:            neutral dof position
+        poly:               20 dof values linked to emotions
+        """
         self._neutral = constrain(neutral, -1.0, 1.0)
 
         if poly is None or len(poly) == 0:
@@ -61,6 +77,14 @@ class DOF(object):
                 sorted_phis, sorted_dofs, kind="linear")
 
     def calc(self, r, phi, anim_time=-1):
+        """
+        Calculate dof value with the polygon, according to the given r and phi.
+
+        r:          radius r, intensity of the emotion
+        phi:        (radians) angle of the emotion in the circumplex
+        anim_time:  animation time; time for the servo to move from previous dof to the new dof
+                    -1: animation will be based on dof differences
+        """
         # print_info('Calc; r: %d, phi: %d, time: %i' % (r, phi, anim_time))
         # Calculate DOF position at max intensity
 
@@ -76,25 +100,65 @@ class DOF(object):
             float(self._neutral) + (r * (dof_at_max_r - float(self._neutral))),
             anim_time)
 
-        # Execute overlays
-        for overlay_fn in self.overlays:
-            try:
-                self.set_value(overlay_fn(self.value, self), anim_time)
-            except TypeError:
-                # Not a callable object, or function does not take 2 args
-                pass
+        # # Execute overlays
+        # for overlay_fn in self.overlays:
+        #     try:
+        #         self.set_value(overlay_fn(self.value, self), anim_time)
+        #     except TypeError:
+        #         # Not a callable object, or function does not take 2 args
+        #         pass
 
-        return self.value
+    def set_value(self,
+                  dof_value=0,
+                  anim_time=-1,
+                  is_overlay=False,
+                  update_last_set_time=True):
+        """
+        Sets the dof value
 
-    def set_value(self, dof_value=0, anim_time=-1):
+        dof_value:              new value of the dof
+        anim_time:              animation time; time for the servo to move from previous dof to the new dof
+                                -1: animation will be based on dof differences
+        is_overlay:             used to determine what priority the dof value has (overlay > default)
+        update_last_set_time:   update the last set timer of the dof
+        """
         # print_info('Set value: %d, time: %i' % (dof_value, anim_time))
 
         dof_value = float(constrain(float(dof_value), -1.0, 1.0))
         # Apply transition animation
         if anim_time < 0:
-            anim_time = float(abs(dof_value - float(self.value))) / 3.0
+            anim_time = float(abs(dof_value - float(self.value))) / 1.0
 
         self._anim = Animate([0, anim_time], [self.value, dof_value])
+
+        if not is_overlay:
+            self.last_set_value = dof_value
+
+        if update_last_set_time:
+            self.last_set_time = int(round(time.time() * 1000))
+
+    def set_overlay_value(self,
+                          dof_value=0,
+                          anim_time=-1,
+                          update_last_set_time=True):
+        """
+        Sets the overlay value and overwrites the dof position
+
+        dof_value:              new overlay value of the dof
+        anim_time:              animation time; time for the servo to move from previous dof to the new dof
+                                -1: animation will be based on dof differences
+        update_last_set_time:   update the last set timer of the dof
+        """
+        self.set_value(dof_value, anim_time, True, update_last_set_time)
+
+    def reset_overlay(self, anim_time=-1):
+        """
+        Clears the overlay value and resets the dof position to the last set value
+
+        anim_time:  animation time; time for the servo to move from previous dof to the new dof
+                    -1: animation will be based on dof differences
+        """
+        self.set_value(self.last_set_value, anim_time)
 
     def update(self):
         """

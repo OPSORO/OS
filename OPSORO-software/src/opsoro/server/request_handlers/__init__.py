@@ -224,10 +224,14 @@ class RHandler(object):
 
         if self.server.activeapp in self.server.apps:
             app = self.server.apps[self.server.activeapp]
-            data["activeapp"] = {"name": self.server.activeapp,
-                                 "full_name": app.config["full_name"],
-                                 "icon": app.config["icon"],
-                                 "color": app.config['color']}
+            if app.config.has_key('allowed_background'):
+                if not app.config['allowed_background']:
+                    self.server.stop_current_app()
+                else:
+                    data["activeapp"] = {"name": self.server.activeapp,
+                                         "full_name": app.config["full_name"],
+                                         "icon": app.config["icon"],
+                                         "color": app.config['color']}
 
         for appname in sorted(self.server.apps.keys()):
             app = self.server.apps[appname]
@@ -295,7 +299,16 @@ class RHandler(object):
         self.server.stop_current_app()
 
         if appname in self.server.apps:
-            Robot.start()
+            # robot_state:
+            # 0: Manual start/stop
+            # 1: Start robot automatically (alive feature according to preferences)
+            # 2: Start robot automatically and enable alive feature
+            # 3: Start robot automatically and disable alive feature
+            if self.server.apps[appname].config.has_key('robot_state'):
+                print_info(self.server.apps[appname].config['robot_state'])
+                if self.server.apps[appname].config['robot_state'] > 0:
+                    Robot.start()
+
             self.server.activeapp = appname
 
             try:
@@ -355,7 +368,7 @@ class RHandler(object):
 
     def show_errormessage(self, error):
         print_error(error)
-        return redirect("/")
+        # return redirect("/")
         return ""
 
     def inject_opsoro_vars(self):

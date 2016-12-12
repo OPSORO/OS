@@ -34,17 +34,38 @@ class _Robot(object):
         self._dof_t = None
         self._alive_t = None
 
+        self.look_at_position = [0, 0, 0]  # x y z(= depth) -1.0 <-> 1.0
+
+        self.auto_enable_servos = False
+        self.alive_when_idle = True
+
+        self._alive_count_seed = 1.0
+        self._add_seed = 0.2
+
     def start(self):
         print_info('Start Robot')
         with Hardware.lock:
             Hardware.servo_init()
-            Hardware.servo_enable()
         self.start_update_loop()
+        if self.alive_when_idle:
+            self.start_alive_loop()
 
     def start_update_loop(self):
         if self._dof_t is not None:
             self._dof_t.stop()
+
+        with Hardware.lock:
+            Hardware.servo_enable()
+
         self._dof_t = StoppableThread(target=self.dof_update_loop)
+
+    def stop_update_loop(self):
+        if self._dof_t is not None:
+            self._dof_t.stop()
+
+        if self.auto_enable_servos:
+            with Hardware.lock:
+                Hardware.servo_disable()
 
     def start_alive_loop(self):
         if self._alive_t is not None:
@@ -57,11 +78,12 @@ class _Robot(object):
 
     def stop(self):
         print_info('Stop Robot')
+
         with Hardware.lock:
             Hardware.servo_disable()
 
-        if self._dof_t is not None:
-            self._dof_t.stop()
+        self.stop_alive_loop()
+        self.stop_update_loop()
 
     def config(self, config=None):
         if config is not None and len(config) > 0:
@@ -128,17 +150,24 @@ class _Robot(object):
 
         while not self._dof_t.stopped():
             if not self.update():
-                self._dof_t.stop()
+                self.stop_update_loop()
             self._dof_t.sleep(0.02)
 
     def alive_loop(self):
-        time.sleep(0.05)  # delay
+        time.sleep(0.5)  # delay
         if self._alive_t is None:
             return
 
         while not self._alive_t.stopped():
+            updated = False
+            for name, module in self.modules.iteritems():
+                if module.alive_trigger(self._alive_count_seed):
+                    updated = True
+            if updated:
+                self._alive_count_seed += self._add_seed
+                self.start_update_loop()
 
-            self._alive_t.sleep(randint(0, 9))
+            self._alive_t.sleep(0.1)
 
     def update(self):
         updated = False
@@ -186,7 +215,7 @@ class _Robot(object):
 
     def blink(self, speed):
         for name, module in self.modules.iteritems():
-            if hasattrib(module, 'blink'):
+            if hasattr(module, 'blink'):
                 module.blink(speed)
 
 # Global instance that can be accessed by apps and scripts

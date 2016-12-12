@@ -29,17 +29,25 @@ except ImportError:
 constrain = lambda n, minn, maxn: max(min(maxn, n), minn)
 get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 
-config = {'full_name': 'App_Template',
-          'icon': 'fa-info',
+config = {'full_name': 'Facebook_Liker',
+          'icon': 'fa-facebook',
           'color': '#15e678',
-          'allowed_background': False,
-          'robot_state': 0}
+          'allowed_background': True,
+          'robot_state': 1}
 
 # robot_state:
 # 0: Manual start/stop
 # 1: Start robot automatically (alive feature according to preferences)
 # 2: Start robot automatically and enable alive feature
 # 3: Start robot automatically and disable alive feature
+
+
+def FBscriptRun():
+    Sound.wait_for_sound()
+    send_stopped()
+
+
+fb_t = None
 
 
 def setup_pages(opsoroapp):
@@ -64,13 +72,28 @@ def setup_pages(opsoroapp):
         return opsoroapp.render_template(config['full_name'].lower() + '.html',
                                          **data)
 
-    # @app_bp.route('/demo')
+    @app_bp.route('/token', methods=['POST'])
+    @opsoroapp.app_view
+    def demo():
+        data = {}
+
+    # @sounds_bp.route('/upload', methods=['POST'])
     # @opsoroapp.app_view
-    # def demo():
-    # 	data = {
-    # 	}
-    #
-    # 	return opsoroapp.render_template('app.html', **data)
+    # def upload():
+    #     file = request.files['soundfile']
+    #     if file:
+    #         if file.filename.rsplit('.', 1)[1] in ['wav', 'mp3', 'ogg']:
+    #             filename = secure_filename(file.filename)
+    #             file.save(
+    #                 os.path.join(get_path('../../data/sounds/'), filename))
+    #             flash('%s uploaded successfully.' % file.filename, 'success')
+    #             return redirect(url_for('.index'))
+    #         else:
+    #             flash('This type of file is not allowed.', 'error')
+    #             return redirect(url_for('.index'))
+    #     else:
+    #         flash('No file selected.', 'error')
+    #         return redirect(url_for('.index'))
 
     opsoroapp.register_app_blueprint(app_bp)
 

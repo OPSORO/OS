@@ -7,6 +7,23 @@ $(document).ready(function () {
     self.passwordConfirm = ko.observable("");
   };
 
+  var UpdateSettings = function () {
+    var self = this;
+
+    self.available = ko.observable(false);
+    self.branch = ko.observable("");
+    self.branches = ko.observable();
+    self.autoUpdate = ko.observable(false);
+  };
+
+  var AliveSettings = function () {
+    var self = this;
+
+    self.aliveness = ko.observable(0);
+    self.blink = ko.observable(false);
+    self.gaze = ko.observable(false);
+  };
+
   var AudioSettings = function () {
     var self = this;
 
@@ -41,6 +58,8 @@ $(document).ready(function () {
     var self = this;
 
     self.general = ko.observable(new GeneralSettings());
+    self.update = ko.observable(new UpdateSettings());
+    self.alive = ko.observable(new AliveSettings());
     self.audio = ko.observable(new AudioSettings());
     self.wireless = ko.observable(new WirelessSettings());
   };
@@ -48,10 +67,22 @@ $(document).ready(function () {
   var viewmodel = new SettingsModel();
   ko.applyBindings(viewmodel);
   viewmodel.general().robotName(prefsJson.general.robotName || "Ono");
+
+  viewmodel.update().available(prefsJson.update.available || false);
+  viewmodel.update().branches(prefsJson.update.branches || undefined);
+  viewmodel.update().autoUpdate(prefsJson.update.autoUpdate || false);
+  console.log(prefsJson.update.branch);
+  viewmodel.update().branch(prefsJson.update.branch || '');
+
+  viewmodel.alive().aliveness(prefsJson.alive.aliveness || 0);
+  viewmodel.alive().blink(prefsJson.alive.blink || true);
+  viewmodel.alive().gaze(prefsJson.alive.gaze || true);
+
   viewmodel.audio().volume(prefsJson.audio.volume || 50);
   viewmodel.audio().ttsEngine(prefsJson.audio.ttsEngine || "pico");
   viewmodel.audio().ttsLanguage(prefsJson.audio.ttsLanguage || "nl");
   viewmodel.audio().ttsGender(prefsJson.audio.ttsGender || "m");
+
   viewmodel.wireless().ssid(prefsJson.wireless.ssid || "OPSORO-bot");
   viewmodel.wireless().samePassword(prefsJson.wireless.samePassword || true);
   viewmodel.wireless().channel(prefsJson.wireless.channel || 6);

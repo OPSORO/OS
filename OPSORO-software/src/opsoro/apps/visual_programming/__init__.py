@@ -9,7 +9,15 @@ from ..lua_scripting.scripthost import ScriptHost
 
 config = {'full_name': 'Visual_Programming',
           'icon': 'fa-puzzle-piece',
-          'color': '#6e00ff'}
+          'color': '#6e00ff',
+          'allowed_background': True,
+          'robot_state': 1}
+
+# robot_state:
+# 0: Manual start/stop
+# 1: Start robot automatically (alive feature according to preferences)
+# 2: Start robot automatically and enable alive feature
+# 3: Start robot automatically and disable alive feature
 
 get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 

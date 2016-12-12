@@ -133,6 +133,10 @@ a:visited {
   text-decoration: none;
 }
 
+fieldset legend {
+  background-color: transparent;
+}
+
 .nav {
   width: 100%;
 }

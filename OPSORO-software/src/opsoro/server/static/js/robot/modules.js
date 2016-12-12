@@ -314,11 +314,11 @@ function DrawMouth(svg, x, y, width, height) {
     self.increase = self.height / 2;
 
     self.Set = function(values) {
-        self.right_Y = constrain(values[0] || 0, -1, 1); // -1.0 -> 1.0
+        self.left_Y = constrain(values[0] || 0, -1, 1); // -1.0 -> 1.0
         self.middle_Y = constrain(values[1] || 0, -1, 1); // -1.0 -> 1.0
-        self.left_Y = constrain(values[2] || 0, -1, 1); // -1.0 -> 1.0
-        self.right_R = constrain(values[3] || 0, -1, 1); // -1.0 -> 1.0
-        self.left_R = constrain(values[4] || 0, -1, 1); // -1.0 -> 1.0
+        self.right_Y = constrain(values[2] || 0, -1, 1); // -1.0 -> 1.0
+        self.left_R = constrain(values[3] || 0, -1, 1); // -1.0 -> 1.0
+        self.right_R = constrain(values[4] || 0, -1, 1); // -1.0 -> 1.0
     }
     self.Set([-0.5, 0.5, -0.5, 0, 0]);
 
@@ -415,8 +415,8 @@ function DrawEyebrow(svg, x, y, width, height) {
     self.increase = self.height / 2;
 
     self.Set = function(values) {
-        self.right_Y = constrain(values[0] || 0, -1, 1); // -1.0 -> 1.0
-        self.left_Y = constrain(values[1] || 0, -1, 1); // -1.0 -> 1.0
+        self.left_Y = constrain(values[0] || 0, -1, 1); // -1.0 -> 1.0
+        self.right_Y = constrain(values[1] || 0, -1, 1); // -1.0 -> 1.0
         self.rotation = constrain(values[2] || 0, -1, 1); // -1.0 -> 1.0
     }
     self.Set([0, 0, 0]);
@@ -1116,17 +1116,20 @@ var VirtualModel = function() {
             }
 
             var delta = 0.2;
-            var left_eye_dof_x = -(mousePos.x - left_eye_module.x()) / (left_eye_module.x() * delta);
-            var left_eye_dof_y = -(mousePos.y - left_eye_module.y()) / (left_eye_module.y() * delta);
 
-            var right_eye_dof_x = -(mousePos.x - right_eye_module.x()) / (right_eye_module.x() * delta);
-            var right_eye_dof_y = -(mousePos.y - right_eye_module.y()) / (right_eye_module.y() * delta);
+            if (left_eye_module != undefined) {
+                var left_eye_dof_x = -(mousePos.x - left_eye_module.x()) / (left_eye_module.x() * delta);
+                var left_eye_dof_y = -(mousePos.y - left_eye_module.y()) / (left_eye_module.y() * delta);
+                robotSendDOF('eye_left', 'pupil_horizontal', left_eye_dof_x);
+                robotSendDOF('eye_left', 'pupil_vertical', left_eye_dof_y);
+            }
 
-            robotSendDOF('eye_left', 'pupil_horizontal', left_eye_dof_x);
-            robotSendDOF('eye_left', 'pupil_vertical', left_eye_dof_y);
-
-            robotSendDOF('eye_right', 'pupil_horizontal', right_eye_dof_x);
-            robotSendDOF('eye_right', 'pupil_vertical', right_eye_dof_y);
+            if (right_eye_module != undefined) {
+                var right_eye_dof_x = -(mousePos.x - right_eye_module.x()) / (right_eye_module.x() * delta);
+                var right_eye_dof_y = -(mousePos.y - right_eye_module.y()) / (right_eye_module.y() * delta);
+                robotSendDOF('eye_right', 'pupil_horizontal', right_eye_dof_x);
+                robotSendDOF('eye_right', 'pupil_vertical', right_eye_dof_y);
+            }
         }
     }
     //

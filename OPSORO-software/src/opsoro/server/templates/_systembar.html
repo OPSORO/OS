@@ -26,9 +26,9 @@
                     <span id="comment">
                         {% block status_text_comment %}
                             {% if app.active %}
-                                <i class="fa {{ app.icon }}"></i> 
+                                <i class="fa {{ app.icon }}"></i>
                                 {{ app.name }}
-                                <a href="#" data-reveal-id="CloseAppModal" class="closebutton"><span class="fa fa-close"></span></a>
+                                <a href="/closeapp/" class="closebutton"><span class="fa fa-close"></span></a>
                             {% else %}
                                 {{ _('No active apps') }}
                             {% endif %}

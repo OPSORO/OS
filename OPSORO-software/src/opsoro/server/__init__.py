@@ -12,7 +12,7 @@ from functools import wraps, partial
 from opsoro.expression import Expression
 from opsoro.robot import Robot
 from opsoro.console_msg import *
-# from opsoro.preferences import Preferences
+from opsoro.preferences import Preferences
 from opsoro.server.request_handlers import RHandler
 
 import pluginbase
@@ -99,6 +99,10 @@ class Server(object):
         self.sockjs_connect_cb = {}
         self.sockjs_disconnect_cb = {}
         self.sockjs_message_cb = {}
+
+        # if Preferences.check_if_update():
+        #     print_info("Update available")
+        # Preferences.update()
 
         for plugin_name in self.plugin_source.list_plugins():
             self.current_bp_app = plugin_name

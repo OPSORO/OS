@@ -1,9 +1,11 @@
 from __future__ import division
 from __future__ import with_statement
 
+import sys
 import os
 import subprocess
 import re
+from git import Git, Repo
 from functools import partial
 
 import yaml
@@ -22,6 +24,53 @@ class _Preferences(object):
     def __init__(self):
         self.data = {}
         self.load_prefs()
+        self.dir = os.path.abspath(
+            os.path.join(os.path.dirname(__file__), '..', '..', '..')) + '/'
+        self.git = Git(self.dir)
+        self.repo = Repo(self.dir)
+
+        self.git_dir = '--git-dir=' + self.dir + '.git/'
+        self.git_work = '--work-tree=' + self.dir
+
+    def get_current_branch(self):
+        return self.git.branch().split()[-1]
+
+    def get_remote_branches(self):
+        branches = []
+
+        # Get all remote branches (not only local)
+        returnvalue = self.git.ls_remote('--heads').split()
+        # Strip data
+        for i in range(len(returnvalue)):
+            if i % 2 != 0:
+                # Get only branch name (last value)
+                branches.append(returnvalue[i].split("/")[-1])
+        return branches
+
+    def check_if_update(self):
+        # Update local git data
+        self.git.fetch()
+        # Retrieve git remote <-> local difference status
+        status = self.git.status()
+        # easy check to see if local is behind
+        if status.find('behind') > 0:
+            return True
+        return False
+
+    def update(self):
+        # stop opsoro service
+        # backup all files to seperate location (GIT pull is safe enough, we only keep this in case the user wants to revert)
+        # git pull
+        # restart opsoro service
+        #git clone http://github.com/OPSORO/software.git --branch Module_Integration --single-branch host
+        #
+        FNULL = open(os.devnull, "w")
+        subprocess.call(
+            "sudo bash /home/pi/software/OPSORO-software/Scripts/update_opsoro",
+            shell=True,
+            stdout=FNULL)
+
+        return False
 
     def load_prefs(self):
         try:
@@ -34,7 +83,7 @@ class _Preferences(object):
         print_info("Preferences loaded")
 
     def get(self, section, item, default):
-        return self.data.get(section, {}).get(item, None)
+        return self.data.get(section, {}).get(item, default)
 
     def set(self, section, item, value):
         try:

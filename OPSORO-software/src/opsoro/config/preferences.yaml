@@ -2,9 +2,14 @@ general:
   robot_name: Ono
   password: opsoro123
 
+alive:
+  aliveness: 30
+  blink: true
+  gaze: true
+
 audio:
-  master_volume: 50
-  tts_engine: picotts
+  master_volume: 60
+  tts_engine: espeak
   tts_language: nl
   tts_gender: m
 

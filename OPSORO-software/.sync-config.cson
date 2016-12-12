@@ -1,7 +1,7 @@
 remote:
   host: "opsoro.local"
   user: "pi"
-  path: "/home/pi/OPSORO-software"
+  path: "/home/pi/software/OPSORO-software"
 behaviour:
   uploadOnSave: true
   syncDownOnOpen: false

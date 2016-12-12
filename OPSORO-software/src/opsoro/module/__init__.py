@@ -9,6 +9,7 @@ from scipy import interpolate
 
 import math
 import cmath
+import time
 
 constrain = lambda n, minn, maxn: max(min(maxn, n), minn)
 
@@ -23,6 +24,9 @@ class Module(object):
 
         if data is not None:
             self.load_module(data)
+
+    def __str__(self):
+        return str(self.name)
 
     def apply_poly(self, r, phi, anim_time=-1):
         for name, dof in self.dofs.iteritems():
@@ -55,10 +59,12 @@ class Module(object):
 
         if 'canvas' in data:
             canvas_data = data['canvas']
-            if 'pos' in canvas_data:
-                self.position = canvas_data['pos']
-            if 'size' in canvas_data:
-                self.size = canvas_data['size']
+            self.position['x'] = canvas_data['x']
+            self.position['y'] = canvas_data['y']
+
+            self.size['width'] = canvas_data['width']
+            self.size['height'] = canvas_data['height']
+            self.size['rotation'] = canvas_data['rotation']
 
         if 'dofs' in data:
             self.dofs = {}
@@ -92,5 +98,6 @@ class Module(object):
 
                 self.dofs[dof.name] = dof
 
-    def __str__(self):
-        return str(self.name)
+    def alive_trigger(self, count_seed=1):
+
+        return False

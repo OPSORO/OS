@@ -27,9 +27,17 @@ constrain = lambda n, minn, maxn: max(min(maxn, n), minn)
 
 from opsoro.expression import Expression
 
-config = {"full_name": "Social_Script",
-          "icon": "fa-commenting-o",
-          'color': '#15e678'}
+config = {'full_name': 'Social_Script',
+          'icon': 'fa-commenting-o',
+          'color': '#15e678',
+          'allowed_background': False,
+          'robot_state': 1}
+
+# robot_state:
+# 0: Manual start/stop
+# 1: Start robot automatically (alive feature according to preferences)
+# 2: Start robot automatically and enable alive feature
+# 3: Start robot automatically and disable alive feature
 
 get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 
@@ -41,7 +49,7 @@ clientconn = None
 def send_stopped():
     global clientconn
     if clientconn:
-        clientconn.send_data("soundStopped", {})
+        clientconn.send_data('soundStopped', {})
 
 
 def SocialscriptRun():
@@ -56,28 +64,28 @@ def setup_pages(opsoroapp):
     socialscript_bp = Blueprint(
         config['full_name'].lower(),
         __name__,
-        template_folder="templates",
-        static_folder="static")
+        template_folder='templates',
+        static_folder='static')
 
-    @socialscript_bp.route("/", methods=["GET"])
+    @socialscript_bp.route('/', methods=['GET'])
     @opsoroapp.app_view
     def index():
-        data = {"actions": {}, "emotions": [], "sounds": []}
+        data = {'actions': {}, 'emotions': [], 'sounds': []}
 
-        action = request.args.get("action", None)
+        action = request.args.get('action', None)
         if action != None:
-            data["actions"][action] = request.args.get("param", None)
+            data['actions'][action] = request.args.get('param', None)
 
-        with open(get_path("emotions.yaml")) as f:
-            data["emotions"] = yaml.load(f, Loader=Loader)
+        with open(get_path('emotions.yaml')) as f:
+            data['emotions'] = yaml.load(f, Loader=Loader)
 
-        filenames = glob.glob(get_path("../../data/sounds/*.wav"))
+        filenames = glob.glob(get_path('../../data/sounds/*.wav'))
 
         for filename in filenames:
-            data["sounds"].append(os.path.split(filename)[1])
-        data["sounds"].sort()
+            data['sounds'].append(os.path.split(filename)[1])
+        data['sounds'].sort()
 
-        return opsoroapp.render_template(config['full_name'].lower() + ".html",
+        return opsoroapp.render_template(config['full_name'].lower() + '.html',
                                          **data)
 
     @opsoroapp.app_socket_connected

@@ -8,9 +8,17 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash
 from opsoro.stoppable_thread import StoppableThread
 from opsoro.hardware import Hardware
 
-config = {"full_name": "Touch_Graph",
-          "icon": "fa-hand-o-down",
-          'color': '#ffaf19'}
+config = {'full_name': 'Touch_Graph',
+          'icon': 'fa-hand-o-down',
+          'color': '#ffaf19',
+          'allowed_background': False,
+          'robot_state': 0}
+
+# robot_state:
+# 0: Manual start/stop
+# 1: Start robot automatically (alive feature according to preferences)
+# 2: Start robot automatically and enable alive feature
+# 3: Start robot automatically and disable alive feature
 
 touch_t = None
 clientconn = None
@@ -34,8 +42,8 @@ def TouchLoop():
                 data[i] = ret[i]
 
             if clientconn:
-                clientconn.send_data("updateelectrodes",
-                                     {"electrodedata": data})
+                clientconn.send_data('updateelectrodes',
+                                     {'electrodedata': data})
 
         touch_t.sleep(0.1)
 
@@ -59,15 +67,15 @@ def setup_pages(opsoroapp):
     touch_bp = Blueprint(
         config['full_name'].lower(),
         __name__,
-        template_folder="templates",
-        static_folder="static")
+        template_folder='templates',
+        static_folder='static')
 
-    @touch_bp.route("/")
+    @touch_bp.route('/')
     @opsoroapp.app_view
     def index():
         data = {}
 
-        return opsoroapp.render_template(config['full_name'].lower() + ".html",
+        return opsoroapp.render_template(config['full_name'].lower() + '.html',
                                          **data)
 
     @opsoroapp.app_socket_connected
@@ -80,12 +88,12 @@ def setup_pages(opsoroapp):
         global clientconn
         clientconn = None
 
-    @opsoroapp.app_socket_message("startcapture")
+    @opsoroapp.app_socket_message('startcapture')
     def s_startcapture(conn, data):
-        electrodes = int(data.pop("electrodes", 0))
+        electrodes = int(data.pop('electrodes', 0))
         startcap(electrodes)
 
-    @opsoroapp.app_socket_message("stopcapture")
+    @opsoroapp.app_socket_message('stopcapture')
     def s_stopcapture(conn, data):
         stopcap()
 

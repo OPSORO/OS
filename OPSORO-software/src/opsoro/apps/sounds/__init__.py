@@ -7,7 +7,17 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash
 from werkzeug import secure_filename
 from opsoro.sound import Sound
 
-config = {"full_name": "Sounds", "icon": "fa-volume-up", 'color': '#15e678'}
+config = {'full_name': 'Sounds',
+          'icon': 'fa-volume-up',
+          'color': '#15e678',
+          'allowed_background': False,
+          'robot_state': 0}
+
+# robot_state:
+# 0: Manual start/stop
+# 1: Start robot automatically (alive feature according to preferences)
+# 2: Start robot automatically and enable alive feature
+# 3: Start robot automatically and disable alive feature
 
 get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 
@@ -16,43 +26,43 @@ def setup_pages(opsoroapp):
     sounds_bp = Blueprint(
         config['full_name'].lower(),
         __name__,
-        template_folder="templates",
-        static_folder="static")
+        template_folder='templates',
+        static_folder='static')
 
-    @sounds_bp.route("/")
+    @sounds_bp.route('/')
     @opsoroapp.app_view
     def index():
-        data = {"soundfiles": []}
+        data = {'soundfiles': []}
 
         filenames = []
 
-        filenames.extend(glob.glob(get_path("../../data/sounds/*.wav")))
-        filenames.extend(glob.glob(get_path("../../data/sounds/*.mp3")))
-        filenames.extend(glob.glob(get_path("../../data/sounds/*.ogg")))
+        filenames.extend(glob.glob(get_path('../../data/sounds/*.wav')))
+        filenames.extend(glob.glob(get_path('../../data/sounds/*.mp3')))
+        filenames.extend(glob.glob(get_path('../../data/sounds/*.ogg')))
 
         for filename in filenames:
-            data["soundfiles"].append(os.path.split(filename)[1])
+            data['soundfiles'].append(os.path.split(filename)[1])
 
-        return opsoroapp.render_template(config['full_name'].lower() + ".html",
+        return opsoroapp.render_template(config['full_name'].lower() + '.html',
                                          **data)
 
-    @sounds_bp.route("/upload", methods=["POST"])
+    @sounds_bp.route('/upload', methods=['POST'])
     @opsoroapp.app_view
     def upload():
-        file = request.files["soundfile"]
+        file = request.files['soundfile']
         if file:
-            if file.filename.rsplit('.', 1)[1] in ["wav", "mp3", "ogg"]:
+            if file.filename.rsplit('.', 1)[1] in ['wav', 'mp3', 'ogg']:
                 filename = secure_filename(file.filename)
                 file.save(
-                    os.path.join(get_path("../../data/sounds/"), filename))
-                flash("%s uploaded successfully." % file.filename, "success")
-                return redirect(url_for(".index"))
+                    os.path.join(get_path('../../data/sounds/'), filename))
+                flash('%s uploaded successfully.' % file.filename, 'success')
+                return redirect(url_for('.index'))
             else:
-                flash("This type of file is not allowed.", "error")
-                return redirect(url_for(".index"))
+                flash('This type of file is not allowed.', 'error')
+                return redirect(url_for('.index'))
         else:
-            flash("No file selected.", "error")
-            return redirect(url_for(".index"))
+            flash('No file selected.', 'error')
+            return redirect(url_for('.index'))
 
     opsoroapp.register_app_blueprint(sounds_bp)
 

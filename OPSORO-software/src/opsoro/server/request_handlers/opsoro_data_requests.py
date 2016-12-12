@@ -279,6 +279,7 @@ def robot_servo():
     # print_info('pin: ' + str(servo_pin) + ', value: ' + str(servo_value))
 
     with Hardware.lock:
+        Hardware.servo_enable()
         Hardware.servo_set(servo_pin, servo_value)
 
     return json.dumps({'success': True})
@@ -296,6 +297,7 @@ def robot_servos():
             values.append(constrain(value, 500, 2500))
 
     with Hardware.lock:
+        Hardware.servo_enable()
         Hardware.servo_set_all(values)
 
     return json.dumps({'success': True})

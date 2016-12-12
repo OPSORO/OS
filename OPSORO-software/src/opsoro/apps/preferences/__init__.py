@@ -9,7 +9,17 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash
 
 # constrain = lambda n, minn, maxn: max(min(maxn, n), minn)
 
-config = {'full_name': 'Preferences', 'icon': 'fa-cog', 'color': '#555'}
+config = {'full_name': 'Preferences',
+          'icon': 'fa-cog',
+          'color': '#555',
+          'allowed_background': False,
+          'robot_state': 0}
+
+# robot_state:
+# 0: Manual start/stop
+# 1: Start robot automatically (alive feature according to preferences)
+# 2: Start robot automatically and enable alive feature
+# 3: Start robot automatically and disable alive feature
 
 # clientconn = None
 # dof_positions = {}
@@ -33,11 +43,12 @@ def setup_pages(opsoroapp):
 
     global clientconn
 
-    @app_bp.route('/', methods=["GET", "POST"])
+    @app_bp.route('/', methods=['GET', 'POST'])
     @opsoroapp.app_view
     def index():
         data = {}
         if request.method == 'POST':
+            print_info('POST')
             # Update preferences
             Preferences.set('general', 'robot_name', request.form['robotName'])
 
@@ -46,6 +57,15 @@ def setup_pages(opsoroapp):
                 if request.form['robotPassword'] != '':
                     Preferences.set('general', 'password',
                                     request.form['robotPassword'])
+
+            Preferences.set('update', 'branch', request.form['updateBranch'])
+            Preferences.set('update', 'auto_update',
+                            request.form['updateAuto'])
+
+            # Preferences.set('alive', 'aliveness', request.form['aliveness'])
+            Preferences.set('alive', 'aliveness', 0)
+            Preferences.set('alive', 'blink', request.form['aliveBlink'])
+            Preferences.set('alive', 'gaze', request.form['aliveGaze'])
 
             Preferences.set('audio',
                             'master_volume',
@@ -84,6 +104,18 @@ def setup_pages(opsoroapp):
                 'robotName':
                 Preferences.get('general', 'robot_name', 'Robot')
             },
+            'update': {
+                'available': Preferences.check_if_update(),
+                'branch': Preferences.get('update', 'branch',
+                                          Preferences.get_current_branch()),
+                'branches': Preferences.get_remote_branches(),
+                'autoUpdate': Preferences.get('update', 'auto_update', False)
+            },
+            'alive': {
+                'aliveness': Preferences.get('alive', 'aliveness', '0'),
+                'blink': Preferences.get('alive', 'blink', True),
+                'gaze': Preferences.get('alive', 'gaze', True)
+            },
             'audio': {
                 'volume': Preferences.get('audio', 'master_volume', 66),
                 'ttsEngine': Preferences.get('audio', 'tts_engine', 'pico'),
@@ -100,8 +132,15 @@ def setup_pages(opsoroapp):
             }
         }
 
+        print_info(data)
+
         return opsoroapp.render_template(config['full_name'].lower() + '.html',
                                          **data)
+
+    @app_bp.route('/update')
+    @opsoroapp.app_view
+    def update():
+        Preferences.update()
 
     opsoroapp.register_app_blueprint(app_bp)
 
