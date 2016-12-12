@@ -1,9 +1,9 @@
-# OnoSW
-OnoSW is the software framework for [social robot Ono](http://www.industrialdesigncenter.be/ono/), to be used in conjunction with [Ono2](https://github.com/cesarvandevelde/Ono2) and [OnoHAT](https://github.com/cesarvandevelde/OnoHAT).
+# Software
+Software is the software framework for the OPSORO robots, to be used in conjunction with OPSORO grid or [Ono2](https://github.com/cesarvandevelde/Ono2) and [OnoHAT](https://github.com/cesarvandevelde/OnoHAT).
 
-# Hardware Requirements
-- Raspberry Pi model B+ (RPi 2 model B should also work)
-- [OnoHAT](https://github.com/cesarvandevelde/OnoHAT)
+# Hardware Requirements 
+- Raspberry Pi model B+ (RPi 2 & 3 model B should also work)
+- OPSORO HAT
 - WiFi dongle that supports AP-mode (e.g. [WiPi](http://be.farnell.com/element14/wipi/dongle-wifi-usb-for-raspberry/dp/2133900?ost=wipi&categoryId=700000005571))
 - Separate power supplies for logic (5V 2A) and servos (5V 10A), these can be connected directly to the OnoHAT
 
