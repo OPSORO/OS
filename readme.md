@@ -3,7 +3,7 @@ Software is the software framework for the OPSORO robots, to be used in conjunct
 
 # Hardware Requirements
 - Raspberry Pi model B+ (RPi 2 & 3 model B should also work)
-- [OnoHAT](https://github.com/cesarvandevelde/OnoHAT)
+- OPSORO HAT
 - WiFi dongle that supports AP-mode (e.g. [WiPi](http://be.farnell.com/element14/wipi/dongle-wifi-usb-for-raspberry/dp/2133900?ost=wipi&categoryId=700000005571))
 - Separate power supplies for logic (5V 2A) and servos (5V 10A), these can be connected directly to the OnoHAT
 
