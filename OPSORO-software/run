@@ -6,6 +6,7 @@ import sys
 import os.path
 import shutil
 import stat
+import subprocess
 
 from git import Git, Repo
 
@@ -75,6 +76,12 @@ if os.path.isfile(os.path.join(basedir, 'update.var')):
         pass
 
     os.remove(os.path.join(basedir, 'update.var'))
+
+    # restart service
+    command = ['/usr/sbin/service', 'opsoro', 'restart']
+    #shell=FALSE for sudo to work.
+    subprocess.call(command, shell=False)
+
 # ----------------------------------------------------------------------
 
 import opsoro
