@@ -108,7 +108,7 @@ def setup_pages(opsoroapp):
                 'available': Preferences.check_if_update(),
                 'branch': Preferences.get('update', 'branch',
                                           Preferences.get_current_branch()),
-                'branches': Preferences.get_remote_branches(),
+                # 'branches': Preferences.get_remote_branches(),
                 'autoUpdate': Preferences.get('update', 'auto_update', False)
             },
             'alive': {
@@ -137,7 +137,7 @@ def setup_pages(opsoroapp):
         return opsoroapp.render_template(config['full_name'].lower() + '.html',
                                          **data)
 
-    @app_bp.route('/update')
+    @app_bp.route('/update', methods=['GET', 'POST'])
     @opsoroapp.app_view
     def update():
         Preferences.update()

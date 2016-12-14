@@ -30,10 +30,8 @@ import shutil
 
 try:
     import simplejson as json
-    print_info("Using simplejson")
 except ImportError:
     import json
-    print_info("Simplejson not available, falling back on json")
 
 dof_positions = {}
 # Helper function

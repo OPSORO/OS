@@ -50,9 +50,10 @@
 					<label for="updateBranch" class="right inline">Branch</label>
 				</div>
 				<div class="small-8 medium-6 large-4 columns end">
-					<select id="updateBranch" name="updateBranch" data-bind="value: branch, foreach: branches">
+					<span data-bind="text: branch"> </span>
+					<!-- <select id="updateBranch" name="updateBranch" data-bind="value: branch, foreach: branches">
 						<option data-bind="value: $data, text: $data"></option>
-					</select>
+					</select> -->
 				</div>
 			</div>
 			<div class="row">

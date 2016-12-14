@@ -17,10 +17,8 @@ get_abs_path = partial(os.path.join,
 
 try:
     import simplejson as json
-    print_info('Using simplejson')
 except ImportError:
     import json
-    print_info('Simplejson not available, falling back on json')
 
 import yaml
 try:

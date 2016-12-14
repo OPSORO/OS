@@ -29,9 +29,6 @@ class _Preferences(object):
         self.git = Git(self.dir)
         self.repo = Repo(self.dir)
 
-        self.git_dir = '--git-dir=' + self.dir + '.git/'
-        self.git_work = '--work-tree=' + self.dir
-
     def get_current_branch(self):
         return self.git.branch().split()[-1]
 

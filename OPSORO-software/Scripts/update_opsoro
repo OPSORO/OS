@@ -14,9 +14,9 @@ sudo cp -r /home/pi/software/OPSORO-software/ /home/pi/software/previous/OPSORO-
 sudo git --git-dir=/home/pi/software/.git/ --work-tree=/home/pi/software/ remote update
 sudo git --git-dir=/home/pi/software/.git/ --work-tree=/home/pi/software/ pull
 
-#sudo chmod +x /home/pi/software/OPSORO-software/Scripts/restart_opsoro_service
+# sudo chmod +x /home/pi/software/OPSORO-software/Scripts/restart_opsoro_service
 sudo bash /home/pi/software/OPSORO-software/Scripts/restart_opsoro_service
 
-sudo reboot
+# sudo reboot
 
 exit 0

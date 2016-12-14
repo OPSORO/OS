@@ -7,6 +7,7 @@ import logging.handlers
 import random
 import os
 import tornado.log
+import datetime
 
 # from opsoro.server import Server
 
@@ -19,8 +20,13 @@ def sigterm_handler(_signo, _stack_frame):
     print "SIGTERM received... Goodbye!"
     sys.exit(0)
 
+
+LOG_FILE_DIR = '/tmp/opsoro/'
+if not os.path.exists(LOG_FILE_DIR):
+    os.makedirs(LOG_FILE_DIR)
+
 # Setup logging
-LOG_FILENAME = "/tmp/opsoro.log"
+LOG_FILENAME = LOG_FILE_DIR + str(datetime.date.today()) + ".log"
 LOG_LEVEL = logging.DEBUG
 
 tornado.log.enable_pretty_logging()
