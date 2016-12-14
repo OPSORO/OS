@@ -71,7 +71,6 @@ $(document).ready(function () {
   viewmodel.update().available(prefsJson.update.available || false);
   viewmodel.update().branches(prefsJson.update.branches || undefined);
   viewmodel.update().autoUpdate(prefsJson.update.autoUpdate || false);
-  console.log(prefsJson.update.branch);
   viewmodel.update().branch(prefsJson.update.branch || '');
 
   viewmodel.alive().aliveness(prefsJson.alive.aliveness || 0);

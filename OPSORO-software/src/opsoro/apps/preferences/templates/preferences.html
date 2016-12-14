@@ -51,14 +51,21 @@
 				</div>
 				<div class="small-8 medium-6 large-4 columns end">
 					<span data-bind="text: branch"> </span>
-					<!-- <select id="updateBranch" name="updateBranch" data-bind="value: branch, foreach: branches">
-						<option data-bind="value: $data, text: $data"></option>
-					</select> -->
 				</div>
+				<!-- <div class="small-8 medium-6 large-4 columns end">
+					<label for="updateBranch" class="right inline">Branch</label>
+					<label data-bind="text: branch"> </label>
+					<select id="updateBranch" name="updateBranch" data-bind="value: branch, foreach: branches">
+						<option data-bind="value: $data, text: $data"></option>
+					</select>
+				</div> -->
 			</div>
 			<div class="row">
-				<div class="text-center" data-bind="visible: available">
-					<span class="fa fa-check-circle"> Update available!</span>
+				<div class="text-center" data-bind="visible: available()">
+					<span class="fa fa-cloud-download"> Update available!</span>
+				</div>
+				<div class="text-center" data-bind="visible: !available()">
+					<span class="fa fa-check-circle"> Up-to-date!</span>
 				</div>
 			</div>
 			<div class="row">

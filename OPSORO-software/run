@@ -3,6 +3,11 @@
 import os
 import sys
 
+import os.path
+import shutil
+
+from git import Git, Repo
+
 basedir = os.path.dirname(os.path.realpath(__file__))
 
 # old = os.path.join(basedir, "opsoro")
@@ -18,6 +23,35 @@ basedir = os.path.dirname(os.path.realpath(__file__))
 
 # insert opsoro src system path to enable calling opsoro classes
 sys.path.insert(0, os.path.join(basedir, "src"))
+
+# ----------------------------------------------------------------------
+# UPDATER
+# ----------------------------------------------------------------------
+git_dir = os.path.abspath(os.path.join(basedir, '..')) + '/'
+backup_dir = '/tmp/opsoro/backup/'
+# Check if update is needed
+if os.path.isfile(os.path.join(basedir, 'update.var')):
+    if os.path.exists(backup_dir):
+        # remove previous backup
+        shutil.rmtree(backup_dir)
+
+    os.makedirs(backup_dir)
+    try:
+        shutil.copytree(basedir, backup_dir)
+    except:
+        pass
+
+    # Link git & update
+    try:
+        g = Git(git_dir)
+        g.fetch('--all')
+        g.reset('--hard')
+        # g.pull()
+    except:
+        pass
+
+    os.remove(os.path.join(basedir, 'update.var'))
+# ----------------------------------------------------------------------
 
 import opsoro
 opsoro.main()

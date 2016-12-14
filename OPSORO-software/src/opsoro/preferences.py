@@ -55,19 +55,10 @@ class _Preferences(object):
         return False
 
     def update(self):
-        # stop opsoro service
-        # backup all files to seperate location (GIT pull is safe enough, we only keep this in case the user wants to revert)
-        # git pull
-        # restart opsoro service
-        #git clone http://github.com/OPSORO/software.git --branch Module_Integration --single-branch host
-        #
-        FNULL = open(os.devnull, "w")
-        subprocess.call(
-            "sudo bash /home/pi/software/OPSORO-software/Scripts/update_opsoro",
-            shell=True,
-            stdout=FNULL)
-
-        return False
+        # Create file to let deamon know it has to update before starting the server
+        file = open(self.dir + 'OPSORO-software/update.var', 'w+')
+        # Reboot system
+        os.system('/sbin/shutdown -r now')
 
     def load_prefs(self):
         try:
