@@ -45,7 +45,7 @@ if os.path.isfile(os.path.join(basedir, 'update.var')):
     try:
         g = Git(git_dir)
         g.fetch('--all')
-        g.reset('--hard')
+        g.reset('--hard origin/' + g.branch().split()[-1])
         # g.pull()
     except:
         pass
