@@ -43,7 +43,7 @@ class _Robot(object):
         self._add_seed = 0.2
 
     def start(self):
-        print_info('Start Robot')
+        print_info('Start Robot loop')
         with Hardware.lock:
             Hardware.servo_init()
         self.start_update_loop()
@@ -77,7 +77,7 @@ class _Robot(object):
             self._alive_t.stop()
 
     def stop(self):
-        print_info('Stop Robot')
+        print_info('Stop Robot loop')
 
         with Hardware.lock:
             Hardware.servo_disable()
