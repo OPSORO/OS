@@ -28,7 +28,7 @@ sys.path.insert(0, os.path.join(basedir, "src"))
 # UPDATER
 # ----------------------------------------------------------------------
 git_dir = os.path.abspath(os.path.join(basedir, '..')) + '/'
-backup_dir = '/tmp/opsoro/backup/'
+backup_dir = '~/opsoro/backup/'
 # Check if update is needed
 if os.path.isfile(os.path.join(basedir, 'update.var')):
     if os.path.exists(backup_dir):
