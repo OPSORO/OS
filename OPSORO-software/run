@@ -33,6 +33,7 @@ backup_dir = '/home/pi/opsoro/backup/'
 
 # Check if update is needed
 if os.path.isfile(os.path.join(basedir, 'update.var')):
+    print('Updating...')
     if os.path.exists(backup_dir):
         # remove previous backup
         try:
@@ -63,13 +64,14 @@ if os.path.isfile(os.path.join(basedir, 'update.var')):
         print('Git failed to update: ', str(e))
         pass
 
+    # Set script executable for deamon
     try:
-        st = os.stat(os.path.join(basedir, 'src/opsoro/__init__.py'))
+        st = os.stat(os.path.join(basedir, 'run'))
         os.chmod(
-            os.path.join(basedir, 'src/opsoro/__init__.py'), st.st_mode |
-            stat.S_IEXEC)
+            os.path.join(basedir, 'run'), st.st_mode | stat.S_IXUSR |
+            stat.S_IXGRP | stat.S_IXOTH)
     except Exception as e:
-        print('Init state set failed: ', str(e))
+        print('Exec state set failed: ', str(e))
         pass
 
     os.remove(os.path.join(basedir, 'update.var'))
