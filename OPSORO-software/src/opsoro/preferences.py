@@ -63,8 +63,11 @@ class _Preferences(object):
         #shell=FALSE for sudo to work.
         subprocess.call(command, shell=False)
 
-        # Reboot system
-        os.system('/sbin/shutdown -r now')
+        python = sys.executable
+        os.execl(python, python, *sys.argv)
+
+        # # Reboot system used for user development server run
+        # os.system('/sbin/shutdown -r now')
 
     def load_prefs(self):
         try:
