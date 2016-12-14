@@ -23,6 +23,31 @@
     </div>
 </div>
 
+<div id="UpdateModal" class="reveal-modal tiny" data-reveal>
+    <div class="titlebar red">
+        <a class="close-reveal-modal">
+            <span class="fa fa-close"></span>
+        </a>
+        <span class="fa fa-refresh"></span>
+        {{ _('Update') }}
+    </div>
+    <div class="content">
+        <p>
+            {{ _('Are you sure you wish to update ' + opsoro.robot_name + '?') }}
+            <br/>
+            <span class="note">
+                <strong>{{ _('Note') }}:</strong>
+                {{ _('Never power off ' + opsoro.robot_name + ' while updating! Cutting power without properly shutting down the operating system can result in a corrupt file system.') }}
+            </span>
+        </p>
+        <div class="text-center">
+            <a href="update" class="button" >
+                <span class="fa fa-refresh"></span>
+                {{ _('Yes, update ' + opsoro.robot_name) }}</a>
+        </div>
+    </div>
+</div>
+
 <div id="CloseAppModal" class="reveal-modal small" data-reveal>
     <div class="titlebar">
         <a class="close-reveal-modal">
