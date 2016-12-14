@@ -12,17 +12,6 @@ from git import Git, Repo
 
 basedir = os.path.dirname(os.path.realpath(__file__))
 
-# old = os.path.join(basedir, "opsoro")
-# if os.path.exists(old):
-#     # rename left-overs from old file structure
-#     print """
-# Found left-overs from old file structure, renaming to
-# "octoprint.backup". Please remove this manually (I don't
-# dare to do so myself since you might have changes in there
-# I don't know anything about).
-# """
-#     os.rename(old, os.path.join(basedir, "opsoro.backup"))
-
 # insert opsoro src system path to enable calling opsoro classes
 sys.path.insert(0, os.path.join(basedir, "src"))
 
@@ -42,12 +31,6 @@ if os.path.isfile(os.path.join(basedir, 'update.var')):
         except Exception as e:
             print('Remove backup failed: ', str(e))
             pass
-
-    # try:
-    #     os.makedirs(backup_dir)
-    # except Exception as e:
-    #     print('Backup folder failed: ', str(e))
-    #     pass
 
     try:
         shutil.copytree(basedir, backup_dir)
@@ -75,6 +58,7 @@ if os.path.isfile(os.path.join(basedir, 'update.var')):
         print('Exec state set failed: ', str(e))
         pass
 
+    # Clear update var file
     os.remove(os.path.join(basedir, 'update.var'))
 
     # restart service

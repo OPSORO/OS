@@ -57,8 +57,16 @@ class _Preferences(object):
     def update(self):
         # Create file to let deamon know it has to update before starting the server
         file = open(self.dir + 'OPSORO-software/update.var', 'w+')
-        # Reboot system
-        os.system('/sbin/shutdown -r now')
+
+        # restart service
+        command = ['/usr/sbin/service', 'opsoro', 'restart']
+        #shell=FALSE for sudo to work.
+        subprocess.call(command, shell=False)
+
+        sys.exit()
+        #
+        # # Reboot system
+        # os.system('/sbin/shutdown -r now')
 
     def load_prefs(self):
         try:
