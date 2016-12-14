@@ -102,7 +102,7 @@ class Server(object):
 
         # if Preferences.check_if_update():
         #     print_info("Update available")
-        # Preferences.update()
+        #     Preferences.update()
 
         for plugin_name in self.plugin_source.list_plugins():
             self.current_bp_app = plugin_name
