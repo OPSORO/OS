@@ -21,7 +21,7 @@ def sigterm_handler(_signo, _stack_frame):
     sys.exit(0)
 
 
-LOG_FILE_DIR = os.path.abspath('~/opsoro/log/')
+LOG_FILE_DIR = os.path.abspath('/home/pi/opsoro/log/')
 if not os.path.exists(LOG_FILE_DIR):
     os.makedirs(LOG_FILE_DIR)
 
