@@ -223,6 +223,9 @@ class ScriptHost(object):
 		encounters an error, the script is stopped, and the on_error and on_stop
 		callbacks are triggered.
 		"""
+
+        time.sleep(0.05)  # delay
+
         g = self.runtime.globals()
 
         # Evaluate code and run setup
