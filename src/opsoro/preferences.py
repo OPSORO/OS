@@ -25,7 +25,7 @@ class _Preferences(object):
         self.data = {}
         self.load_prefs()
         self.dir = os.path.abspath(
-            os.path.join(os.path.dirname(__file__), '..', '..', '..')) + '/'
+            os.path.join(os.path.dirname(__file__), '..', '..')) + '/'
         self.git = Git(self.dir)
         self.repo = Repo(self.dir)
 
@@ -56,7 +56,7 @@ class _Preferences(object):
 
     def update(self):
         # Create file to let deamon know it has to update before starting the server
-        file = open(self.dir + 'OPSORO-software/update.var', 'w+')
+        file = open(self.dir + 'update.var', 'w+')
 
         # restart service
         command = ['/usr/sbin/service', 'opsoro', 'restart']

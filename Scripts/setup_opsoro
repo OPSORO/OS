@@ -1,6 +1,6 @@
 #!/bin/sh
 
-FOLDER=/home/pi/software/OPSORO-software/
+FOLDER=/home/pi/OPSORO/OS/
 SERVICE=opsoro
 STARTFILE=run
 

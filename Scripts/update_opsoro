@@ -8,14 +8,14 @@
 
 sudo service opsoro stop
 
-sudo mkdir /home/pi/software/previous/
-sudo cp -r /home/pi/software/OPSORO-software/ /home/pi/software/previous/OPSORO-software/
+sudo mkdir /home/pi/OPSORO/previous/
+sudo cp -r /home/pi/OPSORO/OS/ /home/pi/OPSORO/previous/OS/
 
-sudo git --git-dir=/home/pi/software/.git/ --work-tree=/home/pi/software/ remote update
-sudo git --git-dir=/home/pi/software/.git/ --work-tree=/home/pi/software/ pull
+sudo git --git-dir=/home/pi/OPSORO/OS/.git/ --work-tree=/home/pi/OPSORO/OS/ remote update
+sudo git --git-dir=/home/pi/OPSORO/OS/.git/ --work-tree=/home/pi/OPSORO/OS/ pull
 
-# sudo chmod +x /home/pi/software/OPSORO-software/Scripts/restart_opsoro_service
-sudo bash /home/pi/software/OPSORO-software/Scripts/restart_opsoro_service
+# sudo chmod +x /home/pi/OPSORO/OS/Scripts/restart_opsoro_service
+sudo bash /home/pi/OPSORO/OS/Scripts/restart_opsoro_service
 
 # sudo reboot
 
