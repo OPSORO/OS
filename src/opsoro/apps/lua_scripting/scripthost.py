@@ -249,9 +249,9 @@ class ScriptHost(object):
                 # Without delay, this loop consumes about 70% CPU time on a RPi1.
                 # else:
                 # 	# 10ms breathing room between loops
-                # 	time.sleep(0.01)
+                time.sleep(0.01)
 
-                # Run quit
+        # Run quit
         if g["quit"] is not None:
             try:
                 g["quit"]()

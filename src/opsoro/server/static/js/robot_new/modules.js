@@ -81,7 +81,6 @@ var MappingGraph = function() {
             width: 0.2
         });
     }
-
     for (var i = 0; i < texts.length; i++) {
         text = self.svg.plain(texts[i]);
         text.center(startX, Ys[i]);
@@ -89,7 +88,6 @@ var MappingGraph = function() {
             width: 0.5
         });
     }
-
     var updateInfoTxt = function(circ) {
         self.infoRect.show();
         self.infoTxt.show();
@@ -107,7 +105,6 @@ var MappingGraph = function() {
         self.infoRect.hide();
         self.infoTxt.hide();
     };
-
     for (var i = 0; i < 20; i++) {
         line = self.svg.line(self.startX * 2 + self.stepWidth * i, Ys[0], self.startX * 2 + self.stepWidth * i, Ys[2]).stroke({
             width: 0.2
@@ -317,11 +314,11 @@ function DrawMouth(svg, x, y, width, height) {
     self.increase = self.height / 2;
 
     self.Set = function(values) {
-        self.right_Y = constrain(values[0] || 0, -1, 1); // -1.0 -> 1.0
+        self.left_Y = constrain(values[0] || 0, -1, 1); // -1.0 -> 1.0
         self.middle_Y = constrain(values[1] || 0, -1, 1); // -1.0 -> 1.0
-        self.left_Y = constrain(values[2] || 0, -1, 1); // -1.0 -> 1.0
-        self.right_R = constrain(values[3] || 0, -1, 1); // -1.0 -> 1.0
-        self.left_R = constrain(values[4] || 0, -1, 1); // -1.0 -> 1.0
+        self.right_Y = constrain(values[2] || 0, -1, 1); // -1.0 -> 1.0
+        self.left_R = constrain(values[3] || 0, -1, 1); // -1.0 -> 1.0
+        self.right_R = constrain(values[4] || 0, -1, 1); // -1.0 -> 1.0
     }
     self.Set([-0.5, 0.5, -0.5, 0, 0]);
 
@@ -418,8 +415,8 @@ function DrawEyebrow(svg, x, y, width, height) {
     self.increase = self.height / 2;
 
     self.Set = function(values) {
-        self.right_Y = constrain(values[0] || 0, -1, 1); // -1.0 -> 1.0
-        self.left_Y = constrain(values[1] || 0, -1, 1); // -1.0 -> 1.0
+        self.left_Y = constrain(values[0] || 0, -1, 1); // -1.0 -> 1.0
+        self.right_Y = constrain(values[1] || 0, -1, 1); // -1.0 -> 1.0
         self.rotation = constrain(values[2] || 0, -1, 1); // -1.0 -> 1.0
     }
     self.Set([0, 0, 0]);
@@ -599,7 +596,9 @@ var VirtualModel = function() {
     self.fileStatus = ko.observable("");
     self.fileExtension = ko.observable(".conf");
 
-    self.config = (config_data == undefined ? undefined : config_data); //JSON.parse(config_data));
+    self.config = (config_data == undefined ?
+        undefined :
+        config_data); //JSON.parse(config_data));
     self.allModules = ['eye', 'eyebrow', 'mouth']; //modules_name;
     self.allSkins = ['ono', 'nmct', 'robo']; //skins_name;
     self.skin = ko.observable((self.allSkins == undefined ?
@@ -658,26 +657,6 @@ var VirtualModel = function() {
         console.log(parseInt(self.selectedModule_SelectedDof().servo().mid()) + parseInt(self.selectedModule_SelectedDof().servo().max()));
         robotSendServo(self.selectedModule_SelectedDof().servo().pin(), parseInt(self.selectedModule_SelectedDof().servo().mid()) + parseInt(self.selectedModule_SelectedDof().servo().max()));
     }
-
-    // self.updateDof = function(mod_name, dof_name, value) {
-    //     if (!self.selectedModule_SelectedDof().isServo()) {
-    //         return;
-    //     }
-    //
-    //     robotSendDOF(mod_name, dof_name, value);
-    //     // $.ajax({
-    //     //     dataType: "text",
-    //     //     type: "POST",
-    //     //     url: "setDof",
-    //     //     cache: false,
-    //     //     data: {
-    //     //         module_name: mod_name,
-    //     //         dof_name: dof_name,
-    //     //         value: value
-    //     //     },
-    //     //     success: function(data) {}
-    //     // });
-    // }
     self.updateDofs = function() {
         if (!self.selectedModule_SelectedDof().isServo()) {
             return;
@@ -853,8 +832,8 @@ var VirtualModel = function() {
     };
 
     self.init = function() {
-        // self.config = undefined;
-        // self.newConfig = true;
+        self.config = undefined;
+        self.newConfig = true;
         self.redraw();
     };
 
@@ -891,23 +870,6 @@ var VirtualModel = function() {
         robotSendReceiveConfig(self.saveConfig());
     };
 
-    // self.setDefault = function() {
-    //     $.ajax({
-    //         dataType: "json",
-    //         data: {
-    //             filename: self.fileName() + self.fileExtension()
-    //         },
-    //         type: "POST",
-    //         url: "setDefault",
-    //         success: function(data) {
-    //             if (data.status == "error") {
-    //                 // addError(data.message);
-    //                 alert('Error setting default configuration.');
-    //             }
-    //         }
-    //     });
-    // };
-
     //-------------------------------------------------------------------------------
     // SVG stuff
     //-------------------------------------------------------------------------------
@@ -938,8 +900,6 @@ var VirtualModel = function() {
 
     var previousMapIndex = -1;
     self.updateDofVisualisation = function(mapIndex, updateRobot) {
-        // console.log('update dof vis');
-        // console.log(self.modules());
         // alert('');
         if (mapIndex < -1 || previousMapIndex != mapIndex) {
             // Update all modules (when selecting new emotion for mapping)
@@ -955,11 +915,11 @@ var VirtualModel = function() {
     };
 
     self.drawModules = function() {
-        // $("image, svg").mousedown(function() {
-        //     virtualModel.resetSelect();
-        //     // virtualModel.updateDofVisualisation(-1);
-        //     return false;
-        // });
+        $("image, svg").mousedown(function() {
+            virtualModel.resetSelect();
+            // virtualModel.updateDofVisualisation(-1);
+            return false;
+        });
 
         var dx = self.modelwidth / self.skin_image.width();
         var dy = self.modelheight / self.skin_image.height();
@@ -1101,12 +1061,83 @@ var VirtualModel = function() {
             });
         }
     }
-    //
-    if (action_data != undefined && action_data.openfile) {
-        self.loadFileData(action_data.openfile || "");
-    } else {
-        self.init();
+    var mousePos;
+    document.onmousemove = handleMouseMove;
+    document.addEventListener('touchmove', handleMouseMove)
+
+    setInterval(getMousePosition, 750);
+    function handleMouseMove(event) {
+        var dot, eventDoc, doc, body, pageX, pageY;
+
+        event = event || window.event; // IE-ism
+
+        // If pageX/Y aren't available and clientX/Y are,
+        // calculate pageX/Y - logic taken from jQuery.
+        // (This is to support old IE)
+        if (event.pageX == null && event.clientX != null) {
+            eventDoc = (event.target && event.target.ownerDocument) || document;
+            doc = eventDoc.documentElement;
+            body = eventDoc.body;
+
+            event.pageX = event.clientX +
+              (doc && doc.scrollLeft || body && body.scrollLeft || 0) -
+              (doc && doc.clientLeft || body && body.clientLeft || 0);
+            event.pageY = event.clientY +
+              (doc && doc.scrollTop  || body && body.scrollTop  || 0) -
+              (doc && doc.clientTop  || body && body.clientTop  || 0 );
+        }
+
+        // Use event.pageX / event.pageY here
+        mousePos = {
+            x: event.pageX,
+            y: event.pageY
+        };
     }
+
+    function getMousePosition() {
+        var pos = mousePos;
+        if (!pos) {
+            // We haven't seen any movement yet
+        }
+        else {
+            // Use pos.x and pos.y
+
+            var right_eye_module = undefined;
+            var left_eye_module = undefined;
+
+            for (var i = 0; i < self.modules().length; i++) {
+                // self.modules()[i].image.selectize(false);
+                if (self.modules()[i].name() == 'eye_left') {
+                  left_eye_module = self.modules()[i];
+                }
+                if (self.modules()[i].name() == 'eye_right') {
+                  right_eye_module = self.modules()[i];
+                }
+            }
+
+            var delta = 0.2;
+
+            if (left_eye_module != undefined) {
+                var left_eye_dof_x = -(mousePos.x - left_eye_module.x()) / (left_eye_module.x() * delta);
+                var left_eye_dof_y = -(mousePos.y - left_eye_module.y()) / (left_eye_module.y() * delta);
+                robotSendDOF('eye_left', 'pupil_horizontal', left_eye_dof_x);
+                robotSendDOF('eye_left', 'pupil_vertical', left_eye_dof_y);
+            }
+
+            if (right_eye_module != undefined) {
+                var right_eye_dof_x = -(mousePos.x - right_eye_module.x()) / (right_eye_module.x() * delta);
+                var right_eye_dof_y = -(mousePos.y - right_eye_module.y()) / (right_eye_module.y() * delta);
+                robotSendDOF('eye_right', 'pupil_horizontal', right_eye_dof_x);
+                robotSendDOF('eye_right', 'pupil_vertical', right_eye_dof_y);
+            }
+        }
+    }
+    //
+    // if (action_data != undefined && action_data.openfile) {
+    //     self.loadFileData(action_data.openfile || "");
+    // } else {
+    //     self.init();
+    // }
 };
 
 // $(document).ready(function() {

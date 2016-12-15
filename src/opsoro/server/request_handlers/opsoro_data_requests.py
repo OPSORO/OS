@@ -229,8 +229,7 @@ def robot_dofs_data():
     # dof_values = request.form.get('values', type=str, default='')
     # print(dof_values)
     if dof_values is not None:
-        dof_values = yaml.load(
-            request.form.get('dofdata', type=str, default=None), Loader=Loader)
+        dof_values = yaml.load(dof_values, Loader=Loader)
         Robot.set_dof_values(dof_values)
 
     tempDofs = Robot.get_dof_values()

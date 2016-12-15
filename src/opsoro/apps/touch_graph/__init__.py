@@ -27,7 +27,8 @@ numelectrodes = 0
 
 
 def TouchLoop():
-    time.sleep(0.05)
+    time.sleep(0.05)  # delay
+
     global running
     global clientconn
 

@@ -58,9 +58,9 @@ def setup_pages(opsoroapp):
                     Preferences.set('general', 'password',
                                     request.form['robotPassword'])
 
-            Preferences.set('update', 'branch', request.form['updateBranch'])
-            Preferences.set('update', 'auto_update',
-                            request.form['updateAuto'])
+            # Preferences.set('update', 'branch', request.form['updateBranch'])
+            # Preferences.set('update', 'auto_update',
+            #                 request.form['updateAuto'])
 
             # Preferences.set('alive', 'aliveness', request.form['aliveness'])
             Preferences.set('alive', 'aliveness', 0)
