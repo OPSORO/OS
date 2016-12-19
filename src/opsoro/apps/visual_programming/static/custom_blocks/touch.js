@@ -42,7 +42,11 @@ Blockly.Lua['touch_etouched'] = function(block) {
   var touch_var = Blockly.Lua.variableDB_.getDistinctName('e' + dropdown_electrode + '_touch', Blockly.Variables.NAME_TYPE);
 
   var code = 'local ' + touch_var + ' =  Hardware:cap_get_touched()\n';
+<<<<<<< HEAD:src/opsoro/apps/visual_programming/static/custom_blocks/touch.js
   // code += touch_var + ' = bit32.extract(' + touch_var + ', ' + dropdown_electrode + ') > 0\n';
+=======
+  //code += touch_var + ' = bit32.extract(' + touch_var + ', ' + dropdown_electrode + ') > 0\n';
+>>>>>>> 832c0c6ebfb1748a06ff78df402378c621c8b3a9:OnoSW/apps/visprog/static/custom_blocks/touch.js
   code += touch_var + ' = bit.band(' + touch_var + ', 2^' + dropdown_electrode + ') > 0\n';
 
   if(statements_body_tou == '' && statements_body_rel == ''){
