@@ -1,14 +1,13 @@
 #!/bin/sh
 
-FOLDER=/home/pi/OnoSW/
+FOLDER=/home/pi/OPSORO/OS/
 SERVICE=opsoro
-STARTFILE=__init__.py
+STARTFILE=run
 
 # Stop service
 sudo service $SERVICE stop
 
 # Make sure we can run the python script
-sudo chmod 755 $FOLDER$STARTFILE
 sudo chmod +x $FOLDER$STARTFILE
 
 # Start service

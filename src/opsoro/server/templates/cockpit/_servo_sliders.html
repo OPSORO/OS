@@ -1,0 +1,102 @@
+<style>
+.sliderdiv {
+	margin: 0;
+	margin: 0;
+
+	margin-bottom: 0rem;
+	float: left;
+	text-align: center;
+	width: 2.7rem;
+	height: 17rem;
+}
+.sliderdiv .range-slider{
+	text-align: left;
+	margin: 0;
+	margin-top: .5rem;
+}
+.sliderdiv .note {
+	font-size: .7rem;
+}
+</style>
+
+<fieldset>
+	<legend><span class="fa fa-sliders"></span> Servo's:</legend>
+	<div class="alert-box alert">
+	  <strong>Attention!</strong> These sliders directly control the servo's of the robot and can possibly go to far! <br><strong>Please use with caution!</strong>
+	</div>
+{% for i in range(16) %}
+	<div class="sliderdiv">
+		<div>
+			<strong>{{ i }}</strong><br>
+			<span class="note" style="padding: 0;">
+				<span data-us>1500</span>
+			</span>
+		</div>
+		<div>
+			<div class="range-slider vertical-range" data-slider="1500" data-options="start: 600; end: 2400; vertical: true;" data-pinnumber="{{ i }}" >
+				<span class="range-slider-handle" role="slider" tabindex="0"></span>
+				<span class="range-slider-active-segment"></span>
+				<input type="hidden">
+			</div>
+		</div>
+	</div>
+{% endfor %}
+</fieldset>
+
+
+<script>
+$(document).ready(function(){
+	// Setup websocket connection.
+	var conn = null;
+	var connReady = false;
+	conn = new SockJS("http://" + window.location.host + "/sockjs");
+
+	conn.onopen = function(){
+		console.log("SockJS connected.");
+		$.ajax({
+			url: "/sockjstoken",
+			cache: false
+		})
+		.done(function(data) {
+			conn.send(JSON.stringify({action: "authenticate", token: data}));
+			connReady = true;
+			console.log("SockJS authenticated.");
+		});
+	};
+
+	conn.onmessage = function(e){
+		var msg = $.parseJSON(e.data);
+		switch(msg.action){
+			case "error":
+				// addError(msg.message);
+				break;
+		}
+	};
+
+	conn.onclose = function(){
+		console.log("SockJS disconnected.");
+		conn = null;
+		connReady = false;
+	};
+
+	$("[data-slider]").on("change.fndtn.slider", function(){
+		if( $(this).attr("data-slider") != $(this).data("lastpos") ){
+			var pos = $(this).attr("data-slider");
+
+			$(this).closest(".sliderdiv").find("[data-us]").html(numeral(pos).format("0"));
+
+			if(connReady){
+				// console.log("SET SERVO " + $(this).data("pinnumber") + " TO POS " + $(this).attr("data-slider"));
+				conn.send(JSON.stringify({
+					action: "setServoPos",
+					pin_number: $(this).data("pinnumber"),
+					value: $(this).attr("data-slider")
+				}));
+			}
+
+			$(this).data("lastpos", pos);
+		}
+	});
+});
+
+</script>

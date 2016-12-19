@@ -1,0 +1,20 @@
+#!/bin/sh
+
+DIR="git --git-dir=$1.git/ --work-tree=$1"
+
+$DIR fetch
+
+UPSTREAM=${1:-'@{u}'}
+LOCAL=$($DIR rev-parse @)
+REMOTE=$($DIR rev-parse "$UPSTREAM")
+BASE=$($DIR merge-base @ "$UPSTREAM")
+
+if [ $LOCAL = $REMOTE ]; then
+    exit 0
+elif [ $LOCAL = $BASE ]; then
+    exit 1
+elif [ $REMOTE = $BASE ]; then
+    exit 2
+else
+    exit 3
+fi

@@ -1,0 +1,22 @@
+#!/bin/sh
+
+# stop opsoro service
+# backup all files to seperate location (GIT pull is safe enough, we only keep this in case the user wants to revert)
+# git pull
+# restart opsoro service
+
+
+sudo service opsoro stop
+
+sudo mkdir /home/pi/OPSORO/previous/
+sudo cp -r /home/pi/OPSORO/OS/ /home/pi/OPSORO/previous/OS/
+
+sudo git --git-dir=/home/pi/OPSORO/OS/.git/ --work-tree=/home/pi/OPSORO/OS/ remote update
+sudo git --git-dir=/home/pi/OPSORO/OS/.git/ --work-tree=/home/pi/OPSORO/OS/ pull
+
+# sudo chmod +x /home/pi/OPSORO/OS/Scripts/restart_opsoro_service
+sudo bash /home/pi/OPSORO/OS/Scripts/restart_opsoro_service
+
+# sudo reboot
+
+exit 0

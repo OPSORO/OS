@@ -1,0 +1,49 @@
+{% extends "app_base.html" %}
+{% block app_head %}
+
+	<!-- <script src="/site_media/static/js/....js"></script> -->
+
+{% endblock %}
+
+{% block app_content %}
+
+	<div class="row">
+		<div class="large-7 large-push-5 columns">
+			<canvas id="circumplex" width="600" height="600" style="width: 100%;"></canvas>
+		</div>
+		<div class="large-5 large-pull-7 columns" style="text-align: justify;">
+			<div class="panel">
+				<div class="row">
+					<div class="small-6 columns">
+						<strong>{{ _('Valence') }}:</strong>
+						<span id="lblVal">0.000</span><br/>
+						<strong>{{ _('Arousal') }}:</strong>
+						<span id="lblAr">0.000</span>
+					</div>
+					<div class="small-6 columns">
+						<strong>{{ _('Phi') }}:</strong>
+						<span id="lblPhi">0.000°</span><br/>
+						<strong>{{ _('R') }}:</strong>
+						<span id="lblR">0.000</span>
+					</div>
+				</div>
+			</div>
+			{% include "_model.html" %}
+		</div>
+	</div>
+
+	{% if not online %}{% endif %}
+
+{% endblock %}
+
+{% block app_scripts %}
+
+	<script></script>
+
+	<!-- <script src="/site_media/static/js/....js"></script> -->
+	<script src="/static/js/jcanvas.min.js"></script>
+	<script src="/static/js/numeral.min.js"></script>
+
+{% endblock %}
+
+{% block app_modals %}{% endblock %}
