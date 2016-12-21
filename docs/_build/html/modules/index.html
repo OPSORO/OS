@@ -1,0 +1,258 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Internal Modules &mdash; OPSORO 1.0 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="OPSORO 1.0 documentation" href="../index.html"/>
+        <link rel="up" title="OPSORO OS" href="../opsoro.html"/>
+        <link rel="next" title="opsoro.apps" href="apps.html"/>
+        <link rel="prev" title="OPSORO OS" href="../opsoro.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> OPSORO
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../opsoro.html">OPSORO OS</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../opsoro.html#modules">Modules</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Internal Modules</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="apps.html">opsoro.apps</a></li>
+<li class="toctree-l4"><a class="reference internal" href="dof.html">opsoro.dof</a></li>
+<li class="toctree-l4"><a class="reference internal" href="dof.html#module-opsoro.dof.servo">opsoro.dof.servo</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hardware.html">opsoro.hardware</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hardware.html#module-opsoro.hardware.i2c">opsoro.hardware.i2c</a></li>
+<li class="toctree-l4"><a class="reference internal" href="module.html">opsoro.module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="module.html#module-opsoro.module.eye">opsoro.module.eye</a></li>
+<li class="toctree-l4"><a class="reference internal" href="module.html#module-opsoro.module.eyebrow">opsoro.module.eyebrow</a></li>
+<li class="toctree-l4"><a class="reference internal" href="module.html#module-opsoro.module.mouth">opsoro.module.mouth</a></li>
+<li class="toctree-l4"><a class="reference internal" href="module.html#module-opsoro.module.rotation">opsoro.module.rotation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="server.html">opsoro.server</a></li>
+<li class="toctree-l4"><a class="reference internal" href="server.html#module-opsoro.server.request_handlers">opsoro.server.request_handlers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="server.html#module-opsoro.server.request_handlers.opsoro_data_requests">opsoro.server.request_handlers.opsoro_data_requests</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sound.html">opsoro.sound</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sound.html#module-opsoro.sound.tts">opsoro.sound.tts</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../opsoro.html#module-opsoro.animate">opsoro.animate module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../opsoro.html#module-opsoro.console_msg">opsoro.console_msg module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../opsoro.html#module-opsoro.expression">opsoro.expression module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../opsoro.html#module-opsoro.preferences">opsoro.preferences module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../opsoro.html#module-opsoro.robot">opsoro.robot module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../opsoro.html#module-opsoro.stoppable_thread">opsoro.stoppable_thread module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../opsoro.html#module-opsoro">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">OPSORO</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../opsoro.html">OPSORO OS</a> &raquo;</li>
+      
+    <li>Internal Modules</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/modules/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="internal-modules">
+<span id="sec-modules"></span><h1>Internal Modules<a class="headerlink" href="#internal-modules" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="apps.html">opsoro.apps</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dof.html">opsoro.dof</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dof.html#module-opsoro.dof.servo">opsoro.dof.servo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hardware.html">opsoro.hardware</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hardware.html#module-opsoro.hardware.i2c">opsoro.hardware.i2c</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module.html">opsoro.module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module.html#module-opsoro.module.eye">opsoro.module.eye</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module.html#module-opsoro.module.eyebrow">opsoro.module.eyebrow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module.html#module-opsoro.module.mouth">opsoro.module.mouth</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module.html#module-opsoro.module.rotation">opsoro.module.rotation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="server.html">opsoro.server</a></li>
+<li class="toctree-l1"><a class="reference internal" href="server.html#module-opsoro.server.request_handlers">opsoro.server.request_handlers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="server.html#module-opsoro.server.request_handlers.opsoro_data_requests">opsoro.server.request_handlers.opsoro_data_requests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sound.html">opsoro.sound</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sound.html#module-opsoro.sound.tts">opsoro.sound.tts</a></li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="apps.html" class="btn btn-neutral float-right" title="opsoro.apps" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../opsoro.html" class="btn btn-neutral" title="OPSORO OS" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, OPSORO.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'1.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

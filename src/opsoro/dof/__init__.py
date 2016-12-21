@@ -18,8 +18,9 @@ class DOF(object):
         """
         Sets the dof value
 
-        neutral:            neutral dof position
-        poly:               20 dof values linked to emotions
+        Arguments:
+            neutral: neutral dof position
+            poly: 20 dof values linked to emotions
         """
         self.name = name
         self.value = neutral
@@ -55,8 +56,9 @@ class DOF(object):
         """
         Sets the control polygon, 20 dof values are linked to certain emotions
 
-        neutral:            neutral dof position
-        poly:               20 dof values linked to emotions
+        Arguments:
+            neutral: neutral dof position
+            poly: 20 dof values linked to emotions
         """
         self._neutral = constrain(neutral, -1.0, 1.0)
 
@@ -80,10 +82,10 @@ class DOF(object):
         """
         Calculate dof value with the polygon, according to the given r and phi.
 
-        r:          radius r, intensity of the emotion
-        phi:        (radians) angle of the emotion in the circumplex
-        anim_time:  animation time; time for the servo to move from previous dof to the new dof
-                    -1: animation will be based on dof differences
+        Arguments:
+            r: radius r, intensity of the emotion
+            phi: (radians) angle of the emotion in the circumplex
+            anim_time: animation time; time for the servo to move from previous dof to the new dof (-1: animation will be based on dof differences)
         """
         # print_info('Calc; r: %d, phi: %d, time: %i' % (r, phi, anim_time))
         # Calculate DOF position at max intensity
@@ -116,11 +118,11 @@ class DOF(object):
         """
         Sets the dof value
 
-        dof_value:              new value of the dof
-        anim_time:              animation time; time for the servo to move from previous dof to the new dof
-                                -1: animation will be based on dof differences
-        is_overlay:             used to determine what priority the dof value has (overlay > default)
-        update_last_set_time:   update the last set timer of the dof
+        Arguments:
+            dof_value: new value of the dof
+            anim_time: animation time; time for the servo to move from previous dof to the new dof (-1: animation will be based on dof differences)
+            is_overlay: used to determine what priority the dof value has (overlay > default)
+            update_last_set_time: update the last set timer of the dof
         """
         # print_info('Set value: %d, time: %i' % (dof_value, anim_time))
 
@@ -144,10 +146,10 @@ class DOF(object):
         """
         Sets the overlay value and overwrites the dof position
 
-        dof_value:              new overlay value of the dof
-        anim_time:              animation time; time for the servo to move from previous dof to the new dof
-                                -1: animation will be based on dof differences
-        update_last_set_time:   update the last set timer of the dof
+        Arguments:
+           dof_value: new overlay value of the dof
+           anim_time: animation time; time for the servo to move from previous dof to the new dof (-1: animation will be based on dof differences)
+           update_last_set_time: update the last set timer of the dof
         """
         self.set_value(dof_value, anim_time, True, update_last_set_time)
 
@@ -155,8 +157,8 @@ class DOF(object):
         """
         Clears the overlay value and resets the dof position to the last set value
 
-        anim_time:  animation time; time for the servo to move from previous dof to the new dof
-                    -1: animation will be based on dof differences
+        Arguments:
+            anim_time: animation time; time for the servo to move from previous dof to the new dof (-1: animation will be based on dof differences)
         """
         self.set_value(self.last_set_value, anim_time)
 
@@ -164,9 +166,8 @@ class DOF(object):
         """
         Updates the dof value according to the animation
 
-        returns:    boolean
-                    True if dof value is updated
-                    False if dof value did not change
+        Returns:
+            bool: True if dof value is updated, False if dof value did not change
         """
         if self._anim is not None:
             self.value = float(self._anim())

@@ -10,7 +10,7 @@ import cmath
 import numpy as np
 from scipy import interpolate
 
-from opsoro.animate import Animate
+# from opsoro.animate import Animate
 # from opsoro.hardware import Hardware
 # from opsoro.hardware.servo import Servo
 from opsoro.console_msg import *

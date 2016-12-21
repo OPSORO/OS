@@ -12,16 +12,14 @@ class Servo(DOF):
     def config(self, pin=None, min_range=0, mid_pos=1500, max_range=0):
         #, dofname=None):
         """
-		Helper class to turn DOF positions into pulse widths for the servo
-		controller.
+        Helper class to turn DOF positions into pulse widths for the servo controller.
 
-		pin:       Servo pin number
-		min_range: Minimum range of the servo, can be positive or negative.
-		           When dof_pos < 0, pulse width = mid_pos + dof_pos*min_range
-		mid_pos:   Pulse width when neutral (DOF position = 0).
-		max_range: Maximum range of the servo, can be positive or negative.
-		           When dof_pos > 0, pulse width = mid_pos + dof_pos*max_range
-		"""
+        Arguments:
+            pin (int): Servo pin number
+            min_range (int): Minimum range of the servo, can be positive or negative. When dof_pos < 0, pulse width = mid_pos + dof_pos*min_range
+            mid_pos (int): Pulse width when neutral (DOF position = 0).
+            max_range (int): Maximum range of the servo, can be positive or negative. When dof_pos > 0, pulse width = mid_pos + dof_pos*max_range
+        """
         # dofname:   Name of the DOF that controls the position of this servo
         min_value = 500
         max_value = 2500
@@ -48,8 +46,8 @@ class Servo(DOF):
         """
         Converts DOF pos to microseconds.
 
-        returns:
-            servo value (us)
+        Returns:
+            int: servo value (us)
         """
         self.position = self.dof_to_us(self.value)
 
@@ -59,8 +57,8 @@ class Servo(DOF):
         """
         Converts DOF pos to microseconds.
 
-        returns:
-            servo value (us)
+        Returns:
+            int: servo value (us)
         """
         us = int(self.mid_pos)
         dof_value = float(dof_value)
@@ -76,9 +74,8 @@ class Servo(DOF):
         """
         Updates the servo with the dof value.
 
-        returns:    boolean
-                    True if dof value is updated
-                    False if dof value did not change
+        Returns:
+            bool: True if dof value is updated, False if dof value did not change.
         """
         dof_animation_changed = super(Servo, self).update()
 
