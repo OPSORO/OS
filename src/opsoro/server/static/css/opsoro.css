@@ -577,12 +577,12 @@ fieldset legend {
   background: #b2afa1;
 }
 
-.reveal-modal.red {
+.reveal-modal .titlebar.red {
   border-bottom: 0.25rem solid #79261d;
   background: #b2382a;
 }
 
-.reveal-modal.green {
+.reveal-modal .titlebar.green {
   border-bottom: 0.25rem solid #26791d;
   background: #38b22a;
 }

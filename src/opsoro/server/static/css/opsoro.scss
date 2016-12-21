@@ -629,16 +629,16 @@ fieldset legend {
         -moz-border-radius-topright: 0.5rem;
         border-top-right-radius: 0.5rem;
         background: #b2afa1;
-    }
 
-    &.red {
-        border-bottom: 0.25rem solid #79261d;
-        background: #b2382a;
-    }
+        &.red {
+            border-bottom: 0.25rem solid #79261d;
+            background: #b2382a;
+        }
 
-    &.green {
-        border-bottom: 0.25rem solid #26791d;
-        background: #38b22a;
+        &.green {
+            border-bottom: 0.25rem solid #26791d;
+            background: #38b22a;
+        }
     }
 
     .content {
