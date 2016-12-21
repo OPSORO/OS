@@ -19,6 +19,7 @@ $(document).ready(function () {
   var AliveSettings = function () {
     var self = this;
 
+    self.enabled = ko.observable(false);
     self.aliveness = ko.observable(0);
     self.blink = ko.observable(false);
     self.gaze = ko.observable(false);
@@ -73,9 +74,10 @@ $(document).ready(function () {
   viewmodel.update().autoUpdate(prefsJson.update.autoUpdate || false);
   viewmodel.update().branch(prefsJson.update.branch || '');
 
+  viewmodel.alive().enabled(prefsJson.alive.enabled || false);
   viewmodel.alive().aliveness(prefsJson.alive.aliveness || 0);
-  viewmodel.alive().blink(prefsJson.alive.blink || true);
-  viewmodel.alive().gaze(prefsJson.alive.gaze || true);
+  viewmodel.alive().blink(prefsJson.alive.blink || false);
+  viewmodel.alive().gaze(prefsJson.alive.gaze || false);
 
   viewmodel.audio().volume(prefsJson.audio.volume || 50);
   viewmodel.audio().ttsEngine(prefsJson.audio.ttsEngine || "pico");

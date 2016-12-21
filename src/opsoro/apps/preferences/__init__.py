@@ -50,32 +50,66 @@ def setup_pages(opsoroapp):
         if request.method == 'POST':
             print_info('POST')
             # Update preferences
-            Preferences.set('general', 'robot_name', request.form['robotName'])
+            request.form.get('file_name_ext', type=str, default=None)
+            Preferences.set('general',
+                            'robot_name',
+                            request.form.get('robotName',
+                                             type=str,
+                                             default=None))
 
-            if request.form['robotPassword'] == request.form[
-                    'robotPasswordConfirm']:
-                if request.form['robotPassword'] != '':
-                    Preferences.set('general', 'password',
-                                    request.form['robotPassword'])
+            pass1 = request.form.get('robotPassword', type=str, default=None)
+            pass2 = request.form.get('robotPasswordConfirm',
+                                     type=str,
+                                     default=None)
+            if pass1 is not None and pass1 == pass2:
+                if pass1 != '':
+                    Preferences.set('general', 'password', pass1)
 
-            # Preferences.set('update', 'branch', request.form['updateBranch'])
+            # Preferences.set('update', 'branch', request.form.get('updateBranch', type=str, default=None))
             # Preferences.set('update', 'auto_update',
-            #                 request.form['updateAuto'])
+            #                 request.form.get('updateAuto', type=str, default=None))
 
-            # Preferences.set('alive', 'aliveness', request.form['aliveness'])
+            Preferences.set('alive',
+                            'enabled',
+                            request.form.get('aliveEnabled',
+                                             type=bool,
+                                             default=False))
+            # Preferences.set('alive', 'aliveness', request.form.get('aliveness', type=str, default=None))
             Preferences.set('alive', 'aliveness', 0)
-            Preferences.set('alive', 'blink', request.form['aliveBlink'])
-            Preferences.set('alive', 'gaze', request.form['aliveGaze'])
+            Preferences.set('alive',
+                            'blink',
+                            request.form.get('aliveBlink',
+                                             type=bool,
+                                             default=False))
+            Preferences.set('alive',
+                            'gaze',
+                            request.form.get('aliveGaze',
+                                             type=bool,
+                                             default=False))
 
             Preferences.set('audio',
                             'master_volume',
                             request.form.get('volume', type=int))
-            Preferences.set('audio', 'tts_engine', request.form['ttsEngine'])
-            Preferences.set('audio', 'tts_language',
-                            request.form['ttsLanguage'])
-            Preferences.set('audio', 'tts_gender', request.form['ttsGender'])
+            Preferences.set('audio',
+                            'tts_engine',
+                            request.form.get('ttsEngine',
+                                             type=str,
+                                             default=None))
+            Preferences.set(
+                'audio',
+                'tts_language',
+                request.form.get('ttsLanguage', type=str, default=None))
+            Preferences.set('audio',
+                            'tts_gender',
+                            request.form.get('ttsGender',
+                                             type=str,
+                                             default=None))
 
-            Preferences.set('wireless', 'ssid', request.form['wirelessSsid'])
+            Preferences.set('wireless',
+                            'ssid',
+                            request.form.get('wirelessSsid',
+                                             type=str,
+                                             default=None))
             Preferences.set('wireless',
                             'channel',
                             request.form.get('wirelessChannel', type=int))
@@ -85,11 +119,15 @@ def setup_pages(opsoroapp):
                 Preferences.set('wireless', 'password', Preferences.get(
                     'general', 'password', 'RobotOpsoro'))
             else:
-                if request.form['wirelessPassword'] == request.form[
-                        'wirelessPasswordConfirm']:
-                    if request.form['wirelessPassword'] != '':
-                        Preferences.set('wireless', 'password',
-                                        request.form['wirelessPassword'])
+                pass1 = request.form.get('wirelessPassword',
+                                         type=str,
+                                         default=None)
+                pass2 = request.form.get('wirelessPasswordConfirm',
+                                         type=str,
+                                         default=None)
+                if pass1 is not None and pass1 == pass2:
+                    if pass1 != '':
+                        Preferences.set('wireless', 'password', pass1)
 
             flash('Preferences have been saved.', 'success')
             Preferences.save_prefs()
@@ -112,6 +150,7 @@ def setup_pages(opsoroapp):
                 'autoUpdate': Preferences.get('update', 'auto_update', False)
             },
             'alive': {
+                'enabled': Preferences.get('alive', 'enabled', False),
                 'aliveness': Preferences.get('alive', 'aliveness', '0'),
                 'blink': Preferences.get('alive', 'blink', True),
                 'gaze': Preferences.get('alive', 'gaze', True)

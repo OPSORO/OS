@@ -3,6 +3,7 @@ general:
   password: opsoro123
 
 alive:
+  enabled: true
   aliveness: 30
   blink: true
   gaze: true

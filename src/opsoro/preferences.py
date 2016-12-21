@@ -26,27 +26,53 @@ class _Preferences(object):
         self.load_prefs()
         self.dir = os.path.abspath(
             os.path.join(os.path.dirname(__file__), '..', '..')) + '/'
-        self.git = Git(self.dir)
-        self.repo = Repo(self.dir)
+
+        self.git = None
+        self.repo = None
+        try:
+            self.git = Git(self.dir)
+            self.repo = Repo(self.dir)
+        except:
+            pass
 
     def get_current_branch(self):
-        return self.git.branch().split()[-1]
+        if self.git is None:
+            return False
+        try:
+            return self.git.branch().split()[-1]
+        except:
+            print_warning("Failed to get current branch")
+            return ""
 
     def get_remote_branches(self):
+        if self.git is None:
+            return False
         branches = []
 
-        # Get all remote branches (not only local)
-        returnvalue = self.git.ls_remote('--heads').split()
-        # Strip data
-        for i in range(len(returnvalue)):
-            if i % 2 != 0:
-                # Get only branch name (last value)
-                branches.append(returnvalue[i].split("/")[-1])
+        try:
+            # Get all remote branches (not only local)
+            returnvalue = self.git.ls_remote('--heads').split()
+
+            # Strip data
+            for i in range(len(returnvalue)):
+                if i % 2 != 0:
+                    # Get only branch name (last value)
+                    branches.append(returnvalue[i].split("/")[-1])
+        except:
+            print_warning("Failed to get remote branches")
+            pass
+
         return branches
 
     def check_if_update(self):
-        # Update local git data
-        self.git.fetch()
+        if self.git is None:
+            return False
+        try:
+            # Update local git data
+            self.git.fetch()
+        except:
+            print_warning("Failed to fetch")
+            return False
         # Retrieve git remote <-> local difference status
         status = self.git.status()
         # easy check to see if local is behind
@@ -55,6 +81,8 @@ class _Preferences(object):
         return False
 
     def update(self):
+        if self.git is None:
+            return False
         # Create file to let deamon know it has to update before starting the server
         file = open(self.dir + 'update.var', 'w+')
 
@@ -83,6 +111,8 @@ class _Preferences(object):
         return self.data.get(section, {}).get(item, default)
 
     def set(self, section, item, value):
+        if value is None:
+            return
         try:
             self.data[section][item] = value
         except KeyError:

@@ -5,6 +5,7 @@ from functools import partial
 from opsoro.console_msg import *
 from opsoro.stoppable_thread import StoppableThread
 from opsoro.hardware import Hardware
+from opsoro.preferences import Preferences
 
 from random import randint
 import time
@@ -37,7 +38,6 @@ class _Robot(object):
         self.look_at_position = [0, 0, 0]  # x y z(= depth) -1.0 <-> 1.0
 
         self.auto_enable_servos = False
-        self.alive_when_idle = True
 
         self._alive_count_seed = 1.0
         self._add_seed = 0.2
@@ -47,7 +47,8 @@ class _Robot(object):
         with Hardware.lock:
             Hardware.servo_init()
         self.start_update_loop()
-        if self.alive_when_idle:
+
+        if Preferences.get('alive', 'enabled', False):
             self.start_alive_loop()
 
     def start_update_loop(self):

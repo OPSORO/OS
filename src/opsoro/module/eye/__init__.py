@@ -1,5 +1,6 @@
 from opsoro.module import Module
 from opsoro.console_msg import *
+from opsoro.preferences import Preferences
 
 from noise import pnoise1
 import time
@@ -84,18 +85,19 @@ class Eye(Module):
     def alive_trigger(self, count_seed):
         currentTime = int(round(time.time() * 1000))
         updated = False
-        if currentTime - self.dofs[
-                'eyelid_closure'].last_set_time > self.blink_delay:
-            updated = self.blink(self.blink_speed / 1000.0)
+        if Preferences.get('alive', 'blink', False):
+            if currentTime - self.dofs[
+                    'eyelid_closure'].last_set_time > self.blink_delay:
+                updated = self.blink(self.blink_speed / 1000.0)
 
-        if currentTime - self.dofs[
-                'pupil_horizontal'].last_set_time > self.lookdelay:
-            # Update random looking position
-            # if Robot.look_at_position == self.last_look_position:
-            for i in range(len(self.last_look_position)):
-                # Add i to the seed for different x, y, z values
-                self.last_look_position[i] = pnoise1(count_seed + i, 1)
-
-            updated = self.look()
+        if Preferences.get('alive', 'gaze', False):
+            if currentTime - self.dofs[
+                    'pupil_horizontal'].last_set_time > self.lookdelay:
+                # Update random looking position
+                # if Robot.look_at_position == self.last_look_position:
+                for i in range(len(self.last_look_position)):
+                    # Add i to the seed for different x, y, z values
+                    self.last_look_position[i] = pnoise1(count_seed + i, 1)
+                updated = self.look()
 
         return updated
