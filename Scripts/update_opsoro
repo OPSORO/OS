@@ -15,7 +15,7 @@ sudo git --git-dir=/home/pi/OPSORO/OS/.git/ --work-tree=/home/pi/OPSORO/OS/ remo
 sudo git --git-dir=/home/pi/OPSORO/OS/.git/ --work-tree=/home/pi/OPSORO/OS/ pull
 
 # sudo chmod +x /home/pi/OPSORO/OS/Scripts/restart_opsoro_service
-sudo bash /home/pi/OPSORO/OS/Scripts/restart_opsoro_service
+sudo bash /home/pi/OPSORO/OS/scripts/restart_opsoro_service
 
 # sudo reboot
 
