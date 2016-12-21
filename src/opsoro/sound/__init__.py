@@ -3,7 +3,7 @@ import os
 import glob
 import subprocess
 import string
-from opsoro.tts import TTS
+from opsoro.sound.tts import TTS
 
 get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 

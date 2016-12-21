@@ -1,7 +1,6 @@
 import time
 import spidev
 import threading
-from opsoro.hardware.adafruit_servo_controller import pwm
 
 # SPI COMMANDS
 # > GENERAL                  IN  OUT
@@ -199,7 +198,6 @@ class _Hardware(object):
                 offtime = (pos + 2) // 4
                 spi_params.append(offtime >> 8)
                 spi_params.append(offtime & 0x0FF)
-                pwm.setPWM(i, 0, offtime)
             i = i + 1
 
         self.spi_command(CMD_SERVO_SETALL, params=spi_params, delay=0.008)
