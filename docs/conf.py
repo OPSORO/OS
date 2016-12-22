@@ -27,7 +27,7 @@ MOCK_MODULES = ['smbus', 'spidev', 'flask', 'flask.ctx', 'flask_login',
                 'sockjs.tornado', 'tornado', 'tornado.log', 'tornado.wsgi',
                 'tornado.ioloop', 'tornado.web', 'tornado.httpserver',
                 'random', 'subprocess', 'base64', 'pluginbase', 'lupa',
-                'numpy', 'scipy']
+                'numpy', 'scipy', 'git']
 for mod_name in MOCK_MODULES:
     sys.modules[mod_name] = mock.Mock()
 
