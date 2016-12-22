@@ -1,15 +1,4 @@
-import math
-import cmath
-import time
-
-from opsoro.console_msg import *
-from opsoro.expression import Expression
-from opsoro.hardware import Hardware
-# from opsoro.stoppable_thread import StoppableThread
-
-from flask import Blueprint, render_template, request
-
-constrain = lambda n, minn, maxn: max(min(maxn, n), minn)
+from flask import Blueprint, render_template
 
 config = {'full_name': 'Circumplex',
           'icon': 'fa-meh-o',

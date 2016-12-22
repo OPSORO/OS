@@ -4,7 +4,8 @@ from opsoro.preferences import Preferences
 
 from noise import pnoise1
 import time
-import math
+
+# import math
 
 
 class Eye(Module):

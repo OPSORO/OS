@@ -1,13 +1,11 @@
 # from opsoro.hardware import Hardware
 from opsoro.console_msg import *
 
-import numpy as np
 from scipy import interpolate
 
 from opsoro.animate import Animate
 
 import math
-import cmath
 import time
 
 constrain = lambda n, minn, maxn: max(min(maxn, n), minn)
@@ -65,18 +63,25 @@ class DOF(object):
         if poly is None or len(poly) == 0:
             self._interp_poly = lambda x: self._neutral
         else:
-            phis = np.linspace(-math.pi, math.pi, 20)[0:20]
             dofs = map(lambda x: float(x), poly)
 
+            phis = [
+                -3.1415926535897931, -2.8108986900540254, -2.4802047265182576,
+                -2.1495107629824899, -1.8188167994467224, -1.4881228359109546,
+                -1.1574288723751871, -0.82673490883941936,
+                -0.49604094530365161, -0.16534698176788387,
+                0.16534698176788387, 0.49604094530365161, 0.82673490883941891,
+                1.1574288723751867, 1.4881228359109544, 1.8188167994467221,
+                2.1495107629824899, 2.4802047265182576, 2.8108986900540254,
+                3.1415926535897931
+            ]
             # Sort lists
             indexes = range(len(phis))
-            indexes.sort(key=phis.__getitem__)
-            sorted_phis = map(phis.__getitem__, indexes)
             sorted_dofs = map(dofs.__getitem__, indexes)
 
             # Create interpolation instance
             self._interp_poly = interpolate.interp1d(
-                sorted_phis, sorted_dofs, kind="linear")
+                phis, sorted_dofs, kind="linear")
 
     def calc(self, r, phi, anim_time=-1):
         """

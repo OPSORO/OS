@@ -1,33 +1,11 @@
-# from __future__ import division
 from __future__ import with_statement
 
 import math
 import cmath
-# import os
-# import threading
-# from functools import partial
 
-import numpy as np
-from scipy import interpolate
-
-# from opsoro.animate import Animate
-# from opsoro.hardware import Hardware
-# from opsoro.hardware.servo import Servo
 from opsoro.console_msg import *
 
-# from opsoro.modules import Modules
 from opsoro.robot import Robot
-
-import yaml
-try:
-    from yaml import CLoader as Loader
-    print_info("Using YAML CLoader")
-except ImportError:
-    print_info(
-        "YAML CLoader not available, falling back on python implementation")
-    from yaml import Loader
-
-# get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 
 constrain = lambda n, minn, maxn: max(min(maxn, n), minn)
 
@@ -48,15 +26,6 @@ class _Expression(object):
         if abs(e) > 1.0:
             e = cmath.rect(1.0, cmath.phase(e))
 
-        # # Apply transition animation
-        # if anim_time != 0:
-        #     # Set animation-time according to distance between new and previous emotion
-        #     if anim_time < 0:
-        #         anim_time = abs(e - self._emotion)
-        #     self._anim = Animate([0, anim_time], [self._emotion, e])
-        # else:
-        #     # Set new emotion instantly
-        #     self._emotion = e
         self._emotion = e
 
         phi = cmath.phase(self._emotion)
@@ -110,17 +79,7 @@ class _Expression(object):
         self.set_emotion_e(e, anim_time)
 
     def update(self):
-        # if self._anim is not None:
-        #     self._emotion = self._anim()
-        #     if self._anim.has_ended():
-        #         self._anim = None
-        #
-        # phi = cmath.phase(self._emotion)
-        # r = abs(self._emotion)
-        #
-        # Robot.apply_poly(r, phi)
-        # Robot.update()
-
+        # Still here for backwards compatibility
         # This is done automatically
         return
 
@@ -129,11 +88,6 @@ class _Expression(object):
 		Returns current emotion as a complex number
 		"""
         return self._emotion
-
-# def empty_config(self):
-# 	self.servos = []
-# 	self.dofs = {}
-#
 
 # Global instance that can be accessed by apps and scripts
 Expression = _Expression()

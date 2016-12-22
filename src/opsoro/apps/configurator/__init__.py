@@ -3,13 +3,8 @@ from __future__ import with_statement
 from flask import Blueprint, render_template, request, redirect, url_for, flash, send_from_directory
 from werkzeug import secure_filename
 
-# import math
-# import cmath
-
 from opsoro.console_msg import *
 from opsoro.hardware import Hardware
-# from opsoro.stoppable_thread import StoppableThread
-# from opsoro.sound import Sound
 from opsoro.robot import Robot
 
 from functools import partial

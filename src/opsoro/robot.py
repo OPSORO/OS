@@ -1,20 +1,16 @@
-import os
-from functools import partial
-
-# from opsoro.hardware import Hardware
 from opsoro.console_msg import *
 from opsoro.stoppable_thread import StoppableThread
 from opsoro.hardware import Hardware
 from opsoro.preferences import Preferences
 
-from random import randint
+from functools import partial
+import os
 import time
-import json
-import yaml
+
 try:
-    from yaml import CLoader as Loader, CDumper as Dumper
+    import simplejson as json
 except ImportError:
-    from yaml import Loader, Dumper
+    import json
 
 get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 
@@ -201,7 +197,7 @@ class _Robot(object):
         return True
 
     def save_config(self, file_name='default.conf'):
-        # Save modules to yaml file
+        # Save modules to json file
         if file_name is None:
             return False
 

@@ -1,14 +1,7 @@
-# from opsoro.hardware import Hardware
-# from opsoro.dof.servo import Servo
 from opsoro.dof.servo import Servo
 from opsoro.dof import DOF
 from opsoro.console_msg import *
 
-import numpy as np
-from scipy import interpolate
-
-import math
-import cmath
 import time
 
 constrain = lambda n, minn, maxn: max(min(maxn, n), minn)

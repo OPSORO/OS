@@ -1,10 +1,6 @@
 from __future__ import with_statement
 
 from flask import Blueprint, render_template, request, redirect, url_for, flash, send_from_directory
-from werkzeug import secure_filename
-
-import math
-import cmath
 
 from opsoro.console_msg import *
 from opsoro.hardware import Hardware
@@ -14,17 +10,7 @@ from opsoro.expression import Expression
 from opsoro.sound import Sound
 
 from functools import partial
-from exceptions import RuntimeError
 import os
-import glob
-import shutil
-import time
-import yaml
-
-try:
-    from yaml import CLoader as Loader
-except ImportError:
-    from yaml import Loader
 
 constrain = lambda n, minn, maxn: max(min(maxn, n), minn)
 get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))

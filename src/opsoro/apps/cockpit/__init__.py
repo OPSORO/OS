@@ -21,16 +21,16 @@ config = {'full_name': 'Cockpit',
 # 3: Start robot automatically and disable alive feature
 
 clientconn = None
+
 # dof_positions = {}
 
-import os
-from functools import partial
+# import os
 
-import yaml
-try:
-    from yaml import CLoader as Loader
-except ImportError:
-    from yaml import Loader
+# import yaml
+# try:
+#     from yaml import CLoader as Loader
+# except ImportError:
+#     from yaml import Loader
 
 
 def setup_pages(opsoroapp):

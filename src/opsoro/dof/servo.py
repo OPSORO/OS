@@ -2,9 +2,6 @@ from opsoro.hardware import Hardware
 from opsoro.console_msg import *
 from opsoro.dof import DOF
 
-import math
-import cmath
-
 constrain = lambda n, minn, maxn: max(min(maxn, n), minn)
 
 
