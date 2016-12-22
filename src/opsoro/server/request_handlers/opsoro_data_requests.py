@@ -1,6 +1,6 @@
 from __future__ import with_statement
 
-from flask import Flask, request, send_from_directory
+from flask import request, send_from_directory
 
 from opsoro.robot import Robot
 from opsoro.hardware import Hardware
@@ -10,8 +10,8 @@ from opsoro.console_msg import *
 
 import glob
 import os
-from functools import wraps, partial
-# from werkzeug import secure_filename
+from functools import partial
+
 get_abs_path = partial(os.path.join,
                        os.path.abspath(os.path.dirname(__file__)))
 

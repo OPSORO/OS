@@ -1,32 +1,21 @@
-from flask import Flask, request, render_template, redirect, url_for, flash, session, jsonify, send_from_directory
-from flask_login import LoginManager, login_user, logout_user, current_user, login_required
+from flask import Flask, request, render_template, redirect, url_for, flash, session, send_from_directory
+from flask_login import login_user, logout_user, current_user
 from werkzeug.exceptions import default_exceptions
-# from tornado.wsgi import WSGIContainer
-# from tornado.ioloop import IOLoop
-# import tornado.web
-# import tornado.httpserver
-# from sockjs.tornado import SockJSRouter, SockJSConnection
-from functools import wraps, partial
+
+from functools import partial
 
 from opsoro.expression import Expression
 from opsoro.robot import Robot
 from opsoro.console_msg import *
 from opsoro.preferences import Preferences
 from opsoro.server.request_handlers.opsoro_data_requests import *
-# from opsoro.server import AdminUser
 
-import pluginbase
 import random
 import os
 import subprocess
-import atexit
-import threading
 import base64
-import time
-import logging
 
 import glob
-import shutil
 
 try:
     import simplejson as json

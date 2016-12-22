@@ -1,7 +1,7 @@
 from flask import Flask, request, render_template, redirect, url_for, flash, session, jsonify, send_from_directory
 from flask_babel import Babel
-from flask_login import LoginManager, login_user, logout_user, current_user, login_required
-from werkzeug.exceptions import default_exceptions
+from flask_login import LoginManager, logout_user, current_user, login_required
+
 from tornado.wsgi import WSGIContainer
 from tornado.ioloop import IOLoop
 import tornado.web
@@ -16,17 +16,11 @@ from opsoro.preferences import Preferences
 from opsoro.server.request_handlers import RHandler
 
 import pluginbase
-import random
 import os
-import subprocess
 import atexit
 import threading
 import base64
-import time
 import logging
-
-import glob
-import shutil
 
 try:
     import simplejson as json
