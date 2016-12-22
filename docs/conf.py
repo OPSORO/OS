@@ -26,9 +26,15 @@ MOCK_MODULES = ['smbus', 'spidev', 'flask', 'flask.ctx', 'flask_login',
                 'flask_babel', 'werkzeug.exceptions', 'werkzeug', 'sockjs',
                 'sockjs.tornado', 'tornado', 'tornado.log', 'tornado.wsgi',
                 'tornado.ioloop', 'tornado.web', 'tornado.httpserver',
-                'random', 'subprocess', 'base64', 'pluginbase', 'lupa']
+                'random', 'subprocess', 'base64', 'pluginbase', 'lupa',
+                'numpy', 'scipy']
 for mod_name in MOCK_MODULES:
     sys.modules[mod_name] = mock.Mock()
+
+# import mox as mox
+# import numpy as np
+# m = mox.Mox()
+# m.StubOutWithMock(np, '__getitem__')
 
 # -- Copyright date ------------------------------------------------
 from datetime import date
