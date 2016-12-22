@@ -137,7 +137,7 @@
 <span class="kn">import</span> <span class="nn">time</span>
 
 
-<div class="viewcode-block" id="StoppableThread"><a class="viewcode-back" href="../../opsoro.html#opsoro.stoppable_thread.StoppableThread">[docs]</a><span class="k">class</span> <span class="nc">StoppableThread</span><span class="p">(</span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">):</span>
+<div class="viewcode-block" id="StoppableThread"><a class="viewcode-back" href="../../modules/index.html#opsoro.stoppable_thread.StoppableThread">[docs]</a><span class="k">class</span> <span class="nc">StoppableThread</span><span class="p">(</span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">	Thread class with a stop() method. The thread itself has to check regularly</span>
 <span class="sd">	for the stopped() condition.</span>
@@ -154,13 +154,13 @@
     <span class="c1"># def start(self):</span>
     <span class="c1">#     self._stop.clear()</span>
 
-<div class="viewcode-block" id="StoppableThread.stop"><a class="viewcode-back" href="../../opsoro.html#opsoro.stoppable_thread.StoppableThread.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="StoppableThread.stop"><a class="viewcode-back" href="../../modules/index.html#opsoro.stoppable_thread.StoppableThread.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_stop</span><span class="o">.</span><span class="n">set</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="StoppableThread.stopped"><a class="viewcode-back" href="../../opsoro.html#opsoro.stoppable_thread.StoppableThread.stopped">[docs]</a>    <span class="k">def</span> <span class="nf">stopped</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="StoppableThread.stopped"><a class="viewcode-back" href="../../modules/index.html#opsoro.stoppable_thread.StoppableThread.stopped">[docs]</a>    <span class="k">def</span> <span class="nf">stopped</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stop</span><span class="o">.</span><span class="n">isSet</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="StoppableThread.sleep"><a class="viewcode-back" href="../../opsoro.html#opsoro.stoppable_thread.StoppableThread.sleep">[docs]</a>    <span class="k">def</span> <span class="nf">sleep</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">secs</span><span class="p">):</span>
+<div class="viewcode-block" id="StoppableThread.sleep"><a class="viewcode-back" href="../../modules/index.html#opsoro.stoppable_thread.StoppableThread.sleep">[docs]</a>    <span class="k">def</span> <span class="nf">sleep</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">secs</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">stopped</span><span class="p">():</span>
             <span class="k">return</span>
 

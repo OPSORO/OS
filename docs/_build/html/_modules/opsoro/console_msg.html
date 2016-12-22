@@ -133,27 +133,27 @@
            <div itemprop="articleBody">
             
   <h1>Source code for opsoro.console_msg</h1><div class="highlight"><pre>
-<div class="viewcode-block" id="print_info"><a class="viewcode-back" href="../../opsoro.html#opsoro.console_msg.print_info">[docs]</a><span></span><span class="k">def</span> <span class="nf">print_info</span><span class="p">(</span><span class="n">msg</span><span class="p">):</span>
+<div class="viewcode-block" id="print_info"><a class="viewcode-back" href="../../modules/index.html#opsoro.console_msg.print_info">[docs]</a><span></span><span class="k">def</span> <span class="nf">print_info</span><span class="p">(</span><span class="n">msg</span><span class="p">):</span>
     <span class="nb">print</span> <span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[1m[</span><span class="se">\033</span><span class="s2">[96m INFO </span><span class="se">\033</span><span class="s2">[0m</span><span class="se">\033</span><span class="s2">[1m]</span><span class="se">\033</span><span class="s2">[0m </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">msg</span></div>
 
 
-<div class="viewcode-block" id="print_warning"><a class="viewcode-back" href="../../opsoro.html#opsoro.console_msg.print_warning">[docs]</a><span class="k">def</span> <span class="nf">print_warning</span><span class="p">(</span><span class="n">msg</span><span class="p">):</span>
+<div class="viewcode-block" id="print_warning"><a class="viewcode-back" href="../../modules/index.html#opsoro.console_msg.print_warning">[docs]</a><span class="k">def</span> <span class="nf">print_warning</span><span class="p">(</span><span class="n">msg</span><span class="p">):</span>
     <span class="nb">print</span> <span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[1m[</span><span class="se">\033</span><span class="s2">[93m WARN </span><span class="se">\033</span><span class="s2">[0m</span><span class="se">\033</span><span class="s2">[1m]</span><span class="se">\033</span><span class="s2">[0m </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">msg</span></div>
 
 
-<div class="viewcode-block" id="print_error"><a class="viewcode-back" href="../../opsoro.html#opsoro.console_msg.print_error">[docs]</a><span class="k">def</span> <span class="nf">print_error</span><span class="p">(</span><span class="n">msg</span><span class="p">):</span>
+<div class="viewcode-block" id="print_error"><a class="viewcode-back" href="../../modules/index.html#opsoro.console_msg.print_error">[docs]</a><span class="k">def</span> <span class="nf">print_error</span><span class="p">(</span><span class="n">msg</span><span class="p">):</span>
     <span class="nb">print</span> <span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[1m[</span><span class="se">\033</span><span class="s2">[91m ERRO </span><span class="se">\033</span><span class="s2">[0m</span><span class="se">\033</span><span class="s2">[1m]</span><span class="se">\033</span><span class="s2">[0m </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">msg</span></div>
 
 
-<div class="viewcode-block" id="print_apploaded"><a class="viewcode-back" href="../../opsoro.html#opsoro.console_msg.print_apploaded">[docs]</a><span class="k">def</span> <span class="nf">print_apploaded</span><span class="p">(</span><span class="n">appname</span><span class="p">):</span>
+<div class="viewcode-block" id="print_apploaded"><a class="viewcode-back" href="../../modules/index.html#opsoro.console_msg.print_apploaded">[docs]</a><span class="k">def</span> <span class="nf">print_apploaded</span><span class="p">(</span><span class="n">appname</span><span class="p">):</span>
     <span class="nb">print</span> <span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[1m[</span><span class="se">\033</span><span class="s2">[92m APP LOADED </span><span class="se">\033</span><span class="s2">[0m</span><span class="se">\033</span><span class="s2">[1m]</span><span class="se">\033</span><span class="s2">[0m </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">appname</span></div>
 
 
-<div class="viewcode-block" id="print_appstarted"><a class="viewcode-back" href="../../opsoro.html#opsoro.console_msg.print_appstarted">[docs]</a><span class="k">def</span> <span class="nf">print_appstarted</span><span class="p">(</span><span class="n">appname</span><span class="p">):</span>
+<div class="viewcode-block" id="print_appstarted"><a class="viewcode-back" href="../../modules/index.html#opsoro.console_msg.print_appstarted">[docs]</a><span class="k">def</span> <span class="nf">print_appstarted</span><span class="p">(</span><span class="n">appname</span><span class="p">):</span>
     <span class="nb">print</span> <span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[1m[</span><span class="se">\033</span><span class="s2">[92m APP STARTED </span><span class="se">\033</span><span class="s2">[0m</span><span class="se">\033</span><span class="s2">[1m]</span><span class="se">\033</span><span class="s2">[0m </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">appname</span></div>
 
 
-<div class="viewcode-block" id="print_appstopped"><a class="viewcode-back" href="../../opsoro.html#opsoro.console_msg.print_appstopped">[docs]</a><span class="k">def</span> <span class="nf">print_appstopped</span><span class="p">(</span><span class="n">appname</span><span class="p">):</span>
+<div class="viewcode-block" id="print_appstopped"><a class="viewcode-back" href="../../modules/index.html#opsoro.console_msg.print_appstopped">[docs]</a><span class="k">def</span> <span class="nf">print_appstopped</span><span class="p">(</span><span class="n">appname</span><span class="p">):</span>
     <span class="nb">print</span> <span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[1m[</span><span class="se">\033</span><span class="s2">[93m APP STOPPED </span><span class="se">\033</span><span class="s2">[0m</span><span class="se">\033</span><span class="s2">[1m]</span><span class="se">\033</span><span class="s2">[0m </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">appname</span></div>
 </pre></div>
 

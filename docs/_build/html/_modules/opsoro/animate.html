@@ -139,7 +139,7 @@
 <span class="kn">import</span> <span class="nn">time</span>
 
 
-<div class="viewcode-block" id="Animate"><a class="viewcode-back" href="../../opsoro.html#opsoro.animate.Animate">[docs]</a><span class="k">class</span> <span class="nc">Animate</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="Animate"><a class="viewcode-back" href="../../modules/index.html#opsoro.animate.Animate">[docs]</a><span class="k">class</span> <span class="nc">Animate</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">times</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">		Class to facilitate the tweening of values in time. The animation starts</span>
@@ -179,14 +179,14 @@
         <span class="c1"># returns a 0D numpy array.</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iplt</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
 
-<div class="viewcode-block" id="Animate.has_ended"><a class="viewcode-back" href="../../opsoro.html#opsoro.animate.Animate.has_ended">[docs]</a>    <span class="k">def</span> <span class="nf">has_ended</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Animate.has_ended"><a class="viewcode-back" href="../../modules/index.html#opsoro.animate.Animate.has_ended">[docs]</a>    <span class="k">def</span> <span class="nf">has_ended</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">		Returns true if the animation has ended.</span>
 <span class="sd">		&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_end_time</span></div></div>
 
 
-<div class="viewcode-block" id="AnimatePeriodic"><a class="viewcode-back" href="../../opsoro.html#opsoro.animate.AnimatePeriodic">[docs]</a><span class="k">class</span> <span class="nc">AnimatePeriodic</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="AnimatePeriodic"><a class="viewcode-back" href="../../modules/index.html#opsoro.animate.AnimatePeriodic">[docs]</a><span class="k">class</span> <span class="nc">AnimatePeriodic</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">times</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">		Class to facilitate the tweening of values in time. The animation starts</span>
