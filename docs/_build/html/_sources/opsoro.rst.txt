@@ -9,7 +9,7 @@ Modules
     modules/index.rst
 
 
-
+.. _sec-opsoro:
 
 Module contents
 ---------------

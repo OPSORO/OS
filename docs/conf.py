@@ -23,8 +23,8 @@ sys.path.insert(0, os.path.abspath('../src/'))
 # sudo apt-get install python-mock
 import mock, sys
 MOCK_MODULES = ['smbus', 'spidev', 'flask', 'flask.ctx', 'flask_login',
-                'sockjs', 'sockjs.tornado', 'tornado', 'tornado.log',
-                'tornado.wsgi', 'tornado.ioloop', 'tornado.web',
+                'flask_babel', 'sockjs', 'sockjs.tornado', 'tornado',
+                'tornado.log', 'tornado.wsgi', 'tornado.ioloop', 'tornado.web',
                 'tornado.httpserver', 'pluginbase', 'lupa']
 for mod_name in MOCK_MODULES:
     sys.modules[mod_name] = mock.Mock()

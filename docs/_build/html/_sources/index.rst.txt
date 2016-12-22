@@ -10,6 +10,7 @@ Welcome to OPSORO's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+   development/index.rst
    opsoro
 
 

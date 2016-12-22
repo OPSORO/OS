@@ -22,3 +22,5 @@ Temporary Items
 
 .sync-config.cson
 *.pyc
+
+_build
