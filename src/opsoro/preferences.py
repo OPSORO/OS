@@ -41,7 +41,8 @@ class _Preferences(object):
         try:
             return self.git.branch().split()[-1]
         except:
-            print_warning("Failed to get current branch")
+            print_error(
+                "Failed to get current branch, is there a git repo setup?")
             return ""
 
     def get_remote_branches(self):
@@ -59,7 +60,8 @@ class _Preferences(object):
                     # Get only branch name (last value)
                     branches.append(returnvalue[i].split("/")[-1])
         except:
-            print_warning("Failed to get remote branches")
+            print_warning(
+                "Failed to get remote branches, is there a git repo setup and do you have internet?")
             pass
 
         return branches
@@ -71,7 +73,8 @@ class _Preferences(object):
             # Update local git data
             self.git.fetch()
         except:
-            print_warning("Failed to fetch")
+            print_warning(
+                "Failed to fetch, is there a git repo setup and do you have internet?")
             return False
         # Retrieve git remote <-> local difference status
         status = self.git.status()

@@ -21,22 +21,26 @@ def sigterm_handler(_signo, _stack_frame):
     sys.exit(0)
 
 
-LOG_FILE_DIR = '/home/pi/OPSORO/log/'
-if not os.path.exists(LOG_FILE_DIR):
-    os.makedirs(LOG_FILE_DIR)
+try:
+    LOG_FILE_DIR = '../../../log/'
+    if not os.path.exists(LOG_FILE_DIR):
+        os.makedirs(LOG_FILE_DIR)
 
-# Setup logging
-LOG_FILENAME = LOG_FILE_DIR + str(datetime.date.today()) + ".log"
-LOG_LEVEL = logging.DEBUG
+    # Setup logging
+    LOG_FILENAME = LOG_FILE_DIR + str(datetime.date.today()) + ".log"
+    LOG_LEVEL = logging.DEBUG
 
-tornado.log.enable_pretty_logging()
-logger = logging.getLogger()
-logger.setLevel(LOG_LEVEL)
-handler = logging.handlers.TimedRotatingFileHandler(
-    LOG_FILENAME, when="midnight", backupCount=3)
-formatter = logging.Formatter("%(asctime)s %(levelname)-8s %(message)s")
-handler.setFormatter(formatter)
-logger.addHandler(handler)
+    tornado.log.enable_pretty_logging()
+    logger = logging.getLogger()
+    logger.setLevel(LOG_LEVEL)
+    handler = logging.handlers.TimedRotatingFileHandler(
+        LOG_FILENAME, when="midnight", backupCount=3)
+    formatter = logging.Formatter("%(asctime)s %(levelname)-8s %(message)s")
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
+
+except Exception as e:
+    print_error('Unable to log')
 
 
 def main():
