@@ -22,6 +22,9 @@ constrain = lambda n, minn, maxn: max(min(maxn, n), minn)
 
 class _Preferences(object):
     def __init__(self):
+        """
+        Preferences class to store and retrieve settings.
+        """
         self.data = {}
         self.load_prefs()
         self.dir = os.path.abspath(
@@ -36,6 +39,12 @@ class _Preferences(object):
             pass
 
     def get_current_branch(self):
+        """
+        Retrieves the current git branch of the repository.
+
+        :return:    current git branch.
+        :rtype:     string
+        """
         if self.git is None:
             return False
         try:
@@ -46,6 +55,12 @@ class _Preferences(object):
             return ""
 
     def get_remote_branches(self):
+        """
+        Retrieve all git branches of the repository.
+
+        :return:    branches of the repository.
+        :rtype:     list
+        """
         if self.git is None:
             return False
         branches = []
@@ -67,6 +82,12 @@ class _Preferences(object):
         return branches
 
     def check_if_update(self):
+        """
+        Checks git repository for available changes.
+
+        :return:    True if update is available, False if the command failed or no update available.
+        :rtype:     bool
+        """
         if self.git is None:
             return False
         try:
@@ -84,6 +105,9 @@ class _Preferences(object):
         return False
 
     def update(self):
+        """
+        Creates a update file flag and restarts the service.
+        """
         if self.git is None:
             return False
         # Create file to let deamon know it has to update before starting the server
@@ -101,6 +125,9 @@ class _Preferences(object):
         # os.system('/sbin/shutdown -r now')
 
     def load_prefs(self):
+        """
+        Load preferences into data.
+        """
         try:
             with open(get_path("config/preferences.yaml")) as f:
                 self.data = yaml.load(f, Loader=Loader)
@@ -111,9 +138,25 @@ class _Preferences(object):
         print_info("Preferences loaded")
 
     def get(self, section, item, default):
+        """
+        Retrieve preference value.
+
+        :param string section:  category in which the item is defined.
+        :param string item:     item to retrieve.
+        :param default:         default value to return if the value is not available.
+
+        :return:    preference value
+        """
         return self.data.get(section, {}).get(item, default)
 
     def set(self, section, item, value):
+        """
+        Set preference value.
+
+        :param string section:  category in which the item is defined.
+        :param string item:     item to set.
+        :param value:           value to set.
+        """
         if value is None:
             return
         try:
@@ -122,6 +165,9 @@ class _Preferences(object):
             self.data[section] = {item: value}
 
     def save_prefs(self):
+        """
+        Saves preferences to yaml file.
+        """
         try:
             with open(get_path("config/preferences.yaml"), "w") as f:
                 f.write(
@@ -135,6 +181,15 @@ class _Preferences(object):
                     update_wireless=False,
                     restart_wireless=False,
                     update_dns=False):
+        """
+        Apply preferences to the system.
+
+        :param bool update_audio:       True if audio settings have changed and needs to update.
+        :param bool update_wireless:    True if wireless settings have changed and the wireless interface needs to update.
+        :param bool restart_wireless:   True if wireless settings have changed and the wireless interface needs to restart.
+        :param bool update_dns:         True if DNS settings have changed and needs to update.
+        """
+
         def change_conf_setting(txt, name, val):
             pattern = "^%s([ \t]*)=([ \t]*).*$" % name
             new = "%s=%s" % (name, val)

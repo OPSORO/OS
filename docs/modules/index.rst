@@ -11,6 +11,7 @@ Internal Modules
    dof
    hardware
    module
+   preferences
    server
    sound
 
@@ -42,17 +43,6 @@ opsoro.expression
 -----------------
 
 .. automodule:: opsoro.expression
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-.. _sec-modules-preferences:
-
-opsoro.preferences
-------------------
-
-.. automodule:: opsoro.preferences
    :members:
    :undoc-members:
    :show-inheritance:

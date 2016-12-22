@@ -14,12 +14,13 @@ constrain = lambda n, minn, maxn: max(min(maxn, n), minn)
 class DOF(object):
     def __init__(self, name, neutral=0.0, poly=None):
         """
-        Sets the dof value
+        DOF class.
 
-        Arguments:
-            neutral: neutral dof position
-            poly: 20 dof values linked to emotions
+        :param string name:     name of the DOF.
+        :param float neutral:   neutral dof position.
+        :param list poly:       20 dof values linked to emotions.
         """
+
         self.name = name
         self.value = neutral
 
@@ -52,12 +53,12 @@ class DOF(object):
 
     def set_control_polygon(self, neutral=0.0, poly=None):
         """
-        Sets the control polygon, 20 dof values are linked to certain emotions
+        Sets the control polygon, 20 dof values are linked to certain emotions.
 
-        Arguments:
-            neutral: neutral dof position
-            poly: 20 dof values linked to emotions
+        :param float neutral:   neutral dof position.
+        :param list poly:       20 dof values linked to emotions.
         """
+
         self._neutral = constrain(neutral, -1.0, 1.0)
 
         if poly is None or len(poly) == 0:
@@ -87,10 +88,9 @@ class DOF(object):
         """
         Calculate dof value with the polygon, according to the given r and phi.
 
-        Arguments:
-            r: radius r, intensity of the emotion
-            phi: (radians) angle of the emotion in the circumplex
-            anim_time: animation time; time for the servo to move from previous dof to the new dof (-1: animation will be based on dof differences)
+        :param float r:         radius r, intensity of the emotion.
+        :param float phi:       (radians) angle of the emotion in the circumplex.
+        :param float anim_time: time for the servo to move from previous dof to the new dof (-1: animation will be based on dof differences).
         """
         # print_info('Calc; r: %d, phi: %d, time: %i' % (r, phi, anim_time))
         # Calculate DOF position at max intensity
@@ -121,13 +121,12 @@ class DOF(object):
                   is_overlay=False,
                   update_last_set_time=True):
         """
-        Sets the dof value
+        Sets the dof value.
 
-        Arguments:
-            dof_value: new value of the dof
-            anim_time: animation time; time for the servo to move from previous dof to the new dof (-1: animation will be based on dof differences)
-            is_overlay: used to determine what priority the dof value has (overlay > default)
-            update_last_set_time: update the last set timer of the dof
+        :param float dof_value:             new value of the dof.
+        :param float anim_time:             time for the servo to move from previous dof to the new dof (-1: animation will be based on dof differences).
+        :param bool is_overlay:             used to determine what priority the dof value has (overlay > default).
+        :param bool update_last_set_time:   update the last set timer of the dof.
         """
         # print_info('Set value: %d, time: %i' % (dof_value, anim_time))
 
@@ -149,30 +148,29 @@ class DOF(object):
                           anim_time=-1,
                           update_last_set_time=True):
         """
-        Sets the overlay value and overwrites the dof position
+        Sets the overlay value and overwrites the dof position.
 
-        Arguments:
-           dof_value: new overlay value of the dof
-           anim_time: animation time; time for the servo to move from previous dof to the new dof (-1: animation will be based on dof differences)
-           update_last_set_time: update the last set timer of the dof
+        :param float dof_value:             new overlay value of the dof.
+        :param float anim_time:             time for the servo to move from previous dof to the new dof (-1: animation will be based on dof differences).
+        :param bool update_last_set_time:   update the last set timer of the dof.
         """
         self.set_value(dof_value, anim_time, True, update_last_set_time)
 
     def reset_overlay(self, anim_time=-1):
         """
-        Clears the overlay value and resets the dof position to the last set value
+        Clears the overlay value and resets the dof position to the last set value.
 
-        Arguments:
-            anim_time: animation time; time for the servo to move from previous dof to the new dof (-1: animation will be based on dof differences)
+        :param float anim_time: time for the servo to move from previous dof to the new dof (-1: animation will be based on dof differences).
         """
+
         self.set_value(self.last_set_value, anim_time)
 
     def update(self):
         """
-        Updates the dof value according to the animation
+        Updates the dof value according to the animation.
 
-        Returns:
-            bool: True if dof value is updated, False if dof value did not change
+        :return:    True if dof value is updated, False if dof value did not change.
+        :rtype:     bool
         """
         if self._anim is not None:
             self.value = float(self._anim())

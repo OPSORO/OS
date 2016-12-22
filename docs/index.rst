@@ -11,6 +11,7 @@ Welcome to OPSORO's documentation!
    :caption: Contents:
 
    development/index.rst
+   development/commenting.rst
    opsoro
 
 
