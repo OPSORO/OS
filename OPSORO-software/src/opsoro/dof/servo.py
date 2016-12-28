@@ -81,9 +81,11 @@ class Servo(DOF):
 
         # Only update if position is changed
         if self.position == self.dof_to_us(self.value):
+
             return False
         else:
             self.position = self.dof_to_us(self.value)
+
 
         # print_info('Servo: pin: %i, pos: %f' % (self.pin, self.position))
 

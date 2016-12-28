@@ -87,7 +87,7 @@ class DOF(object):
         return self.value
 
     def set_value(self, dof_value=0, anim_time=-1):
-        # print_info('Set value: %d, time: %i' % (dof_value, anim_time))
+        #print_info('Set value: %d, time: %i' % (dof_value, anim_time))
 
         dof_value = float(constrain(float(dof_value), -1.0, 1.0))
         # Apply transition animation

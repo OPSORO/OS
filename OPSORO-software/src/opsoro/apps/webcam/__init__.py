@@ -8,7 +8,7 @@ import cmath
 
 from opsoro.console_msg import *
 from opsoro.expression import Expression
-from opsoro.cameraV2 import Camera
+from opsoro.MCamera import MCamera
 # from opsoro.stoppable_thread import StoppableThread
 
 
@@ -82,8 +82,7 @@ def setup(opsoroapp):
 
 
 def start(opsoroapp):
-    pass
-
+    MCamera.start()
 
 def stop(opsoroapp):
-    pass
+    MCamera.stop()

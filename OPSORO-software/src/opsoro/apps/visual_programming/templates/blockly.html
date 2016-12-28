@@ -91,21 +91,35 @@
 		</category>
 		<category name="Drive" id="catDrive">
 			<block type="drive_stop">
-				<block type="math_number">
-					<field name="NUM">1</field>
-				</block></block>
+				</block>
 			<block type="drive_drive">
+				<value name="SPEED">
 				<block type="math_number">
 					<field name="NUM">1</field>
-				</block></block>
+				</block>
+			</value>
+		</block>
 			<block type="drive_shortTurn">
+				<value name="SPEED">
 				<block type="math_number">
 					<field name="NUM">1</field>
-				</block></block>
+				</block>
+			</value>
+		</block>
 			<block type="drive_longTurn">
+				<value name="SPEED">
 				<block type="math_number">
 					<field name="NUM">1</field>
-				</block></block>
+				</block>
+			</value>
+		</block>
+		<block type="drive_drive_side">
+			<value name="SPEED">
+			<block type="math_number">
+				<field name="NUM">1</field>
+			</block>
+		</value>
+	</block>
 		</category>
 		<category name="Touch" id="catTouch">
 			<block type="touch_init"></block>

@@ -1,9 +1,8 @@
 import time
-#import spidev
-import fake_spidev as spidev
+import spidev
 import threading
-#from hardware.adafruit_servo_controller import pwm
-#from opsoro.hardware.adafruit_servo_controller import pwm
+
+DEBUG_MODE = False
 
 # SPI COMMANDS
 # > GENERAL                  IN  OUT
@@ -342,5 +341,11 @@ class _Hardware(object):
             self.servo_set_all(pos_list)
 
 # Global instance that can be accessed by apps and scripts
-Hardware = _Hardware()
+Hardware = None
+if DEBUG_MODE:
+    from fake_hardware import Fake_Hardware
+    Hardware = Fake_Hardware()
+else:
+    Hardware = _Hardware()
+
 Hardware.spi_command(CMD_RESET)

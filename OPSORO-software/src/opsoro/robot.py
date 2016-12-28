@@ -1,13 +1,6 @@
 import os
 from functools import partial
-
-# from opsoro.hardware import Hardware
-from opsoro.console_msg import *
-from opsoro.stoppable_thread import StoppableThread
-from opsoro.hardware import Hardware
-
-import traceback
-
+import lupa
 from random import randint
 import time
 import json
@@ -19,22 +12,17 @@ except ImportError:
 
 get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 
-# Modules
-from opsoro.module.moduleFactory import ModuleFactory
-from opsoro.module import *
-from opsoro.module.eye import Eye
-from opsoro.module.eyebrow import Eyebrow
-from opsoro.module.mouth import Mouth
-from opsoro.module.wheel import Wheel
 
-# Groups
-from opsoro.moduleGroup import *
-from opsoro.moduleGroup.wheelGroup import wheelGroup
+from opsoro.console_msg import *
+from opsoro.stoppable_thread import StoppableThread
+from opsoro.hardware import Hardware
+from opsoro.Entity.Factory import Factory
+
 
 
 class _Robot(object):
     def __init__(self):
-        self.modules = {}
+        self.entities = {}
         self.groups = {}
         self._config = {}
         self._dof_t = None
@@ -72,22 +60,15 @@ class _Robot(object):
     def config(self, config=None):
         if config is not None and len(config) > 0:
             self._config = json.loads(config)
-
-            mf = ModuleFactory(self._config['modules'])
-            for i in mf.load_modules():
-                self.modules[str(i.name)] = i
-
-
-            # print module feedback
-            print_info("Modules: " + str(mf.count_Types()))
+            self.entities = Factory(self._config).load_entities()
         return self._config
 
     def set_dof_value(self, module_name, dof_name, dof_value, anim_time=-1):
         if module_name is None:
-            for name, module in self.modules.iteritems():
+            for name, module in self.entities.iteritems():
                 module.set_dof_value(None, dof_value, anim_time)
-        elif module_name in self.modules:
-            self.modules[module_name].set_dof_value(dof_name, dof_value, anim_time)
+        elif module_name in self.entities:
+            self.entities[module_name].set_dof_value(dof_name, dof_value, anim_time)
         else:
             print_warning("no module " + module_name)
             traceback.print_exc()
@@ -96,14 +77,14 @@ class _Robot(object):
     def set_dof_values(self, dof_values, anim_time=-1):
         for module_name, dofs in dof_values.iteritems():
             for dof_name, dof_value in dofs.iteritems():
-                self.modules[module_name].set_dof_value(dof_name, dof_value, anim_time)
+                self.entities[module_name].set_dof_value(dof_name, dof_value, anim_time)
         self.start_update_loop()
 
     def get_dof_values(self):
         dofs = []
         for i in range(16):
             dofs.append(0)
-        for module_name, module in self.modules.iteritems():
+        for module_name, module in self.entities.iteritems():
             for dof_name, dof in module.dofs.iteritems():
                 if hasattr(dof, 'pin'):
                     dofs[int(dof.pin)] = float(dof.value)
@@ -113,7 +94,7 @@ class _Robot(object):
     def apply_poly(self, r, phi, anim_time=-1):
         # print_info('Apply robot poly; r: %f, phi: %f, time: %f' %
         #            (r, phi, anim_time))
-        for name, module in self.modules.iteritems():
+        for name, module in self.entities.iteritems():
             module.apply_poly(r, phi, anim_time)
 
         self.start_update_loop()
@@ -137,7 +118,7 @@ class _Robot(object):
 
     def update(self):
         updated = False
-        for name, module in self.modules.iteritems():
+        for name, module in self.entities.iteritems():
             if module.update():
                 updated = True
         return updated
@@ -178,18 +159,13 @@ class _Robot(object):
             print_warning("Could not save " + file_name)
             return False
         return True
-    #deprecated
-    def blink(self, speed):
-        for name, module in self.modules.iteritems():
-            if hasattr(module, 'blink'):
-                module.blink(speed)
+
 
     #not in use
-    def execute(self, action, tags=[], **args):
-        tmp = locals()
-        tmp.pop('self',0)
-        print tmp
-        return self.execute(tmp)
+    def execute(self, *args, **kwargs):
+        a = locals()
+        del a["self"]
+        return self.execute(a)
 
     def execute(self,params):
         """
@@ -202,35 +178,35 @@ class _Robot(object):
                     "extra_arg": "value_of_arg",
                     ...
                 }
+            In Lua:
+                Robot:execute{action="forward",tags={"wheels"},speed=1}
         """
+        params = dict(params)
 
         action = (params["action"] if "action" in params else None)
         tags = (params["tags"] if "tags" in params else [])
 
-        #Dit moet nog opgelost worden. Lua kent geen lijsten enkel dictionary's. Met deze try except verhelp ik die fout maar dit is geen mooie oplossing. Ik kijk nog om dit te fixen
-        try:
-            tags = [] + [i for i in params["tags"].values()]
-        except Exception as e:
-            tags = (params["tags"] if "tags" in params else [])
-            pass
+        #cast tags from LuaTable to List
+        if type(tags).__name__ == '_LuaTable' :
+            tags = list(tags.values())
+            params["tags"] = tags
 
-        print tags
-
-        if action and tags:
-            for m in self.getModules(tags):
-                m.execute(params)
+        
+        print_info("Robot:execute{}".format(params))
+        for m in self.get_modules(tags):
+            m.execute(params)
         self.start_update_loop()
 
-    def getModules(self,tags):
+
+
+    def get_modules(self,tags):
         result = []
-        for m in self.modules.values():
+        for m in self.entities.values():
             if m.has_tags(tags):
                 result = result + [m]
 
         return result
 
-    def get_group(self, name):
-        return self.groups[name]
 
 # Global instance that can be accessed by apps and scripts
 Robot = _Robot()
