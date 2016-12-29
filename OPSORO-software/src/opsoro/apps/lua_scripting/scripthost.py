@@ -8,6 +8,7 @@ import lupa
 from opsoro.hardware import Hardware
 from opsoro.expression import Expression
 from opsoro.robot import Robot
+from opsoro.Camera import Camera
 from opsoro.animate import Animate, AnimatePeriodic
 from opsoro.sound import Sound
 from opsoro.stoppable_thread import StoppableThread
@@ -74,6 +75,7 @@ class ScriptHost(object):
         # Set up API
         g = self.runtime.globals()
         g["Robot"] = Robot
+        g["Camera"] = Camera
         g["Sound"] = Sound
         g["Expression"] = Expression
         g["Hardware"] = LuaHardware(self.runtime)

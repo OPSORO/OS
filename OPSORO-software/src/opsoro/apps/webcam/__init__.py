@@ -8,7 +8,7 @@ import cmath
 
 from opsoro.console_msg import *
 from opsoro.expression import Expression
-from opsoro.MCamera import MCamera
+from opsoro.Camera import Camera
 # from opsoro.stoppable_thread import StoppableThread
 
 
@@ -53,26 +53,6 @@ def setup_pages(opsoroapp):
         return opsoroapp.render_template(config['full_name'].lower() + ".html",
                                          **data)
 
-    @opsoroapp.app_socket_connected
-    def s_connected(conn):
-        global clientconn
-        clientconn = conn
-
-    @opsoroapp.app_socket_disconnected
-    def s_disconnected(conn):
-        global clientconn
-        clientconn = None
-
-    @opsoroapp.app_socket_message("startVideo")
-    def getVideo(conn, data):
-        stream = Camera.subscribe(config['full_name'])
-        connection.write(stream.read())
-
-
-    @opsoroapp.app_socket_message("stopVideo")
-    def getVideo(conn, data):
-        Camera.release(config['full_name'])
-
 
     opsoroapp.register_app_blueprint(app_bp)
 
@@ -82,7 +62,7 @@ def setup(opsoroapp):
 
 
 def start(opsoroapp):
-    MCamera.start()
+    Camera.startInternetStream()
 
 def stop(opsoroapp):
-    MCamera.stop()
+    Camera.stopInternetStream()

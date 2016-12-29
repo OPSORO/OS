@@ -1,21 +1,25 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 	<meta charset="utf-8">
 	<style>
-	html, body {
-		background-color: #fff;
-		margin: 0;
-		padding: 0;
-		overflow: hidden;
-		height: 100%;
-	}
-	.blocklySvg {
-		height: 100%;
-		width: 100%;
-	}
+		html,
+		body {
+			background-color: #fff;
+			margin: 0;
+			padding: 0;
+			overflow: hidden;
+			height: 100%;
+		}
+
+		.blocklySvg {
+			height: 100%;
+			width: 100%;
+		}
 	</style>
 </head>
+
 <body>
 	<xml id="toolbox" style="display: none">
 		<category name="General" id="catGeneral">
@@ -91,35 +95,47 @@
 		</category>
 		<category name="Drive" id="catDrive">
 			<block type="drive_stop">
-				</block>
+			</block>
 			<block type="drive_drive">
 				<value name="SPEED">
-				<block type="math_number">
-					<field name="NUM">1</field>
-				</block>
-			</value>
-		</block>
+					<block type="math_number">
+						<field name="NUM">1</field>
+					</block>
+				</value>
+			</block>
 			<block type="drive_shortTurn">
 				<value name="SPEED">
-				<block type="math_number">
-					<field name="NUM">1</field>
-				</block>
-			</value>
-		</block>
+					<block type="math_number">
+						<field name="NUM">1</field>
+					</block>
+				</value>
+			</block>
 			<block type="drive_longTurn">
 				<value name="SPEED">
-				<block type="math_number">
-					<field name="NUM">1</field>
-				</block>
-			</value>
-		</block>
-		<block type="drive_drive_side">
-			<value name="SPEED">
-			<block type="math_number">
-				<field name="NUM">1</field>
+					<block type="math_number">
+						<field name="NUM">1</field>
+					</block>
+				</value>
 			</block>
-		</value>
-	</block>
+			<block type="drive_drive_side">
+				<value name="SPEED">
+					<block type="math_number">
+						<field name="NUM">1</field>
+					</block>
+				</value>
+			</block>
+		</category>
+		<category name="Camera" id="catCamera">
+			<block type="camera_start">
+			</block>
+			<block type="camera_refresh_rate">
+			</block>
+			<block type="camera_stop">
+			</block>
+			<block type="camera_reg_facedetection">
+			</block>
+			<block type="camera_search_face">
+			</block>
 		</category>
 		<category name="Touch" id="catTouch">
 			<block type="touch_init"></block>
@@ -325,14 +341,20 @@
 
 	<script src="/static/js/vendor/jquery.js"></script>
 	<script>
-		var soundlist = [
-			{% if soundfiles %}
-				{% for soundfile in soundfiles %}
-					["{{ soundfile }}", "{{ soundfile }}"]{% if not loop.last %},{% endif %}
-				{% endfor %}
-			{% else %}
-				["No sounds found!", "NOSOUND"]
-			{% endif %}
+		var soundlist = [{ %
+				if soundfiles %
+			} { %
+				for soundfile in soundfiles %
+			}
+			["{{ soundfile }}", "{{ soundfile }}"] { %
+				if not loop.last %
+			}, { % endif %
+			} { % endfor %
+			} { %
+				else %
+			}
+			["No sounds found!", "NOSOUND"] { % endif %
+			}
 		];
 	</script>
 	<script src="static/blockly/blockly_compressed.js"></script>
@@ -340,7 +362,7 @@
 	<script src="static/blockly/msg/js/en.js"></script>
 	<script src="static/blockly/lua_compressed.js"></script>
 
-  <script src="static/custom_blocks/general.js"></script>
+	<script src="static/custom_blocks/general.js"></script>
 	<script src="static/custom_blocks/interface.js"></script>
 	<script src="static/custom_blocks/sound.js"></script>
 	<script src="static/custom_blocks/hardware.js"></script>
@@ -349,13 +371,17 @@
 	<script src="static/custom_blocks/touch.js"></script>
 	<script src="static/custom_blocks/neopixel.js"></script>
 	<script src="static/custom_blocks/drive.js"></script>
+	<script src="static/custom_blocks/camera.js"></script>
 
 	<script>
 		$(document).ready(function() {
 			Blockly.BlockSvg.START_HAT = true;
-			var workspace = Blockly.inject(document.body, {toolbox: document.getElementById("toolbox")});
+			var workspace = Blockly.inject(document.body, {
+				toolbox: document.getElementById("toolbox")
+			});
 			window.parent.blocklyLoaded(Blockly, workspace); // Let the top-level application know that Blockly is ready
 		});
 	</script>
 </body>
+
 </html>
