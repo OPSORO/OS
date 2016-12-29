@@ -1,1 +1,0 @@
-<xml xmlns="http://www.w3.org/1999/xhtml"><block type="general_onsetup" x="61" y="29"><statement name="BODY"><block type="text_print"><value name="TEXT"><block type="text"><field name="TEXT">position</field></block></value></block></statement></block></xml>
