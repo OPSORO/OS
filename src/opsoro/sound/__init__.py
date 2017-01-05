@@ -9,7 +9,7 @@ get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 class _Sound(object):
     def __init__(self):
         # List of search folders for sound files
-        self.sound_folders = ["data/sounds/"]
+        self.sound_folders = ["../data/sounds/"]
         self.playProcess = None
         self.jack = False
 
