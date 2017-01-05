@@ -18,7 +18,7 @@ sys.path.insert(0, os.path.join(basedir, "src"))
 # ----------------------------------------------------------------------
 # UPDATER
 # ----------------------------------------------------------------------
-git_dir = os.path.abspath(os.path.join(basedir, '..')) + '/'
+git_dir = os.path.abspath(basedir) + '/'
 backup_dir = '/home/pi/OPSORO/backup/'
 
 # Check if update is needed
