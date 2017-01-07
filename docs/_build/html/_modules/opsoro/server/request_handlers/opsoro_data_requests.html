@@ -1,0 +1,506 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>opsoro.server.request_handlers.opsoro_data_requests &mdash; OPSORO 1.0 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../../../genindex.html"/>
+        <link rel="search" title="Search" href="../../../../search.html"/>
+    <link rel="top" title="OPSORO 1.0 documentation" href="../../../../index.html"/>
+        <link rel="up" title="opsoro.server.request_handlers" href="../request_handlers.html"/> 
+
+  
+  <script src="../../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../../index.html" class="icon icon-home"> OPSORO
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../development/index.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../opsoro.html">OPSORO OS</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../../../index.html">OPSORO</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+      
+          <li><a href="../../../opsoro.html">opsoro</a> &raquo;</li>
+      
+          <li><a href="../../server.html">opsoro.server</a> &raquo;</li>
+      
+          <li><a href="../request_handlers.html">opsoro.server.request_handlers</a> &raquo;</li>
+      
+    <li>opsoro.server.request_handlers.opsoro_data_requests</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for opsoro.server.request_handlers.opsoro_data_requests</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">with_statement</span>
+
+<span class="kn">from</span> <span class="nn">flask</span> <span class="k">import</span> <span class="n">Flask</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">send_from_directory</span>
+
+<span class="kn">from</span> <span class="nn">opsoro.robot</span> <span class="k">import</span> <span class="n">Robot</span>
+<span class="kn">from</span> <span class="nn">opsoro.hardware</span> <span class="k">import</span> <span class="n">Hardware</span>
+<span class="kn">from</span> <span class="nn">opsoro.expression</span> <span class="k">import</span> <span class="n">Expression</span>
+<span class="kn">from</span> <span class="nn">opsoro.sound</span> <span class="k">import</span> <span class="n">Sound</span>
+<span class="kn">from</span> <span class="nn">opsoro.console_msg</span> <span class="k">import</span> <span class="o">*</span>
+
+<span class="kn">import</span> <span class="nn">glob</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="k">import</span> <span class="n">wraps</span><span class="p">,</span> <span class="n">partial</span>
+<span class="c1"># from werkzeug import secure_filename</span>
+<span class="n">get_abs_path</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">,</span>
+                       <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">__file__</span><span class="p">)))</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">simplejson</span> <span class="k">as</span> <span class="nn">json</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">json</span>
+
+<span class="kn">import</span> <span class="nn">yaml</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">yaml</span> <span class="k">import</span> <span class="n">CLoader</span> <span class="k">as</span> <span class="n">Loader</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">yaml</span> <span class="k">import</span> <span class="n">Loader</span>
+
+<span class="n">constrain</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">n</span><span class="p">,</span> <span class="n">minn</span><span class="p">,</span> <span class="n">maxn</span><span class="p">:</span> <span class="nb">max</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">maxn</span><span class="p">,</span> <span class="n">n</span><span class="p">),</span> <span class="n">minn</span><span class="p">)</span>
+
+<span class="c1"># ------------------------------------------------------------------------------</span>
+<span class="c1"># DOCUMENTS</span>
+<span class="c1"># ------------------------------------------------------------------------------</span>
+
+<span class="n">docs_data_path</span> <span class="o">=</span> <span class="s1">&#39;../../data/&#39;</span>
+
+
+<div class="viewcode-block" id="is_safe_path"><a class="viewcode-back" href="../../../../modules/server.html#opsoro.server.request_handlers.opsoro_data_requests.is_safe_path">[docs]</a><span class="k">def</span> <span class="nf">is_safe_path</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;..&#39;</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="docs_file_data"><a class="viewcode-back" href="../../../../modules/server.html#opsoro.server.request_handlers.opsoro_data_requests.docs_file_data">[docs]</a><span class="k">def</span> <span class="nf">docs_file_data</span><span class="p">(</span><span class="n">app_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">file_name_ext</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="n">file_name_ext</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;f&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+    <span class="c1"># if action == &#39;get&#39;:</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_safe_path</span><span class="p">(</span><span class="n">file_name_ext</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s1">&#39;success&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                           <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="s1">&#39;Provided data error.&#39;</span><span class="p">})</span>
+
+    <span class="n">file_name_ext</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%2F</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="p">)</span>
+
+    <span class="n">defaultPath</span> <span class="o">=</span> <span class="n">docs_data_path</span>
+    <span class="k">if</span> <span class="n">app_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">defaultPath</span> <span class="o">+=</span> <span class="n">app_name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    <span class="n">folderPath</span> <span class="o">=</span> <span class="n">get_abs_path</span><span class="p">(</span><span class="n">defaultPath</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">folderPath</span> <span class="o">+</span> <span class="n">file_name_ext</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">send_from_directory</span><span class="p">(</span><span class="n">folderPath</span><span class="p">,</span> <span class="n">file_name_ext</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s1">&#39;success&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="s1">&#39;File error.&#39;</span><span class="p">})</span></div>
+
+
+<div class="viewcode-block" id="docs_file_save"><a class="viewcode-back" href="../../../../modules/server.html#opsoro.server.request_handlers.opsoro_data_requests.docs_file_save">[docs]</a><span class="k">def</span> <span class="nf">docs_file_save</span><span class="p">(</span><span class="n">app_name</span><span class="p">):</span>
+    <span class="n">file_name</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;file_name&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">file_ext</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;file_extension&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">file_data</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;file_data&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">file_data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s1">&#39;success&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                           <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="s1">&#39;Provided data error.&#39;</span><span class="p">})</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_safe_path</span><span class="p">(</span><span class="n">file_name</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">is_safe_path</span><span class="p">(</span><span class="n">file_ext</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s1">&#39;success&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                           <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="s1">&#39;Provided data error.&#39;</span><span class="p">})</span>
+
+    <span class="n">defaultPath</span> <span class="o">=</span> <span class="n">docs_data_path</span>
+    <span class="k">if</span> <span class="n">app_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">defaultPath</span> <span class="o">+=</span> <span class="n">app_name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+    <span class="n">folderPath</span> <span class="o">=</span> <span class="n">get_abs_path</span><span class="p">(</span><span class="n">defaultPath</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span><span class="p">)</span>
+
+    <span class="n">file_name_ext</span> <span class="o">=</span> <span class="p">(</span><span class="n">file_name</span> <span class="o">+</span> <span class="n">file_ext</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">folderPath</span> <span class="o">+</span> <span class="n">file_name_ext</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">file_data</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s1">&#39;success&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span></div>
+
+
+<div class="viewcode-block" id="docs_file_delete"><a class="viewcode-back" href="../../../../modules/server.html#opsoro.server.request_handlers.opsoro_data_requests.docs_file_delete">[docs]</a><span class="k">def</span> <span class="nf">docs_file_delete</span><span class="p">(</span><span class="n">app_name</span><span class="p">):</span>
+    <span class="n">file_name_ext</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;file_name_ext&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_safe_path</span><span class="p">(</span><span class="n">file_name_ext</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s1">&#39;success&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                           <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="s1">&#39;Provided data error.&#39;</span><span class="p">})</span>
+
+    <span class="n">defaultPath</span> <span class="o">=</span> <span class="n">docs_data_path</span>
+    <span class="k">if</span> <span class="n">app_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">defaultPath</span> <span class="o">+=</span> <span class="n">app_name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+    <span class="n">deleted</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="n">file_name_ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">get_abs_path</span><span class="p">(</span><span class="n">defaultPath</span><span class="p">),</span> <span class="n">file_name_ext</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">file_name_ext</span><span class="p">):</span>
+        <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">file_name_ext</span><span class="p">)</span>
+        <span class="n">deleted</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">file_name_ext</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">file_name_ext</span><span class="p">)</span>
+        <span class="n">deleted</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">deleted</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s1">&#39;success&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                           <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="s1">&#39;File could not be removed.&#39;</span><span class="p">})</span>
+
+    <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s1">&#39;success&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span></div>
+
+
+<div class="viewcode-block" id="docs_file_list"><a class="viewcode-back" href="../../../../modules/server.html#opsoro.server.request_handlers.opsoro_data_requests.docs_file_list">[docs]</a><span class="k">def</span> <span class="nf">docs_file_list</span><span class="p">():</span>
+    <span class="n">defaultPath</span> <span class="o">=</span> <span class="n">docs_data_path</span>
+    <span class="n">folderPath</span> <span class="o">=</span> <span class="n">defaultPath</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span>
+    <span class="n">appSpecificFolderPath</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">get_ext</span> <span class="o">=</span> <span class="s1">&#39;.*&#39;</span>
+    <span class="n">get_save</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">get_folders</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="c1"># { a: app.name, p: currentpath, e: extension, f: onlyFolders, s: saveFileView }</span>
+    <span class="n">get_app_name</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">get_path</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;p&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">get_ext</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;e&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;.*&#39;</span><span class="p">)</span>
+    <span class="n">get_folders</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;f&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">get_save</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;s&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">is_safe_path</span><span class="p">(</span><span class="n">get_app_name</span><span class="p">):</span>
+        <span class="n">defaultPath</span> <span class="o">+=</span> <span class="n">get_app_name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">)</span>
+    <span class="n">folderPath</span> <span class="o">=</span> <span class="n">defaultPath</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span>
+
+    <span class="c1"># Make sure the file operations stay within the data folder</span>
+    <span class="k">if</span> <span class="n">is_safe_path</span><span class="p">(</span><span class="n">get_path</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">get_path</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">get_path</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;.&#39;</span><span class="p">:</span>
+            <span class="n">get_path</span> <span class="o">=</span> <span class="n">get_path</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="c1"># Make sure the file operations stay within the data folder</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">is_safe_path</span><span class="p">(</span><span class="n">get_ext</span><span class="p">):</span>
+            <span class="n">get_ext</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">get_path</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;path&#39;</span><span class="p">:</span> <span class="n">get_path</span><span class="p">,</span> <span class="s1">&#39;folders&#39;</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">&#39;files&#39;</span><span class="p">:</span> <span class="p">[]}</span>
+
+    <span class="k">if</span> <span class="n">get_path</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+        <span class="n">data</span><span class="p">[</span><span class="s1">&#39;previouspath&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_path</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">get_path</span><span class="o">.</span><span class="n">rfind</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">get_path</span><span class="p">)</span>
+                                                         <span class="o">-</span> <span class="mi">1</span><span class="p">)]</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span>
+        <span class="k">if</span> <span class="n">get_path</span><span class="o">.</span><span class="n">rfind</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">get_path</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">data</span><span class="p">[</span><span class="s1">&#39;previouspath&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;/&#39;</span>
+
+    <span class="n">get_path</span> <span class="o">=</span> <span class="p">(</span><span class="n">folderPath</span> <span class="o">+</span> <span class="n">get_path</span><span class="p">)</span>
+
+    <span class="n">foldernames</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">get_abs_path</span><span class="p">(</span><span class="n">get_path</span> <span class="o">+</span> <span class="s1">&#39;*&#39;</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">foldername</span> <span class="ow">in</span> <span class="n">foldernames</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;.&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">foldername</span><span class="p">)[</span><span class="mi">1</span><span class="p">]):</span>
+            <span class="n">data</span><span class="p">[</span><span class="s1">&#39;folders&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">foldername</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span><span class="p">)</span>
+    <span class="n">data</span><span class="p">[</span><span class="s1">&#39;folders&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">get_save</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">data</span><span class="p">[</span><span class="s1">&#39;savefileview&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_save</span>
+
+    <span class="k">if</span> <span class="n">get_folders</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">filenames</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">get_abs_path</span><span class="p">(</span><span class="n">get_path</span> <span class="o">+</span> <span class="s1">&#39;*&#39;</span> <span class="o">+</span> <span class="n">get_ext</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">filenames</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s1">&#39;.&#39;</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">filename</span><span class="p">)[</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="n">data</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">filename</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">data</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">data</span><span class="p">[</span><span class="s1">&#39;onlyfolders&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_folders</span>
+
+    <span class="k">return</span> <span class="n">data</span></div>
+
+
+<span class="c1"># ------------------------------------------------------------------------------</span>
+<span class="c1"># ROBOT</span>
+<span class="c1"># ------------------------------------------------------------------------------</span>
+<div class="viewcode-block" id="robot_config_data"><a class="viewcode-back" href="../../../../modules/server.html#opsoro.server.request_handlers.opsoro_data_requests.robot_config_data">[docs]</a><span class="k">def</span> <span class="nf">robot_config_data</span><span class="p">():</span>
+    <span class="n">config_data</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;config_data&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+    <span class="c1"># This function also handles the None value and returns the current configuration</span>
+    <span class="n">tempConfig</span> <span class="o">=</span> <span class="n">Robot</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">config_data</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">config_data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">Robot</span><span class="o">.</span><span class="n">save_config</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s1">&#39;success&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;config&#39;</span><span class="p">:</span> <span class="n">tempConfig</span><span class="p">})</span></div>
+
+
+<div class="viewcode-block" id="robot_emotion"><a class="viewcode-back" href="../../../../modules/server.html#opsoro.server.request_handlers.opsoro_data_requests.robot_emotion">[docs]</a><span class="k">def</span> <span class="nf">robot_emotion</span><span class="p">():</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+    <span class="n">phi</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;phi&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+    <span class="n">time</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># Set emotion with time (-1 for smooth animation based on distance of previous dof values)</span>
+    <span class="n">Expression</span><span class="o">.</span><span class="n">set_emotion_r_phi</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">time</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s1">&#39;success&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span></div>
+
+
+<div class="viewcode-block" id="robot_dof_data"><a class="viewcode-back" href="../../../../modules/server.html#opsoro.server.request_handlers.opsoro_data_requests.robot_dof_data">[docs]</a><span class="k">def</span> <span class="nf">robot_dof_data</span><span class="p">():</span>
+    <span class="n">module_name</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;module_name&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">dof_name</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;dof_name&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">dof_value</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+
+    <span class="n">dof_value</span> <span class="o">=</span> <span class="n">constrain</span><span class="p">(</span><span class="n">dof_value</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+
+    <span class="n">Robot</span><span class="o">.</span><span class="n">set_dof_value</span><span class="p">(</span><span class="n">module_name</span><span class="p">,</span> <span class="n">dof_name</span><span class="p">,</span> <span class="n">dof_value</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s1">&#39;success&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span></div>
+
+
+<div class="viewcode-block" id="robot_dofs_data"><a class="viewcode-back" href="../../../../modules/server.html#opsoro.server.request_handlers.opsoro_data_requests.robot_dofs_data">[docs]</a><span class="k">def</span> <span class="nf">robot_dofs_data</span><span class="p">():</span>
+    <span class="n">dof_values</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;dofdata&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+    <span class="c1"># dof_values = request.form.get(&#39;values&#39;, type=str, default=&#39;&#39;)</span>
+    <span class="c1"># print(dof_values)</span>
+    <span class="k">if</span> <span class="n">dof_values</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">dof_values</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">dof_values</span><span class="p">,</span> <span class="n">Loader</span><span class="o">=</span><span class="n">Loader</span><span class="p">)</span>
+        <span class="n">Robot</span><span class="o">.</span><span class="n">set_dof_values</span><span class="p">(</span><span class="n">dof_values</span><span class="p">)</span>
+
+    <span class="n">tempDofs</span> <span class="o">=</span> <span class="n">Robot</span><span class="o">.</span><span class="n">get_dof_values</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s1">&#39;success&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;dofs&#39;</span><span class="p">:</span> <span class="n">tempDofs</span><span class="p">})</span></div>
+
+
+<div class="viewcode-block" id="robot_tts"><a class="viewcode-back" href="../../../../modules/server.html#opsoro.server.request_handlers.opsoro_data_requests.robot_tts">[docs]</a><span class="k">def</span> <span class="nf">robot_tts</span><span class="p">():</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;t&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">is_safe_path</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+        <span class="n">Sound</span><span class="o">.</span><span class="n">say_tts</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s1">&#39;success&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span></div>
+
+
+<div class="viewcode-block" id="robot_sound"><a class="viewcode-back" href="../../../../modules/server.html#opsoro.server.request_handlers.opsoro_data_requests.robot_sound">[docs]</a><span class="k">def</span> <span class="nf">robot_sound</span><span class="p">():</span>
+    <span class="n">soundfile</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;s&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_safe_path</span><span class="p">(</span><span class="n">soundfile</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s1">&#39;success&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="s1">&#39;Unknown file.&#39;</span><span class="p">})</span>
+
+    <span class="n">soundfiles</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">filenames</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="n">filenames</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">get_abs_path</span><span class="p">(</span><span class="n">docs_data_path</span> <span class="o">+</span> <span class="s1">&#39;sounds/*.wav&#39;</span><span class="p">))</span>
+
+    <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">filenames</span><span class="p">:</span>
+        <span class="n">soundfiles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">filename</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="n">soundfile</span> <span class="ow">in</span> <span class="n">soundfiles</span><span class="p">:</span>
+        <span class="n">Sound</span><span class="o">.</span><span class="n">play_file</span><span class="p">(</span><span class="n">soundfile</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s1">&#39;success&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s1">&#39;success&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="s1">&#39;Unknown file.&#39;</span><span class="p">})</span></div>
+
+
+<div class="viewcode-block" id="robot_servo"><a class="viewcode-back" href="../../../../modules/server.html#opsoro.server.request_handlers.opsoro_data_requests.robot_servo">[docs]</a><span class="k">def</span> <span class="nf">robot_servo</span><span class="p">():</span>
+    <span class="n">servo_pin</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;pin_number&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">servo_value</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">1500</span><span class="p">)</span>
+
+    <span class="n">servo_pin</span> <span class="o">=</span> <span class="n">constrain</span><span class="p">(</span><span class="n">servo_pin</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">32</span><span class="p">)</span>
+    <span class="n">servo_value</span> <span class="o">=</span> <span class="n">constrain</span><span class="p">(</span><span class="n">servo_value</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">2500</span><span class="p">)</span>
+
+    <span class="c1"># print_info(&#39;pin: &#39; + str(servo_pin) + &#39;, value: &#39; + str(servo_value))</span>
+
+    <span class="k">with</span> <span class="n">Hardware</span><span class="o">.</span><span class="n">lock</span><span class="p">:</span>
+        <span class="n">Hardware</span><span class="o">.</span><span class="n">servo_enable</span><span class="p">()</span>
+        <span class="n">Hardware</span><span class="o">.</span><span class="n">servo_set</span><span class="p">(</span><span class="n">servo_pin</span><span class="p">,</span> <span class="n">servo_value</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s1">&#39;success&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span></div>
+
+
+<div class="viewcode-block" id="robot_servos"><a class="viewcode-back" href="../../../../modules/server.html#opsoro.server.request_handlers.opsoro_data_requests.robot_servos">[docs]</a><span class="k">def</span> <span class="nf">robot_servos</span><span class="p">():</span>
+    <span class="n">servo_data</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;servo_data&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+    <span class="n">values</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">servo_data</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">constrain</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">2500</span><span class="p">))</span>
+
+    <span class="k">with</span> <span class="n">Hardware</span><span class="o">.</span><span class="n">lock</span><span class="p">:</span>
+        <span class="n">Hardware</span><span class="o">.</span><span class="n">servo_enable</span><span class="p">()</span>
+        <span class="n">Hardware</span><span class="o">.</span><span class="n">servo_set_all</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s1">&#39;success&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span></div>
+
+
+<div class="viewcode-block" id="robot_stop"><a class="viewcode-back" href="../../../../modules/server.html#opsoro.server.request_handlers.opsoro_data_requests.robot_stop">[docs]</a><span class="k">def</span> <span class="nf">robot_stop</span><span class="p">():</span>
+    <span class="n">Sound</span><span class="o">.</span><span class="n">stop_sound</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s1">&#39;success&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, OPSORO.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../../',
+            VERSION:'1.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

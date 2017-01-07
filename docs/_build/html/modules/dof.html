@@ -1,0 +1,383 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>opsoro.dof &mdash; OPSORO 1.0 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="OPSORO 1.0 documentation" href="../index.html"/>
+        <link rel="up" title="Internal Modules" href="index.html"/>
+        <link rel="next" title="opsoro.hardware" href="hardware.html"/>
+        <link rel="prev" title="opsoro.apps" href="apps.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> OPSORO
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../development/index.html">Development</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../opsoro.html">OPSORO OS</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../opsoro.html#modules">Modules</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="index.html">Internal Modules</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="apps.html">opsoro.apps</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">opsoro.dof</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-opsoro.dof.servo">opsoro.dof.servo</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hardware.html">opsoro.hardware</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hardware.html#module-opsoro.hardware.i2c">opsoro.hardware.i2c</a></li>
+<li class="toctree-l4"><a class="reference internal" href="module.html">opsoro.module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="module.html#module-opsoro.module.eye">opsoro.module.eye</a></li>
+<li class="toctree-l4"><a class="reference internal" href="module.html#module-opsoro.module.eyebrow">opsoro.module.eyebrow</a></li>
+<li class="toctree-l4"><a class="reference internal" href="module.html#module-opsoro.module.mouth">opsoro.module.mouth</a></li>
+<li class="toctree-l4"><a class="reference internal" href="module.html#module-opsoro.module.rotation">opsoro.module.rotation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="server.html">opsoro.server</a></li>
+<li class="toctree-l4"><a class="reference internal" href="server.html#module-opsoro.server.request_handlers">opsoro.server.request_handlers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="server.html#module-opsoro.server.request_handlers.opsoro_data_requests">opsoro.server.request_handlers.opsoro_data_requests</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sound.html">opsoro.sound</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sound.html#module-opsoro.sound.tts">opsoro.sound.tts</a></li>
+<li class="toctree-l4"><a class="reference internal" href="index.html#module-opsoro.animate">opsoro.animate</a></li>
+<li class="toctree-l4"><a class="reference internal" href="index.html#module-opsoro.console_msg">opsoro.console_msg</a></li>
+<li class="toctree-l4"><a class="reference internal" href="index.html#module-opsoro.expression">opsoro.expression</a></li>
+<li class="toctree-l4"><a class="reference internal" href="index.html#module-opsoro.preferences">opsoro.preferences</a></li>
+<li class="toctree-l4"><a class="reference internal" href="index.html#module-opsoro.robot">opsoro.robot</a></li>
+<li class="toctree-l4"><a class="reference internal" href="index.html#module-opsoro.stoppable_thread">opsoro.stoppable_thread</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../opsoro.html#module-opsoro">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">OPSORO</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../opsoro.html">OPSORO OS</a> &raquo;</li>
+      
+          <li><a href="index.html">Internal Modules</a> &raquo;</li>
+      
+    <li>opsoro.dof</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/modules/dof.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-opsoro.dof">
+<span id="opsoro-dof"></span><span id="sec-modules-dof"></span><h1>opsoro.dof<a class="headerlink" href="#module-opsoro.dof" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="opsoro.dof.DOF">
+<em class="property">class </em><code class="descclassname">opsoro.dof.</code><code class="descname">DOF</code><span class="sig-paren">(</span><em>name</em>, <em>neutral=0.0</em>, <em>poly=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/opsoro/dof.html#DOF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#opsoro.dof.DOF" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="opsoro.dof.DOF.calc">
+<code class="descname">calc</code><span class="sig-paren">(</span><em>r</em>, <em>phi</em>, <em>anim_time=-1</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/opsoro/dof.html#DOF.calc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#opsoro.dof.DOF.calc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate dof value with the polygon, according to the given r and phi.</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd>r: radius r, intensity of the emotion
+phi: (radians) angle of the emotion in the circumplex
+anim_time: animation time; time for the servo to move from previous dof to the new dof (-1: animation will be based on dof differences)</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="opsoro.dof.DOF.config">
+<code class="descname">config</code><span class="sig-paren">(</span><em>**args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/opsoro/dof.html#DOF.config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#opsoro.dof.DOF.config" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="opsoro.dof.DOF.reset_overlay">
+<code class="descname">reset_overlay</code><span class="sig-paren">(</span><em>anim_time=-1</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/opsoro/dof.html#DOF.reset_overlay"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#opsoro.dof.DOF.reset_overlay" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clears the overlay value and resets the dof position to the last set value</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd>anim_time: animation time; time for the servo to move from previous dof to the new dof (-1: animation will be based on dof differences)</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="opsoro.dof.DOF.set_control_polygon">
+<code class="descname">set_control_polygon</code><span class="sig-paren">(</span><em>neutral=0.0</em>, <em>poly=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/opsoro/dof.html#DOF.set_control_polygon"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#opsoro.dof.DOF.set_control_polygon" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the control polygon, 20 dof values are linked to certain emotions</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd>neutral: neutral dof position
+poly: 20 dof values linked to emotions</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="opsoro.dof.DOF.set_overlay_value">
+<code class="descname">set_overlay_value</code><span class="sig-paren">(</span><em>dof_value=0</em>, <em>anim_time=-1</em>, <em>update_last_set_time=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/opsoro/dof.html#DOF.set_overlay_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#opsoro.dof.DOF.set_overlay_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the overlay value and overwrites the dof position</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd>dof_value: new overlay value of the dof
+anim_time: animation time; time for the servo to move from previous dof to the new dof (-1: animation will be based on dof differences)
+update_last_set_time: update the last set timer of the dof</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="opsoro.dof.DOF.set_value">
+<code class="descname">set_value</code><span class="sig-paren">(</span><em>dof_value=0</em>, <em>anim_time=-1</em>, <em>is_overlay=False</em>, <em>update_last_set_time=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/opsoro/dof.html#DOF.set_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#opsoro.dof.DOF.set_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the dof value</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd>dof_value: new value of the dof
+anim_time: animation time; time for the servo to move from previous dof to the new dof (-1: animation will be based on dof differences)
+is_overlay: used to determine what priority the dof value has (overlay &gt; default)
+update_last_set_time: update the last set timer of the dof</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="opsoro.dof.DOF.update">
+<code class="descname">update</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/opsoro/dof.html#DOF.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#opsoro.dof.DOF.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates the dof value according to the animation</p>
+<dl class="docutils">
+<dt>Returns:</dt>
+<dd>bool: True if dof value is updated, False if dof value did not change</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="opsoro.dof.constrain">
+<code class="descclassname">opsoro.dof.</code><code class="descname">constrain</code><span class="sig-paren">(</span><em>n</em>, <em>minn</em>, <em>maxn</em><span class="sig-paren">)</span><a class="headerlink" href="#opsoro.dof.constrain" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-opsoro.dof.servo">
+<span id="opsoro-dof-servo"></span><span id="sec-modules-dof-servo"></span><h1>opsoro.dof.servo<a class="headerlink" href="#module-opsoro.dof.servo" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="opsoro.dof.servo.Servo">
+<em class="property">class </em><code class="descclassname">opsoro.dof.servo.</code><code class="descname">Servo</code><span class="sig-paren">(</span><em>name</em>, <em>neutral=0.0</em>, <em>poly=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/opsoro/dof/servo.html#Servo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#opsoro.dof.servo.Servo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#opsoro.dof.DOF" title="opsoro.dof.DOF"><code class="xref py py-class docutils literal"><span class="pre">opsoro.dof.DOF</span></code></a></p>
+<dl class="method">
+<dt id="opsoro.dof.servo.Servo.config">
+<code class="descname">config</code><span class="sig-paren">(</span><em>pin=None</em>, <em>min_range=0</em>, <em>mid_pos=1500</em>, <em>max_range=0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/opsoro/dof/servo.html#Servo.config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#opsoro.dof.servo.Servo.config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper class to turn DOF positions into pulse widths for the servo controller.</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd>pin (int): Servo pin number
+min_range (int): Minimum range of the servo, can be positive or negative. When dof_pos &lt; 0, pulse width = mid_pos + dof_pos*min_range
+mid_pos (int): Pulse width when neutral (DOF position = 0).
+max_range (int): Maximum range of the servo, can be positive or negative. When dof_pos &gt; 0, pulse width = mid_pos + dof_pos*max_range</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="opsoro.dof.servo.Servo.dof_to_us">
+<code class="descname">dof_to_us</code><span class="sig-paren">(</span><em>dof_value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/opsoro/dof/servo.html#Servo.dof_to_us"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#opsoro.dof.servo.Servo.dof_to_us" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts DOF pos to microseconds.</p>
+<dl class="docutils">
+<dt>Returns:</dt>
+<dd>int: servo value (us)</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="opsoro.dof.servo.Servo.to_us">
+<code class="descname">to_us</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/opsoro/dof/servo.html#Servo.to_us"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#opsoro.dof.servo.Servo.to_us" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts DOF pos to microseconds.</p>
+<dl class="docutils">
+<dt>Returns:</dt>
+<dd>int: servo value (us)</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="opsoro.dof.servo.Servo.update">
+<code class="descname">update</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/opsoro/dof/servo.html#Servo.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#opsoro.dof.servo.Servo.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates the servo with the dof value.</p>
+<dl class="docutils">
+<dt>Returns:</dt>
+<dd>bool: True if dof value is updated, False if dof value did not change.</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="opsoro.dof.servo.constrain">
+<code class="descclassname">opsoro.dof.servo.</code><code class="descname">constrain</code><span class="sig-paren">(</span><em>n</em>, <em>minn</em>, <em>maxn</em><span class="sig-paren">)</span><a class="headerlink" href="#opsoro.dof.servo.constrain" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="hardware.html" class="btn btn-neutral float-right" title="opsoro.hardware" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="apps.html" class="btn btn-neutral" title="opsoro.apps" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, OPSORO.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'1.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

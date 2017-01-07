@@ -1,10 +1,5 @@
-<<<<<<< HEAD
-# Software
-Software is the framework for [social robot Ono](http://www.industrialdesigncenter.be/ono/), to be used in conjunction with [Ono2](https://github.com/cesarvandevelde/Ono2) and [OnoHAT](https://github.com/cesarvandevelde/OnoHAT).
-=======
 # OnoSW
 OnoSW is the software framework for [OPSORO](http://www.opsoro.be/), to be used in conjunction with [Ono2](https://github.com/cesarvandevelde/Ono2) and [OnoHAT](https://github.com/cesarvandevelde/OnoHAT).
->>>>>>> refs/remotes/origin/master
 
 # Hardware Requirements
 - Raspberry Pi 1 model B+ | Raspberry Pi 2 model B | Raspberry Pi 3
@@ -40,7 +35,7 @@ OnoSW is the software framework for [OPSORO](http://www.opsoro.be/), to be used 
     ```
     sudo apt-get install python-yaml
     ```
-    
+
     This step is not strictly necessary, but will result in a massive speedup when parsing config files. The python version of PyYAML takes well over 3 seconds to parse the configs, the C version takes only a fraction of that.
 
 8. Install Python packages (flask, flask-login, pyyaml, pluginbase, sockjs-tornado, simplejson, lupa, numpy, scipy, spidev)
@@ -56,28 +51,17 @@ OnoSW is the software framework for [OPSORO](http://www.opsoro.be/), to be used 
     ```
     sudo raspi-config
     ```
-<<<<<<< HEAD
 
-    Go to advanced, A5 Device Tree --> Disable, A6 SPI --> Enable, A7 --> I2C enable.
-=======
-    
     Go to advanced, A5 SPI --> Enable, A6 --> I2C enable.
->>>>>>> refs/remotes/origin/master
 
 10. Edit /etc/modules
 
     ```
     sudo nano /etc/modules
     ```
-<<<<<<< HEAD
 
-    Enter the following configuration:
-
-=======
-    
     Enter the following configuration
-    
->>>>>>> refs/remotes/origin/master
+
     ```
     # /etc/modules: kernel modules to load at boot time.
     #
@@ -99,16 +83,6 @@ OnoSW is the software framework for [OPSORO](http://www.opsoro.be/), to be used 
     ```
     sudo nano /etc/modprobe.d/raspi-blacklist.conf
     ```
-<<<<<<< HEAD
-11. Configure ALSA:
-
-    ```
-    sudo nano /etc/asound.conf
-    ```
-
-    Enter the following configuration:
-
-=======
 11. Configure audio
     Add hifiberry-dac device tree overlay in config.txt (```sudo nano /boot/config.txt```). And add the following to the end of the config.txt file
     ```
@@ -117,14 +91,13 @@ OnoSW is the software framework for [OPSORO](http://www.opsoro.be/), to be used 
     If present, change ```dtparam=audio=on``` to ```#dtparam=audio=on```
 
     Configure ALSA
-    
+
     ```
     sudo nano /etc/asound.conf
     ```
-    
+
     Enter the following configuration
-    
->>>>>>> refs/remotes/origin/master
+
     ```
     pcm.!default {
       type        softvol
@@ -145,33 +118,21 @@ OnoSW is the software framework for [OPSORO](http://www.opsoro.be/), to be used 
       }
     }
     ```
-<<<<<<< HEAD
 
-    Reboot the Raspberry Pi:
-
-    ```
-    sudo reboot
-    ```
-
-    Lower the master sound volume to something reasonable (limits 0-255):
-
-=======
-    
     Reboot the Raspberry Pi
-    
+
     ```
     sudo reboot
     ```
-    
+
     Lower the master sound volume to something reasonable (limits 0-255)
-    
->>>>>>> refs/remotes/origin/master
+
     ```
     amixer set Master 128
     ```
 
 12. [Install PicoTTS](http://rpihome.blogspot.be/2015/02/installing-pico-tts.html)
-    
+
     ```
     sudo apt-get install libttspico-utils
     ```
@@ -181,27 +142,27 @@ OnoSW is the software framework for [OPSORO](http://www.opsoro.be/), to be used 
     ```
     sudo apt-get install espeak
     ```
-    
+
 14. Setup and configure the WiFi dongle  
     Install hostapd for the access point and dnsmasq for the DHCP server and DNS redirect
 
     ```
     sudo apt-get install -y hostapd dnsmasq
     ```
-    
+
     Update ```/etc/network/interfaces``` so it matches following lines
-    
+
     ```
     auto lo
     iface lo inet loopback
-    
+
     allow-hotplug eth0
     iface eth0 inet manual
-    
+
     #allow-hotplug wlan0
     #iface wlan0 inet manual
     #    wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf
-    
+
     #allow-hotplug wlan1
     #iface wlan1 inet manual
     #    wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf
@@ -212,24 +173,24 @@ OnoSW is the software framework for [OPSORO](http://www.opsoro.be/), to be used 
        address 192.168.42.1
        netmask 255.255.255.0
        broadcast 192.168.42.255
-    
+
     # reset existing rules and chains
     up /sbin/iptables -F
     up /sbin/iptables -X
     up /sbin/iptables -t nat -F
-    
+
     # Mask for the interface, activate port-forwarding and NAT
     up iptables -A FORWARD -o eth0 -i wlan0 -s 192.168.42.0/24 -m conntrack --ctstate NEW -j ACCEPT
     up iptables -A FORWARD -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
-    
+
     up iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
     up sysctl -w net.ipv4.ip_forward=1
-    
+
     # restart hostapd and dnsmasq
     up /etc/init.d/hostapd restart
     up /etc/init.d/dnsmasq restart
     ```
-    
+
     Use the following configuration for /etc/hostapd/hostapd.conf
 
     ```
@@ -249,23 +210,23 @@ OnoSW is the software framework for [OPSORO](http://www.opsoro.be/), to be used 
     wpa_passphrase=opsoro123
     rsn_pairwise=CCMP
     ```
-    
+
     Edit the file /etc/default/hostapd and change the line ```#DAEMON_CONF=""``` to ```DAEMON_CONF="/etc/hostapd/hostapd.conf"```
-    
+
     Configure the DHCP server and DNS redirect  
     Create new config file (```sudo nano /etc/dnsmasq.d/dnsmasq.opsoro.conf```) and paste following lines
-    
+
     ```
     # Redirect specific urls
     address=/play.opsoro.be/192.168.42.1
-    
+
     # DHCP-Server active for the wlan interface
     interface=wlan0
-    
+
     # IP-Address range / Lease-Time
     dhcp-range=interface:wlan0,192.168.42.100,192.168.42.200,infinite
     ```
-    
+
 15. Change the host name to "opsoro"  
     In the files '/etc/hostname' and '/etc/hosts', change 'raspberrypi' to 'opsoro'
 
@@ -273,7 +234,7 @@ OnoSW is the software framework for [OPSORO](http://www.opsoro.be/), to be used 
     sudo nano /etc/hostname
     sudo nano /etc/hosts
     ```
-    
+
 16. Setup Opsoro service  
     The script for setting up opsoro can be found in /Scripts/.  
     Follow next steps to setup OpSoRo
