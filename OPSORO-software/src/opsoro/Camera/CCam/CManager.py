@@ -26,6 +26,11 @@ class CManager():
         self.thread = None
 
     def setCap(self,cap):
+        """
+            set the opencv videoCapture
+
+            :param cv2.videoCapture cap   default cv2.VideoCapture(0)
+        """
         self.cap = cap
 
     def run(self):
@@ -43,12 +48,18 @@ class CManager():
             self.refresh_rate = 1/(time.time() - begintime)
 
     def stop(self):
+        """
+            stop the CManager
+        """
         self._stop_event.set()
         self._start_event.clear()
         self.thread = None
 
 
     def start(self):
+        """
+            stop the CManager
+        """
         self._start_event.set()
         self._stop_event.clear()
         if self.csystems is not None and len(self.csystems)>0 and self.cap is not None:
@@ -57,6 +68,11 @@ class CManager():
 
 
     def addSystem(self, system):
+        """
+            add systems to this manager
+
+            :params CSystem system      system to add
+        """
         if self.getSystem(system.__class__) is None:
             self.csystems += [system]
         if self._start_event.is_set():
@@ -64,6 +80,11 @@ class CManager():
 
 
     def removeSystem(self, system_class):
+        """
+            remove systems from this manager
+
+            :params class system_class      class of systems to remove
+        """
         newSystemList = []
         for s in list(self.csystems):
             print not isinstance(s,system_class)
@@ -73,11 +94,21 @@ class CManager():
 
 
     def getSystem(self,system_class):
+        """
+            get a system from this manager
+
+            :params class system_class      class of systems
+            :return:                        Camera System
+            :rtype:                         CSystems
+        """
         for s in self.csystems:
             if isinstance(s,system_class):
                 return s
         return None
 
     def removeAllSystems(self):
+        """
+            remove all systems from this manager
+        """
         self.csystems = []
         self._stop_event.set()

@@ -17,11 +17,14 @@ constrain = lambda n, minn, maxn: max(min(maxn, n), minn)
 
 
 class Module(Entity):
+    """
+        definition of functions SEE ENTITY.__init__
+    """
     def __init__(self, data=None):
         self.name = ""
         self.tags = []
-        self.position = {}
-        self.size = {}
+        self.position = {}  #not implemented
+        self.size = {}      #not implemented
         self.dofs = {}
 
     def apply_poly(self, r, phi, anim_time=-1):
@@ -34,6 +37,10 @@ class Module(Entity):
             if dof.update():
                 updated = True
         return updated
+
+    def set_mod_dof_value(self,module_name, dof_name, dof_value, anim_time=-1):
+        if self.name == module_name:
+            self.set_dof_value(dof_name, dof_value, anim_time)
 
     def set_dof_value(self, dof_name, dof_value, anim_time=-1):
         if dof_name in self.dofs:

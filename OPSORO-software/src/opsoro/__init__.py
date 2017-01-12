@@ -7,12 +7,12 @@ import logging.handlers
 import random
 import os
 import tornado.log
+import datetime
 
 # from opsoro.server import Server
 
 from opsoro.console_msg import *
 from opsoro.server import Server
-from opsoro.robot import Robot
 
 
 # Handle SIGTERM for graceful shutdown of daemon
@@ -20,9 +20,14 @@ def sigterm_handler(_signo, _stack_frame):
     print "SIGTERM received... Goodbye!"
     sys.exit(0)
 
+
 try:
-       # Setup logging
-    LOG_FILENAME = "/tmp/opsoro.log"
+    LOG_FILE_DIR = '../../../log/'
+    if not os.path.exists(LOG_FILE_DIR):
+        os.makedirs(LOG_FILE_DIR)
+
+    # Setup logging
+    LOG_FILENAME = LOG_FILE_DIR + str(datetime.date.today()) + ".log"
     LOG_LEVEL = logging.DEBUG
 
     tornado.log.enable_pretty_logging()
@@ -33,8 +38,10 @@ try:
     formatter = logging.Formatter("%(asctime)s %(levelname)-8s %(message)s")
     handler.setFormatter(formatter)
     logger.addHandler(handler)
-except:
-    print_error("impossible to log actions")
+
+except Exception as e:
+    print_error('Unable to log')
+
 
 def main():
     signal.signal(signal.SIGTERM, sigterm_handler)

@@ -3,6 +3,9 @@ from opsoro.console_msg import *
 from inspect import getargspec
 
 class Group(Entity):
+    """
+        definition of functions SEE ENTITY.__init__
+    """
     def __init__(self):
         super(Group,self).__init__()
         self.modules = []
@@ -36,11 +39,12 @@ class Group(Entity):
 
     def get_actions(self, tags=[]):
         """
-        params:
-            tags: als die gekend zijn
+            returns a list af all actions posible in this entity and in the modules
+            of the group (after a tag-check). Can be used for function suggestion.
 
-        output:
-            list of all possible actions for some spicific tags
+            :param list(string) tags:       (optional) list of tags
+            :return:                        List of actions
+            :rtype:                         list(string)
         """
         actions = []
         if super(Group,self).has_action(action):
@@ -61,6 +65,10 @@ class Group(Entity):
                 actions = actions + m.get_actions(tags)
 
         actions = list(set(actions))
+
+    def set_mod_dof_value(self,module_name, dof_name, dof_value, anim_time=-1):
+        for m in self.modules:
+            m.set_mod_dof_value(module_name, dof_name,dof_value,anim_time)
 
     def set_dof_value(self, dof_name, dof_value, anim_time=-1):
         for m in self.modules:

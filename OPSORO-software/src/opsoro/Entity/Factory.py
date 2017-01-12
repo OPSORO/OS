@@ -14,13 +14,16 @@ from opsoro.dof.servo import Servo
 from opsoro.dof.engine import Engine
 
 MODULES = {'eye': Eye, 'eyebrow': Eyebrow, 'mouth': Mouth, 'wheel': Wheel}
-GROUPS = {'wheelgroup': WheelGroup}
+GROUPS = {'group':Group,'wheelgroup': WheelGroup}
 
 
 class Factory(object):
+    """
+        factory class for loading the entities from a config file
+    """
     def __init__(self, data):
         """
-            data: the data from the config file (tag: modules)
+            :param dict data:       data: the data from the config file
         """
         self.data = data
         self.groups = {}
@@ -115,6 +118,12 @@ class Factory(object):
         return result
 
     def load_entities(self):
+        """
+            load the entities
+
+            :return:            dictionary of entities (tree structure)
+            :rtype:             dict
+        """
         self._load_groups()
         self._load_modules()
         self._print_loading_result()

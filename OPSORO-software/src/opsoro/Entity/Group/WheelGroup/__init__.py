@@ -5,7 +5,7 @@ class WheelGroup(Group):
 
     def stop (self, anim_time=-1):
         for w in self.get_modules():
-            w.set_dof_value("wheel",0, anim_time)
+            w.set_dof_value("single",0, anim_time)
 
     def forward(self,speed=0.5, anim_time=-1):
         """

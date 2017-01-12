@@ -1,6 +1,9 @@
 install OpenCV
 sudo apt-get install python-opencv
 
+install version 2.4.13 of opencv (needed when you using SURF algorithm)
+execute install-opencv.sh in the Scripts directory
+
 install picamera
 sudo apt-get install python-picamera
 
