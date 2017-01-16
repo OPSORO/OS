@@ -23,7 +23,12 @@ class _TTS(object):
 		Subsequent calls of the same text return immediately.
 		If you wish to avoid this, sound files can be generated on beforehand by
 		using generate_only=True.
-		"""
+
+        :param string text:         text to convert to speech
+
+        :return:    path to the sound file
+        :rtype:     string
+        """
 
         def format_filename(s):
             """
@@ -37,7 +42,12 @@ class _TTS(object):
 			an invalid filename.
 
 			Taken from: https://gist.github.com/seanh/93666
-			"""
+
+            :param string s:  text to convert to a valid filename
+
+            :return:    formatted filename
+            :rtype:     string
+            """
             valid_chars = "-_.() %s%s" % (string.ascii_letters, string.digits)
             filename = ''.join(c for c in s if c in valid_chars)
             filename = filename.replace(
@@ -72,9 +82,25 @@ class _TTS(object):
         return full_path
 
     def create_pico(self, text, file_path):
+        """
+        Convert text to speech using the pico2wave TTS library.
+
+        :param string text:         text to convert to speech
+        :param string file_path:    file path to store the speech soundfile
+        """
         subprocess.call(["pico2wave", "-w", file_path, text])
 
     def create_espeak(self, text, file_path, language, gender, delay, speed):
+        """
+        Convert text to speech using the espeak TTS library.
+
+        :param string text:         text to convert to speech
+        :param string file_path:    file path to store the speech soundfile
+        :param string language:     language initials
+        :param string gender:       specify gender (m for male, f for female)
+        :param int delay:           delay between words in ms
+        :param int speed:           speed in words-per-minute
+        """
         text = "\"" + text + "\""
         subprocess.call(["espeak", "-v", language + "+" + gender + "3", "-g",
                          delay, "-s", speed, "-w", file_path, text])

@@ -22,9 +22,6 @@ class _Sound(object):
 
         :param string text:         text to convert to speech
         :param bool generate_only:  do not play the soundfile once it is created
-
-        :return:    True if the module updated something
-        :rtype:     bool
         """
         full_path = TTS.create(text)
 
