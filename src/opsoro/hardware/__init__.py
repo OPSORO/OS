@@ -1,3 +1,12 @@
+"""
+This module defines the interface for communicating with the shield.
+
+.. autoclass:: _Hardware
+   :members:
+   :undoc-members:
+   :show-inheritance:
+"""
+
 import time
 import spidev
 import threading

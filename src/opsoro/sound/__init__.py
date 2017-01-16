@@ -1,3 +1,12 @@
+"""
+This module defines the interface for communicating with the sound module.
+
+.. autoclass:: _Sound
+   :members:
+   :undoc-members:
+   :show-inheritance:
+"""
+
 from functools import partial
 import os
 import subprocess

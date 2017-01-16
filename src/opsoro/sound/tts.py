@@ -1,3 +1,12 @@
+"""
+This module defines the interface for communicating with the TTS libraries.
+
+.. autoclass:: _TTS
+   :members:
+   :undoc-members:
+   :show-inheritance:
+"""
+
 import os
 import string
 from functools import partial

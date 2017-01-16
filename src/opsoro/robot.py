@@ -1,3 +1,13 @@
+"""
+This module defines the interface for communicating with the robot.
+
+.. autoclass:: _Robot
+   :members:
+   :undoc-members:
+   :show-inheritance:
+"""
+
+
 from opsoro.console_msg import *
 from opsoro.stoppable_thread import StoppableThread
 from opsoro.hardware import Hardware

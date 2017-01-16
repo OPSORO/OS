@@ -3,7 +3,7 @@
 opsoro.preferences
 ------------------
 
-.. automodule:: opsoro._preferences
+.. automodule:: opsoro.preferences
     :members:
     :undoc-members:
     :show-inheritance:
