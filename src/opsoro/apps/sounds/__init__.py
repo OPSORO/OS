@@ -12,6 +12,7 @@ config = {'full_name': 'Sounds',
           'color': '#15e678',
           'allowed_background': False,
           'robot_state': 0}
+config['formatted_name'] = config['full_name'].lower().replace(' ', '_')
 
 # robot_state:
 # 0: Manual start/stop
@@ -24,7 +25,7 @@ get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 
 def setup_pages(opsoroapp):
     sounds_bp = Blueprint(
-        config['full_name'].lower(),
+        config['formatted_name'],
         __name__,
         template_folder='templates',
         static_folder='static')
@@ -43,8 +44,7 @@ def setup_pages(opsoroapp):
         for filename in filenames:
             data['soundfiles'].append(os.path.split(filename)[1])
 
-        return opsoroapp.render_template(config['full_name'].lower() + '.html',
-                                         **data)
+        return opsoroapp.render_template(config['formatted_name'] + '.html', **data)
 
     @sounds_bp.route('/upload', methods=['POST'])
     @opsoroapp.app_view

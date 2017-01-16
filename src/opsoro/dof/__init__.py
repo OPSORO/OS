@@ -66,6 +66,7 @@ class DOF(object):
         else:
             dofs = map(lambda x: float(x), poly)
 
+            # Fixed phis, this is currently always the same
             phis = [
                 -3.1415926535897931, -2.8108986900540254, -2.4802047265182576,
                 -2.1495107629824899, -1.8188167994467224, -1.4881228359109546,

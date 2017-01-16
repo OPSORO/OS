@@ -4,18 +4,16 @@ from opsoro.dof import DOF
 
 constrain = lambda n, minn, maxn: max(min(maxn, n), minn)
 
-
 class Servo(DOF):
     def config(self, pin=None, min_range=0, mid_pos=1500, max_range=0):
         #, dofname=None):
         """
         Helper class to turn DOF positions into pulse widths for the servo controller.
 
-        Arguments:
-            pin (int): Servo pin number
-            min_range (int): Minimum range of the servo, can be positive or negative. When dof_pos < 0, pulse width = mid_pos + dof_pos*min_range
-            mid_pos (int): Pulse width when neutral (DOF position = 0).
-            max_range (int): Maximum range of the servo, can be positive or negative. When dof_pos > 0, pulse width = mid_pos + dof_pos*max_range
+        :param int pin:         Servo pin number
+        :param int min_range:   Minimum range of the servo, can be positive or negative. When dof_pos < 0, pulse width = mid_pos + dof_pos*min_range
+        :param int mid_pos:     Pulse width when neutral (DOF position = 0).
+        :param int max_range:   Maximum range of the servo, can be positive or negative. When dof_pos > 0, pulse width = mid_pos + dof_pos*max_range
         """
         # dofname:   Name of the DOF that controls the position of this servo
         min_value = 500
@@ -39,24 +37,21 @@ class Servo(DOF):
         return "Servo(pin=%d, min_range=%d, mid_pos=%d, max_range=%d)" % (
             self.pin, self.min_range, self.mid_pos, self.max_range)
 
-    def to_us(self):
+    def to_us(self, dof_value = None):
         """
         Converts DOF pos to microseconds.
 
-        Returns:
-            int: servo value (us)
-        """
-        self.position = self.dof_to_us(self.value)
+        :param float dof_value:   value to convert to us. If None; dof value of servo object is used
 
-        return self.position
-
-    def dof_to_us(self, dof_value):
+        :return:         servo value (us)
+        :rtype:          int
         """
-        Converts DOF pos to microseconds.
+        own_dof = False
+        # Use objects's dof value if provided is None
+        if dof_value is None:
+            dof_value = self.value
+            own_dof = True
 
-        Returns:
-            int: servo value (us)
-        """
         us = int(self.mid_pos)
         dof_value = float(dof_value)
 
@@ -65,14 +60,17 @@ class Servo(DOF):
         else:
             us += int(-dof_value * float(self.min_range))
 
+        if own_dof:
+            self.position = us
+
         return us
 
     def update(self):
         """
-        Updates the servo with the dof value.
+        Updates the servo with the setted dof value.
 
-        Returns:
-            bool: True if dof value is updated, False if dof value did not change.
+        :return:         True if dof value is updated, False if dof value did not change
+        :rtype:          bool
         """
         dof_animation_changed = super(Servo, self).update()
 

@@ -8,11 +8,12 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash
 from opsoro.stoppable_thread import StoppableThread
 from opsoro.hardware import Hardware
 
-config = {'full_name': 'Touch_Graph',
+config = {'full_name': 'Touch Graph',
           'icon': 'fa-hand-o-down',
           'color': '#ffaf19',
           'allowed_background': False,
           'robot_state': 0}
+config['formatted_name'] = config['full_name'].lower().replace(' ', '_')
 
 # robot_state:
 # 0: Manual start/stop
@@ -66,7 +67,7 @@ def stopcap():
 
 def setup_pages(opsoroapp):
     touch_bp = Blueprint(
-        config['full_name'].lower(),
+        config['formatted_name'],
         __name__,
         template_folder='templates',
         static_folder='static')
@@ -76,8 +77,7 @@ def setup_pages(opsoroapp):
     def index():
         data = {}
 
-        return opsoroapp.render_template(config['full_name'].lower() + '.html',
-                                         **data)
+        return opsoroapp.render_template(config['formatted_name'] + '.html', **data)
 
     @opsoroapp.app_socket_connected
     def s_connected(conn):

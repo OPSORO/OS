@@ -9,6 +9,11 @@ constrain = lambda n, minn, maxn: max(min(maxn, n), minn)
 
 class Module(object):
     def __init__(self, data=None):
+        """
+        Module default class. Custom modules should inherit this class and can override functions.
+
+        :param dict data:   configuration data to setup the module
+        """
         self.name = ""
         self.position = {}
         self.size = {}
@@ -22,10 +27,23 @@ class Module(object):
         return str(self.name)
 
     def apply_poly(self, r, phi, anim_time=-1):
+        """
+        Apply poly values r and phi to the module and calculate dof values
+
+        :param float r:         r radius value
+        :param float phi:       phi angle value
+        :param int anim_time:   animation time in ms
+        """
         for name, dof in self.dofs.iteritems():
             dof.calc(r, phi, anim_time)
 
     def update(self):
+        """
+        Update all dof values of this module and return if the update changed a dof.
+
+        :return:    True if a dof has been updated
+        :rtype:     bool
+        """
         # index = 0
         updated = False
         for name, dof in self.dofs.iteritems():
@@ -35,6 +53,13 @@ class Module(object):
         return updated
 
     def set_dof_value(self, dof_name, dof_value, anim_time=-1):
+        """
+        Apply poly values r and phi to the module and calculate dof values
+
+        :param string dof_name:     name of the DOF
+        :param string dof_value:    value to set the DOF
+        :param int anim_time:       animation time in ms
+        """
         if dof_name is None:
             for name, dof in self.dofs.iteritems():
                 dof.set_value(dof_value, anim_time)
@@ -42,6 +67,11 @@ class Module(object):
             self.dofs[dof_name].set_value(dof_value, anim_time)
 
     def load_module(self, data):
+        """
+        Setup modules with given configuration data
+
+        :param dict data:   configuration data to setup the module
+        """
         if 'name' in data:
             self.name = data['name']
         else:
@@ -92,5 +122,12 @@ class Module(object):
                 self.dofs[dof.name] = dof
 
     def alive_trigger(self, count_seed=1):
+        """
+        This is triggered frequently, when the aliveness is turned on.
 
+        :param float count_seed:   seed value for randomization
+
+        :return:    True if the module updated something
+        :rtype:     bool
+        """
         return False

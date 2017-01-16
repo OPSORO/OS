@@ -7,11 +7,12 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from werkzeug import secure_filename
 from ..lua_scripting.scripthost import ScriptHost
 
-config = {'full_name': 'Visual_Programming',
+config = {'full_name': 'Visual Programming',
           'icon': 'fa-puzzle-piece',
           'color': '#6e00ff',
           'allowed_background': True,
           'robot_state': 1}
+config['formatted_name'] = config['full_name'].lower().replace(' ', '_')
 
 # robot_state:
 # 0: Manual start/stop
@@ -77,7 +78,7 @@ def ui_add_key(key):
 
 def setup_pages(opsoroapp):
     visprog_bp = Blueprint(
-        config['full_name'].lower(),
+        config['formatted_name'],
         __name__,
         template_folder='templates',
         static_folder='static')
@@ -107,8 +108,7 @@ def setup_pages(opsoroapp):
             else:
                 data['script_name_noext'] = script_name
 
-        return opsoroapp.render_template(config['full_name'].lower() + '.html',
-                                         **data)
+        return opsoroapp.render_template(config['formatted_name'] + '.html', **data)
 
     @visprog_bp.route('/blockly')
     @opsoroapp.app_view
@@ -198,8 +198,7 @@ def setup_pages(opsoroapp):
         script_modified = request.form.get('modified', type=int, default=0)
 
         with open(
-                get_path('../../data/' + config['full_name'].lower().replace(
-                    ' ', '_') + '/scripts/currentscript.xml.tmp'), 'w') as f:
+                get_path('../../data/' + config['formatted_name'] + '/scripts/currentscript.xml.tmp'), 'w') as f:
             f.write(script_xml)
 
         if sh.is_running:

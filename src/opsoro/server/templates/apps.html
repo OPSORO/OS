@@ -10,7 +10,7 @@
 					{% for app in apps %}
 						<div class='app_container large-2 medium-3 small-6 columns'>
 							{% if not app.active and activeapp %}
-								<a href="#" onclick="showSwitchAppModal('{{ app.icon }}', '{{ app.full_name }}', '/openapp/{{ app.name }}')">
+								<a href="#" onclick="showSwitchAppModal('{{ app.icon }}', '{{ app.full_name }}', '/openapp/{{ app.formatted_name }}')">
 									<div class="app_button">
 										<div class="app_icon {{ app.icon }}"></div>
 										<div class="app_banner" style="background-color: {{ app.color }}"></div>
@@ -18,7 +18,7 @@
 									<div class="app_label">{{ app.full_name }}</div>
 								</a>
 							{% else %}
-								<a href="/openapp/{{ app.name }}">
+								<a href="/openapp/{{ app.formatted_name }}">
 									<div class="app_button">
 										<div class="app_icon {{ app.icon }}"></div>
 										<div class="app_banner" style="background-color: {{ app.color }}"></div>

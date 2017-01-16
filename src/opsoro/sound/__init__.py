@@ -8,12 +8,24 @@ get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 
 class _Sound(object):
     def __init__(self):
+        """
+        Sound class, used to play sound and speak text.
+        """
         # List of search folders for sound files
         self.sound_folders = ["../data/sounds/"]
         self.playProcess = None
         self.jack = False
 
     def say_tts(self, text, generate_only=False):
+        """
+        Converts a string to a soundfile using Text-to-Speech libraries
+
+        :param string text:         text to convert to speech
+        :param bool generate_only:  do not play the soundfile once it is created
+
+        :return:    True if the module updated something
+        :rtype:     bool
+        """
         full_path = TTS.create(text)
 
         if generate_only:
@@ -33,6 +45,11 @@ class _Sound(object):
                 stderr=subprocess.STDOUT)
 
     def play_file(self, filename):
+        """
+        Plays an audio file according to the given filename.
+
+        :param string filename:     file to play
+        """
         self.stop_sound()
         path = None
         for folder in self.sound_folders:
@@ -54,6 +71,9 @@ class _Sound(object):
                 stderr=subprocess.STDOUT)
 
     def stop_sound(self):
+        """
+        Stop the played sound.
+        """
         if self.playProcess == None:
             return
 
@@ -61,6 +81,9 @@ class _Sound(object):
         self.playProcess = None
 
     def wait_for_sound(self):
+        """
+        Wait until the played sound is done.
+        """
         if self.playProcess == None:
             return
 

@@ -49,22 +49,22 @@ function blocklyLoaded(blockly, ws) {
     Blockly = blockly;
     workspace = ws;
 
-    if (isScriptRunning) {
-        // Load current script into workspace
-        $.ajax({
-            url: "scripts/currentscript.xml.tmp",
-            dataType: "text",
-            cache: false,
-            success: function(data) {
-                // Load script
-                ignoreNextChangeEvt = true;
-                Blockly.mainWorkspace.clear();
-                var xml = Blockly.Xml.textToDom(data);
-                Blockly.Xml.domToWorkspace(workspace, xml);
-            }
-        });
-
-    }
+    // if (isScriptRunning) {
+    //     // Load current script into workspace
+    //     $.ajax({
+    //         url: "scripts/currentscript.xml.tmp",
+    //         dataType: "text",
+    //         cache: false,
+    //         success: function(data) {
+    //             // Load script
+    //             ignoreNextChangeEvt = true;
+    //             Blockly.mainWorkspace.clear();
+    //             var xml = Blockly.Xml.textToDom(data);
+    //             Blockly.Xml.domToWorkspace(workspace, xml);
+    //         }
+    //     });
+    //
+    // }
 
     ws.addChangeListener(function() {
         // Change listener gets called on load, use bool as workaround
@@ -484,5 +484,6 @@ $(document).ready(function() {
 
     // if (Blockly != null) {
     config_file_operations("scripts", model.fileExtension(), model.saveFileData, model.loadFileData, model.init);
+    loadFileHandler('scripts/currentscript.xml.tmp');
     // }
 });

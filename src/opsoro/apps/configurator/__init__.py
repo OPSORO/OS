@@ -29,6 +29,7 @@ config = {'full_name': 'Configurator',
           'color': '#ff517e',
           'allowed_background': False,
           'robot_state': 0}
+config['formatted_name'] = config['full_name'].lower().replace(' ', '_')
 
 # robot_state:
 # 0: Manual start/stop
@@ -41,7 +42,7 @@ get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 
 def setup_pages(opsoroapp):
     app_bp = Blueprint(
-        config['full_name'].lower(),
+        config['formatted_name'],
         __name__,
         template_folder='templates',
         static_folder='static')
@@ -77,8 +78,7 @@ def setup_pages(opsoroapp):
             data['skins'].append(
                 os.path.splitext(os.path.split(filename)[1])[0])
 
-        return opsoroapp.render_template(config['full_name'].lower() + '.html',
-                                         **data)
+        return opsoroapp.render_template(config['formatted_name'] + '.html', **data)
 
     opsoroapp.register_app_blueprint(app_bp)
 

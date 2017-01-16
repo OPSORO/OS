@@ -121,6 +121,15 @@ class _Robot(object):
 
         self.start_update_loop()
 
+    def set_dof_list(self, dof_values, anim_time=-1):
+        for name, module in self.modules.iteritems():
+            for name, dof in module.dofs.iteritems():
+                if hasattr(dof, 'pin') and dof.pin is not None:
+                    if dof.pin > 0 and dof.pin < len(dof_values):
+                        dof.set_value(dof_values[dof.pin], anim_time)
+
+        self.start_update_loop()
+
     def get_dof_values(self):
         dofs = []
         for i in range(16):

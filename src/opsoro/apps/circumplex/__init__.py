@@ -5,6 +5,7 @@ config = {'full_name': 'Circumplex',
           'color': '#15e678',
           'allowed_background': False,
           'robot_state': 1}
+config['formatted_name'] = config['full_name'].lower().replace(' ', '_')
 
 # robot_state:
 # 0: Manual start/stop
@@ -15,7 +16,7 @@ config = {'full_name': 'Circumplex',
 
 def setup_pages(opsoroapp):
     circumplex_bp = Blueprint(
-        config['full_name'].lower(),
+        config['formatted_name'],
         __name__,
         template_folder='templates',
         static_folder='static')
@@ -24,8 +25,7 @@ def setup_pages(opsoroapp):
     @opsoroapp.app_view
     def index():
         data = {}
-        return opsoroapp.render_template(config['full_name'].lower() + '.html',
-                                         **data)
+        return opsoroapp.render_template(config['formatted_name'] + '.html', **data)
 
     opsoroapp.register_app_blueprint(circumplex_bp)
 

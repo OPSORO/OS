@@ -118,7 +118,7 @@
         _OnlyFolders = onlyFolders;
         _SaveFileView = saveFileView;
         showPopup("fa-folder-open", "{{ app.full_name }}/" + currentpath, "filebrowser", "");
-        $("#popup .content").load("/docs/list/?" + $.param({a: "{{ app.full_name }}", p: currentpath, e: extension, f: onlyFolders, s: saveFileView}), function () {
+        $("#popup .content").load("/docs/list/?" + $.param({a: "{{ app.formatted_name }}", p: currentpath, e: extension, f: onlyFolders, s: saveFileView}), function () {
             // Delete and Open button events need to be rebound here because filelist is loaded via AJAX
             $("#popup .btnDeleteFile").off("click");
             $("#popup .btnDeleteFile").on("click", function () {
@@ -162,7 +162,7 @@
             $.ajax({
                 dataType: "json",
                 type: "POST",
-                url: "/docs/delete/{{ app.full_name }}/",
+                url: "/docs/delete/{{ app.formatted_name }}/",
                 data: {
                     file_name_ext: filename
                 },
@@ -285,7 +285,7 @@
                     file_extension: extension
                 },
                 type: "POST",
-                url: "/docs/save/{{ app.full_name }}/",
+                url: "/docs/save/{{ app.formatted_name }}/",
                 success: function (data) {
                     if (!data.success) {
                         showMainError(data.message);
@@ -314,7 +314,7 @@
         $.ajax({
             dataType: "text",
             type: "GET",
-            url: "/docs/data/{{ app.full_name }}/",
+            url: "/docs/data/{{ app.formatted_name }}/",
             cache: false,
             data: {
                 f: filename
@@ -325,16 +325,19 @@
                 // Load script
                 loadDataHandler(data)
 
-                // Update filename and asterisk
-                var filename_no_ext = filename;
-                if (filename_no_ext.toLowerCase().slice(-4) == extension) {
-                    filename_no_ext = filename_no_ext.slice(0, -4);
+                if (filename.indexOf(".tmp") < 0) {
+                  // Update filename and asterisk
+                  var filename_no_ext = filename;
+                  if (filename_no_ext.toLowerCase().slice(-4) == extension) {
+                      filename_no_ext = filename_no_ext.slice(0, -4);
+                  }
+                  if (filename_no_ext.toLowerCase().slice(-5) == extension) {
+                      filename_no_ext = filename_no_ext.slice(0, -5);
+                  }
+                  $(".filebox .filename").text(filename_no_ext);
+                  // fileIsModified(false); lockFile();
                 }
-                if (filename_no_ext.toLowerCase().slice(-5) == extension) {
-                    filename_no_ext = filename_no_ext.slice(0, -5);
-                }
-                $(".filebox .filename").text(filename_no_ext);
-                // fileIsModified(false); lockFile();
+
             },
             error: function () {
                 window.location.href = "?";

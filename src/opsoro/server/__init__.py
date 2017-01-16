@@ -259,8 +259,8 @@ class Server(object):
                 print_info("%s has no stop function" % self.activeapp)
         self.activeapp = None
 
-    def shutdown_server(self):
-        logging.info("Stopping http server")
+    def shutdown(self):
+        logging.info("Stopping server")
         io_loop = IOLoop.instance()
         io_loop.stop()
 

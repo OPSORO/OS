@@ -14,6 +14,7 @@ config = {'full_name': 'Preferences',
           'color': '#555',
           'allowed_background': False,
           'robot_state': 0}
+config['formatted_name'] = config['full_name'].lower().replace(' ', '_')
 
 # robot_state:
 # 0: Manual start/stop
@@ -36,7 +37,7 @@ except ImportError:
 
 def setup_pages(opsoroapp):
     app_bp = Blueprint(
-        config['full_name'].lower(),
+        config['formatted_name'],
         __name__,
         template_folder='templates',
         static_folder='static')
@@ -48,7 +49,6 @@ def setup_pages(opsoroapp):
     def index():
         data = {}
         if request.method == 'POST':
-            print_info('POST')
             # Update preferences
             request.form.get('file_name_ext', type=str, default=None)
             Preferences.set('general',
@@ -173,8 +173,7 @@ def setup_pages(opsoroapp):
 
         print_info(data)
 
-        return opsoroapp.render_template(config['full_name'].lower() + '.html',
-                                         **data)
+        return opsoroapp.render_template(config['formatted_name'] + '.html', **data)
 
     @app_bp.route('/update', methods=['GET', 'POST'])
     @opsoroapp.app_view

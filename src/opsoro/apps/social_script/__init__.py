@@ -25,13 +25,14 @@ except ImportError:
 
 constrain = lambda n, minn, maxn: max(min(maxn, n), minn)
 
-from opsoro.expression import Expression
+# from opsoro.expression import Expression
 
-config = {'full_name': 'Social_Script',
+config = {'full_name': 'Social Script',
           'icon': 'fa-commenting-o',
           'color': '#15e678',
           'allowed_background': False,
           'robot_state': 1}
+config['formatted_name'] = config['full_name'].lower().replace(' ', '_')
 
 # robot_state:
 # 0: Manual start/stop
@@ -62,7 +63,7 @@ socialscript_t = None
 
 def setup_pages(opsoroapp):
     socialscript_bp = Blueprint(
-        config['full_name'].lower(),
+        config['formatted_name'],
         __name__,
         template_folder='templates',
         static_folder='static')
@@ -85,8 +86,7 @@ def setup_pages(opsoroapp):
             data['sounds'].append(os.path.split(filename)[1])
         data['sounds'].sort()
 
-        return opsoroapp.render_template(config['full_name'].lower() + '.html',
-                                         **data)
+        return opsoroapp.render_template(config['formatted_name'] + '.html', **data)
 
     @opsoroapp.app_socket_connected
     def s_connected(conn):

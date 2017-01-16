@@ -176,18 +176,17 @@ class RHandler(object):
         if self.server.activeapp in self.server.apps:
             kwargs["app"]["active"] = True
             kwargs["app"]["name"] = self.server.apps[
-                self.server.activeapp].config["full_name"].replace('_',
-                                                                   ' ').title()
+                self.server.activeapp].config["full_name"].title()
             kwargs["app"]["full_name"] = self.server.apps[
-                self.server.activeapp].config["full_name"].lower().replace(' ',
-                                                                           '_')
+                self.server.activeapp].config["full_name"]
+            kwargs["app"]["formatted_name"] = self.server.apps[
+                self.server.activeapp].config["formatted_name"]
             kwargs["app"]["icon"] = self.server.apps[
                 self.server.activeapp].config["icon"]
             kwargs["app"]["color"] = self.server.apps[
                 self.server.activeapp].config["color"]
             kwargs["title"] += " - %s" % self.server.apps[
-                self.server.activeapp].config["full_name"].replace('_',
-                                                                   ' ').title()
+                self.server.activeapp].config["full_name"].title()
             kwargs["page_icon"] = self.server.apps[
                 self.server.activeapp].config["icon"]
             kwargs["page_caption"] = self.server.apps[
@@ -217,6 +216,7 @@ class RHandler(object):
                 else:
                     data["activeapp"] = {"name": self.server.activeapp,
                                          "full_name": app.config["full_name"],
+                                         "formatted_name": app.config["formatted_name"],
                                          "icon": app.config["icon"],
                                          "color": app.config['color']}
 
@@ -224,6 +224,7 @@ class RHandler(object):
             app = self.server.apps[appname]
             data["apps"].append({"name": appname,
                                  "full_name": app.config["full_name"],
+                                 "formatted_name": app.config["formatted_name"],
                                  "icon": app.config["icon"],
                                  "color": app.config['color'],
                                  "active": (appname == self.server.activeapp)})
@@ -274,7 +275,7 @@ class RHandler(object):
 
         # Run shutdown command with 5 second delay, returns immediately
         subprocess.Popen("sleep 5 && sudo halt", shell=True)
-        self.server.shutdown_server()
+        self.server.shutdown()
         return message
 
     def page_closeapp(self):
@@ -283,6 +284,9 @@ class RHandler(object):
 
     def page_openapp(self, appname):
         # Check if another app is running, if so, run its stop function
+        if self.server.activeapp == appname:
+            return redirect("/apps/%s/" % appname)
+
         self.server.stop_current_app()
 
         if appname in self.server.apps:

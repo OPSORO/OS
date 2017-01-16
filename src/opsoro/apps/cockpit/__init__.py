@@ -13,6 +13,7 @@ config = {'full_name': 'Cockpit',
           'color': '#ff517e',
           'allowed_background': False,
           'robot_state': 1}
+config['formatted_name'] = config['full_name'].lower().replace(' ', '_')
 
 # robot_state:
 # 0: Manual start/stop
@@ -35,7 +36,7 @@ clientconn = None
 
 def setup_pages(opsoroapp):
     app_bp = Blueprint(
-        config['full_name'].lower(),
+        config['formatted_name'],
         __name__,
         template_folder='templates',
         static_folder='static')
@@ -66,8 +67,7 @@ def setup_pages(opsoroapp):
         # with open(get_path('../../config/default.conf')) as f:
         #     data['config'] = yaml.load(f, Loader=Loader)
 
-        return opsoroapp.render_template(config['full_name'].lower() + '.html',
-                                         **data)
+        return opsoroapp.render_template(config['formatted_name'] + '.html', **data)
 
     @opsoroapp.app_socket_connected
     def s_connected(conn):

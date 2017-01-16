@@ -7,11 +7,12 @@ import time
 import lupa
 from .scripthost import ScriptHost
 
-config = {'full_name': 'Lua_Scripting',
+config = {'full_name': 'Lua Scripting',
           'icon': 'fa-terminal',
           'color': '#36c9ff',
           'allowed_background': True,
           'robot_state': 1}
+config['formatted_name'] = config['full_name'].lower().replace(' ', '_')
 
 # robot_state:
 # 0: Manual start/stop
@@ -77,7 +78,7 @@ def ui_add_key(key):
 
 def setup_pages(opsoroapp):
     luascripting_bp = Blueprint(
-        config['full_name'].lower(),
+        config['formatted_name'],
         __name__,
         template_folder='templates',
         static_folder='static')
@@ -113,8 +114,7 @@ def setup_pages(opsoroapp):
             else:
                 data['script_name_noext'] = script_name
 
-        return opsoroapp.render_template(config['full_name'].lower() + '.html',
-                                         **data)
+        return opsoroapp.render_template(config['formatted_name'] + '.html', **data)
 
     @luascripting_bp.route('/startscript', methods=['POST'])
     @opsoroapp.app_api

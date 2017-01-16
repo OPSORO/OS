@@ -5,7 +5,7 @@ $(document).ready(function(){
     $.ajax({
         dataType: "json",
         type: "POST",
-        url: "/docs/delete/" + app_full_name + "/",
+        url: "/docs/delete/" + app_formatted_name + "/",
         data: {
             file_name_ext: filename
         },
