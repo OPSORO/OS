@@ -118,6 +118,7 @@ def setup(opsoroapp):
 
 
 def start(opsoroapp):
+    Robot.reset_dofs()
     pass
 
 

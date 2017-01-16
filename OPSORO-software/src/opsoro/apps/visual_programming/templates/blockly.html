@@ -35,6 +35,127 @@
 			</block>
 			<block type="general_seconds"></block>
 		</category>
+		<category name="Opsoro" id="catOpsoro">
+			<category name="Face" id= "catFace">
+				<block type="face_eye_openclose"></block>
+				<block type="face_eye_set"><value name="DOF_VALUE"><block type="math_number"><field name="DOF_VALUE">0.0</field></block></value></block>
+				<block type="face_look_at"></block>
+				<block type="face_mouth_set"><value name="DOF_VALUE"><block type="math_number"><field name="DOF_VALUE">0.0</field></block></value></block>
+				<block type="face_eyebrow_set"><value name="DOF_VALUE"><block type="math_number"><field name="DOF_VALUE">0.0</field></block></value></block>
+				<block type="face_reset"></block>
+			</category>
+			<category name="Expression" id= "catExpression">
+				<block type="expression_setekman"></block>
+				<block type="expression_setva">
+					<value name="VALENCE">
+						<block type="math_number">
+							<field name="NUM">0.75</field>
+						</block>
+					</value>
+					<value name="AROUSAL">
+						<block type="math_number">
+							<field name="NUM">0.25</field>
+						</block>
+					</value></block>
+				<block type="expression_setrphi">
+					<value name="PHI">
+						<block type="math_number">
+							<field name="NUM">90</field>
+						</block>
+					</value>
+					<value name="R">
+						<block type="math_number">
+							<field name="NUM">0.80</field>
+						</block>
+					</value></block>
+			</category>
+			<category name="Drive" id="catDrive">
+				<block type="drive_stop">
+				</block>
+				<block type="drive_simple">
+					<value name="SPEED">
+						<block type="math_number">
+							<field name="NUM">1</field>
+						</block>
+					</value>
+				</block>
+				<block type="drive_advance">
+					<value name="SPEED_LEFT">
+						<block type="math_number">
+							<field name="NUM">0.0</field>
+						</block>
+					</value>
+					<value name="SPEED_RIGHT">
+						<block type="math_number">
+							<field name="NUM">0.0</field>
+						</block>
+					</value>
+				</block>
+			</category>
+			<category name="Sound" id="catSound">
+				<block type="sound_saytts"></block>
+				<block type="sound_play"></block>
+			</category>
+			<category name="Camera" id="catCamera">
+				<block type="camera_start">
+				</block>
+				<block type="camera_refresh_rate">
+				</block>
+				<block type="camera_stop">
+				</block>
+				<block type="camera_reg_facedetection">
+				</block>
+				<block type="camera_search_face">
+				</block>
+			</category>
+			<category name="Touch" id="catTouch">
+				<block type="touch_init"></block>
+				<block type="touch_etouched"></block>
+			</category>
+			<category name="NeoPixels" id="catNeoPixels">
+				<block type="neo_init"></block>
+				<block type="neo_brightness">
+					<value name="BRIGHTNESS">
+						<block type="math_number">
+							<field name="NUM">128</field>
+						</block>
+					</value>
+				</block>
+				<block type="neo_update"></block>
+				<block type="neo_setpixel">
+					<value name="PIXEL">
+						<block type="math_number">
+							<field name="NUM">5</field>
+						</block>
+					</value>
+				</block>
+				<block type="neo_setrange">
+					<value name="START">
+						<block type="math_number">
+							<field name="NUM">3</field>
+						</block>
+					</value>
+					<value name="END">
+						<block type="math_number">
+							<field name="NUM">8</field>
+						</block>
+					</value>
+				</block>
+				<block type="neo_setall"></block>
+			</category>
+			<category name="Hardware" id="catHardware">
+				<block type="hardware_ledonoff"></block>
+				<block type="hardware_readanalog"></block>
+				<block type="servo_set">
+					<value name="POS">
+						<block type="math_number">
+							<field name="NUM">1500</field>
+						</block>
+					</value>
+				</block>
+			</category>
+
+		</category>
 		<category name="Interface" id="catInterface">
 			<block type="interface_init"></block>
 			<block type="interface_addbutton"></block>
@@ -46,132 +167,7 @@
 			<block type="interface_is_key_pressed"></block>
 			<block type="interface_is_button_pressed"></block>
 		</category>
-		<category name="Sound" id="catSound">
-			<block type="sound_saytts"></block>
-			<block type="sound_play"></block>
-		</category>
-		<category name="Hardware" id="catHardware">
-			<block type="hardware_ledonoff"></block>
-			<block type="hardware_readanalog"></block>
-		</category>
-		<category name="Servo" id="catServo">
-			<!-- <block type="servo_init"></block> -->
-			<!-- <block type="servo_enabledisable"></block> -->
-			<block type="servo_set">
-				<value name="POS">
-					<block type="math_number">
-						<field name="NUM">1500</field>
-					</block>
-				</value>
-			</block>
-		</category>
-		<category name="Expression" id="catExpression">
-			<!-- <block type="expression_update"></block> -->
-			<block type="expression_setekman"></block>
-			<block type="expression_setva">
-				<value name="VALENCE">
-					<block type="math_number">
-						<field name="NUM">0.75</field>
-					</block>
-				</value>
-				<value name="AROUSAL">
-					<block type="math_number">
-						<field name="NUM">0.25</field>
-					</block>
-				</value>
-			</block>
-			<block type="expression_setrphi">
-				<value name="PHI">
-					<block type="math_number">
-						<field name="NUM">90</field>
-					</block>
-				</value>
-				<value name="R">
-					<block type="math_number">
-						<field name="NUM">0.80</field>
-					</block>
-				</value>
-			</block>
-		</category>
-		<category name="Drive" id="catDrive">
-			<block type="drive_stop">
-			</block>
-			<block type="drive_drive">
-				<value name="SPEED">
-					<block type="math_number">
-						<field name="NUM">1</field>
-					</block>
-				</value>
-			</block>
-			<block type="drive_shortTurn">
-				<value name="SPEED">
-					<block type="math_number">
-						<field name="NUM">1</field>
-					</block>
-				</value>
-			</block>
-			<block type="drive_longTurn">
-				<value name="SPEED">
-					<block type="math_number">
-						<field name="NUM">1</field>
-					</block>
-				</value>
-			</block>
-			<block type="drive_drive_side">
-				<value name="SPEED">
-					<block type="math_number">
-						<field name="NUM">1</field>
-					</block>
-				</value>
-			</block>
-		</category>
-		<category name="Camera" id="catCamera">
-			<block type="camera_start">
-			</block>
-			<block type="camera_refresh_rate">
-			</block>
-			<block type="camera_stop">
-			</block>
-			<block type="camera_reg_facedetection">
-			</block>
-			<block type="camera_search_face">
-			</block>
-		</category>
-		<category name="Touch" id="catTouch">
-			<block type="touch_init"></block>
-			<block type="touch_etouched"></block>
-		</category>
-		<category name="NeoPixels" id="catNeoPixels">
-			<block type="neo_init"></block>
-			<block type="neo_brightness">
-				<value name="BRIGHTNESS">
-					<block type="math_number">
-						<field name="NUM">128</field>
-					</block>
-				</value>
-			</block>
-			<block type="neo_update"></block>
-			<block type="neo_setpixel">
-				<value name="PIXEL">
-					<block type="math_number">
-						<field name="NUM">5</field>
-					</block>
-				</value>
-			</block>
-			<block type="neo_setrange">
-				<value name="START">
-					<block type="math_number">
-						<field name="NUM">3</field>
-					</block>
-				</value>
-				<value name="END">
-					<block type="math_number">
-						<field name="NUM">8</field>
-					</block>
-				</value>
-			</block>
-			<block type="neo_setall"></block>
-		</category>
+
 		<sep></sep>
 		<category name="Logic" id="catLogic">
 			<block type="controls_if"></block>
@@ -341,22 +337,13 @@
 
 	<script src="/static/js/vendor/jquery.js"></script>
 	<script>
-		var soundlist = [{ %
-				if soundfiles %
-			} { %
-				for soundfile in soundfiles %
-			}
-			["{{ soundfile }}", "{{ soundfile }}"] { %
-				if not loop.last %
-			}, { % endif %
-			} { % endfor %
-			} { %
-				else %
-			}
-			["No sounds found!", "NOSOUND"] { % endif %
-			}
-		];
+		var soundlist = [{%	if soundfiles %}
+			{% for soundfile in soundfiles %}
+			["{{ soundfile }}", "{{ soundfile }}"] {%
+				if not loop.last %}, {% endif %} {% endfor %} {% else %}
+			["No sounds found!", "NOSOUND"] {% endif %}];
 	</script>
+
 	<script src="static/blockly/blockly_compressed.js"></script>
 	<script src="static/blockly/blocks_compressed.js"></script>
 	<script src="static/blockly/msg/js/en.js"></script>
@@ -371,6 +358,7 @@
 	<script src="static/custom_blocks/touch.js"></script>
 	<script src="static/custom_blocks/neopixel.js"></script>
 	<script src="static/custom_blocks/drive.js"></script>
+	<script src="static/custom_blocks/face.js"></script>
 	<script src="static/custom_blocks/camera.js"></script>
 
 	<script>

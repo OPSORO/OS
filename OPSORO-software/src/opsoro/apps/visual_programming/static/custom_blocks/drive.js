@@ -1,137 +1,93 @@
 Blockly.Lua.addReservedWords("Robot");
 
 Blockly.Blocks['drive_stop'] = {
-  init: function() {
-    this.appendDummyInput()
-        .appendField(new Blockly.FieldImage("static/icons/fa-lightbulb-o.png", 16, 18, ""))
-        .appendField("Stop");
-    this.setPreviousStatement(true);
-    this.setNextStatement(true);
-    this.setColour(220);
-    this.setTooltip('Stop the robot');
-  }
+    init: function() {
+        this.appendDummyInput()
+            .appendField(new Blockly.FieldImage("static/icons/fa-lightbulb-o.png", 16, 18, ""))
+            .appendField("Stop");
+        this.setPreviousStatement(true);
+        this.setNextStatement(true);
+        this.setColour(220);
+        this.setTooltip('Stop the robot');
+    }
 };
 Blockly.Lua['drive_stop'] = function(block) {
-  var code = 'Robot:execute{action="stop", tags={"wheels"}}\n'
-  return code;
+    var code = 'Robot:execute{action="stop", tags={"wheels"}}\n'
+    return code;
 }
 
-Blockly.Blocks['drive_drive'] = {
+
+Blockly.Blocks['drive_simple'] = {
+    init: function() {
+        this.appendDummyInput()
+            .appendField("Drive")
+            .appendField(new Blockly.FieldDropdown([
+                ["forward", "FORWARD"],
+                ["backward", "BACKWARD"],
+                ["left ", "LEFT"],
+                ["right", "RIGHT"]
+            ]), "DRIVE_SELECTION");
+        this.appendValueInput("SPEED")
+            .setCheck("Number")
+            .setAlign(Blockly.ALIGN_RIGHT)
+            .appendField("Speed");
+        this.setInputsInline(false);
+        this.setPreviousStatement(true, null);
+        this.setNextStatement(true, null);
+        this.setColour(220);
+        this.setTooltip('');
+        this.setHelpUrl('');
+    }
+};
+
+Blockly.Lua['drive_simple'] = function(block) {
+    var dropdown_drive_selection = block.getFieldValue('DRIVE_SELECTION');
+    var value_speed = Blockly.Lua.valueToCode(block, 'speed', Blockly.Lua.ORDER_ATOMIC);
+    var code = '';
+    switch (dropdown_drive_selection) {
+        case "FORWARD":
+            code = 'Robot:execute{action="forward", tags={"wheels"},speed= ' + speed + '}\n'
+            break;
+        case "BACKWARD":
+            code = 'Robot:execute{action="backward", tags={"wheels"},speed= ' + speed + '}\n'
+            break;
+        case "LEFT":
+            code = 'Robot:execute{action="shortLeft", tags={"wheels"},speed= ' + speed + '}\n'
+            break;
+        case "RIGHT":
+            code = 'Robot:execute{action="shortRight", tags={"wheels"},speed= ' + speed + '}\n'
+            break;
+        default:
+            code = 'Robot:execute{action="stop", tags={"wheels"}' + '}\n'
+    }
+    return code;
+};
+
+Blockly.Blocks['drive_advance'] = {
   init: function() {
     this.appendDummyInput()
-        .appendField(new Blockly.FieldImage("static/icons/fa-lightbulb-o.png", 16, 18, ""))
-        .appendField("Drive")
-        .appendField(new Blockly.FieldDropdown([["forward", "FORWARD"], ["backward", "BACKWARD"]]),'DIRECTION');
-    this.appendValueInput("SPEED")
+        .appendField("Wheel speed: ");
+    this.appendValueInput("SPEED_LEFT")
         .setCheck("Number")
         .setAlign(Blockly.ALIGN_RIGHT)
-        .appendField("Speed");
-    this.setPreviousStatement(true);
-    this.setNextStatement(true);
-    this.setColour(220);
-    this.setTooltip('drive forward of backward with a speed from 0 to 100');
-  }
-};
-Blockly.Lua['drive_drive'] = function(block) {
-  var code = "";
-  var direction = block.getFieldValue('DIRECTION');
-  var speed = Blockly.Lua.valueToCode(block, 'SPEED', Blockly.Lua.ORDER_ATOMIC);
-
-  if(direction == "FORWARD"){
-    var code = 'Robot:execute{action="forward", tags={"wheels"},speed= '+ speed+'}\n'
-  }
-  else {
-    var code = 'Robot:execute{action="backward", tags={"wheels"},speed= '+ speed+'}\n'
-  }
-  return code;
-};
-
-Blockly.Blocks['drive_shortTurn'] = {
-  init: function() {
-    this.appendDummyInput()
-        .appendField(new Blockly.FieldImage("static/icons/fa-lightbulb-o.png", 16, 18, ""))
-        .appendField("Short Turn ")
-        .appendField(new Blockly.FieldDropdown([["left", "LEFT"], ["right", "RIGHT"]]),'DIRECTION');
-    this.appendValueInput("SPEED")
+        .appendField("Left");
+    this.appendValueInput("SPEED_RIGHT")
         .setCheck("Number")
         .setAlign(Blockly.ALIGN_RIGHT)
-        .appendField("Speed");
-    this.setPreviousStatement(true);
-    this.setNextStatement(true);
-    this.setColour(220);
-    this.setTooltip('drive forward of backward with a speed from 0 to 100');
+        .appendField("Right");
+    this.setInputsInline(false);
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setColour(230);
+    this.setTooltip('Set the speed of the wheels on each side. Speed-values are from -1.0 to 1.0 ');
+    this.setHelpUrl('');
   }
 };
-Blockly.Lua['drive_shortTurn'] = function(block) {
-  var code = "";
-  var direction = block.getFieldValue('DIRECTION');
-  var speed = Blockly.Lua.valueToCode(block, 'SPEED', Blockly.Lua.ORDER_ATOMIC);
 
-  if(direction == "LEFT"){
-    var code = 'Robot:execute{action="shortLeft", tags={"wheels"},speed= '+ speed+'}\n'
-  }
-  else {
-    var code = 'Robot:execute{action="shortRight", tags={"wheels"},speed= '+ (-speed)+'}\n'
-  }
-  return code;
-};
-
-Blockly.Blocks['drive_longTurn'] = {
-  init: function() {
-    this.appendDummyInput()
-        .appendField(new Blockly.FieldImage("static/icons/fa-lightbulb-o.png", 16, 18, ""))
-        .appendField("Long Turn ")
-        .appendField(new Blockly.FieldDropdown([["left", "LEFT"], ["right", "RIGHT"]]),'DIRECTION');
-    this.appendValueInput("SPEED")
-        .setCheck("Number")
-        .setAlign(Blockly.ALIGN_RIGHT)
-        .appendField("Speed");
-    this.setPreviousStatement(true);
-    this.setNextStatement(true);
-    this.setColour(220);
-    this.setTooltip('drive forward of backward with a speed from 0 to 100');
-  }
-};
-Blockly.Lua['drive_longTurn'] = function(block) {
-  var code = "";
-  var direction = block.getFieldValue('DIRECTION');
-  var speed = Blockly.Lua.valueToCode(block, 'SPEED', Blockly.Lua.ORDER_ATOMIC);
-
-  if(direction == "LEFT"){
-    var code = 'Robot:execute{action="longLeft", tags={"wheels"},speed= '+ speed+'}\n'
-  }
-  else {
-    var code = 'Robot:execute{action="longRight", tags={"wheels"},speed= '+ speed+'}\n'
-  }
-  return code;
-};
-
-Blockly.Blocks['drive_drive_side'] = {
-  init: function() {
-    this.appendDummyInput()
-        .appendField(new Blockly.FieldImage("static/icons/fa-lightbulb-o.png", 16, 18, ""))
-        .appendField("Drive")
-        .appendField(new Blockly.FieldDropdown([["left", "LEFT"], ["right", "RIGHT"]]),'DIRECTION');
-    this.appendValueInput("SPEED")
-        .setCheck("Number")
-        .setAlign(Blockly.ALIGN_RIGHT)
-        .appendField("Speed");
-    this.setPreviousStatement(true);
-    this.setNextStatement(true);
-    this.setColour(220);
-    this.setTooltip('discription');
-  }
-};
-Blockly.Lua['drive_drive_side'] = function(block) {
-  var code = "";
-  var direction = block.getFieldValue('DIRECTION');
-  var speed = Blockly.Lua.valueToCode(block, 'SPEED', Blockly.Lua.ORDER_ATOMIC);
-
-  if(direction == "LEFT"){
-    var code = 'Robot:execute{action="forward", tags={"wheel,left"},speed= '+ speed+'}\n'
-  }
-  else {
-    var code = 'Robot:execute{action="backward", tags={"wheel,right"},speed= '+ speed+'}\n'
-  }
+Blockly.Lua['drive_advance'] = function(block) {
+  var value_speed_left = Blockly.Lua.valueToCode(block, 'SPEED_LEFT', Blockly.Lua.ORDER_ATOMIC);
+  var value_speed_right = Blockly.Lua.valueToCode(block, 'SPEED_RIGHT', Blockly.Lua.ORDER_ATOMIC);
+  var code = 'Robot:execute{action="forward", tags={"wheel","left"},speed= ' + (value_speed_left) + '}\n'
+  code += 'Robot:execute{action="forward", tags={"wheel","right"},speed= ' + (value_speed_right) + '}\n'
   return code;
 };

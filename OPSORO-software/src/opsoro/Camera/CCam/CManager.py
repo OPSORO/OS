@@ -81,13 +81,13 @@ class CManager():
 
     def removeSystem(self, system_class):
         """
-            remove systems from this manager
+        remove systems from this manager
 
-            :params class system_class      class of systems to remove
+        :params class system_class:      class of systems to remove
         """
         newSystemList = []
         for s in list(self.csystems):
-            print not isinstance(s,system_class)
+            print isinstance(s,system_class)
             if not isinstance(s,system_class):
                 newSystemList += [s]
         self.csystems = newSystemList

@@ -67,6 +67,11 @@ class _Robot(object):
             i.set_mod_dof_value(module_name, dof_name, dof_value, anim_time)
         self.start_update_loop()
 
+    def reset_dofs(self):
+        for i in self.entities.values():
+            i.reset_dofs()
+        self.start_update_loop()
+
     # def set_dof_values(self, dof_values, anim_time=-1):
     #     for module_name, dofs in dof_values.iteritems():
     #         for dof_name, dof_value in dofs.iteritems():
@@ -75,12 +80,12 @@ class _Robot(object):
 
     #deprecated
     def get_dof_values(self):
-        print_error("use of deprecated method: get_dof_values in robot not supported")
+        # print_error("use of deprecated method: get_dof_values in robot not supported")
+
         return None
 
     def apply_poly(self, r, phi, anim_time=-1):
-        # print_info('Apply robot poly; r: %f, phi: %f, time: %f' %
-        #            (r, phi, anim_time))
+        print str(locals())
         for name, module in self.entities.iteritems():
             module.apply_poly(r, phi, anim_time)
 
@@ -188,10 +193,12 @@ class _Robot(object):
             tags = list(tags.values())
             params["tags"] = tags
 
+        actionExecuted = False
         for m in self.get_modules(tags):
-            m.execute(params)
+            actionExecuted |= m.execute(params)
+        if not actionExecuted:
+            print_warning("Action Can't be executed, check syntax and configuration")
         self.start_update_loop()
-
 
 
     def get_modules(self,tags):

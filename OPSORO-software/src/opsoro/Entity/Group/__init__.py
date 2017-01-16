@@ -15,27 +15,35 @@ class Group(Entity):
         return any([m.update() for m in self.modules])
 
     def execute(self, params):
-        executed = super(Group, self).execute(params)
+        executed = False
         action = (params["action"] if "action" in params else None)
         tags = (params["tags"] if "tags" in params else None)
-        if action and tags and not executed :
-            modules = self.getModules(tags)
-            executed = []
-            for m in modules:
-                r = m.execute(params)
-                executed += [r]
-            executed = all(executed)
+        if action and tags:
+            if self.has_tags(tags) == 1:
+                 executed = super(Group,self).execute(params)
+            if self.has_tags(tags) >= 1:
+                modules = self.get_modules(tags)
+                e = []
+                for m in modules:
+                    r = m.execute(params)
+                    e += [r]
+                executed = all(e)
+        else:
+            print_warning("can't find parameters: " + str(params))
+
         return executed
 
     def has_tags(self,tags):
-        group_tag_match = super(Group,self).has_tags(tags)
-        module_tag_match = any(m.has_tags(tags) for m in self.modules)
-        return (group_tag_match or module_tag_match)
+        if super(Group,self).has_tags(tags) == 1:
+            return 1
+        elif any(m.has_tags(tags) for m in self.modules):
+            return 2
+        else:
+            return 0
+
 
     def has_action(self,action):
-        print_todo("tag argument toevoegen")
-        group_has_action = super(Group,self).has_action(action)
-        module_has_action = any([m.has_action(action) for m in self.modules])
+        return (action in self.get_actions())
 
     def get_actions(self, tags=[]):
         """
@@ -46,25 +54,17 @@ class Group(Entity):
             :return:                        List of actions
             :rtype:                         list(string)
         """
-        actions = []
-        if super(Group,self).has_action(action):
-            actions = actions + [inspect.getmembers(self, inspect.isfunction)]
-            #count the common actions of al modules
-            module_actions = {}
-            for m in self.modules:
-                for a in m.get_actions(tags):
-                    if a in module_actions:
-                        module_actions[a] = module_actions[a] + 1
-                    else:
-                        module_actions[a] = 1
-            for key,value in module_actions.iteritems():
-                if value == len(self.modules):
-                    action = action + [key]
-        else:
-            for m in self.modules:
-                actions = actions + m.get_actions(tags)
+        result = []
 
-        actions = list(set(actions))
+        modules = self.get_modules(tags)
+        result += [m.get_actions() for m in modules]
+        if self.has_tags(tags) == 1:
+            tmp = super(Group,self).get_actions(tags)
+            result += tmp
+
+        #TO DO: remove duplicates
+        return result
+
 
     def set_mod_dof_value(self,module_name, dof_name, dof_value, anim_time=-1):
         for m in self.modules:
@@ -78,12 +78,16 @@ class Group(Entity):
         for m in self.modules:
             m.reset_dofs()
 
+    def apply_poly(self, r, phi, anim_time=-1):
+        for m in self.modules:
+            m.apply_poly(r,phi,anim_time)
+
     def add_module(self, module):
         self.modules = self.modules + [module]
 
     def get_modules(self,tags=[]):
         result = []
         for m in self.modules:
-            if m.has_tags(tags):
+            if m.has_tags(tags) > 0:
                 result = result + [m]
         return result

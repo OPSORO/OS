@@ -81,7 +81,9 @@ class _Camera(object):
         :param string system_class      Name of the CSystem-class defined C_SYSTEMS
         """
         if system_class in C_SYSTEMS:
-            self.c_manager.removeSystem(C_SYSTEMS[system_class].__class__)
+            self.c_manager.removeSystem(C_SYSTEMS[system_class])
+        else:
+            print_warning("can't unregister system")
 
     def unregisterAllSystem(self):
         """

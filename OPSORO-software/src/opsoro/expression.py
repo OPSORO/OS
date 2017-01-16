@@ -59,11 +59,8 @@ class _Expression(object):
         """
 		Set an emotion with r and phi, within a certain time.
 		"""
-        # Print data to log
-        # print_info("Set Emotion; r: " + str(r) + ", phi: " + str(phi) +
-        #            ", deg: " + str(degrees) + ", time: " + str(anim_time))
 
-        e = 0 + 0j
+
         # Emotion from r and phi
         if r is not None and phi is not None:
             if degrees:
@@ -71,17 +68,18 @@ class _Expression(object):
 
             phi = constrain(phi, 0.0, 2 * math.pi)
             r = constrain(r, 0.0, 1.0)
-            e = cmath.rect(r, phi)
+            Robot.apply_poly(r, phi, anim_time)
         else:
             raise RuntimeError(
                 "Bad combination of parameters; r and phi need to be provided.")
 
-        self.set_emotion_e(e, anim_time)
+
 
     def update(self):
         # Still here for backwards compatibility
         # This is done automatically
         return
+
 
     def get_emotion_complex(self):
         """

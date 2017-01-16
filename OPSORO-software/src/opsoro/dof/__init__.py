@@ -92,6 +92,11 @@ class DOF(object):
         :param float phi:       (radians) angle of the emotion in the circumplex.
         :param float anim_time: time for the servo to move from previous dof to the new dof (-1: animation will be based on dof differences).
         """
+
+        #Hack by Sander
+        r = (1 if r >0.3 else 0)
+
+
         # print_info('Calc; r: %d, phi: %d, time: %i' % (r, phi, anim_time))
         # Calculate DOF position at max intensity
 
@@ -101,7 +106,6 @@ class DOF(object):
             phi += math.pi
 
         dof_at_max_r = float(self._interp_poly(phi))
-
         # Interpolate between neutral DOF pos and max intensity DOF pos
         self.set_value(
             float(self._neutral) + (r * (dof_at_max_r - float(self._neutral))),

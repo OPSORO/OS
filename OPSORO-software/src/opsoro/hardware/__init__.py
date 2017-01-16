@@ -2,6 +2,9 @@ import time
 import spidev
 import threading
 
+"""
+    Boolean to make the software use the fake hardware class
+"""
 DEBUG_MODE = True
 
 # SPI COMMANDS
@@ -343,7 +346,7 @@ class _Hardware(object):
 # Global instance that can be accessed by apps and scripts
 Hardware = None
 if DEBUG_MODE:
-    from fake_hardware import Fake_Hardware
+    from fake_hardware2 import Fake_Hardware
     Hardware = Fake_Hardware()
 else:
     Hardware = _Hardware()

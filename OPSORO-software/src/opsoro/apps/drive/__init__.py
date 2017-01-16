@@ -30,7 +30,12 @@ except ImportError:
 constrain = lambda n, minn, maxn: max(min(maxn, n), minn)
 get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 
-config = {"full_name": "drive", "icon": "fa-car", 'color': '#15e678'}
+
+config = {'full_name': 'drive',
+          'icon': 'fa-car',
+          'color': '#15e678',
+          'allowed_background': True,
+          'robot_state': 1}
 
 clientconn = None
 
@@ -105,7 +110,7 @@ def stop(opsoroapp):
 def arrowKey2motion(up, down, left , right):
     result = {"action":"stop"}
     if (up & down)  | (left & right):
-        result = {"action":"stop","tags":["wheels"], "speed":None}               #two oposite actions results in no action
+        result = {"action":"stop","tags":["wheels"]}               #two oposite actions results in no action
     elif up:
         if left:
             result = {"action":"longLeft","tags":["wheels"], "speed":1}             #soft left turn forward
@@ -125,5 +130,5 @@ def arrowKey2motion(up, down, left , right):
     elif right:
         result = {"action":"shortRight","tags":["wheels"], "speed":1}                     #hard right turn
     else:
-        result = {"action":"stop","tags":["wheels"], "speed":None}                        #stand still
+        result = {"action":"stop","tags":["wheels"]}                        #stand still
     return result

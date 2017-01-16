@@ -62,6 +62,7 @@ class Factory(object):
                         self.entities[module.name] = module
                     self.modules[module.name] = module
 
+
     def _load_dofs(self,dof_data):
         result = {}
         for d in dof_data:

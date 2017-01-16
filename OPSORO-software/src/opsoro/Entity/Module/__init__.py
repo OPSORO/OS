@@ -21,6 +21,7 @@ class Module(Entity):
         definition of functions SEE ENTITY.__init__
     """
     def __init__(self, data=None):
+        super(Module,self).__init__()
         self.name = ""
         self.tags = []
         self.position = {}  #not implemented
@@ -49,4 +50,11 @@ class Module(Entity):
 
     def reset_dofs(self):
         for name, dof in self.dofs.iteritems():
-            dof.set_value(name, 0, anim_time)
+            dof.set_value(0)
+
+    def execute(self, params):
+        if super(Module,self).execute(params):
+            return True
+        else:
+            print_warning(str(type(self)) + "has no funtion '{}'".format(params["action"]))
+            return False

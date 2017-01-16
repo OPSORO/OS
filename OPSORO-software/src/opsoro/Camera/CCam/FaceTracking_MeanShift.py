@@ -1,13 +1,14 @@
 import cv2
 import numpy as np
 import os
+import time
 
 
 
 PATH_HAAR_CASCADE = os.path.dirname(__file__) +'/extra/haarcascade_frontalface_default1.xml'
 faceCascade = cv2.CascadeClassifier(PATH_HAAR_CASCADE)
 termination = (cv2.TERM_CRITERIA_EPS | cv2.TERM_CRITERIA_COUNT,10, 1)
-REDETECT_FACE = 10 #maximum amount os mean-shift search operations
+REDETECT_FACE = 20 #maximum amount os mean-shift search operations
 
 class Counter():
     def __init__(self,size):
@@ -23,12 +24,13 @@ class Counter():
 
 
 class FaceTracking():
+
+    def __init__(self):
         """
             face detection and tracking algorithm.
                 1. detect face with Viole Jones face detection algorithm
                 2. folows the face using Mean-Shift color tracking
         """
-    def __init__(self):
         self.facePosition = None
         self.state = 0          #    0=Viola Jones   1=CamShift
         self.selection = None #selection rectangle
@@ -38,11 +40,10 @@ class FaceTracking():
         self.previousHist = None
 
     def update(self,frame):
-        frame[:, :, 0] = cv2.equalizeHist(frame[:, :, 0])
-        frame[:, :, 1] = cv2.equalizeHist(frame[:, :, 1])
-        frame[:, :, 2] = cv2.equalizeHist(frame[:, :, 2])
         hsv = cv2.cvtColor(frame,cv2.COLOR_BGR2HSV)
-        # hsv = cv2.medianBlur(hsv,5)
+        hsv[:, :, 0] = cv2.equalizeHist(hsv[:, :, 0])
+        hsv[:, :, 1] = cv2.equalizeHist(hsv[:, :, 1])
+        hsv[:, :, 2] = cv2.equalizeHist(hsv[:, :, 2])
 
         new_selection = None
 
@@ -51,7 +52,7 @@ class FaceTracking():
             self.state = 0
 
         if self.state == 1: #Mean-Shift
-            print "Mean-Shift"
+            # print "Mean-Shift"
             backProj = cv2.calcBackProject([hsv], [0], self.previousHist, [0, 255], 1)
             backProj &= self.backgroundMask(hsv)
             # cv2.imshow("back proj",backProj)
@@ -68,7 +69,7 @@ class FaceTracking():
                 self.previousHist = 0.6 * self.refHist  + 0.2 * self.previousHist + 0.2 * hist
 
         if self.state == 0: #Viola Jones
-            print "Viola Jones"
+            # print "Viola Jones"
             face = self.faceDetect(frame)
             if face is not None:
                 new_selection = face
@@ -77,7 +78,7 @@ class FaceTracking():
                 self.refHist = hist
                 self.state = 1
             else:
-                print "no faces detect"
+                # print "no faces detect"
                 new_selection = None
                 new_selection_e = None
                 self.previousHist = None
@@ -87,7 +88,7 @@ class FaceTracking():
             x1, y1, w1, h1 = self.selection
             x2, y2, w2, h2 = new_selection
             moving_dist = np.sqrt(np.power((x1+0.5*w1)-(x2+0.5*w2),2) + np.power((y1+0.5*y1)-(y2+0.5*y2),2))
-            if moving_dist > 100:
+            if moving_dist > 500:
                 self.state = 0
                 new_selection = None
             else:
@@ -118,19 +119,26 @@ class FaceTracking():
         return hist
 
     def faceDetect(self,frame):
-        gray = cv2.cvtColor(frame.copy(), cv2.COLOR_BGR2GRAY)
+
+        start = time.time()
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        gray = cv2.resize(gray, (320,240))
         faces = faceCascade.detectMultiScale(
             gray,
             scaleFactor=1.1,
-            minNeighbors=5,
-            minSize=(30, 30),
+            minNeighbors=3,
+            minSize=(15, 15),
         )
         face = None
         if len(faces)==1:
-            face= faces[0]
+            face = faces[0]
         elif len(faces) > 1:
             face = max([(w*h,(x,y,w,h)) for x,y,w,h in faces], key=lambda i:i[0])[1]
-            face = face
+
+        if face is not None:
+            face = np.array(face,np.uint) * 2
+
+        print "Viola Jones time:" + str(time.time()-start) + " [sec]"
         return face
 
     def show_hist(self, hist, name = "hist"):
@@ -151,7 +159,7 @@ class FaceTracking():
         return "FaceTracking"
 
 if __name__ == "__main__":
-    cap = cv2.VideoCapture(1)
+    cap = cv2.VideoCapture(0)
     print (cap.get(3),cap.get(4))
     tracker = FaceTracking()
     while (True):
@@ -165,7 +173,7 @@ if __name__ == "__main__":
 
         hsv = cv2.cvtColor(frame,cv2.COLOR_BGR2HSV)
         hsv = cv2.medianBlur(hsv, 5)
-        h = hsv.copy(); hsv[:, :, 1] = 255; hsv[:, :, 2] = 255;
+        h = hsv.copy(); h[:, :, 1] = 255; h[:, :, 2] = 255;
         cv2.imshow('h',h)
         cv2.imshow('h bgr',cv2.cvtColor(h,cv2.COLOR_HSV2BGR))
         k = cv2.waitKey(1) & 0xFF
