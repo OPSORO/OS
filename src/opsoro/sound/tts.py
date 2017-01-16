@@ -18,6 +18,9 @@ get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 
 class _TTS(object):
     def __init__(self):
+        """
+        TTS class, used to convert text to speech.
+        """
         self.engine = "espeak"  # "espeak"
         self.language = "nl"
         self.gender = "f"  # "m"

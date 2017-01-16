@@ -1,3 +1,12 @@
+"""
+This module defines the interface for communicating with the settings of the robot.
+
+.. autoclass:: _Preferences
+   :members:
+   :undoc-members:
+   :show-inheritance:
+"""
+
 from __future__ import division
 from __future__ import with_statement
 

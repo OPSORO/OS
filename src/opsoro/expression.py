@@ -1,3 +1,12 @@
+"""
+This module defines the interface for communicating with the expression.
+
+.. autoclass:: _Expression
+   :members:
+   :undoc-members:
+   :show-inheritance:
+"""
+
 from __future__ import with_statement
 
 import math
