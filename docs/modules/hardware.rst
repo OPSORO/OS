@@ -3,7 +3,7 @@
 opsoro.hardware
 ---------------
 
-.. automodule:: opsoro.hardware
+.. automodule:: opsoro._hardware
     :members:
     :undoc-members:
     :show-inheritance:

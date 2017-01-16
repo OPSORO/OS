@@ -3,7 +3,7 @@
 opsoro.sound
 ------------
 
-.. automodule:: opsoro.sound
+.. automodule:: opsoro._sound
     :members:
     :undoc-members:
     :show-inheritance:
@@ -14,7 +14,7 @@ opsoro.sound
 opsoro.sound.tts
 ----------------
 
-.. automodule:: opsoro.sound.tts
+.. automodule:: opsoro.sound._tts
     :members:
     :undoc-members:
     :show-inheritance:

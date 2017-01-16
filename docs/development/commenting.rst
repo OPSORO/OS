@@ -10,11 +10,12 @@ Commenting
 
 .. code-block:: python
 
-   """
-   Explanation about the function
+    """
+    Explanation about the function.
 
-   :param bool A:   bool input parameter
-   :param int B:    int input parameter
-   :return:         what is the function returning?
-   :rtype:          return type
-   """
+    :param bool A:   bool input parameter
+    :param int B:    int input parameter
+
+    :return:         what is the function returning?
+    :rtype:          return type
+    """
