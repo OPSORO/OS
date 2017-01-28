@@ -102,7 +102,7 @@ Blockly.Blocks['interface_addkey2'] = {
 };
 Blockly.Lua['interface_addkey2'] = function(block) {
   var text_key = block.getFieldValue('KEY');
-  var code = 'UI:add_key("' + dropdown_key + '")\n';
+  var code = 'UI:add_key("' + text_key + '")\n';
   return code;
 };
 

@@ -32,6 +32,7 @@ Blockly.Blocks['camera_stop'] = {
 
 Blockly.Lua['camera_stop'] = function(block) {
   var code = 'Camera:stopSystemProcessing()\n';
+  code += 'delay(2)\n';
   return code;
 };
 
@@ -82,15 +83,15 @@ Blockly.Blocks['camera_search_face'] = {
         .appendField("Search Face Position");
     this.appendDummyInput()
         .setAlign(Blockly.ALIGN_RIGHT)
-        .appendField("[out] found")
+        .appendField("[Boolean] found")
         .appendField(new Blockly.FieldVariable("item"), "FACE_DETECT");
     this.appendDummyInput()
         .setAlign(Blockly.ALIGN_RIGHT)
-        .appendField("[out] X")
+        .appendField("[Number] X")
         .appendField(new Blockly.FieldVariable("item"), "X");
     this.appendDummyInput()
         .setAlign(Blockly.ALIGN_RIGHT)
-        .appendField("[out] Y")
+        .appendField("[Number] Y")
         .appendField(new Blockly.FieldVariable("item"), "Y");
     this.setInputsInline(false);
     this.setPreviousStatement(true, null);

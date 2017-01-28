@@ -10,10 +10,10 @@ get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 class _TTS(object):
     def __init__(self):
         self.engine = "espeak"  # "espeak"
-        self.language = "nl"
+        self.language = "en"
         self.gender = "f"  # "m"
         self.delay = "5"
-        self.speed = "180"
+        self.speed = "130"
 
     def create(self, text):
         """

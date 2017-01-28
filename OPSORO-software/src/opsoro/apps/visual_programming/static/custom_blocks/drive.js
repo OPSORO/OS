@@ -42,20 +42,20 @@ Blockly.Blocks['drive_simple'] = {
 
 Blockly.Lua['drive_simple'] = function(block) {
     var dropdown_drive_selection = block.getFieldValue('DRIVE_SELECTION');
-    var value_speed = Blockly.Lua.valueToCode(block, 'speed', Blockly.Lua.ORDER_ATOMIC);
+    var value_speed = Blockly.Lua.valueToCode(block, 'SPEED', Blockly.Lua.ORDER_ATOMIC);
     var code = '';
     switch (dropdown_drive_selection) {
         case "FORWARD":
-            code = 'Robot:execute{action="forward", tags={"wheels"},speed= ' + speed + '}\n'
+            code = 'Robot:execute{action="forward", tags={"wheels"},speed= ' + value_speed + '}\n'
             break;
         case "BACKWARD":
-            code = 'Robot:execute{action="backward", tags={"wheels"},speed= ' + speed + '}\n'
+            code = 'Robot:execute{action="backward", tags={"wheels"},speed= ' + value_speed + '}\n'
             break;
         case "LEFT":
-            code = 'Robot:execute{action="shortLeft", tags={"wheels"},speed= ' + speed + '}\n'
+            code = 'Robot:execute{action="shortLeft", tags={"wheels"},speed= ' + value_speed + '}\n'
             break;
         case "RIGHT":
-            code = 'Robot:execute{action="shortRight", tags={"wheels"},speed= ' + speed + '}\n'
+            code = 'Robot:execute{action="shortRight", tags={"wheels"},speed= ' + value_speed + '}\n'
             break;
         default:
             code = 'Robot:execute{action="stop", tags={"wheels"}' + '}\n'

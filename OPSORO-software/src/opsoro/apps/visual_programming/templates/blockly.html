@@ -35,11 +35,22 @@
 			</block>
 			<block type="general_seconds"></block>
 		</category>
+		<category name="Interface" id="catInterface">
+			<block type="interface_init"></block>
+			<block type="interface_addbutton"></block>
+			<block type="interface_addtogglebutton"></block>
+			<block type="interface_addkey"></block>
+			<block type="interface_addkey2"></block>
+			<block type="interface_buttonpress"></block>
+			<block type="interface_keypress"></block>
+			<block type="interface_is_key_pressed"></block>
+			<block type="interface_is_button_pressed"></block>
+		</category>
 		<category name="Opsoro" id="catOpsoro">
 			<category name="Face" id= "catFace">
 				<block type="face_eye_openclose"></block>
 				<block type="face_eye_set"><value name="DOF_VALUE"><block type="math_number"><field name="DOF_VALUE">0.0</field></block></value></block>
-				<block type="face_look_at"></block>
+				<block type="face_look_at"><value name="HOR"><block type="math_number"><field name="HOR">0.0</field></block></value><value name="VERT"><block type="math_number"><field name="VERT">0.0</field></block></value></block>
 				<block type="face_mouth_set"><value name="DOF_VALUE"><block type="math_number"><field name="DOF_VALUE">0.0</field></block></value></block>
 				<block type="face_eyebrow_set"><value name="DOF_VALUE"><block type="math_number"><field name="DOF_VALUE">0.0</field></block></value></block>
 				<block type="face_reset"></block>
@@ -156,17 +167,7 @@
 			</category>
 
 		</category>
-		<category name="Interface" id="catInterface">
-			<block type="interface_init"></block>
-			<block type="interface_addbutton"></block>
-			<block type="interface_addtogglebutton"></block>
-			<block type="interface_addkey"></block>
-			<block type="interface_addkey2"></block>
-			<block type="interface_buttonpress"></block>
-			<block type="interface_keypress"></block>
-			<block type="interface_is_key_pressed"></block>
-			<block type="interface_is_button_pressed"></block>
-		</category>
+
 
 		<sep></sep>
 		<category name="Logic" id="catLogic">

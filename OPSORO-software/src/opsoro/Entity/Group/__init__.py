@@ -74,6 +74,10 @@ class Group(Entity):
         for m in self.modules:
             m.set_dof_value(dof_name,dof_value,anim_time)
 
+    def set_all_dofs(self,dof_value, anim_time=-1):
+        for m in self.modules:
+            m.set_all_dofs(dof_value, anim_time)
+
     def reset_dofs(self):
         for m in self.modules:
             m.reset_dofs()

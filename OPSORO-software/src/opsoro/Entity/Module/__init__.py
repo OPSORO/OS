@@ -45,11 +45,17 @@ class Module(Entity):
 
     def set_dof_value(self, dof_name, dof_value, anim_time=-1):
         if dof_name in self.dofs:
+
             self.dofs[dof_name].set_value(dof_value, anim_time)
+
+    def set_all_dofs(self,dof_value, anim_time=-1):
+        for d in self.dofs:
+            self.dofs[d].set_value(dof_value, anim_time)
 
 
     def reset_dofs(self):
         for name, dof in self.dofs.iteritems():
+            dof.set_value(0.20)
             dof.set_value(0)
 
     def execute(self, params):

@@ -48,12 +48,15 @@ class _Camera(object):
         """
             starts the opencv video capture, when there are CSystems available, they will be executed by the CManager
         """
-        self.cap = cv2.VideoCapture(0)
-        while not self.cap.isOpened():
-            pass
-        self.resolution = (self.cap.get(3),self.cap.get(4))
-        self.c_manager.setCap(self.cap)
-        self.c_manager.start()
+        try:
+            self.cap = cv2.VideoCapture(0)
+            while not self.cap.isOpened():
+                pass
+            self.resolution = (self.cap.get(3),self.cap.get(4))
+            self.c_manager.setCap(self.cap)
+            self.c_manager.start()
+        except:
+            print_error("Couldn't start Camera")
 
     def stopSystemProcessing(self):
         """
@@ -105,7 +108,7 @@ class _Camera(object):
             if pos is not None:
                 x, y, w, h = pos
                 center = [((x+0.5 * w) * 2 - self.resolution[0]) / self.resolution[0],
-                          ((y+0.5 * h) * 2 - self.resolution[1]) / self.resolution[1]]
+                          -((y+0.5 * h) * 2 - self.resolution[1]) / self.resolution[1]]
                 return center
         return None
 

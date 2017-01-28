@@ -5,7 +5,7 @@ class WheelGroup(Group):
 
     def __init__(self):
         super(WheelGroup,self).__init__()
-        a = {"stop":self.stop,
+        a = {               "stop":self.stop,
                               "forward":self.forward,
                               "backward":self.backward,
                               "shortLeft":self.shortLeft,
@@ -19,10 +19,10 @@ class WheelGroup(Group):
         for w in self.get_modules():
             w.set_dof_value("single",0, anim_time)
 
-    def forward(self,speed=0.5, anim_time=-1):
-        """
-            speed = [-1,1]      (-1 means backward)
-            anim_time = time to reach the speed
+    def forward(self,speed=1, anim_time=-1):
+        """"
+        speed = [-1,1]      (-1 means backward)
+        anim_time = time to reach the speed
         """
         speed = constrain(speed,-1,1)
 
@@ -32,8 +32,8 @@ class WheelGroup(Group):
 
     def backward(self, speed=1, anim_time=-1):
         """
-            speed = [-1,1]      (-1 means forward)
-            anim_time = time to reach the speed
+        speed = [-1,1]      (-1 means forward)
+        anim_time = time to reach the speed
         """
         speed = constrain(speed,-1,1)
         for w in self.get_modules():

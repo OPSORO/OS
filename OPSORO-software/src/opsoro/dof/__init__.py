@@ -147,6 +147,7 @@ class DOF(object):
         if update_last_set_time:
             self.last_set_time = int(round(time.time() * 1000))
 
+
     def set_overlay_value(self,
                           dof_value=0,
                           anim_time=-1,

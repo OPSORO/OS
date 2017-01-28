@@ -6,9 +6,6 @@ import numpy as np
 from opsoro.console_msg import *
 
 
-
-
-
 class CManager():
     """
         this is a managing class for the camera systems. The manager

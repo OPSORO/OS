@@ -386,15 +386,13 @@ $(document).ready(function() {
 
         // Monitor keypresses
         var keysDown = {};
-        $(document).keydown(function(evt) {
+        $(document).keydown(function(event) {
             if (!monitorKeypresses) {
                 return;
             }
 
-            var keycode = (event.keyCode ?
-                event.keyCode :
-                event.which);
-
+            var keycode = (event.keyCode ? event.keyCode : event.which);
+            // var keycode = event.which || event.keyCode;
             if (keysDown[keycode] == null) {
                 // First press
                 var elem = $("#ScriptUIKeys .keyboardKey[data-keycode=" + keycode + "]");
@@ -411,13 +409,14 @@ $(document).ready(function() {
             }
         });
 
-        $(document).keyup(function(evt) {
+        $(document).keyup(function(event) {
             if (!monitorKeypresses) {
                 return;
             }
             var keycode = (event.keyCode ?
                 event.keyCode :
                 event.which);
+            // var keycode = event.which || event.keyCode;
             keysDown[keycode] = null;
 
             var elem = $("#ScriptUIKeys .keyboardKey[data-keycode=" + keycode + "]");

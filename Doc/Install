@@ -1,8 +1,0 @@
-install OpenCV
-sudo apt-get install python-opencv
-
-install picamera
-sudo apt-get install python-picamera
-
-install git
-sudo pip install gitpython
