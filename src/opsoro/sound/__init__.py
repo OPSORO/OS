@@ -9,6 +9,7 @@ This module defines the interface for communicating with the sound module.
 
 from functools import partial
 import os
+import platform
 import subprocess
 from opsoro.sound.tts import TTS
 
@@ -25,6 +26,32 @@ class _Sound(object):
         self.playProcess = None
         self.jack = False
 
+        self._platform = platform.system()
+
+    def _play(self, filename):
+        """
+        Play any local file, used internally by other methods
+
+        :param string filename: full filename to play
+
+        """
+        FNULL = open(os.devnull, "w")
+
+        if self._platform == "Darwin":
+            # OSX playback, used for development
+            self.playProcess = subprocess.Popen(
+                ["afplay", filename], stdout=FNULL, stderr=subprocess.STDOUT)
+        elif not self.jack:
+            self.playProcess = subprocess.Popen(
+                ["aplay", filename], stdout=FNULL, stderr=subprocess.STDOUT)
+        else:
+            # self.playProcess = subprocess.Popen(["aplay", "-D", "hw:0,0", full_path], stdout=FNULL, stderr=subprocess.STDOUT)
+            self.playProcess = subprocess.Popen(
+                ["aplay", "-D", "hw:0,0", filename],
+                stdout=FNULL,
+                stderr=subprocess.STDOUT)
+
+
     def say_tts(self, text, generate_only=False):
         """
         Converts a string to a soundfile using Text-to-Speech libraries
@@ -37,18 +64,8 @@ class _Sound(object):
         if generate_only:
             return
 
-        FNULL = open(os.devnull, "w")
-
         self.stop_sound()
-        if not self.jack:
-            self.playProcess = subprocess.Popen(
-                ["aplay", full_path], stdout=FNULL, stderr=subprocess.STDOUT)
-        else:
-            # self.playProcess = subprocess.Popen(["aplay", "-D", "hw:0,0", full_path], stdout=FNULL, stderr=subprocess.STDOUT)
-            self.playProcess = subprocess.Popen(
-                ["aplay", "-D", "hw:0,0", full_path],
-                stdout=FNULL,
-                stderr=subprocess.STDOUT)
+        self._play(full_path)
 
     def play_file(self, filename):
         """
@@ -65,16 +82,8 @@ class _Sound(object):
                 break
         if path is None:
             raise ValueError("Could not find soundfile \"%s\"." % filename)
-        FNULL = open(os.devnull, "w")
-        if not self.jack:
-            self.playProcess = subprocess.Popen(
-                ["aplay", path], stdout=FNULL, stderr=subprocess.STDOUT)
-        else:
-            # self.playProcess = subprocess.Popen(["aplay", "-D", "hw:0,0", path], stdout=FNULL, stderr=subprocess.STDOUT)
-            self.playProcess = subprocess.Popen(
-                ["aplay", "-D", "hw:0,0", path],
-                stdout=FNULL,
-                stderr=subprocess.STDOUT)
+
+        self._play(path)
 
     def stop_sound(self):
         """
