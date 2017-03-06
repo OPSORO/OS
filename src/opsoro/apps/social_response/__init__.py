@@ -69,7 +69,7 @@ access_token_secret = 'd3A8D1ttrCxYV76pBOB389YqoLB32LiE0RVyoFwuMKUMb'
 consumer_key = 'AcdgqgujzF06JF6zWrfwFeUfF'
 consumer_secret = 'ss0wVcBTFAT6nR6hXrqyyOcFOhpa2sNW4cIap9JOoepcch93ky'
 
-twitterWords = ['@hri2017', '#opsoro']
+twitterWords = ['@dekrook', '#opsoro']
 
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
