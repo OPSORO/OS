@@ -22,10 +22,8 @@ config = {'full_name': 'Social Response',
           'icon': 'fa-share-square',
           'color': '#15e678',
           'allowed_background': True,
-          'robot_state': 1}
-
-        #   'connection': Robot.Connection.ONLINE,
-        #   'activation': Robot.Activation.AUTO}
+          'connection': Robot.Connection.ONLINE,
+          'activation': Robot.Activation.AUTO}
 config['formatted_name'] = config['full_name'].lower().replace(' ', '_')
 
 
