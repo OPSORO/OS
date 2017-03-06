@@ -12,14 +12,9 @@ config = {'full_name': 'Cockpit',
           'icon': 'fa-rocket',
           'color': '#ff517e',
           'allowed_background': False,
-          'robot_state': 1}
+          'connection': Robot.Connection.OFFLINE,
+          'activation': Robot.Activation.AUTO}
 config['formatted_name'] = config['full_name'].lower().replace(' ', '_')
-
-# robot_state:
-# 0: Manual start/stop
-# 1: Start robot automatically (alive feature according to preferences)
-# 2: Start robot automatically and enable alive feature
-# 3: Start robot automatically and disable alive feature
 
 clientconn = None
 
@@ -87,7 +82,7 @@ def setup_pages(opsoroapp):
         value = constrain(value, 500, 2500)
 
         with Hardware.lock:
-            Hardware.servo_set(pin_number, value)
+            Hardware.Servo.set(pin_number, value)
 
     opsoroapp.register_app_blueprint(app_bp)
 

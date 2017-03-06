@@ -4,21 +4,18 @@ from functools import partial
 import os
 import glob
 import time
-import lupa
+# import lupa
 from .scripthost import ScriptHost
+
+from opsoro.robot import Robot
 
 config = {'full_name': 'Lua Scripting',
           'icon': 'fa-terminal',
           'color': '#36c9ff',
           'allowed_background': True,
-          'robot_state': 1}
+          'connection': Robot.Connection.OFFLINE,
+          'activation': Robot.Activation.AUTO}
 config['formatted_name'] = config['full_name'].lower().replace(' ', '_')
-
-# robot_state:
-# 0: Manual start/stop
-# 1: Start robot automatically (alive feature according to preferences)
-# 2: Start robot automatically and enable alive feature
-# 3: Start robot automatically and disable alive feature
 
 clientconn = None
 sh = None

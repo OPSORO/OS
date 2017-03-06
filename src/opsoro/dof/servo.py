@@ -82,6 +82,6 @@ class Servo(DOF):
 
         if self.pin is not None:
             with Hardware.lock:
-                Hardware.servo_set(self.pin, self.position)
+                Hardware.Servo.set(self.pin, self.position)
                 # return True
         return dof_animation_changed

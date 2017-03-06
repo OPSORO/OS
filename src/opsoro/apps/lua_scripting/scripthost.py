@@ -355,23 +355,23 @@ class LuaHardware(object):
             return attr
 
     def cap_get_filtered_data(self):
-        return self.runtime.table_from(Hardware.cap_get_filtered_data())
+        return self.runtime.table_from(Hardware.Capacitive.get_filtered_data())
 
     def cap_get_baseline_data(self):
-        return self.runtime.table_from(Hardware.cap_get_baseline_data())
+        return self.runtime.table_from(Hardware.Capacitive.get_baseline_data())
 
     def ana_read_all_channels(self):
-        return self.runtime.table_from(Hardware.cap_get_baseline_data())
+        return self.runtime.table_from(Hardware.Capacitive.get_baseline_data())
 
     def spi_command(self, cmd, params=None, returned=0, delay=0):
         if params is not None:
             params = list(params.values())
         return self.runtime.table_from(
-            Hardware.spi_command(cmd, params, returned, delay))
+            Hardware.SPI.command(cmd, params, returned, delay))
 
     def servo_set_all(self, pos_list):
         pos_list = list(pos_list.values())
-        Hardware.servo_set_all(post_list)
+        Hardware.Servo.set_all(post_list)
 
 
 class LuaAnimate(object):

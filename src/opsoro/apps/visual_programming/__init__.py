@@ -7,18 +7,15 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from werkzeug import secure_filename
 from ..lua_scripting.scripthost import ScriptHost
 
+from opsoro.robot import Robot
+
 config = {'full_name': 'Visual Programming',
           'icon': 'fa-puzzle-piece',
           'color': '#6e00ff',
           'allowed_background': True,
-          'robot_state': 1}
+          'connection': Robot.Connection.OFFLINE,
+          'activation': Robot.Activation.AUTO}
 config['formatted_name'] = config['full_name'].lower().replace(' ', '_')
-
-# robot_state:
-# 0: Manual start/stop
-# 1: Start robot automatically (alive feature according to preferences)
-# 2: Start robot automatically and enable alive feature
-# 3: Start robot automatically and disable alive feature
 
 get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 

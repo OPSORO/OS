@@ -6,13 +6,13 @@ function setup()
 	UI:add_key("down")
 	UI:add_key("x")
 	UI:add_key("space")
-	Hardware:cap_init(8)
+	Hardware:Capacitive:init(8)
 end
 
 function loop()
 	-- Called repeatedly, put your main program here
 	if rising_edge("space", UI:is_key_pressed("space")) then
-		print("E0: " .. Hardware:cap_get_baseline_data(5))
+		print("E0: " .. Hardware:Capacitive:get_baseline_data(5))
 	end
 end
 

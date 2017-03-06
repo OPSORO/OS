@@ -2,6 +2,8 @@ from flask import Flask, request, render_template, redirect, url_for, flash, ses
 from flask_login import login_user, logout_user, current_user
 from werkzeug.exceptions import default_exceptions
 
+from sockjs.tornado import SockJSRouter, SockJSConnection
+
 from functools import partial
 
 from opsoro.expression import Expression
@@ -9,6 +11,7 @@ from opsoro.robot import Robot
 from opsoro.console_msg import *
 from opsoro.preferences import Preferences
 from opsoro.server.request_handlers.opsoro_data_requests import *
+from opsoro.play import Play
 
 import random
 import os
@@ -44,6 +47,22 @@ class AdminUser(object):
     def is_admin(self):
         return True
 
+class OfflineUser(object):
+    def is_authenticated(self):
+        return True
+
+    def is_active(self):
+        return True
+
+    def is_anonymous(self):
+        return False
+
+    def get_id(self):
+        return "admin"
+
+    def is_admin(self):
+        return True
+
 
 class RHandler(object):
     def __init__(self, server):
@@ -57,111 +76,36 @@ class RHandler(object):
 
         protect = self.server.protected_view
 
-        self.server.flaskapp.add_url_rule("/",
-                                          "index",
-                                          protect(self.page_index), )
-        self.server.flaskapp.add_url_rule(
-            "/login/",
-            "login",
-            self.page_login,
-            methods=["GET", "POST"], )
-        self.server.flaskapp.add_url_rule("/logout/",
-                                          "logout",
-                                          self.page_logout, )
-        # self.server.flaskapp.add_url_rule(
-        #     "/preferences",
-        #     "preferences",
-        #     protect(self.page_preferences),
-        #     methods=["GET", "POST"], )
-        self.server.flaskapp.add_url_rule("/sockjstoken/",
-                                          "sockjstoken",
-                                          self.page_sockjstoken, )
-        self.server.flaskapp.add_url_rule("/shutdown/",
-                                          "shutdown",
-                                          protect(self.page_shutdown), )
-        self.server.flaskapp.add_url_rule("/closeapp/",
-                                          "closeapp",
-                                          protect(self.page_closeapp), )
-        self.server.flaskapp.add_url_rule("/openapp/<appname>/",
-                                          "openapp",
-                                          protect(self.page_openapp), )
-        # self.server.flaskapp.add_url_rule(
-        #     "/app/<appname>/files/<action>",
-        #     "files",
-        #     protect(self.page_files),
-        #     methods=["GET", "POST"], )
+        self.server.flaskapp.add_url_rule("/",          "index",    protect(self.page_index), )
+        self.server.flaskapp.add_url_rule("/login/",    "login",    self.page_login, methods=["GET", "POST"], )
+        self.server.flaskapp.add_url_rule("/logout/",   "logout",   self.page_logout, )
+        self.server.flaskapp.add_url_rule("/appsockjstoken/",       "appsockjstoken",   self.page_appsockjstoken, )
+        self.server.flaskapp.add_url_rule("/shutdown/",             "shutdown",         protect(self.page_shutdown), )
+        self.server.flaskapp.add_url_rule("/closeapp/",             "closeapp",         protect(self.page_closeapp), )
+        self.server.flaskapp.add_url_rule("/openapp/<appname>/",    "openapp",          protect(self.page_openapp), )
+        # self.server.flaskapp.add_url_rule("/preferences", "preferences", protect(self.page_preferences), methods=["GET", "POST"], )
+        # self.server.flaskapp.add_url_rule("/app/<appname>/files/<action>", "files", protect(self.page_files), methods=["GET", "POST"], )
+
         # ----------------------------------------------------------------------
         # DOCUMENTS
         # ----------------------------------------------------------------------
-        self.server.flaskapp.add_url_rule(
-            "/docs/data/<app_name>/",
-            "file_data",
-            protect(docs_file_data),
-            methods=["GET"], )
-        self.server.flaskapp.add_url_rule(
-            "/docs/save/<app_name>/",
-            "file_save",
-            protect(docs_file_save),
-            methods=["POST"], )
-        self.server.flaskapp.add_url_rule(
-            "/docs/delete/<app_name>/",
-            "file_delete",
-            protect(docs_file_delete),
-            methods=["POST"], )
-        self.server.flaskapp.add_url_rule(
-            "/docs/list/",
-            "file_list",
-            protect(self.page_file_list),
-            methods=["GET"], )
+        self.server.flaskapp.add_url_rule("/docs/data/<app_name>/",     "file_data",    protect(docs_file_data),        methods=["GET"], )
+        self.server.flaskapp.add_url_rule("/docs/save/<app_name>/",     "file_save",    protect(docs_file_save),        methods=["POST"], )
+        self.server.flaskapp.add_url_rule("/docs/delete/<app_name>/",   "file_delete",  protect(docs_file_delete),      methods=["POST"], )
+        self.server.flaskapp.add_url_rule("/docs/list/",                "file_list",    protect(self.page_file_list),   methods=["GET"], )
 
         # ----------------------------------------------------------------------
         # ROBOT
         # ----------------------------------------------------------------------
-        self.server.flaskapp.add_url_rule(
-            "/robot/",
-            "robot",
-            self.page_virtual,
-            methods=["GET", "POST"], )
-        self.server.flaskapp.add_url_rule(
-            "/robot/config/",
-            "robot_config",
-            protect(robot_config_data),
-            methods=["GET", "POST"], )
-        self.server.flaskapp.add_url_rule(
-            "/robot/emotion/",
-            "robot_emotion",
-            protect(robot_emotion),
-            methods=["GET", "POST"], )
-        self.server.flaskapp.add_url_rule(
-            "/robot/dof/",
-            "robot_dof",
-            protect(robot_dof_data),
-            methods=["GET", "POST"], )
-        self.server.flaskapp.add_url_rule(
-            "/robot/dofs/",
-            "robot_dofs",
-            protect(robot_dofs_data),
-            methods=["GET", "POST"], )
-        self.server.flaskapp.add_url_rule(
-            "/robot/tts/",
-            "robot_tts",
-            protect(robot_tts),
-            methods=["GET", "POST"], )
-        self.server.flaskapp.add_url_rule(
-            "/robot/sound/",
-            "robot_sound",
-            protect(robot_sound),
-            methods=["GET", "POST"], )
-        self.server.flaskapp.add_url_rule(
-            "/robot/servo/",
-            "robot_servo",
-            protect(robot_servo),
-            methods=["GET", "POST"], )
-        self.server.flaskapp.add_url_rule(
-            "/robot/stop/",
-            "robot_stop",
-            protect(robot_stop),
-            methods=["GET", "POST"], )
+        self.server.flaskapp.add_url_rule("/robot/",            "robot",            self.page_virtual,          methods=["GET", "POST"], )
+        self.server.flaskapp.add_url_rule("/robot/config/",     "robot_config",     protect(robot_config_data), methods=["GET", "POST"], )
+        self.server.flaskapp.add_url_rule("/robot/emotion/",    "robot_emotion",    protect(robot_emotion),     methods=["GET", "POST"], )
+        self.server.flaskapp.add_url_rule("/robot/dof/",        "robot_dof",        protect(robot_dof_data),    methods=["GET", "POST"], )
+        self.server.flaskapp.add_url_rule("/robot/dofs/",       "robot_dofs",       protect(robot_dofs_data),   methods=["GET", "POST"], )
+        self.server.flaskapp.add_url_rule("/robot/tts/",        "robot_tts",        protect(robot_tts),         methods=["GET", "POST"], )
+        self.server.flaskapp.add_url_rule("/robot/sound/",      "robot_sound",      protect(robot_sound),       methods=["GET", "POST"], )
+        self.server.flaskapp.add_url_rule("/robot/servo/",      "robot_servo",      protect(robot_servo),       methods=["GET", "POST"], )
+        self.server.flaskapp.add_url_rule("/robot/stop/",       "robot_stop",       protect(robot_stop),        methods=["GET", "POST"], )
 
         for _exc in default_exceptions:
             self.server.flaskapp.errorhandler(_exc)(self.show_errormessage)
@@ -174,23 +118,16 @@ class RHandler(object):
         kwargs["title"] = self.title
         # Set app variables
         if self.server.activeapp in self.server.apps:
-            kwargs["app"]["active"] = True
-            kwargs["app"]["name"] = self.server.apps[
-                self.server.activeapp].config["full_name"].title()
-            kwargs["app"]["full_name"] = self.server.apps[
-                self.server.activeapp].config["full_name"]
-            kwargs["app"]["formatted_name"] = self.server.apps[
-                self.server.activeapp].config["formatted_name"]
-            kwargs["app"]["icon"] = self.server.apps[
-                self.server.activeapp].config["icon"]
-            kwargs["app"]["color"] = self.server.apps[
-                self.server.activeapp].config["color"]
-            kwargs["title"] += " - %s" % self.server.apps[
-                self.server.activeapp].config["full_name"].title()
-            kwargs["page_icon"] = self.server.apps[
-                self.server.activeapp].config["icon"]
-            kwargs["page_caption"] = self.server.apps[
-                self.server.activeapp].config["full_name"]
+            app = self.server.apps[self.server.activeapp]
+            kwargs["app"]["active"]         = True
+            kwargs["app"]["name"]           = app.config["full_name"].title()
+            kwargs["app"]["full_name"]      = app.config["full_name"]
+            kwargs["app"]["formatted_name"] = app.config["formatted_name"]
+            kwargs["app"]["icon"]           = app.config["icon"]
+            kwargs["app"]["color"]          = app.config["color"]
+            kwargs["title"]      += " - %s" % app.config["full_name"].title()
+            kwargs["page_icon"]             = app.config["icon"]
+            kwargs["page_caption"]          = app.config["full_name"]
         else:
             kwargs["app"]["active"] = False
 
@@ -218,7 +155,8 @@ class RHandler(object):
                                          "full_name": app.config["full_name"],
                                          "formatted_name": app.config["formatted_name"],
                                          "icon": app.config["icon"],
-                                         "color": app.config['color']}
+                                         "color": app.config['color']
+                                         }
 
         for appname in sorted(self.server.apps.keys()):
             app = self.server.apps[appname]
@@ -227,46 +165,83 @@ class RHandler(object):
                                  "formatted_name": app.config["formatted_name"],
                                  "icon": app.config["icon"],
                                  "color": app.config['color'],
-                                 "active": (appname == self.server.activeapp)})
+                                 "active": (appname == self.server.activeapp)
+                                 })
 
         return self.render_template("apps.html", **data)
 
     def page_login(self):
-        if request.method == "GET":
-            kwargs = {}
-            kwargs["title"] = self.title + " - Login"
-            kwargs["isuser"] = False
-            return render_template("login.html", **kwargs)
+        if Play.is_online():
+            print_info('ONLINE MODE')
+            if request.method == "GET":
+                kwargs = {}
+                kwargs["title"] = self.title + " - Login"
+                kwargs["isbusy"] = self.server.active_session_key is not None
+                kwargs["isuser"] = False
+                return render_template("login.html", **kwargs)
 
-        password = request.form["password"]
+            password = request.form["password"]
 
-        if password == Preferences.get(
-                "general", "password", default="RobotOpsoro"):
-            login_user(AdminUser())
+            if password == Preferences.get("general", "password", default="opsoro123"):
+                login_user(AdminUser())
+                self.server.active_session_key = os.urandom(24)
+                session["active_session_key"] = self.server.active_session_key
+
+                # self.server.user_socketrouter.broadcast(self.server.client_sockets, {'action': 'logout'})
+                # for e in self.server.client_sockets:
+                #     e.broadcast_data('logout', {})
+                #     break
+
+                return redirect(url_for("index"))
+            else:
+                flash("Wrong password.")
+                return redirect(url_for("login"))
+        else:
+            print_info('OFFLINE MODE')
+            login_user(OfflineUser())
             self.server.active_session_key = os.urandom(24)
             session["active_session_key"] = self.server.active_session_key
             return redirect(url_for("index"))
-        else:
-            flash("Wrong password.")
-            return redirect(url_for("login"))
 
     def page_logout(self):
         logout_user()
+        self.server.active_session_key = None
+        # if session["socket_session_key"] in self.server.socket_session_keys:
+        #     self.server.socket_session_keys.remove(session["socket_session_key"])
+
         session.pop("active_session_key", None)
+        # session.pop("socket_session_key", None)
+
+        # if 'socket_session_key' in session
+        #     self.server.socket_sessions[self.server.socket_session_keys.index(session["socket_session_key"])].send_data('logout', {})
+        # for socket_session in self.server.socket_sessions:
+        #     socket_session.send_data('logout', {})
+        # SockJSConnection.send('logout')
+
+
         flash("You have been logged out.")
         return redirect(url_for("login"))
 
-    def page_sockjstoken(self):
+    def page_appsockjstoken(self):
         if current_user.is_authenticated:
             if current_user.is_admin():
-                if session[
-                        "active_session_key"] == self.server.active_session_key:
+                if session["active_session_key"] == self.server.active_session_key:
                     # Valid user, generate a token
                     self.server.sockjs_token = os.urandom(24)
                     return base64.b64encode(self.server.sockjs_token)
                 else:
                     logout_user()
                     session.pop("active_session_key", None)
+
+        # Socket already exist
+        # if 'socket_session_key' in session and session["socket_session_key"] in self.server.socket_session_keys:
+        #     # return base64.b64encode(session["socket_session_key"])
+        #     pass
+        # else:
+        #     session["socket_session_key"] = os.urandom(24)
+        #     self.server.socket_session_keys.append(session["socket_session_key"])
+        # return base64.b64encode(session["socket_session_key"])
+
         return ""  # Not a valid user, return nothing!
 
     def page_shutdown(self):
@@ -290,14 +265,10 @@ class RHandler(object):
         self.server.stop_current_app()
 
         if appname in self.server.apps:
-            # robot_state:
-            # 0: Manual start/stop
-            # 1: Start robot automatically (alive feature according to preferences)
-            # 2: Start robot automatically and enable alive feature
-            # 3: Start robot automatically and disable alive feature
-            if self.server.apps[appname].config.has_key('robot_state'):
-                print_info(self.server.apps[appname].config['robot_state'])
-                if self.server.apps[appname].config['robot_state'] > 0:
+            # robot activation:
+            if self.server.apps[appname].config.has_key('activation'):
+                # print_info(self.server.apps[appname].config['activation'])
+                if self.server.apps[appname].config['activation'] >= Robot.Activation.AUTO:
                     Robot.start()
 
             self.server.activeapp = appname

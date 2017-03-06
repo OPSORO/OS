@@ -5,20 +5,18 @@ import os
 import glob
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from werkzeug import secure_filename
+
 from opsoro.sound import Sound
+from opsoro.robot import Robot
 
 config = {'full_name': 'Sounds',
           'icon': 'fa-volume-up',
           'color': '#15e678',
           'allowed_background': False,
-          'robot_state': 0}
+          'connection': Robot.Connection.OFFLINE,
+          'activation': Robot.Activation.MANUAL}
 config['formatted_name'] = config['full_name'].lower().replace(' ', '_')
 
-# robot_state:
-# 0: Manual start/stop
-# 1: Start robot automatically (alive feature according to preferences)
-# 2: Start robot automatically and enable alive feature
-# 3: Start robot automatically and disable alive feature
 
 get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 

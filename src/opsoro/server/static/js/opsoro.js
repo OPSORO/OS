@@ -1,5 +1,3 @@
-
-
 function showMainError(msg){
   $("#errors").append("<div data-alert class='alert-box alert'>" + msg + "<a href='#' class='close'>&times;</a></div>");
   $(document).foundation('alert', 'reflow');
@@ -132,6 +130,60 @@ function popupWindow(mylink, windowname)
 
 
 // -------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------
+// Socket connection
+//--------------------------------------------------------------------------------------------------------
+// Setup websocket connection.
+$(document).ready(function(){
+  conn = null;
+  connReady = false;
+  conn = new SockJS("http://" + window.location.host + "/usersockjs");
+
+  conn.onopen = function(){
+    // $.ajax({
+    //   url: "/appsockjstoken",
+    //   cache: false
+    // })
+    // .done(function(data) {
+    //   conn.send(JSON.stringify({action: "authenticate", token: data}));
+    //   console.log('SOCKET connected');
+    //   connReady = true;
+    // });
+  };
+
+  conn.onmessage = function(e){
+    console.log('SOCKET message');
+    try {
+      var msg = $.parseJSON(e.data);
+      console.log(msg.action);
+      switch(msg.action){
+        case "logout":
+          // alert('Another user logged in.')
+          if (window.location.href != '/login') {
+            window.location.href = '/';
+          }
+          break;
+        case "info":
+          console.log(msg);
+          break;
+        case "users":
+          console.log(msg.count);
+          break;
+      }
+    } catch (e) {
+      console.log(e);
+    } finally {
+
+    }
+
+  };
+
+  conn.onclose = function(){
+    console.log('SOCKET close');
+    conn = null;
+    connReady = false;
+  };
+});
 // -------------------------------------------------------------------------------------------------------
 // Robot control functions
 // -------------------------------------------------------------------------------------------------------

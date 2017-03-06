@@ -10,7 +10,7 @@ Blockly.Blocks['servo_init'] = {
   }
 };
 Blockly.Lua['servo_init'] = function(block) {
-  var code = 'Hardware:servo_init()\n';
+  var code = 'Hardware.Servo:init()\n';
   return code;
 };
 
@@ -30,9 +30,9 @@ Blockly.Lua['servo_enabledisable'] = function(block) {
   var dropdown_onoff = block.getFieldValue('ONOFF');
   var code = '';
   if(dropdown_onoff == "ON"){
-    code = "Hardware:servo_enable()\n"
+    code = "Hardware.Servo:enable()\n"
   }else{
-    code = "Hardware:servo_disable()\n"
+    code = "Hardware.Servo:disable()\n"
   }
   return code;
 };
@@ -62,6 +62,6 @@ Blockly.Blocks['servo_set'] = {
 Blockly.Lua['servo_set'] = function(block) {
   var dropdown_channel = block.getFieldValue('CHANNEL');
   var value_pos = Blockly.Lua.valueToCode(block, 'POS', Blockly.Lua.ORDER_ATOMIC);
-  var code = 'Hardware:servo_set(' + dropdown_channel + ', ' + value_pos + ')\n';
+  var code = 'Hardware.Servo:set(' + dropdown_channel + ', ' + value_pos + ')\n';
   return code;
 };

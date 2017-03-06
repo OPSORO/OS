@@ -11,9 +11,13 @@ This module defines the interface for communicating with the robot.
 from opsoro.console_msg import *
 from opsoro.stoppable_thread import StoppableThread
 from opsoro.hardware import Hardware
+# import opsoro.hardware as hardware
+# from opsoro.Hardware.Servo import Hardware
+
 from opsoro.preferences import Preferences
 
 from functools import partial
+from enum import IntEnum
 import os
 import time
 
@@ -32,8 +36,18 @@ from opsoro.module.mouth import Mouth
 
 MODULES = {'eye': Eye, 'eyebrow': Eyebrow, 'mouth': Mouth}
 
-
 class _Robot(object):
+    class Activation(IntEnum):
+        MANUAL          = 0     # 0: Manual start/stop
+        AUTO            = 1     # 1: Start robot automatically (alive feature according to preferences)
+        AUTO_ALIVE      = 2     # 2: Start robot automatically and enable alive feature
+        AUTO_NOT_ALIVE  = 3     # 3: Start robot automatically and disable alive feature
+
+    class Connection(IntEnum):
+        OFFLINE     = 0         # 0: No online capability
+        PARTLY      = 1         # 1: Needs online for extras, but works without
+        ONLINE      = 2         # 2: Requires to be online to work
+
     def __init__(self):
         self.modules = {}
         self._config = {}
@@ -51,7 +65,7 @@ class _Robot(object):
     def start(self):
         print_info('Start Robot loop')
         with Hardware.lock:
-            Hardware.servo_init()
+            Hardware.Servo.init()
         self.start_update_loop()
 
         if Preferences.get('alive', 'enabled', False):
@@ -62,7 +76,7 @@ class _Robot(object):
             self._dof_t.stop()
 
         with Hardware.lock:
-            Hardware.servo_enable()
+            Hardware.Servo.enable()
 
         self._dof_t = StoppableThread(target=self.dof_update_loop)
 
@@ -72,7 +86,7 @@ class _Robot(object):
 
         if self.auto_enable_servos:
             with Hardware.lock:
-                Hardware.servo_disable()
+                Hardware.Servo.disable()
 
     def start_alive_loop(self):
         if self._alive_t is not None:
@@ -87,7 +101,7 @@ class _Robot(object):
         print_info('Stop Robot loop')
 
         with Hardware.lock:
-            Hardware.servo_disable()
+            Hardware.Servo.disable()
 
         self.stop_alive_loop()
         self.stop_update_loop()

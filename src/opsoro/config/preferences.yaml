@@ -1,9 +1,9 @@
 general:
-  robot_name: Ono
+  robot_name: robot
   password: opsoro123
 
 alive:
-  enabled: true
+  enabled: false
   aliveness: 30
   blink: true
   gaze: true
@@ -11,8 +11,8 @@ alive:
 audio:
   master_volume: 60
   tts_engine: espeak
-  tts_language: nl
-  tts_gender: m
+  tts_language: en
+  tts_gender: f
 
 wireless:
   ssid: OPSORO-bot

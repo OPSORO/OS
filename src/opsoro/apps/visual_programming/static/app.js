@@ -125,12 +125,12 @@ $(document).ready(function() {
         // Setup websocket connection.
         var conn = null;
         var connReady = false;
-        conn = new SockJS("http://" + window.location.host + "/sockjs");
+        conn = new SockJS("http://" + window.location.host + "/appsockjs");
 
         conn.onopen = function() {
             console.log("SockJS connected.");
             $.ajax({
-                url: "/sockjstoken",
+                url: "/appsockjstoken",
                 cache: false
             }).done(function(data) {
                 conn.send(JSON.stringify({
@@ -391,9 +391,7 @@ $(document).ready(function() {
                 return;
             }
 
-            var keycode = (event.keyCode ?
-                event.keyCode :
-                event.which);
+            var keycode = (evt.keyCode ? evt.keyCode : evt.which);
 
             if (keysDown[keycode] == null) {
                 // First press
@@ -415,9 +413,7 @@ $(document).ready(function() {
             if (!monitorKeypresses) {
                 return;
             }
-            var keycode = (event.keyCode ?
-                event.keyCode :
-                event.which);
+            var keycode = (evt.keyCode ? evt.keyCode : evt.which);
             keysDown[keycode] = null;
 
             var elem = $("#ScriptUIKeys .keyboardKey[data-keycode=" + keycode + "]");

@@ -7,8 +7,8 @@ function setup()
 	UI:init()
 	UI:add_key("up")
 	UI:add_key("down")
-	Hardware:neo_init(8)
-	Hardware:neo_set_brightness(50)
+	Hardware.Neopixel:init(8)
+	Hardware.Neopixel:set_brightness(50)
 end
 
 function loop()
@@ -34,12 +34,12 @@ end
 function change_color()
 	local hue = math.floor(map(hue_pos, 0, 20, 0, 255))
 	--local hue = 30
-	Hardware:neo_set_all_hsv(hue, 255, 255)
-	Hardware:neo_show()
+	Hardware.Neopixel:set_all_hsv(hue, 255, 255)
+	Hardware.Neopixel:show()
 end
 
 function quit()
 	-- Called when the script is stopped
-	Hardware:neo_set_all(0, 0, 0)
-	Hardware:neo_show()
+	Hardware.Neopixel:set_all(0, 0, 0)
+	Hardware.Neopixel:show()
 end

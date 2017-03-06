@@ -13,7 +13,7 @@ Blockly.Blocks['touch_init'] = {
 };
 Blockly.Lua['touch_init'] = function(block) {
   var dropdown_electrode = block.getFieldValue('ELECTRODE');
-  var code = 'Hardware:cap_init(' + dropdown_electrode + ')\n';
+  var code = 'Hardware.Capacitive:init(' + dropdown_electrode + ')\n';
   return code;
 };
 
@@ -41,7 +41,7 @@ Blockly.Lua['touch_etouched'] = function(block) {
 
   var touch_var = Blockly.Lua.variableDB_.getDistinctName('e' + dropdown_electrode + '_touch', Blockly.Variables.NAME_TYPE);
 
-  var code = 'local ' + touch_var + ' =  Hardware:cap_get_touched()\n';
+  var code = 'local ' + touch_var + ' =  Hardware.Capacitive:get_touched()\n';
   code += touch_var + ' = bit.band(' + touch_var + ', 2^' + dropdown_electrode + ') > 0\n';
 
   if(statements_body_tou == '' && statements_body_rel == ''){

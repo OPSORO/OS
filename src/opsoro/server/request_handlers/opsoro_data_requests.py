@@ -12,8 +12,7 @@ import glob
 import os
 from functools import partial
 
-get_abs_path = partial(os.path.join,
-                       os.path.abspath(os.path.dirname(__file__)))
+get_abs_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 
 try:
     import simplejson as json
@@ -276,8 +275,8 @@ def robot_servo():
     # print_info('pin: ' + str(servo_pin) + ', value: ' + str(servo_value))
 
     with Hardware.lock:
-        Hardware.servo_enable()
-        Hardware.servo_set(servo_pin, servo_value)
+        Hardware.Servo.enable()
+        Hardware.Servo.set(servo_pin, servo_value)
 
     return json.dumps({'success': True})
 
@@ -294,8 +293,8 @@ def robot_servos():
             values.append(constrain(value, 500, 2500))
 
     with Hardware.lock:
-        Hardware.servo_enable()
-        Hardware.servo_set_all(values)
+        Hardware.Servo.enable()
+        Hardware.Servo.set_all(values)
 
     return json.dumps({'success': True})
 

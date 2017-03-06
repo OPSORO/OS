@@ -1,6 +1,6 @@
 {% extends "app_base.html" %}
 
-{% block head %}
+{% block app_head %}
 
 <script src="static/recorderjs/audiodisplay.js"></script>
 <script src="static/recorderjs/recorder.js"></script>
@@ -101,7 +101,7 @@
 	{% for soundfile in soundfiles %}
 		<span class="file" data-soundfile="{{ soundfile }}">
 			<a href="#" class="button btnDelSnd"><span class="fa fa-trash"></span></a>
-			<a href="#" class="button btnPlaySnd"><span class="fa fa-play"></span></a>
+			<a href="" class="button btnPlaySnd"><span class="fa fa-play"></span></a>
 			<span class="filename">{{ soundfile }}</span><br>
 		</span>
 	{% endfor %}

@@ -28,14 +28,9 @@ config = {'full_name': 'Configurator',
           'icon': 'fa-pencil',
           'color': '#ff517e',
           'allowed_background': False,
-          'robot_state': 0}
+          'connection': Robot.Connection.OFFLINE,
+          'activation': Robot.Activation.MANUAL}
 config['formatted_name'] = config['full_name'].lower().replace(' ', '_')
-
-# robot_state:
-# 0: Manual start/stop
-# 1: Start robot automatically (alive feature according to preferences)
-# 2: Start robot automatically and enable alive feature
-# 3: Start robot automatically and disable alive feature
 
 get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 

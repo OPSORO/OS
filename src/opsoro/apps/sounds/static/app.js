@@ -46,6 +46,7 @@ $(document).ready(function(){
     //     }
     //   }
     // });
+    return false;
   });
 
   $("#formTTS").submit(function(e){

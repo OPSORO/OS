@@ -13,14 +13,9 @@ config = {'full_name': 'Sliders',
           'icon': 'fa-sliders',
           'color': '#15e678',
           'allowed_background': False,
-          'robot_state': 1}
+          'connection': Robot.Connection.OFFLINE,
+          'activation': Robot.Activation.AUTO}
 config['formatted_name'] = config['full_name'].lower().replace(' ', '_')
-
-# robot_state:
-# 0: Manual start/stop
-# 1: Start robot automatically (alive feature according to preferences)
-# 2: Start robot automatically and enable alive feature
-# 3: Start robot automatically and disable alive feature
 
 clientconn = None
 # dof_positions = {}

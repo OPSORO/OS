@@ -13,7 +13,7 @@ Blockly.Blocks['neo_init'] = {
 };
 Blockly.Lua['neo_init'] = function(block) {
   var text_numpixels = block.getFieldValue('NUMPIXELS');
-  var code = 'Hardware:neo_init(' + text_numpixels + ')\n';
+  var code = 'Hardware.Neopixel:init(' + text_numpixels + ')\n';
   return code;
 };
 
@@ -31,7 +31,7 @@ Blockly.Blocks['neo_brightness'] = {
 };
 Blockly.Lua['neo_brightness'] = function(block) {
   var value_brightness = Blockly.Lua.valueToCode(block, 'BRIGHTNESS', Blockly.Lua.ORDER_ATOMIC);
-  var code = 'Hardware:neo_set_brightness(' + value_brightness + ')\n';
+  var code = 'Hardware.Neopixel:set_brightness(' + value_brightness + ')\n';
   return code;
 };
 
@@ -47,7 +47,7 @@ Blockly.Blocks['neo_update'] = {
   }
 };
 Blockly.Lua['neo_update'] = function(block) {
-  var code = 'Hardware:neo_show()\n';
+  var code = 'Hardware.Neopixel:show()\n';
   return code;
 };
 
@@ -75,7 +75,7 @@ Blockly.Lua['neo_setpixel'] = function(block) {
   var g = (hex & 0x00ff00) >> 8;
   var b = hex & 0x0000ff;
 
-  var code = 'Hardware:neo_set_pixel(' + value_pixel + ', ' + r + ', ' + g  + ', ' + b + ')\n';
+  var code = 'Hardware.Neopixel:set_pixel(' + value_pixel + ', ' + r + ', ' + g  + ', ' + b + ')\n';
   return code;
 };
 
@@ -107,7 +107,7 @@ Blockly.Lua['neo_setrange'] = function(block) {
   var g = (hex & 0x00ff00) >> 8;
   var b = hex & 0x0000ff;
 
-  var code = 'Hardware:neo_set_range(' + value_start + ', ' + value_end + ', ' + r + ', ' + g  + ', ' + b + ')\n';
+  var code = 'Hardware.Neopixel:set_range(' + value_start + ', ' + value_end + ', ' + r + ', ' + g  + ', ' + b + ')\n';
   return code;
 };
 
@@ -131,6 +131,6 @@ Blockly.Lua['neo_setall'] = function(block) {
   var g = (hex & 0x00ff00) >> 8;
   var b = hex & 0x0000ff;
 
-  var code = 'Hardware:neo_set_all(' + r + ', ' + g  + ', ' + b + ')\n';
+  var code = 'Hardware.Neopixel:set_all(' + r + ', ' + g  + ', ' + b + ')\n';
   return code;
 };

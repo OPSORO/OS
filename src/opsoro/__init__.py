@@ -33,8 +33,7 @@ try:
     tornado.log.enable_pretty_logging()
     logger = logging.getLogger()
     logger.setLevel(LOG_LEVEL)
-    handler = logging.handlers.TimedRotatingFileHandler(
-        LOG_FILENAME, when="midnight", backupCount=3)
+    handler = logging.handlers.TimedRotatingFileHandler(LOG_FILENAME, when="midnight", backupCount=3)
     formatter = logging.Formatter("%(asctime)s %(levelname)-8s %(message)s")
     handler.setFormatter(formatter)
     logger.addHandler(handler)

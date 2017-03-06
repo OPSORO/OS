@@ -36,6 +36,6 @@ Blockly.Blocks['hardware_readanalog'] = {
 };
 Blockly.Lua['hardware_readanalog'] = function(block) {
   var dropdown_channel = block.getFieldValue('CHANNEL');
-  var code = 'Hardware:ana_read_channel(' + dropdown_channel + ')';
+  var code = 'Hardware.Analog:read_channel(' + dropdown_channel + ')';
   return [code, Blockly.Lua.ORDER_FUNCTION_CALL];
 };

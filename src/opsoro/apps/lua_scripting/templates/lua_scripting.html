@@ -1,6 +1,6 @@
 {% extends "app_base.html" %}
 
-{% block head %}
+{% block app_head %}
 
 {% endblock %}
 
@@ -147,11 +147,11 @@
 				// Setup websocket connection.
 				var conn = null;
 				var connReady = false;
-				conn = new SockJS("http://" + window.location.host + "/sockjs");
+				conn = new SockJS("http://" + window.location.host + "/appsockjs");
 
 				conn.onopen = function () {
 					console.log("SockJS connected.");
-					$.ajax({url: "/sockjstoken", cache: false}).done(function (data) {
+					$.ajax({url: "/appsockjstoken", cache: false}).done(function (data) {
 						conn.send(JSON.stringify({action: "authenticate", token: data}));
 						connReady = true;
 						console.log("SockJS authenticated.");

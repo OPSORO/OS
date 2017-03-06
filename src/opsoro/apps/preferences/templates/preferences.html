@@ -1,5 +1,5 @@
 {% extends "app_base.html" %}
-{% block head %}{% endblock %}
+{% block app_head %}{% endblock %}
 {% block app_content %}
 	<form data-abide method="post">
 		<fieldset data-bind="with: general">
@@ -62,10 +62,10 @@
 			</div>
 			<div class="row">
 				<div class="text-center" data-bind="visible: available()">
-					<span class="fa fa-cloud-download"> Update available!</span>
+					<span class="fa fa-cloud-download"></span> Update available!
 				</div>
 				<div class="text-center" data-bind="visible: !available()">
-					<span class="fa fa-check-circle"> Up-to-date!</span>
+					<span class="fa fa-check-circle"></span> Up-to-date!
 				</div>
 			</div>
 			<div class="row">

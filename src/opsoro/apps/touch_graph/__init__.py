@@ -5,6 +5,8 @@ import threading
 import random
 import time
 from flask import Blueprint, render_template, request, redirect, url_for, flash
+
+from opsoro.robot import Robot
 from opsoro.stoppable_thread import StoppableThread
 from opsoro.hardware import Hardware
 
@@ -12,14 +14,10 @@ config = {'full_name': 'Touch Graph',
           'icon': 'fa-hand-o-down',
           'color': '#ffaf19',
           'allowed_background': False,
-          'robot_state': 0}
+          'connection': Robot.Connection.OFFLINE,
+          'activation': Robot.Activation.MANUAL}
 config['formatted_name'] = config['full_name'].lower().replace(' ', '_')
 
-# robot_state:
-# 0: Manual start/stop
-# 1: Start robot automatically (alive feature according to preferences)
-# 2: Start robot automatically and enable alive feature
-# 3: Start robot automatically and disable alive feature
 
 touch_t = None
 clientconn = None
@@ -38,7 +36,7 @@ def TouchLoop():
             data = {}
 
             with Hardware.lock:
-                ret = Hardware.cap_get_filtered_data()
+                ret = Hardware.Capacitive.get_filtered_data()
 
             for i in range(numelectrodes):
                 data[i] = ret[i]
@@ -54,7 +52,7 @@ def startcap(electrodes):
     global running
     global numelectrodes
 
-    Hardware.cap_init(electrodes=electrodes, gpios=0, autoconfig=True)
+    Hardware.Capacitive.init(electrodes=electrodes, gpios=0, autoconfig=True)
     numelectrodes = electrodes
 
     running = True

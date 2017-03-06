@@ -35,8 +35,8 @@ function setup()
   Sound:say_tts("I'm very happy today!", true)
   
   -- Initialize hardware and expressions
-  Hardware:servo_init()
-  Hardware:servo_neutral()
+  Hardware:Servo:init()
+  Hardware:Servo:neutral()
 
   Expression.dofs.r_e_lid.add_overlay(blink_overlay)
   Expression.dofs.l_e_lid.add_overlay(blink_overlay)
@@ -44,7 +44,7 @@ function setup()
   Expression:set_emotion_r_phi(1.0, 15, true, 1.5)
   
   Expression.update()
-  Hardware:servo_enable()
+  Hardware:Servo:enable()
 
   -- Run demo scenario
   lipsync("Hello, my name is Lola", 1.6, {0.1, 0.45, 0.8})
@@ -100,5 +100,5 @@ end
 
 function quit()
   -- Called when the script is stopped
-  Hardware:servo_disable()
+  Hardware:Servo:disable()
 end

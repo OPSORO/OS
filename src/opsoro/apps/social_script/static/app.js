@@ -332,11 +332,11 @@ $(document).ready(function(){
 		// Setup websocket connection.
 		self.conn = null;
 		self.connReady = false;
-		self.conn = new SockJS("http://" + window.location.host + "/sockjs");
+		self.conn = new SockJS("http://" + window.location.host + "/appsockjs");
 
 		self.conn.onopen = function(){
 			$.ajax({
-				url: "/sockjstoken",
+				url: "/appsockjstoken",
 				cache: false
 			})
 			.done(function(data) {

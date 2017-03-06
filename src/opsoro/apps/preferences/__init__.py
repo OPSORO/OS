@@ -1,7 +1,7 @@
 from __future__ import with_statement
 
 from opsoro.console_msg import *
-# from opsoro.robot import Robot
+from opsoro.robot import Robot
 # from opsoro.hardware import Hardware
 from opsoro.preferences import Preferences
 
@@ -13,14 +13,9 @@ config = {'full_name': 'Preferences',
           'icon': 'fa-cog',
           'color': '#555',
           'allowed_background': False,
-          'robot_state': 0}
+          'connection': Robot.Connection.OFFLINE,
+          'activation': Robot.Activation.MANUAL}
 config['formatted_name'] = config['full_name'].lower().replace(' ', '_')
-
-# robot_state:
-# 0: Manual start/stop
-# 1: Start robot automatically (alive feature according to preferences)
-# 2: Start robot automatically and enable alive feature
-# 3: Start robot automatically and disable alive feature
 
 # clientconn = None
 # dof_positions = {}

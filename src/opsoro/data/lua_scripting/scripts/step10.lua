@@ -4,13 +4,13 @@ function setup()
   UI:add_key("up")
   UI:add_key("down")
 
-  Hardware:servo_init()
-  Hardware:servo_neutral()
+  Hardware.Servo:init()
+  Hardware.Servo:neutral()
 
   Expression:set_emotion_val_ar(0.0, 0.0)
   Expression.update()
 
-  Hardware:servo_enable()
+  Hardware.Servo:enable()
 end
 
 function loop()
@@ -30,5 +30,5 @@ end
 
 function quit()
   -- Called when the script is stopped
-  Hardware:servo_disable()
+  Hardware.Servo:disable()
 end
