@@ -14,7 +14,6 @@ from opsoro.sound.tts import TTS
 
 get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 
-
 class _Sound(object):
     def __init__(self):
         """
@@ -71,10 +70,8 @@ class _Sound(object):
                 ["aplay", path], stdout=FNULL, stderr=subprocess.STDOUT)
         else:
             # self.playProcess = subprocess.Popen(["aplay", "-D", "hw:0,0", path], stdout=FNULL, stderr=subprocess.STDOUT)
-            self.playProcess = subprocess.Popen(
-                ["aplay", "-D", "hw:0,0", path],
-                stdout=FNULL,
-                stderr=subprocess.STDOUT)
+            self.playProcess = subprocess.Popen(["aplay", "-D", "hw:0,0", path],
+                stdout=FNULL, stderr=subprocess.STDOUT)
 
     def stop_sound(self):
         """

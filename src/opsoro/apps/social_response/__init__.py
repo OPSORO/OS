@@ -28,6 +28,7 @@ config['formatted_name'] = config['full_name'].lower().replace(' ', '_')
 
 
 loop_t = None
+loop_button_t = None
 # clientconn = None
 # running = False
 
@@ -69,7 +70,7 @@ access_token_secret = 'd3A8D1ttrCxYV76pBOB389YqoLB32LiE0RVyoFwuMKUMb'
 consumer_key = 'AcdgqgujzF06JF6zWrfwFeUfF'
 consumer_secret = 'ss0wVcBTFAT6nR6hXrqyyOcFOhpa2sNW4cIap9JOoepcch93ky'
 
-twitterWords = ['@dekrook', '#opsoro']
+twitterWords = ['#opsoro']
 
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
@@ -142,14 +143,17 @@ def Go_Crazy(text='', twitter=False, facebook=False):
 
     print_info('Done doing something!')
 
+def LoopButton():
+    time.sleep(0.05)  # delay
+    while not loop_button_t.stopped():
+        if Hardware.Analog.read_channel(0) > 1000:
+            Go_Crazy()
+            Sound.wait_for_sound()
+        loop_button_t.sleep(0.02)
+
 def Loop():
     time.sleep(0.05)  # delay
-
-    # global clientconn
-
-    # global counter
     counter = 0
-
     # Initialize current Likes
     # global likes
     likes = 0
@@ -168,13 +172,7 @@ def Loop():
     while not loop_t.stopped():
         # if running:
         data = {}
-
         print_info('Checking social...')
-
-        # if clientconn:
-        #     clientconn.send_data('updateelectrodes',
-        #                          {'electrodedata': data})
-
         try:
             # Facebook:
             new_likes = int(get_page_data(page_id, field, token)[field])
@@ -246,12 +244,16 @@ def setup(opsoroapp):
 
 def start(opsoroapp):
     global loop_t
+    global loop_button_t
     global myStream
     myStream.filter(track=twitterWords, async=True)
     loop_t = StoppableThread(target=Loop)
+    loop_button_t = StoppableThread(target=LoopButton)
 
 def stop(opsoroapp):
     global loop_t
+    global loop_button_t
     global myStream
     myStream.disconnect()
     loop_t.stop()
+    loop_button_t.stop()

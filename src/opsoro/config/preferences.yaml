@@ -1,19 +1,16 @@
 general:
   robot_name: robot
   password: opsoro123
-
 alive:
   enabled: false
   aliveness: 30
   blink: true
   gaze: true
-
 audio:
   master_volume: 60
   tts_engine: espeak
   tts_language: en
   tts_gender: f
-
 wireless:
   ssid: OPSORO-bot
   password: opsoro123
