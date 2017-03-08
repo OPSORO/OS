@@ -171,6 +171,10 @@ class RHandler(object):
         return self.render_template("apps.html", **data)
 
     def page_login(self):
+        if 'active_session_key' in session:
+            if session['active_session_key'] == self.server.active_session_key:
+                return redirect(url_for('index'))
+
         if Play.is_online():
             print_info('ONLINE MODE')
             if request.method == "GET":
@@ -188,9 +192,9 @@ class RHandler(object):
                 session["active_session_key"] = self.server.active_session_key
 
                 # self.server.user_socketrouter.broadcast(self.server.client_sockets, {'action': 'logout'})
-                # for e in self.server.client_sockets:
-                #     e.broadcast_data('logout', {})
-                #     break
+                for e in self.server.client_sockets:
+                    e.broadcast_data('refresh', {})
+                    break
 
                 return redirect(url_for("index"))
             else:
