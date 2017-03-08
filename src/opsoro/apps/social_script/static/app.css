@@ -242,7 +242,8 @@
     padding-top: 1rem;
 
     border-radius: 50%;
-    background-color: #43ac6a;
+    /*background-color: #43ac6a;*/
+    background-color: transparent;
 }
 
 .voiceline .playbutton a span
@@ -258,22 +259,23 @@
 
 .voiceline .playbutton a:hover
 {
-    background-color: #368a55;
+    /*background-color: #368a55;*/
+    /*background-color: transparent;*/
 }
 
 .voiceline .playbutton.used .bg
 {
-    background: #ddd;
+    background: #aaa;
 }
 
 .voiceline .playbutton.used a
 {
-    background: #b2afa1;
+    /*background: #b2afa1;*/
 }
 
 .voiceline .playbutton.used a:hover
 {
-    background-color: #545454;
+    /*background-color: #545454;*/
 }
 
 .voiceline .playbutton.active .bg
@@ -288,17 +290,17 @@
     border-right: .6rem solid rgba(34, 181, 115, .41);
     border-bottom: .6rem solid rgba(34, 181, 115, .41);
     border-left: .6rem solid rgba(34, 181, 115, .7);
-    background: #fff;
+    background: #b2afa1;
 }
 
 .voiceline .playbutton.active a
 {
-    background: #43ac6a;
+    /*background: #43ac6a;*/
 }
 
 .voiceline .playbutton.active a:hover
 {
-    background-color: #368a55;
+    /*background-color: #368a55;*/
 }
 
 .voiceline .content

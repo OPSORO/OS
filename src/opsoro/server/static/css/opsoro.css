@@ -246,16 +246,15 @@ fieldset {
   top: 0;
   overflow: hidden;
   max-width: 75rem;
-  margin-left: auto;
-  margin-right: auto;
+  margin: 0 auto 1rem;
   background-color: #FFF;
   color: #27292a;
   padding: 0 0.7rem;
   border-bottom-left-radius: 1rem;
   border-bottom-right-radius: 1rem;
-  -webkit-box-shadow: 2px 2px 3px 1px rgba(0, 0, 0, 0.75);
-  -moz-box-shadow: 2px 2px 3px 1px rgba(0, 0, 0, 0.75);
-  box-shadow: 2px 2px 3px 1px rgba(0, 0, 0, 0.75); }
+  -webkit-box-shadow: 3px 3px 2px rgba(0, 0, 0, 0.5);
+  -moz-box-shadow: 3px 3px 2px rgba(0, 0, 0, 0.5);
+  box-shadow: 3px 3px 2px rgba(0, 0, 0, 0.5); }
   #header_play div {
     float: left;
     padding: 0; }
@@ -411,9 +410,9 @@ fieldset {
       opacity: 1;
       background-color: #FFF;
       border-radius: 0.8rem;
-      -webkit-box-shadow: 2px 2px 3px 1px rgba(0, 0, 0, 0.75);
-      -moz-box-shadow: 2px 2px 3px 1px rgba(0, 0, 0, 0.75);
-      box-shadow: 2px 2px 3px 1px rgba(0, 0, 0, 0.75); }
+      -webkit-box-shadow: 3px 3px 2px rgba(0, 0, 0, 0.5);
+      -moz-box-shadow: 3px 3px 2px rgba(0, 0, 0, 0.5);
+      box-shadow: 3px 3px 2px rgba(0, 0, 0, 0.5); }
       .apps .app_container .app_button .app_icon {
         font: normal normal normal 14px/1 FontAwesome;
         font-size: 5rem;
@@ -446,9 +445,9 @@ fieldset {
   border: 0;
   border-radius: 0.75rem;
   background: #fff;
-  -webkit-box-shadow: 0.5rem 0.5rem 0 0 rgba(50, 50, 50, 0.75);
-  -moz-box-shadow: 0.5rem 0.5rem 0 0 rgba(50, 50, 50, 0.75);
-  box-shadow: 0.5rem 0.5rem 0 0 rgba(50, 50, 50, 0.75); }
+  -webkit-box-shadow: 3px 3px 2px rgba(0, 0, 0, 0.5);
+  -moz-box-shadow: 3px 3px 2px rgba(0, 0, 0, 0.5);
+  box-shadow: 3px 3px 2px rgba(0, 0, 0, 0.5); }
   .reveal-modal .titlebar {
     font-size: 2rem;
     font-weight: bold;
@@ -504,10 +503,13 @@ fieldset {
 
 .actionbar {
   min-height: 4rem;
-  margin: .5rem 0 1rem;
+  margin: -0.5rem 0 1rem;
   padding: 0.5rem 1rem;
   background: #23774e;
-  border-radius: 0.5rem; }
+  border-radius: 0.5rem;
+  -webkit-box-shadow: 3px 3px 2px rgba(0, 0, 0, 0.5);
+  -moz-box-shadow: 3px 3px 2px rgba(0, 0, 0, 0.5);
+  box-shadow: 3px 3px 2px rgba(0, 0, 0, 0.5); }
   .actionbar .action {
     display: inline-block;
     min-width: 3rem;
