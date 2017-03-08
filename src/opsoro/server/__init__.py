@@ -58,6 +58,8 @@ class Server(object):
 
         # Create flask instance for webserver
         self.flaskapp = Flask(__name__)
+        # self.flaskapp.config['DEBUG'] = True
+        self.flaskapp.config['TEMPLATES_AUTO_RELOAD'] = True
 
         # Translation support
         self.flaskapp.config.from_pyfile('settings.cfg')
