@@ -1,273 +1,300 @@
 {% extends "app_base.html" %}
 {% block app_head %}{% endblock %}
+
+{% block app_toolbar %}
+	{% include "toolbar/_settings_operations.html" %}
+{% endblock %}
+
 {% block app_content %}
-	<form data-abide method="post">
-		<fieldset data-bind="with: general">
-			<legend>
-				<span class="fa fa-cog"></span>
-				General
-			</legend>
+<!--
+general
+Connectivity
+Voice
+Security
 
-			<div class="row">
-				<div class="small-4 medium-3 large-4 columns">
-					<label for="robotName" class="right inline">Robot name</label>
-				</div>
-				<div class="small-8 medium-6 large-4 columns end">
-					<input type="text" id="robotName" name="robotName" value="" data-bind="value: robotName" required pattern="[a-zA-Z]+">
-					<small class="error">A valid name is required</small>
-				</div>
-			</div>
-			<div class="row">
-				<div class="small-4 medium-3 large-4 columns">
-					<label for="robotPassword" class="right inline">Password</label>
-				</div>
-				<div class="small-8 medium-6 large-4 columns end">
-					<input type="password" id="robotPassword" name="robotPassword" placeholder="Enter new password to change" data-bind="value: password">
-				</div>
-			</div>
-			<div class="row">
-				<div class="small-4 medium-3 large-4 columns">
-					<label for="robotPasswordConfirm" class="right inline">Confirm password</label>
-				</div>
-				<div class="small-8 medium-6 large-4 columns end">
-					<input type="password" id="robotPasswordConfirm" name="robotPasswordConfirm" placeholder="Enter new password to change" data-equalto="robotPassword" data-bind="value: passwordConfirm">
-					<small class="error">The password did not match</small>
-					<span class="note">
-						<strong>Note:</strong>
-						Passwords is stored in a plain text file and are
-						<u>not secure</u>! Do not use this password for anything else!
-					</span>
-				</div>
-			</div>
-		</fieldset>
-		<fieldset data-bind="with: update">
-			<legend>
-				<span class="fa fa-cloud-download"></span>
-				Update
-			</legend>
-			<div class="row">
-				<div class="small-4 medium-3 large-4 columns">
-					<label for="updateBranch" class="right inline">Git branch</label>
-				</div>
-				<div class="small-8 medium-6 large-4 columns end">
-					<label for="updateBranch" class="inline" data-bind="text: branch"> </label>
-				</div>
-				<!-- <div class="small-8 medium-6 large-4 columns end">
-					<label for="updateBranch" class="right inline">Branch</label>
-					<label data-bind="text: branch"> </label>
-					<select id="updateBranch" name="updateBranch" data-bind="value: branch, foreach: branches">
-						<option data-bind="value: $data, text: $data"></option>
-					</select>
-				</div> -->
-			</div>
-			<div class="row">
-				<div class="text-center" data-bind="visible: available()">
-					<span class="fa fa-cloud-download"></span> Update available!
-				</div>
-				<div class="text-center" data-bind="visible: !available()">
-					<span class="fa fa-check-circle"></span> Up-to-date!
-				</div>
-			</div>
-			<div class="row">
-				<div class="text-center" data-bind="visible: available">
-					<a href="#" data-reveal-id="UpdateModal" class="action button" style="padding-left: 2rem; padding-right: 2rem;">
-						<span class="fa fa-refresh"></span>
-						UPDATE!</a>
-				</div>
-			</div>
+ -->
+<div class="small-4 medium-3 large-2 columns">
+	<ul class="tabs vertical" data-tab data-options="deep_linking:true" id="settings-tabs">
+	  <li class="tab-title active"><a href="#general">General</a></li>
+	  <li class="tab-title"><a href="#audio">Audio</a></li>
+	  <li class="tab-title"><a href="#interactivity">Interactivity</a></li>
+	  <li class="tab-title"><a href="#connectivity">Connectivity</a></li>
+	</ul>
+</div>
 
-		</fieldset>
+<div class="small-8 medium-9 large-10 columns">
+	<form data-abide method="post" id="settings-form">
 
-		<fieldset data-bind="with: alive">
-			<legend>
-				<span class="fa fa-cog"></span>
-				Aliveness
-			</legend>
-			<div class="row">
-				<div class="small-push-4 small-8 medium-push-3 medium-6 large-push-4 large-4 columns end">
-					<label for="aliveEnabled">Enabled</label>
-					<div class="switch round inline">
-						<input id="aliveEnabled" name="aliveEnabled" type="checkbox" data-bind="checked: enabled">
-						<label for="aliveEnabled"></label>
-						<span class="fa"></span>
-						<span class="fa"></span>
-					</div>
-				</div>
-			</div>
-			<div data-bind="visible: enabled">
-				<!-- <div class="row">
-					<div class="small-4 medium-3 large-4 columns">
-						<label class="right inline">Aliveness:</label>
-					</div>
-					<div class="small-8 medium-6 large-4 columns">
-						<div class="range-slider" id="aliveSlider" style="margin-top: 0.5625rem;" data-slider data-options="display_selector: #alivenessSliderOutput; start: 0; end: 100;" data-bind="slider: aliveness">
-							<span class="range-slider-handle" role="slider" tabindex="0"></span>
-							<span class="range-slider-active-segment"></span>
-							<input type="hidden" id="aliveness" name="aliveness">
+		<div class="tabs-content" data-tab-content="settings-tabs">
+			<!-- --------------------------------------------------------------------------------------------------------------------------------------------- -->
+		  <div class="content active" id="general">
+					<fieldset data-bind="with: general">
+						<legend>
+							<span class="fa fa-cog"></span>
+							General
+						</legend>
+
+						<div class="row">
+							<div class="small-4 medium-3 large-4 columns">
+								<label for="robotName" class="right inline">Robot name</label>
+							</div>
+							<div class="small-8 medium-6 large-4 columns end">
+								<input type="text" id="robotName" name="robotName" value="" data-bind="value: robotName" required pattern="[a-zA-Z]+">
+								<small class="error">A valid name is required</small>
+							</div>
+						</div>
+						<div class="row">
+							<div class="small-4 medium-3 large-4 columns">
+								<label for="robotPassword" class="right inline">Password</label>
+							</div>
+							<div class="small-8 medium-6 large-4 columns end">
+								<input type="password" id="robotPassword" name="robotPassword" placeholder="Enter new password to change" data-bind="value: password">
+							</div>
+						</div>
+						<div class="row">
+							<div class="small-4 medium-3 large-4 columns">
+								<label for="robotPasswordConfirm" class="right inline">Confirm password</label>
+							</div>
+							<div class="small-8 medium-6 large-4 columns end">
+								<input type="password" id="robotPasswordConfirm" name="robotPasswordConfirm" placeholder="Enter new password to change" data-equalto="robotPassword" data-bind="value: passwordConfirm">
+								<small class="error">The password did not match</small>
+								<span class="note">
+									<strong>Note:</strong>
+									Passwords is stored in a plain text file and are
+									<u>not secure</u>! Do not use this password for anything else!
+								</span>
+							</div>
+						</div>
+					</fieldset>
+
+					<fieldset data-bind="with: update">
+						<legend>
+							<span class="fa fa-cloud-download"></span>
+							Update
+						</legend>
+						<div class="row">
+							<div class="small-4 medium-3 large-4 columns">
+								<label for="updateBranch" class="right inline">Git branch</label>
+							</div>
+							<div class="small-8 medium-6 large-4 columns end">
+								<label for="updateBranch" class="inline" data-bind="text: branch"> </label>
+							</div>
+							<!-- <div class="small-8 medium-6 large-4 columns end">
+								<label for="updateBranch" class="right inline">Branch</label>
+								<label data-bind="text: branch"> </label>
+								<select id="updateBranch" name="updateBranch" data-bind="value: branch, foreach: branches">
+									<option data-bind="value: $data, text: $data"></option>
+								</select>
+							</div> -->
+						</div>
+						<div class="row">
+							<div class="text-center" data-bind="visible: available()">
+								<span class="fa fa-cloud-download"></span> Update available!
+							</div>
+							<div class="text-center" data-bind="visible: !available()">
+								<span class="fa fa-check-circle"></span> Up-to-date!
+							</div>
+						</div>
+						<div class="row">
+							<div class="text-center" data-bind="visible: available">
+								<a href="#" data-reveal-id="UpdateModal" class="action button" style="padding-left: 2rem; padding-right: 2rem;">
+									<span class="fa fa-refresh"></span>
+									UPDATE!</a>
+							</div>
+						</div>
+
+					</fieldset>
+		  </div>
+			<!-- --------------------------------------------------------------------------------------------------------------------------------------------- -->
+		  <div class="content" id="audio">
+				<fieldset data-bind="with: audio">
+					<legend>
+						<span class="fa fa-volume-up"></span>
+						Audio</legend>
+
+					<div class="row">
+						<div class="small-4 medium-3 large-4 columns">
+							<label class="right inline">Master volume</label>
+						</div>
+						<div class="small-8 medium-6 large-4 columns">
+							<div class="range-slider" id="volumeSlider" style="margin-top: 0.5625rem;" data-slider data-options="display_selector: #volumeSliderOutput; start: 0; end: 100;" data-bind="slider: volume">
+								<span class="range-slider-handle" role="slider" tabindex="0"></span>
+								<span class="range-slider-active-segment"></span>
+								<input type="hidden" id="volume" name="volume">
+							</div>
+						</div>
+						<div class="medium-1 show-for-medium-up columns end">
+							<label class="left inline">
+								<span id="volumeSliderOutput" class="inline"></span>%</label>
 						</div>
 					</div>
-					<div class="medium-1 show-for-medium-up columns end">
-						<label class="left inline">
-							<span id="alivenessSliderOutput" class="inline"></span>%</label>
-					</div>
-				</div> -->
-				<div class="row">
-					<div class="small-push-4 small-8 medium-push-3 medium-6 large-push-4 large-4 columns end">
-						<label for="aliveBlink">Blink</label>
-
-						<div class="switch round">
-							<input id="aliveBlink" name="aliveBlink" type="checkbox" data-bind="checked: blink">
-							<label for="aliveBlink"></label>
-							<span class="fa"></span>
-							<span class="fa"></span>
+					<div class="row">
+						<div class="small-4 medium-3 large-4 columns">
+							<label for="ttsEngine" class="right inline">Text-to-speech engine</label>
+						</div>
+						<div class="small-8 medium-6 large-4 columns end">
+							<select id="ttsEngine" name="ttsEngine" data-bind="value: ttsEngine">
+								<option value="pico">PicoTTS</option>
+								<option value="espeak">eSpeak</option>
+							</select>
 						</div>
 					</div>
-				</div>
-				<div class="row">
-					<div class="small-push-4 small-8 medium-push-3 medium-6 large-push-4 large-4 columns end">
-						<label for="aliveGaze">Look around</label>
-						<div class="switch round">
-							<input id="aliveGaze" name="aliveGaze" type="checkbox" data-bind="checked: gaze">
-							<label for="aliveGaze"></label>
-							<span class="fa"></span>
-							<span class="fa"></span>
+					<div class="row" data-bind="visible: ttsEngine() == 'espeak'">
+						<div class="small-4 medium-3 large-4 columns">
+							<label for="ttsLanguage" class="right inline">Text-to-speech language</label>
+						</div>
+						<div class="small-8 medium-6 large-4 columns end">
+							<select id="ttsLanguage" name="ttsLanguage" data-bind="value: ttsLanguage">
+								<option value="en">English</option>
+								<option value="nl">Dutch</option>
+								<option value="fr">French</option>
+								<option value="de">German</option>
+							</select>
 						</div>
 					</div>
-				</div>
-			</div>
-		</fieldset>
-
-		<fieldset data-bind="with: audio">
-			<legend>
-				<span class="fa fa-volume-up"></span>
-				Audio</legend>
-
-			<div class="row">
-				<div class="small-4 medium-3 large-4 columns">
-					<label class="right inline">Master volume</label>
-				</div>
-				<div class="small-8 medium-6 large-4 columns">
-					<div class="range-slider" id="volumeSlider" style="margin-top: 0.5625rem;" data-slider data-options="display_selector: #volumeSliderOutput; start: 0; end: 100;" data-bind="slider: volume">
-						<span class="range-slider-handle" role="slider" tabindex="0"></span>
-						<span class="range-slider-active-segment"></span>
-						<input type="hidden" id="volume" name="volume">
+					<div class="row" data-bind="visible: ttsEngine() == 'espeak'">
+						<div class="small-4 medium-3 large-4 columns">
+							<label for="ttsGender" class="right inline">Text-to-speech gender</label>
+						</div>
+						<div class="small-8 medium-6 large-4 columns end">
+							<select id="ttsGender" name="ttsGender" data-bind="value: ttsGender">
+								<option value="m">Male</option>
+								<option value="f">Female</option>
+							</select>
+						</div>
 					</div>
-				</div>
-				<div class="medium-1 show-for-medium-up columns end">
-					<label class="left inline">
-						<span id="volumeSliderOutput" class="inline"></span>%</label>
-				</div>
-			</div>
-			<div class="row">
-				<div class="small-4 medium-3 large-4 columns">
-					<label for="ttsEngine" class="right inline">Text-to-speech engine</label>
-				</div>
-				<div class="small-8 medium-6 large-4 columns end">
-					<select id="ttsEngine" name="ttsEngine" data-bind="value: ttsEngine">
-						<option value="pico">PicoTTS</option>
-						<option value="espeak">eSpeak</option>
-					</select>
-				</div>
-			</div>
-			<div class="row" data-bind="visible: ttsEngine() == 'espeak'">
-				<div class="small-4 medium-3 large-4 columns">
-					<label for="ttsLanguage" class="right inline">Text-to-speech language</label>
-				</div>
-				<div class="small-8 medium-6 large-4 columns end">
-					<select id="ttsLanguage" name="ttsLanguage" data-bind="value: ttsLanguage">
-						<option value="en">English</option>
-						<option value="nl">Dutch</option>
-						<option value="fr">French</option>
-						<option value="de">German</option>
-					</select>
-				</div>
-			</div>
-			<div class="row" data-bind="visible: ttsEngine() == 'espeak'">
-				<div class="small-4 medium-3 large-4 columns">
-					<label for="ttsGender" class="right inline">Text-to-speech gender</label>
-				</div>
-				<div class="small-8 medium-6 large-4 columns end">
-					<select id="ttsGender" name="ttsGender" data-bind="value: ttsGender">
-						<option value="m">Male</option>
-						<option value="f">Female</option>
-					</select>
-				</div>
-			</div>
 
-		</fieldset>
+				</fieldset>
+		  </div>
+			<!-- --------------------------------------------------------------------------------------------------------------------------------------------- -->
+		  <div class="content" id="interactivity">
+				<fieldset data-bind="with: alive">
+					<legend>
+						<span class="fa fa-cog"></span>
+						Aliveness
+					</legend>
+					<div class="row">
+						<div class="small-push-4 small-8 medium-push-3 medium-6 large-push-4 large-4 columns end">
+							<label for="aliveEnabled">Enabled</label>
+							<div class="switch round inline">
+								<input id="aliveEnabled" name="aliveEnabled" type="checkbox" data-bind="checked: enabled">
+								<label for="aliveEnabled"></label>
+								<span class="fa"></span>
+								<span class="fa"></span>
+							</div>
+						</div>
+					</div>
+					<div data-bind="visible: enabled">
+						<!-- <div class="row">
+							<div class="small-4 medium-3 large-4 columns">
+								<label class="right inline">Aliveness:</label>
+							</div>
+							<div class="small-8 medium-6 large-4 columns">
+								<div class="range-slider" id="aliveSlider" style="margin-top: 0.5625rem;" data-slider data-options="display_selector: #alivenessSliderOutput; start: 0; end: 100;" data-bind="slider: aliveness">
+									<span class="range-slider-handle" role="slider" tabindex="0"></span>
+									<span class="range-slider-active-segment"></span>
+									<input type="hidden" id="aliveness" name="aliveness">
+								</div>
+							</div>
+							<div class="medium-1 show-for-medium-up columns end">
+								<label class="left inline">
+									<span id="alivenessSliderOutput" class="inline"></span>%</label>
+							</div>
+						</div> -->
+						<div class="row">
+							<div class="small-push-4 small-8 medium-push-3 medium-6 large-push-4 large-4 columns end">
+								<label for="aliveBlink">Blink</label>
 
-		<fieldset data-bind="with: wireless">
-			<legend>
-				<span class="fa fa-wifi"></span>
-				Wireless</legend>
+								<div class="switch round">
+									<input id="aliveBlink" name="aliveBlink" type="checkbox" data-bind="checked: blink">
+									<label for="aliveBlink"></label>
+									<span class="fa"></span>
+									<span class="fa"></span>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="small-push-4 small-8 medium-push-3 medium-6 large-push-4 large-4 columns end">
+								<label for="aliveGaze">Look around</label>
+								<div class="switch round">
+									<input id="aliveGaze" name="aliveGaze" type="checkbox" data-bind="checked: gaze">
+									<label for="aliveGaze"></label>
+									<span class="fa"></span>
+									<span class="fa"></span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</fieldset>
+		  </div>
+			<!-- --------------------------------------------------------------------------------------------------------------------------------------------- -->
+		  <div class="content" id="connectivity">
+				<fieldset data-bind="with: wireless">
+					<legend>
+						<span class="fa fa-wifi"></span>
+						Wireless</legend>
 
-			<div data-alert class="alert-box info" data-bind="visible: settingsChanged">
-				<span class="fa fa-info-circle"></span>
-				Wireless settings have been changed. They will take effect the next time the robot is started.
-			</div>
-			<div class="row">
-				<div class="small-4 medium-3 large-4 columns">
-					<label for="wirelessSsid" class="right inline">Network name (SSID)</label>
-				</div>
-				<div class="small-8 medium-6 large-4 columns end">
-					<input type="text" id="wirelessSsid" name="wirelessSsid" value="" data-bind="value: ssid" required pattern=".+">
-					<small class="error">A valid ssid is required</small>
-				</div>
-			</div>
-			<div class="row" data-bind="visible: !samePassword()">
-				<div class="small-4 medium-3 large-4 columns">
-					<label for="wirelessPassword" class="right inline">Password</label>
-				</div>
-				<div class="small-8 medium-6 large-4 columns end">
-					<input type="password" id="wirelessPassword" name="wirelessPassword" placeholder="Enter new password to change" data-bind="value: password">
-				</div>
-			</div>
-			<div class="row" data-bind="visible: !samePassword()">
-				<div class="small-4 medium-3 large-4 columns">
-					<label for="wirelessPasswordConfirm" class="right inline">Confirm password</label>
-				</div>
-				<div class="small-8 medium-6 large-4 columns end">
-					<input type="password" id="wirelessPasswordConfirm" name="wirelessPasswordConfirm" placeholder="Enter new password to change" data-equalto="wirelessPassword" data-bind="value: passwordConfirm">
-					<small class="error">The password did not match</small>
-				</div>
-			</div>
-			<div class="row">
-				<div class="small-push-4 small-8 medium-push-3 medium-6 large-push-4 large-4 columns end">
-					<input id="wirelessSamePass" name="wirelessSamePass" type="checkbox" data-bind="checked: samePassword">
-					<label for="wirelessSamePass">Use same password as web interface</label>
-				</div>
-			</div>
-			<div class="row">
-				<div class="small-4 medium-3 large-4 columns">
-					<label for="wirelessChannel" class="right inline">Channel</label>
-				</div>
-				<div class="small-8 medium-6 large-4 columns end">
-					<select id="wirelessChannel" name="wirelessChannel" data-bind="value: channel">
-						<option value="1">1</option>
-						<option value="2">2</option>
-						<option value="3">3</option>
-						<option value="4">4</option>
-						<option value="5">5</option>
-						<option value="6">6</option>
-						<option value="7">7</option>
-						<option value="8">8</option>
-						<option value="9">9</option>
-						<option value="10">10</option>
-						<option value="11">11</option>
-					</select>
-				</div>
-			</div>
-		</fieldset>
-
-		<div class="text-center">
-			<button type="submit" class="button success" style="margin-right: 2rem; padding-left: 2rem; padding-right: 2rem;">
-				<span class="fa fa-check-circle"></span>
-				Submit</button>
-			<a href="" class="button" style="padding-left: 2rem; padding-right: 2rem;">
-				<span class="fa fa-undo"></span>
-				Revert</a>
+					<div data-alert class="alert-box info" data-bind="visible: settingsChanged">
+						<span class="fa fa-info-circle"></span>
+						Wireless settings have been changed. They will take effect the next time the robot is started.
+					</div>
+					<div class="row">
+						<div class="small-4 medium-3 large-4 columns">
+							<label for="wirelessSsid" class="right inline">Network name (SSID)</label>
+						</div>
+						<div class="small-8 medium-6 large-4 columns end">
+							<input type="text" id="wirelessSsid" name="wirelessSsid" value="" data-bind="value: ssid" required pattern=".+">
+							<small class="error">A valid ssid is required</small>
+						</div>
+					</div>
+					<div class="row" data-bind="visible: !samePassword()">
+						<div class="small-4 medium-3 large-4 columns">
+							<label for="wirelessPassword" class="right inline">Password</label>
+						</div>
+						<div class="small-8 medium-6 large-4 columns end">
+							<input type="password" id="wirelessPassword" name="wirelessPassword" placeholder="Enter new password to change" data-bind="value: password">
+						</div>
+					</div>
+					<div class="row" data-bind="visible: !samePassword()">
+						<div class="small-4 medium-3 large-4 columns">
+							<label for="wirelessPasswordConfirm" class="right inline">Confirm password</label>
+						</div>
+						<div class="small-8 medium-6 large-4 columns end">
+							<input type="password" id="wirelessPasswordConfirm" name="wirelessPasswordConfirm" placeholder="Enter new password to change" data-equalto="wirelessPassword" data-bind="value: passwordConfirm">
+							<small class="error">The password did not match</small>
+						</div>
+					</div>
+					<div class="row">
+						<div class="small-push-4 small-8 medium-push-3 medium-6 large-push-4 large-4 columns end">
+							<input id="wirelessSamePass" name="wirelessSamePass" type="checkbox" data-bind="checked: samePassword">
+							<label for="wirelessSamePass">Use same password as web interface</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="small-4 medium-3 large-4 columns">
+							<label for="wirelessChannel" class="right inline">Channel</label>
+						</div>
+						<div class="small-8 medium-6 large-4 columns end">
+							<select id="wirelessChannel" name="wirelessChannel" data-bind="value: channel">
+								<option value="1">1</option>
+								<option value="2">2</option>
+								<option value="3">3</option>
+								<option value="4">4</option>
+								<option value="5">5</option>
+								<option value="6">6</option>
+								<option value="7">7</option>
+								<option value="8">8</option>
+								<option value="9">9</option>
+								<option value="10">10</option>
+								<option value="11">11</option>
+							</select>
+						</div>
+					</div>
+				</fieldset>
+		  </div>
 		</div>
 	</form>
+</div>
 {% endblock %}
 {% block app_scripts %}
 

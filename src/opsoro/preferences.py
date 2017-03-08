@@ -212,36 +212,43 @@ class _Preferences(object):
         FNULL = open(os.devnull, "w")
 
         if update_audio:
-            vol = self.get("audio", "master_volume", 66)
-            vol = constrain(vol, 0, 100)
+            try:
+                vol = self.get("audio", "master_volume", 66)
+                vol = constrain(vol, 0, 100)
 
-            subprocess.Popen(
-                ["amixer", "sset", "'Master'", "%d%%" % vol],
-                stdout=FNULL,
-                stderr=subprocess.STDOUT)
-
-        if update_wireless:
-            with open("/etc/hostapd/hostapd.conf", "r+") as f:
-                lines = f.read()
-
-                ssid = self.get("wireless", "ssid", "OPSORO-bot")
-                password = self.get("wireless", "password", "opsoro123")
-                channel = self.get("wireless", "channel", 6)
-                channel = constrain(int(channel), 1, 11)
-
-                lines = change_conf_setting(lines, "ssid", ssid)
-                lines = change_conf_setting(lines, "wpa_passphrase", password)
-                lines = change_conf_setting(lines, "channel", channel)
-
-                f.seek(0)
-                f.write(lines)
-                f.truncate()
-
-            if restart_wireless:
                 subprocess.Popen(
-                    ["service", "hostapd", "restart"],
+                    ["amixer", "sset", "'Master'", "%d%%" % vol],
                     stdout=FNULL,
                     stderr=subprocess.STDOUT)
+            except Exception as e:
+                print_error('Preferences: audio could not update.')
+
+        if update_wireless:
+            try:
+                with open("/etc/hostapd/hostapd.conf", "r+") as f:
+                    lines = f.read()
+
+                    ssid = self.get("wireless", "ssid", "OPSORO-bot")
+                    password = self.get("wireless", "password", "opsoro123")
+                    channel = self.get("wireless", "channel", 6)
+                    channel = constrain(int(channel), 1, 11)
+
+                    lines = change_conf_setting(lines, "ssid", ssid)
+                    lines = change_conf_setting(lines, "wpa_passphrase", password)
+                    lines = change_conf_setting(lines, "channel", channel)
+
+                    f.seek(0)
+                    f.write(lines)
+                    f.truncate()
+
+                if restart_wireless:
+                    subprocess.Popen(
+                        ["service", "hostapd", "restart"],
+                        stdout=FNULL,
+                        stderr=subprocess.STDOUT)
+            except Exception as e:
+                print_error('Preferences: wifi could not update.')
+
 
         if update_dns:
             with open("/etc/dnsmasq.d/dnsmasq.opsoro.conf", "r+") as f:

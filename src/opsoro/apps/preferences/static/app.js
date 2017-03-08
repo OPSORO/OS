@@ -88,4 +88,9 @@ $(document).ready(function () {
   viewmodel.wireless().samePassword(prefsJson.wireless.samePassword || true);
   viewmodel.wireless().channel(prefsJson.wireless.channel || 6);
   viewmodel.wireless().settingsChanged(false);
+
+  // Fix foundation not updating sliders
+  $('.tab-title').click(function(){
+    $(document).foundation('slider', 'reflow');
+  });
 });

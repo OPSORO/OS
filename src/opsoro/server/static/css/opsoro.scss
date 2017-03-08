@@ -83,7 +83,7 @@ span {
 
 hr {
     // display: none;
-    margin: 0;
+    margin: 10000;
 }
 
 a {
@@ -177,6 +177,24 @@ a {
 fieldset legend {
   background-color: transparent;
 }
+fieldset {
+  margin-top: 0 !important;
+}
+
+.tabs {
+  width: 100% !important;
+  max-width: 100% !important;
+  .tab-title {
+    // border-width: 1px;
+    // border-style: solid;
+  }
+}
+//
+.tabs-content {
+  .content {
+    padding-top: 0;
+  }
+}
 
 .nav {
     width: 100%;
@@ -210,11 +228,11 @@ fieldset legend {
     max-width: 75rem;
 }
 
-.active,
-.active:visited {
-    text-decoration: none;
-    color: $color_green !important;
-}
+// .active,
+// .active:visited {
+//     text-decoration: none;
+//     color: $color_green !important;
+// }
 
 .color_green {
     color: $color_green;
@@ -686,7 +704,7 @@ fieldset legend {
 
 .actionbar {
     min-height: 4rem;
-    margin: -.5rem 0 1rem; // 1rem;
+    margin: .5rem 0 1rem; // 1rem;
     padding: 0.5rem 1rem;
     background: #23774e;
     border-radius: 0.5rem;
