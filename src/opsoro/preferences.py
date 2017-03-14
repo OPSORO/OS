@@ -103,8 +103,7 @@ class _Preferences(object):
             # Update local git data
             self.git.fetch()
         except:
-            print_warning(
-                "Failed to fetch, is there a git repo setup and do you have internet?")
+            print_warning("Failed to fetch, is there a git repo setup and do you have internet?")
             return False
         # Retrieve git remote <-> local difference status
         status = self.git.status()
@@ -179,9 +178,7 @@ class _Preferences(object):
         """
         try:
             with open(get_path("config/preferences.yaml"), "w") as f:
-                f.write(
-                    yaml.dump(
-                        self.data, default_flow_style=False, Dumper=Dumper))
+                f.write(yaml.dump(self.data, default_flow_style=False, Dumper=Dumper))
         except IOError:
             print_warning("Could not save config/preferences.yaml")
 

@@ -46,80 +46,39 @@ def setup_pages(opsoroapp):
         if request.method == 'POST':
             # Update preferences
             request.form.get('file_name_ext', type=str, default=None)
-            Preferences.set('general',
-                            'robot_name',
-                            request.form.get('robotName',
-                                             type=str,
-                                             default=None))
+            Preferences.set('general', 'robot_name', request.form.get('robotName', type=str, default=None))
+            Preferences.set('general', 'startup_app', request.form.get('startupApp', type=str, default=None))
 
             pass1 = request.form.get('robotPassword', type=str, default=None)
-            pass2 = request.form.get('robotPasswordConfirm',
-                                     type=str,
-                                     default=None)
+            pass2 = request.form.get('robotPasswordConfirm', type=str, default=None)
             if pass1 is not None and pass1 == pass2:
                 if pass1 != '':
-                    Preferences.set('general', 'password', pass1)
+                    Preferences.set('security', 'password', pass1)
 
             # Preferences.set('update', 'branch', request.form.get('updateBranch', type=str, default=None))
             # Preferences.set('update', 'auto_update',
             #                 request.form.get('updateAuto', type=str, default=None))
 
-            Preferences.set('alive',
-                            'enabled',
-                            request.form.get('aliveEnabled',
-                                             type=bool,
-                                             default=False))
-            # Preferences.set('alive', 'aliveness', request.form.get('aliveness', type=str, default=None))
-            Preferences.set('alive', 'aliveness', 0)
-            Preferences.set('alive',
-                            'blink',
-                            request.form.get('aliveBlink',
-                                             type=bool,
-                                             default=False))
-            Preferences.set('alive',
-                            'gaze',
-                            request.form.get('aliveGaze',
-                                             type=bool,
-                                             default=False))
+            Preferences.set('behaviour', 'enabled', request.form.get('aliveEnabled', type=bool, default=False))
+            # Preferences.set('behaviour', 'caffeine', request.form.get('caffeine', type=str, default=None))
+            Preferences.set('behaviour', 'caffeine', 0)
+            Preferences.set('behaviour', 'blink', request.form.get('aliveBlink', type=bool, default=False))
+            Preferences.set('behaviour', 'gaze', request.form.get('aliveGaze', type=bool, default=False))
 
-            Preferences.set('audio',
-                            'master_volume',
-                            request.form.get('volume', type=int))
-            Preferences.set('audio',
-                            'tts_engine',
-                            request.form.get('ttsEngine',
-                                             type=str,
-                                             default=None))
-            Preferences.set(
-                'audio',
-                'tts_language',
-                request.form.get('ttsLanguage', type=str, default=None))
-            Preferences.set('audio',
-                            'tts_gender',
-                            request.form.get('ttsGender',
-                                             type=str,
-                                             default=None))
+            Preferences.set('audio', 'master_volume', request.form.get('volume', type=int))
+            Preferences.set('audio', 'tts_engine', request.form.get('ttsEngine', type=str, default=None))
+            Preferences.set('audio', 'tts_language', request.form.get('ttsLanguage', type=str, default=None))
+            Preferences.set('audio', 'tts_gender', request.form.get('ttsGender', type=str, default=None))
 
-            Preferences.set('wireless',
-                            'ssid',
-                            request.form.get('wirelessSsid',
-                                             type=str,
-                                             default=None))
-            Preferences.set('wireless',
-                            'channel',
-                            request.form.get('wirelessChannel', type=int))
+            Preferences.set('wireless', 'ssid', request.form.get('wirelessSsid', type=str, default=None))
+            Preferences.set('wireless', 'channel', request.form.get('wirelessChannel', type=int))
 
             if request.form.get('wirelessSamePass', None) == 'on':
                 # Set to same password
-                Preferences.set('wireless', 'password', Preferences.get(
-                    'general', 'password', 'RobotOpsoro'))
+                Preferences.set('wireless', 'password', Preferences.get('general', 'password', 'RobotOpsoro'))
             else:
-                pass1 = request.form.get('wirelessPassword',
-                                         type=str,
-                                         default=None)
-                pass2 = request.form.get('wirelessPasswordConfirm',
-                                         type=str,
-                                         default=None)
+                pass1 = request.form.get('wirelessPassword', type=str, default=None)
+                pass2 = request.form.get('wirelessPasswordConfirm', type=str, default=None)
                 if pass1 is not None and pass1 == pass2:
                     if pass1 != '':
                         Preferences.set('wireless', 'password', pass1)
@@ -134,21 +93,20 @@ def setup_pages(opsoroapp):
         # Prepare json string with prefs data
         data['prefs'] = {
             'general': {
-                'robotName':
-                Preferences.get('general', 'robot_name', 'Robot')
+                'robotName': Preferences.get('general', 'robot_name', 'Robot'),
+                'startupApp': Preferences.get('general', 'startup_app', '')
             },
             'update': {
                 'available': Preferences.check_if_update(),
-                'branch': Preferences.get('update', 'branch',
-                                          Preferences.get_current_branch()),
+                'branch': Preferences.get('update', 'branch', Preferences.get_current_branch()),
                 # 'branches': Preferences.get_remote_branches(),
                 'autoUpdate': Preferences.get('update', 'auto_update', False)
             },
-            'alive': {
-                'enabled': Preferences.get('alive', 'enabled', False),
-                'aliveness': Preferences.get('alive', 'aliveness', '0'),
-                'blink': Preferences.get('alive', 'blink', True),
-                'gaze': Preferences.get('alive', 'gaze', True)
+            'behaviour': {
+                'enabled': Preferences.get('behaviour', 'enabled', False),
+                'caffeine': Preferences.get('behaviour', 'caffeine', '0'),
+                'blink': Preferences.get('behaviour', 'blink', True),
+                'gaze': Preferences.get('behaviour', 'gaze', True)
             },
             'audio': {
                 'volume': Preferences.get('audio', 'master_volume', 66),
@@ -157,16 +115,16 @@ def setup_pages(opsoroapp):
                 'ttsGender': Preferences.get('audio', 'tts_gender', 'm')
             },
             'wireless': {
-                'ssid':
-                Preferences.get('wireless', 'ssid', 'OPSORO' + '_AP'),
-                'samePassword':
-                Preferences.get('general', 'password', 'RobotOpsoro') ==
-                Preferences.get('wireless', 'password', 'RobotOpsoro'),
+                'ssid': Preferences.get('wireless', 'ssid', 'OPSORO' + '_bot'),
+                'samePassword': Preferences.get('general', 'password', 'opsoro123') ==
+                    Preferences.get('wireless', 'password', 'opsoro123'),
                 'channel': Preferences.get('wireless', 'channel', '1')
             }
         }
 
-        print_info(data)
+        data['apps'] = []
+        for appi in opsoroapp.apps:
+            data['apps'].append(str(appi))
 
         return opsoroapp.render_template(config['formatted_name'] + '.html', **data)
 

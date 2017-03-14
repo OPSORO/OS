@@ -118,6 +118,8 @@ fieldset {
 .tabs {
   width: 100% !important;
   max-width: 100% !important; }
+  .tabs .tab-title > a {
+    padding: 1rem 1rem; }
 
 .tabs-content .content {
   padding-top: 0; }
@@ -252,13 +254,13 @@ fieldset {
   padding: 0 0.7rem;
   border-bottom-left-radius: 1rem;
   border-bottom-right-radius: 1rem;
-  -webkit-box-shadow: 3px 3px 2px rgba(0, 0, 0, 0.5);
-  -moz-box-shadow: 3px 3px 2px rgba(0, 0, 0, 0.5);
-  box-shadow: 3px 3px 2px rgba(0, 0, 0, 0.5); }
+  -webkit-box-shadow: 3px 3px 2px rgba(0, 0, 0, 0.8);
+  -moz-box-shadow: 3px 3px 2px rgba(0, 0, 0, 0.8);
+  box-shadow: 3px 3px 2px rgba(0, 0, 0, 0.8); }
   #header_play div {
     float: left;
     padding: 0; }
-  #header_play i {
+  #header_play .icon {
     float: left; }
   #header_play p {
     float: left;
@@ -275,20 +277,20 @@ fieldset {
     margin: 0; }
     #header_play ul li {
       margin: 0; }
-  #header_play i {
+  #header_play .icon {
     margin: 0.5rem 0.5rem 0 0;
     font-size: 3.3rem; }
   #header_play #status {
     text-transform: uppercase;
     font-weight: bold; }
-  #header_play #comment i {
+  #header_play #comment .icon {
     margin: 0.2rem 0.2rem 0 0;
     font-size: 1.1rem; }
   #header_play a {
     margin: 0;
     padding: 0;
     color: #27292a; }
-    #header_play a i {
+    #header_play a .icon {
       margin: 1rem 0 0.5rem 1rem;
       font-size: 2.3rem; }
   #header_play .status {
@@ -410,9 +412,9 @@ fieldset {
       opacity: 1;
       background-color: #FFF;
       border-radius: 0.8rem;
-      -webkit-box-shadow: 3px 3px 2px rgba(0, 0, 0, 0.5);
-      -moz-box-shadow: 3px 3px 2px rgba(0, 0, 0, 0.5);
-      box-shadow: 3px 3px 2px rgba(0, 0, 0, 0.5); }
+      -webkit-box-shadow: 3px 3px 2px rgba(0, 0, 0, 0.8);
+      -moz-box-shadow: 3px 3px 2px rgba(0, 0, 0, 0.8);
+      box-shadow: 3px 3px 2px rgba(0, 0, 0, 0.8); }
       .apps .app_container .app_button .app_icon {
         font: normal normal normal 14px/1 FontAwesome;
         font-size: 5rem;
@@ -445,9 +447,9 @@ fieldset {
   border: 0;
   border-radius: 0.75rem;
   background: #fff;
-  -webkit-box-shadow: 3px 3px 2px rgba(0, 0, 0, 0.5);
-  -moz-box-shadow: 3px 3px 2px rgba(0, 0, 0, 0.5);
-  box-shadow: 3px 3px 2px rgba(0, 0, 0, 0.5); }
+  -webkit-box-shadow: 3px 3px 2px rgba(0, 0, 0, 0.8);
+  -moz-box-shadow: 3px 3px 2px rgba(0, 0, 0, 0.8);
+  box-shadow: 3px 3px 2px rgba(0, 0, 0, 0.8); }
   .reveal-modal .titlebar {
     font-size: 2rem;
     font-weight: bold;
@@ -506,10 +508,7 @@ fieldset {
   margin: -0.5rem 0 1rem;
   padding: 0.5rem 1rem;
   background: #23774e;
-  border-radius: 0.5rem;
-  -webkit-box-shadow: 3px 3px 2px rgba(0, 0, 0, 0.5);
-  -moz-box-shadow: 3px 3px 2px rgba(0, 0, 0, 0.5);
-  box-shadow: 3px 3px 2px rgba(0, 0, 0, 0.5); }
+  border-radius: 0.5rem; }
   .actionbar .action {
     display: inline-block;
     min-width: 3rem;

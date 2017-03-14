@@ -284,6 +284,12 @@ class Server(object):
         tornado_app = tornado.web.Application(app_socketrouter.urls + self.user_socketrouter.urls + [(r".*", tornado.web.FallbackHandler, {"fallback": flaskwsgi})])
         tornado_app.listen(80)
 
+        # Start default app
+        startup_app = Preferences.get('general', 'startup_app', None)
+        if startup_app in self.apps:
+            self.request_handler.page_openapp(startup_app)
+
+        # SSL security
         # http_server = tornado.httpserver.HTTPServer(tornado_app, ssl_options={
         # 	"certfile": "/etc/ssl/certs/server.crt",
         # 	"keyfile": "/etc/ssl/private/server.key",

@@ -35,9 +35,9 @@ $rounding_medium: 1rem;
     // box-shadow: 0 0 8px rgba(0, 0, 0, .8);
     // -webkit-box-shadow: 0 0 8px rgba(0, 0, 0, .8);
     // -moz-box-shadow: 0 0 8px rgba(0, 0, 0, .8);
-    -webkit-box-shadow: 3px 3px 2px rgba(0, 0, 0, .5);
-    -moz-box-shadow: 3px 3px 2px rgba(0, 0, 0, .5);
-    box-shadow: 3px 3px 2px rgba(0, 0, 0, .5);
+    -webkit-box-shadow: 3px 3px 2px rgba(0, 0, 0, .8);
+    -moz-box-shadow: 3px 3px 2px rgba(0, 0, 0, .8);
+    box-shadow: 3px 3px 2px rgba(0, 0, 0, .8);
 }
 @font-face {
     font-family: 'Avenir Next';
@@ -187,6 +187,9 @@ fieldset {
   .tab-title {
     // border-width: 1px;
     // border-style: solid;
+    > a {
+      padding: 1rem 1rem;
+    }
   }
 }
 //
@@ -376,7 +379,7 @@ fieldset {
         padding: 0;
     }
 
-    i {
+    .icon {
         float: left;
     }
 
@@ -405,14 +408,14 @@ fieldset {
             margin: 0;
             // margin-left: 1.5rem;
             &:last-child {
-                i {
+                .icon {
                     // margin-right: 0;
                 }
             }
         }
     }
 
-    i {
+    .icon {
         margin: 0.5rem 0.5rem 0 0;
         font-size: 3.3rem;
     }
@@ -423,7 +426,7 @@ fieldset {
     }
 
     #comment {
-        i {
+        .icon {
             margin: 0.2rem 0.2rem 0 0;
             font-size: 1.1rem;
         }
@@ -438,7 +441,7 @@ fieldset {
         padding: 0;
         color: $color_gray_dark;
 
-        i {
+        .icon {
             margin: 1rem 0 0.5rem 1rem;
             font-size: 2.3rem;
         }
@@ -711,7 +714,6 @@ fieldset {
     padding: 0.5rem 1rem;
     background: #23774e;
     border-radius: 0.5rem;
-    @include shadow();
 
     .action {
         display: inline-block;
