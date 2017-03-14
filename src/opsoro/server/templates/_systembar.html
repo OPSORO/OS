@@ -5,9 +5,9 @@
                 <span id="statusicon">
                     {% block status_icon %}
                         {% if app.active %}
-                            <i class="fa fa-cog fa-spin"></i>
+                            <span class="icon fa fa-cog fa-spin"></span>
                         {% else %}
-                            <i class="fa fa-check-circle"></i>
+                            <span class="icon fa fa-check-circle"></span>
                         {% endif %}
                     {% endblock %}
                 </span>
@@ -25,7 +25,7 @@
                     <span id="comment">
                         {% block status_text_comment %}
                             {% if app.active %}
-                                <i class="fa {{ app.icon }}"></i>
+                                <span class="fa {{ app.icon }}"></span>
                                 {{ app.name }}
                                 <a href="/closeapp/" class="closebutton"><span class="fa fa-close"></span></a>
                             {% else %}
@@ -47,34 +47,34 @@
         <ul class="">
             <li>
                 <a href="/" class="action" title="{{ _('Home') }}">
-                    <i class="fa fa-home"></i>
+                    <span class="icon fa fa-home"></span>
                 </a>
             </li>
             {% if isuser %}
                 <li>
                     <a href="/robot/" class="action" title="{{ _('Virtual model') }}" onClick="return popupWindow(this, '{{ _('Virtual model') }}');">
-                        <i class="fa fa-smile-o"></i>
+                        <span class="icon fa fa-smile-o"></span>
                     </a>
                 </li>
                 <li>
                     <a href="/openapp/preferences/" class="action" title="{{ _('Preferences') }}">
-                        <i class="fa fa-cog"></i>
+                        <span class="icon fa fa-cog"></span>
                     </a>
                 </li>
                 <li>
                     <a href="/logout/" class="action" title="{{ _('Log out') }}">
-                        <i class="fa fa-sign-out"></i>
+                        <span class="icon fa fa-sign-out"></span>
                     </a>
                 </li>
                 <li>
                     <a href="#" data-reveal-id="ShutdownModal" class="action" title="{{ _('Shut down') }}">
-                        <i class="fa fa-power-off"></i>
+                        <span class="icon fa fa-power-off"></span>
                     </a>
                 </li>
             {% else %}
                 <li>
                     <a href="/login/" class="action" title="{{ _('Sign in') }}">
-                        <i class="fa fa-sign-in"></i>
+                        <span class="icon fa fa-sign-in"></span>
                     </a>
                 </li>
             {% endif %}
