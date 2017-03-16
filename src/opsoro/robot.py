@@ -11,9 +11,6 @@ This module defines the interface for communicating with the robot.
 from opsoro.console_msg import *
 from opsoro.stoppable_thread import StoppableThread
 from opsoro.hardware import Hardware
-# import opsoro.hardware as hardware
-# from opsoro.Hardware.Servo import Hardware
-
 from opsoro.preferences import Preferences
 
 from functools import partial
@@ -247,6 +244,14 @@ class _Robot(object):
         for name, module in self.modules.iteritems():
             if hasattr(module, 'blink'):
                 module.blink(speed)
+
+    def sleep(self):
+        print_info('Night night... ZZZZzzzz....')
+        pass
+
+    def wake(self):
+        print_info('I am awake!')
+        pass
 
 # Global instance that can be accessed by apps and scripts
 Robot = _Robot()

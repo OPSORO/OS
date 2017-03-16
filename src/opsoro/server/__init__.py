@@ -98,7 +98,7 @@ class Server(object):
         self.sockjs_disconnect_cb = {}
         self.sockjs_message_cb = {}
 
-        # if Preferences.check_if_update():
+        # if Preferences.is_update_available():
         #     print_info("Update available")
         #     Preferences.update()
 
@@ -140,6 +140,11 @@ class Server(object):
         atexit.register(self.at_exit)
 
     def at_exit(self):
+        print_info('Goodbye!')
+
+        # Sleep robot
+        Robot.sleep();
+
         self.stop_current_app()
 
         if threading.activeCount() > 0:
@@ -284,6 +289,9 @@ class Server(object):
         tornado_app = tornado.web.Application(app_socketrouter.urls + self.user_socketrouter.urls + [(r".*", tornado.web.FallbackHandler, {"fallback": flaskwsgi})])
         tornado_app.listen(80)
 
+        # Wake up robot
+        Robot.wake();
+
         # Start default app
         startup_app = Preferences.get('general', 'startup_app', None)
         if startup_app in self.apps:
@@ -300,8 +308,7 @@ class Server(object):
             # ioloop.PeriodicCallback(UserSocketConnection.dump_stats, 1000).start()
             IOLoop.instance().start()
         except KeyboardInterrupt:
-            self.stop_current_app()
-            print "Goodbye!"
+            print_info('Keyboard interupt')
 
     def stop_current_app(self):
         Robot.stop()
