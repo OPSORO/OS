@@ -62,7 +62,7 @@ class _Updater(object):
             return False
         try:
             # Request latest commit revision
-            return str(git.log("--pretty=%h", "-1"))
+            return str(self.git.log("--pretty=%h", "-1"))
         except Exception as e:
             print_error("Failed to get current revision, is there a git repo setup?" + str(e))
             return ""
