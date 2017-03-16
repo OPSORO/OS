@@ -133,6 +133,7 @@ def setup_pages(opsoroapp):
     @opsoroapp.app_view
     def update():
         Updater.update()
+        return redirect("/")
 
     opsoroapp.register_app_blueprint(app_bp)
 
