@@ -120,14 +120,14 @@ class _Updater(object):
                 pass
 
         try:
-            shutil.copytree(basedir, backup_dir)
+            shutil.copytree(self.dir, backup_dir)
         except Exception as e:
             print_error('Backup copy failed: ' + str(e))
             pass
 
         # Link git & update
         try:
-            g = Git(git_dir)
+            g = Git(self.dir)
             g.fetch('--all')
             g.reset('--hard', 'origin/' + g.branch().split()[-1])
             # g.pull()
@@ -137,16 +137,16 @@ class _Updater(object):
 
         # Set script executable for deamon
         try:
-            st = os.stat(os.path.join(basedir, 'run'))
+            st = os.stat(os.path.join(self.dir, 'run'))
             os.chmod(
-                os.path.join(basedir, 'run'), st.st_mode | stat.S_IXUSR |
+                os.path.join(self.dir, 'run'), st.st_mode | stat.S_IXUSR |
                 stat.S_IXGRP | stat.S_IXOTH)
         except Exception as e:
             print_error('Exec state set failed: ' + str(e))
             pass
 
         # Clear update var file
-        os.remove(os.path.join(basedir, 'update.var'))
+        # os.remove(os.path.join(self.dir, 'update.var'))
 
         # restart service
         command = ['/usr/sbin/service', 'opsoro', 'restart']
