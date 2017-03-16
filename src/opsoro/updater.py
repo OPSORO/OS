@@ -51,6 +51,22 @@ class _Updater(object):
             print_error("Failed to get current branch, is there a git repo setup?" + str(e))
             return ""
 
+    def get_current_revision(self):
+        """
+        Retrieves the current git revision of the repository.
+
+        :return:    current git revision.
+        :rtype:     string
+        """
+        if self.git is None:
+            return False
+        try:
+            # Request latest commit revision
+            return str(git.log("--pretty=%h", "-1"))
+        except Exception as e:
+            print_error("Failed to get current revision, is there a git repo setup?" + str(e))
+            return ""
+
     def get_remote_branches(self):
         """
         Retrieve all git branches of the repository.

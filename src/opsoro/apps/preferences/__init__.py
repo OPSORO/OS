@@ -100,6 +100,7 @@ def setup_pages(opsoroapp):
             'update': {
                 'available':    Updater.is_update_available(),
                 'branch':       Preferences.get('update', 'branch', Updater.get_current_branch()),
+                'revision':     Preferences.get('update', 'revision', Updater.get_current_revision()),
                 # 'branches':   Preferences.get_remote_branches(),
                 'autoUpdate':   Preferences.get('update', 'auto_update', False)
             },

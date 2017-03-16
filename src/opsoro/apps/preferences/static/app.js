@@ -12,6 +12,7 @@ $(document).ready(function () {
     var self = this;
 
     self.available = ko.observable(false);
+    self.revision = ko.observable('');
     self.branch = ko.observable('');
     self.branches = ko.observable();
     self.autoUpdate = ko.observable(false);
@@ -88,6 +89,7 @@ $(document).ready(function () {
   viewmodel.update().branches(prefsJson.update.branches || undefined);
   viewmodel.update().autoUpdate(prefsJson.update.autoUpdate || false);
   viewmodel.update().branch(prefsJson.update.branch || '');
+  viewmodel.update().revision(prefsJson.update.revision || '');
 
   viewmodel.behaviour().enabled(prefsJson.behaviour.enabled || false);
   viewmodel.behaviour().caffeine(prefsJson.behaviour.caffeine || 0);
