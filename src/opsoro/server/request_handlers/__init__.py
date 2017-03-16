@@ -334,7 +334,8 @@ class RHandler(object):
 
     def show_errormessage(self, error):
         print_error(error)
-        # return redirect("/")
+        if error.code == 404:
+            return redirect("/")
         return ""
 
     def inject_opsoro_vars(self):
