@@ -7,8 +7,18 @@ This module defines the interface for updating the robot.
    :show-inheritance:
 """
 
+from __future__ import division
+from __future__ import with_statement
+
+import sys
+import re
+from functools import partial
+
 from git import Git, Repo
 import os
+import subprocess
+import shutil
+import stat
 
 from opsoro.console_msg import *
 
@@ -36,7 +46,7 @@ class _Updater(object):
         if self.git is None:
             return False
         try:
-            return self.git.branch().split()[-1]
+            return str(self.repo.active_branch).split()[-1]
         except Exception as e:
             print_error("Failed to get current branch, is there a git repo setup?" + str(e))
             return ""
