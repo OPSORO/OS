@@ -14,7 +14,6 @@ import sys
 import os
 import subprocess
 import re
-from git import Git, Repo
 from functools import partial
 
 import yaml
@@ -36,101 +35,6 @@ class _Preferences(object):
         """
         self.data = {}
         self.load_prefs()
-        self.dir = os.path.abspath(
-            os.path.join(os.path.dirname(__file__), '..', '..')) + '/'
-
-        self.git = None
-        self.repo = None
-        try:
-            self.git = Git(self.dir)
-            self.repo = Repo(self.dir)
-        except:
-            pass
-
-    def get_current_branch(self):
-        """
-        Retrieves the current git branch of the repository.
-
-        :return:    current git branch.
-        :rtype:     string
-        """
-        if self.git is None:
-            return False
-        try:
-            return self.git.branch().split()[-1]
-        except:
-            print_error(
-                "Failed to get current branch, is there a git repo setup?")
-            return ""
-
-    def get_remote_branches(self):
-        """
-        Retrieve all git branches of the repository.
-
-        :return:    branches of the repository.
-        :rtype:     list
-        """
-        if self.git is None:
-            return False
-        branches = []
-
-        try:
-            # Get all remote branches (not only local)
-            returnvalue = self.git.ls_remote('--heads').split()
-
-            # Strip data
-            for i in range(len(returnvalue)):
-                if i % 2 != 0:
-                    # Get only branch name (last value)
-                    branches.append(returnvalue[i].split("/")[-1])
-        except:
-            print_warning(
-                "Failed to get remote branches, is there a git repo setup and do you have internet?")
-            pass
-
-        return branches
-
-    def check_if_update(self):
-        """
-        Checks git repository for available changes.
-
-        :return:    True if update is available, False if the command failed or no update available.
-        :rtype:     bool
-        """
-        if self.git is None:
-            return False
-        try:
-            # Update local git data
-            self.git.fetch()
-        except:
-            print_warning("Failed to fetch, is there a git repo setup and do you have internet?")
-            return False
-        # Retrieve git remote <-> local difference status
-        status = self.git.status()
-        # easy check to see if local is behind
-        if status.find('behind') > 0:
-            return True
-        return False
-
-    def update(self):
-        """
-        Creates a update file flag and restarts the service.
-        """
-        if self.git is None:
-            return False
-        # Create file to let deamon know it has to update before starting the server
-        file = open(self.dir + 'update.var', 'w+')
-
-        # restart service
-        command = ['/usr/sbin/service', 'opsoro', 'restart']
-        #shell=FALSE for sudo to work.
-        subprocess.call(command, shell=False)
-
-        python = sys.executable
-        os.execl(python, python, *sys.argv)
-
-        # # Reboot system used for user development server run
-        # os.system('/sbin/shutdown -r now')
 
     def load_prefs(self):
         """

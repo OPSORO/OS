@@ -4,6 +4,7 @@ from opsoro.console_msg import *
 from opsoro.robot import Robot
 # from opsoro.hardware import Hardware
 from opsoro.preferences import Preferences
+from opsoro.updater import Updater
 
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 
@@ -93,32 +94,32 @@ def setup_pages(opsoroapp):
         # Prepare json string with prefs data
         data['prefs'] = {
             'general': {
-                'robotName': Preferences.get('general', 'robot_name', 'Robot'),
-                'startupApp': Preferences.get('general', 'startup_app', '')
+                'robotName':    Preferences.get('general', 'robot_name', 'Robot'),
+                'startupApp':   Preferences.get('general', 'startup_app', '')
             },
             'update': {
-                'available': Preferences.check_if_update(),
-                'branch': Preferences.get('update', 'branch', Preferences.get_current_branch()),
-                # 'branches': Preferences.get_remote_branches(),
-                'autoUpdate': Preferences.get('update', 'auto_update', False)
+                'available':    Updater.is_update_available(),
+                'branch':       Preferences.get('update', 'branch', Updater.get_current_branch()),
+                # 'branches':   Preferences.get_remote_branches(),
+                'autoUpdate':   Preferences.get('update', 'auto_update', False)
             },
             'behaviour': {
-                'enabled': Preferences.get('behaviour', 'enabled', False),
-                'caffeine': Preferences.get('behaviour', 'caffeine', '0'),
-                'blink': Preferences.get('behaviour', 'blink', True),
-                'gaze': Preferences.get('behaviour', 'gaze', True)
+                'enabled':      Preferences.get('behaviour', 'enabled', False),
+                'caffeine':     Preferences.get('behaviour', 'caffeine', '0'),
+                'blink':        Preferences.get('behaviour', 'blink', True),
+                'gaze':         Preferences.get('behaviour', 'gaze', True)
             },
             'audio': {
-                'volume': Preferences.get('audio', 'master_volume', 66),
-                'ttsEngine': Preferences.get('audio', 'tts_engine', 'pico'),
-                'ttsLanguage': Preferences.get('audio', 'tts_language', 'nl'),
-                'ttsGender': Preferences.get('audio', 'tts_gender', 'm')
+                'volume':       Preferences.get('audio', 'master_volume', 66),
+                'ttsEngine':    Preferences.get('audio', 'tts_engine', 'pico'),
+                'ttsLanguage':  Preferences.get('audio', 'tts_language', 'nl'),
+                'ttsGender':    Preferences.get('audio', 'tts_gender', 'm')
             },
             'wireless': {
-                'ssid': Preferences.get('wireless', 'ssid', 'OPSORO' + '_bot'),
+                'ssid':         Preferences.get('wireless', 'ssid', 'OPSORO' + '_bot'),
                 'samePassword': Preferences.get('general', 'password', 'opsoro123') ==
-                    Preferences.get('wireless', 'password', 'opsoro123'),
-                'channel': Preferences.get('wireless', 'channel', '1')
+                                Preferences.get('wireless', 'password', 'opsoro123'),
+                'channel':      Preferences.get('wireless', 'channel', '1')
             }
         }
 
@@ -131,7 +132,7 @@ def setup_pages(opsoroapp):
     @app_bp.route('/update', methods=['GET', 'POST'])
     @opsoroapp.app_view
     def update():
-        Preferences.update()
+        Updater.update()
 
     opsoroapp.register_app_blueprint(app_bp)
 
