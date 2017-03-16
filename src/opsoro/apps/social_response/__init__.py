@@ -58,17 +58,17 @@ def get_page_data(page_id,fields,access_token):
 
 page_id = 'opsoro' # username or id
 field = 'fan_count'
-token = 'EAAaBZCzjU8H8BAFV7KudJn0K1V12CDBHqTIxYu6pVh7cpZAbt1WbZCyZBeSZC472fpPd0ZAkWC1tMrfAY26XnQJUR2rNrMQncQ9OGJlie3dUeQVvabZCwNmGaLL4FGHjZBVTajid16FL5niGWytlwZCiFDgj6yjIsZAAAZD'  # Access Token
+token = ''  # Access Token
 
 # ------------------------------------------------------------------------------
 # Twitter stuff ----------------------------------------------------------------
 # ------------------------------------------------------------------------------
 import tweepy
 #Variables that contains the user credentials to access Twitter API
-access_token = '735437381696905216-BboISY7Qcqd1noMDY61zN75CdGT0OSc'
-access_token_secret = 'd3A8D1ttrCxYV76pBOB389YqoLB32LiE0RVyoFwuMKUMb'
-consumer_key = 'AcdgqgujzF06JF6zWrfwFeUfF'
-consumer_secret = 'ss0wVcBTFAT6nR6hXrqyyOcFOhpa2sNW4cIap9JOoepcch93ky'
+access_token = ''
+access_token_secret = ''
+consumer_key = ''
+consumer_secret = ''
 
 twitterWords = ['#opsoro']
 
@@ -78,7 +78,7 @@ auth.set_access_token(access_token, access_token_secret)
 #override tweepy.StreamListener to add logic to on_status
 class MyStreamListener(tweepy.StreamListener):
     def on_status(self, status):
-        print(status.text)
+        # print(status.text)
         # Go_Crazy(text=status.text, twitter=True)
         txt = status.text
         for tword in twitterWords:
