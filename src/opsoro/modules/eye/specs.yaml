@@ -1,0 +1,66 @@
+type: eye
+
+size:
+  width: 70
+  height: 48
+
+dofs:
+  - name: horizontal
+    servo:
+      min: -300
+      max: 300
+  - name: vertical
+    servo:
+      min: -300
+      max: 300
+  - name: lid
+    servo:
+      min: -400
+      max: 450
+
+functions:
+  close:
+    params: [time]
+    async: true
+    actions:
+      - dof: lid
+        value: -1
+        time: time
+
+  open:
+    params: [time]
+    async: true
+    actions:
+      - dof: lid
+        value: null
+        time: time
+
+  blink:
+    params: [time]
+    sync: false
+    actions:
+      - action: close
+        params: { time: [time/2] }
+      - action: open
+        params: { time: [time/2] }
+
+  look:
+    params: [x, y, z]
+    async: true
+    actions:
+      - dof: horizontal
+        value: x
+        time: -1
+      - dof: vertical
+        value: y
+        time: -1
+
+behaviour:
+  - action: blink
+    link: true
+    params: { time: [100, 500] }
+    delay: [2000, 10000]
+  - action: look
+    link: true
+    params: { x: [-1, 1], y: [-1, 1], z: [-1, 1] }
+    delay: [1000, 5000]
