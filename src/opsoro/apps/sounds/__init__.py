@@ -9,13 +9,17 @@ from werkzeug import secure_filename
 from opsoro.sound import Sound
 from opsoro.robot import Robot
 
-config = {'full_name': 'Sounds',
-          'icon': 'fa-volume-up',
-          'color': '#15e678',
-          'allowed_background': False,
-          'connection': Robot.Connection.OFFLINE,
-          'activation': Robot.Activation.MANUAL}
-config['formatted_name'] = config['full_name'].lower().replace(' ', '_')
+config = {
+    'full_name':            'Sounds',
+    'icon':                 'fa-volume-up',
+    'color':                '#15e678',
+    'difficulty':           3,
+    'tags':                 ['sound', 'music', 'speech', 'TTS', 'recording'],
+    'allowed_background':   False,
+    'connection':           Robot.Connection.OFFLINE,
+    'activation':           Robot.Activation.MANUAL
+}
+config['formatted_name'] =  config['full_name'].lower().replace(' ', '_')
 
 
 get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))

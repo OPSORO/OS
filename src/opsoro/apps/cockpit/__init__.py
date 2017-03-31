@@ -8,13 +8,17 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash
 
 constrain = lambda n, minn, maxn: max(min(maxn, n), minn)
 
-config = {'full_name': 'Cockpit',
-          'icon': 'fa-rocket',
-          'color': '#ff517e',
-          'allowed_background': False,
-          'connection': Robot.Connection.OFFLINE,
-          'activation': Robot.Activation.AUTO}
-config['formatted_name'] = config['full_name'].lower().replace(' ', '_')
+config = {
+    'full_name':            'Cockpit',
+    'icon':                 'fa-rocket',
+    'color':                '#ff517e',
+    'difficulty':           9,
+    'tags':                 [''],
+    'allowed_background':   False,
+    'connection':           Robot.Connection.OFFLINE,
+    'activation':           Robot.Activation.AUTO
+}
+config['formatted_name'] =  config['full_name'].lower().replace(' ', '_')
 
 clientconn = None
 

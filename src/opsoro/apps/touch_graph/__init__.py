@@ -10,13 +10,17 @@ from opsoro.robot import Robot
 from opsoro.stoppable_thread import StoppableThread
 from opsoro.hardware import Hardware
 
-config = {'full_name': 'Touch Graph',
-          'icon': 'fa-hand-o-down',
-          'color': '#ffaf19',
-          'allowed_background': False,
-          'connection': Robot.Connection.OFFLINE,
-          'activation': Robot.Activation.MANUAL}
-config['formatted_name'] = config['full_name'].lower().replace(' ', '_')
+config = {
+    'full_name':            'Touch Graph',
+    'icon':                 'fa-hand-o-down',
+    'color':                '#ffaf19',
+    'difficulty':           3,
+    'tags':                 ['capacitive', 'touch', 'button'],
+    'allowed_background':   False,
+    'connection':           Robot.Connection.OFFLINE,
+    'activation':           Robot.Activation.MANUAL
+}
+config['formatted_name'] =  config['full_name'].lower().replace(' ', '_')
 
 
 touch_t = None
@@ -42,8 +46,7 @@ def TouchLoop():
                 data[i] = ret[i]
 
             if clientconn:
-                clientconn.send_data('updateelectrodes',
-                                     {'electrodedata': data})
+                clientconn.send_data('updateelectrodes', {'electrodedata': data})
 
         touch_t.sleep(0.1)
 

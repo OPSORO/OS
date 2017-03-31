@@ -10,13 +10,17 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash
 
 # constrain = lambda n, minn, maxn: max(min(maxn, n), minn)
 
-config = {'full_name': 'Preferences',
-          'icon': 'fa-cog',
-          'color': '#555',
-          'allowed_background': False,
-          'connection': Robot.Connection.OFFLINE,
-          'activation': Robot.Activation.MANUAL}
-config['formatted_name'] = config['full_name'].lower().replace(' ', '_')
+config = {
+    'full_name':            'Preferences',
+    'icon':                 'fa-cog',
+    'color':                '#555',
+    'difficulty':           3,
+    'tags':                 ['settings', 'setup'],
+    'allowed_background':   False,
+    'connection':           Robot.Connection.OFFLINE,
+    'activation':           Robot.Activation.MANUAL
+}
+config['formatted_name'] =  config['full_name'].lower().replace(' ', '_')
 
 # clientconn = None
 # dof_positions = {}
@@ -60,11 +64,11 @@ def setup_pages(opsoroapp):
             # Preferences.set('update', 'auto_update',
             #                 request.form.get('updateAuto', type=str, default=None))
 
-            Preferences.set('behaviour', 'enabled', request.form.get('aliveEnabled', type=bool, default=False))
+            Preferences.set('behaviour', 'enabled', request.form.get('behaviourEnabled', type=bool, default=False))
             # Preferences.set('behaviour', 'caffeine', request.form.get('caffeine', type=str, default=None))
             Preferences.set('behaviour', 'caffeine', 0)
-            Preferences.set('behaviour', 'blink', request.form.get('aliveBlink', type=bool, default=False))
-            Preferences.set('behaviour', 'gaze', request.form.get('aliveGaze', type=bool, default=False))
+            Preferences.set('behaviour', 'blink', request.form.get('behaviourBlink', type=bool, default=False))
+            Preferences.set('behaviour', 'gaze', request.form.get('behaviourGaze', type=bool, default=False))
 
             Preferences.set('audio', 'master_volume', request.form.get('volume', type=int))
             Preferences.set('audio', 'tts_engine', request.form.get('ttsEngine', type=str, default=None))
@@ -123,6 +127,8 @@ def setup_pages(opsoroapp):
                 'channel':      Preferences.get('wireless', 'channel', '1')
             }
         }
+
+        print data
 
         data['apps'] = []
         for appi in opsoroapp.apps:

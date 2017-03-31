@@ -18,13 +18,17 @@ from random import randint
 constrain = lambda n, minn, maxn: max(min(maxn, n), minn)
 get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 
-config = {'full_name': 'Social Response',
-          'icon': 'fa-share-square',
-          'color': '#15e678',
-          'allowed_background': True,
-          'connection': Robot.Connection.ONLINE,
-          'activation': Robot.Activation.AUTO}
-config['formatted_name'] = config['full_name'].lower().replace(' ', '_')
+config = {
+    'full_name':            'Social Response',
+    'icon':                 'fa-share-square',
+    'color':                '#15e678',
+    'difficulty':           3,
+    'tags':                 ['social', 'facebook', 'twitter'],
+    'allowed_background':   True,
+    'connection':           Robot.Connection.ONLINE,
+    'activation':           Robot.Activation.AUTO
+}
+config['formatted_name'] =  config['full_name'].lower().replace(' ', '_')
 
 
 loop_t = None
@@ -58,17 +62,17 @@ def get_page_data(page_id,fields,access_token):
 
 page_id = 'opsoro' # username or id
 field = 'fan_count'
-token = ''  # Access Token
+token = 'EAAaBZCzjU8H8BAFV7KudJn0K1V12CDBHqTIxYu6pVh7cpZAbt1WbZCyZBeSZC472fpPd0ZAkWC1tMrfAY26XnQJUR2rNrMQncQ9OGJlie3dUeQVvabZCwNmGaLL4FGHjZBVTajid16FL5niGWytlwZCiFDgj6yjIsZAAAZD'  # Access Token
 
 # ------------------------------------------------------------------------------
 # Twitter stuff ----------------------------------------------------------------
 # ------------------------------------------------------------------------------
 import tweepy
 #Variables that contains the user credentials to access Twitter API
-access_token = ''
-access_token_secret = ''
-consumer_key = ''
-consumer_secret = ''
+access_token = '735437381696905216-BboISY7Qcqd1noMDY61zN75CdGT0OSc'
+access_token_secret = 'd3A8D1ttrCxYV76pBOB389YqoLB32LiE0RVyoFwuMKUMb'
+consumer_key = 'AcdgqgujzF06JF6zWrfwFeUfF'
+consumer_secret = 'ss0wVcBTFAT6nR6hXrqyyOcFOhpa2sNW4cIap9JOoepcch93ky'
 
 twitterWords = ['#opsoro']
 

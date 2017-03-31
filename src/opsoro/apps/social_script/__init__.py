@@ -28,13 +28,17 @@ constrain = lambda n, minn, maxn: max(min(maxn, n), minn)
 
 # from opsoro.expression import Expression
 
-config = {'full_name': 'Social Script',
-          'icon': 'fa-commenting-o',
-          'color': '#15e678',
-          'allowed_background': False,
-          'connection': Robot.Connection.OFFLINE,
-          'activation': Robot.Activation.AUTO}
-config['formatted_name'] = config['full_name'].lower().replace(' ', '_')
+config = {
+    'full_name':            'Social Script',
+    'icon':                 'fa-commenting-o',
+    'color':                '#15e678',
+    'difficulty':           4,
+    'tags':                 [''],
+    'allowed_background':   False,
+    'connection':           Robot.Connection.OFFLINE,
+    'activation':           Robot.Activation.AUTO
+}
+config['formatted_name'] =  config['full_name'].lower().replace(' ', '_')
 
 
 get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
