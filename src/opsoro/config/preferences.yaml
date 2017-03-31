@@ -7,7 +7,7 @@ behaviour:
   blink: false
   caffeine: 0
   enabled: false
-  gaze: false
+  gaze: true
 general:
   robot_name: robot
   startup_app: --None--
