@@ -16,6 +16,7 @@
     "flot": "*",
     "jcanvas": "*",
     "svg.js": "*",
+    "svg.draggable.js": "*",
     "sockjs-client": "*",
     "numeraljs": "*",
     "knockout-sortable": "*"
