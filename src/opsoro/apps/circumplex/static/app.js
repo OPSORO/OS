@@ -158,11 +158,6 @@ function sendToServer(){
 	robotSendEmotionRPhi(r, phi, -1);
 }
 
-function addError(msg){
-	$("#errors").append("<div data-alert class=\"alert-box alert\">" + msg + "<a href=\"#\" class=\"close\">&times;</a></div>");
-	$(document).foundation("alert", "reflow");
-}
-
 $(document).ready(function(){
 	$(window).resize(resizeCanvas);
 

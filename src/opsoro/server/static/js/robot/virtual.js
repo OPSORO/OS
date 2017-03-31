@@ -65,7 +65,7 @@ updateData = function() {
             // $("#virtualModelCanvas").drawLayers();
         }
     });
-    setTimeout(updateData, 50);
+    // setTimeout(updateData, 50);
 }
 
 // // Setup websocket connection.

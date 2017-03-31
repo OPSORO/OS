@@ -106,11 +106,7 @@ $(document).ready(function () {
   viewmodel.wireless().channel(prefsJson.wireless.channel || 6);
   viewmodel.wireless().settingsChanged(false);
 
-  console.log('loaded');
-  console.log(viewmodel.general().apps);
+  // console.log('loaded');
+  // console.log(viewmodel.general().apps);
 
-  // Fix foundation not updating sliders
-  $('.tab-title').click(function(){
-    $(document).foundation('slider', 'reflow');
-  });
 });

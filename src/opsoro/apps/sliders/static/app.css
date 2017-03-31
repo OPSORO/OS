@@ -1,19 +1,26 @@
 
 .sliderrow {
 	margin-bottom: 1rem !important;
+	font-size: 0.8rem;
+}
+
+.sliderrow .note {
+	margin: 0;
+	padding: 0;
+	font-size: 0.75rem;
 }
 
 .sliderrow:last-child{
 	margin-bottom: 0 !important;
 }
 
-.sliderrow .range-slider{
+.sliderrow .slider{
 	margin: 0;
-	/*margin-top: 0.5rem;*/
+	margin-top: 0.5rem;
 }
 
 .sliderrow .numberstop {
-	margin-top: 1.5rem;
+	margin-top: 0.5rem;
 	font-size: 0.75rem;
 	line-height: 1rem;
 	font-weight: bold;
@@ -21,6 +28,7 @@
 }
 
 .sliderrow .numbersbottom {
+	margin-top: 0.2rem;
 	font-size: 0.75rem;
 	line-height: 1rem;
 	font-weight: 300;

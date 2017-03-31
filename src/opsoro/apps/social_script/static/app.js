@@ -156,7 +156,7 @@ $(document).ready(function(){
 			}
 
 			model.selectedVoiceLine(self);
-			$("#PickEmotionModal").foundation("reveal", "open");
+			$("#PickEmotionModal").foundation("open");
 		};
 	};
 
@@ -321,7 +321,7 @@ $(document).ready(function(){
 		self.changeEmotion = function(emotion){
 			self.fileIsModified(true);
 			self.selectedVoiceLine().emotion(emotion);
-			$("#PickEmotionModal").foundation("reveal", "close");
+			$("#PickEmotionModal").foundation("close");
 		};
 
 

@@ -1,21 +1,23 @@
 function showMainError(msg){
-  $('#errors').append("<div data-alert class='alert-box alert'>" + msg + "<a href='#' class='close'>&times;</a></div>");
-  $(document).foundation('alert', 'reflow');
-  // setTimeout(function () {
-  //     showFiles(_CurrentPath, _OnlyFolders, _SaveFileView);
-  // }, 200);
+  $('#errors').append("<div class='callout alert' data-closable>" + msg + "<button class='close-button' aria-label='Dismiss' type='button' data-close><span aria-hidden='true'>&times;</span></button></div>");
+  $(document).foundation('reflow');
+}
+function showMainWarning(msg){
+  $('#errors').append("<div class='callout warning' data-closable>" + msg + "<button class='close-button' aria-label='Dismiss' type='button' data-close><span aria-hidden='true'>&times;</span></button></div>");
+  $(document).foundation('reflow');
 }
 function showMainMessage(msg){
-  $('#errors').append("<div data-alert class='alert-box info'>" + msg + "<a href='#' class='close'>&times;</a></div>");
-  $(document).foundation('alert', 'reflow');
+  $('#errors').append("<div class='callout primary' data-closable>" + msg + "<button class='close-button' aria-label='Dismiss' type='button' data-close><span aria-hidden='true'>&times;</span></button></div>");
+  $(document).foundation('reflow');
 }
 function showMainSuccess(msg){
-  $('#errors').append("<div data-alert class='alert-box success'>" + msg + "<a href='#' class='close'>&times;</a></div>");
-  $(document).foundation('alert', 'reflow');
+  $('#errors').append("<div class='callout success' data-closable>" + msg + "<button class='close-button' aria-label='Dismiss' type='button' data-close><span aria-hidden='true'>&times;</span></button></div>");
+  $(document).foundation('reflow');
 }
-
+var popup_classes;
 function showPopup(sIcon, sTitle, sClass, sContent) {
-  $('#popup').addClass(sClass);
+  popup_classes = sClass;
+  $('#popup').addClass(popup_classes);
   $('#popup .titlebar .titleicon span').addClass(sIcon);
   $('#popup .titlebar .title').html(sTitle);
 
@@ -27,12 +29,11 @@ function showPopup(sIcon, sTitle, sClass, sContent) {
   $('#popup .btnClose').on('click', closePopup);
 
   // Open message popup
-  if (!$('#popup').hasClass('open')){
-    $('#popup').foundation('reveal', 'open');
-  }
+  $('#popup').foundation('open');
+
 }
 function closePopup() {
-  $('#popup').foundation('reveal', 'close');
+  $('#popup').foundation('close');
 
   // Clear text & icon
   $('#popup .titlebar .titleicon span').removeClass();
@@ -40,8 +41,8 @@ function closePopup() {
   $('#popup .titlebar .title').html('');
   $('#popup .content').html('');
 
-  $('#popup').removeClass();
-  $('#popup').addClass('reveal-modal');
+  $('#popup').removeClass(popup_classes);
+  $('#popup').addClass('reveal');
 }
 function showMessagePopup(sIcon, sTitle, sText, handlers) {
   $('#message_popup .titlebar .titleicon span').addClass(sIcon);
@@ -83,11 +84,11 @@ function showMessagePopup(sIcon, sTitle, sText, handlers) {
 
   // Open message popup
   if (!$('#message_popup').hasClass('open')){
-    $('#message_popup').foundation('reveal', 'open');
+    $('#message_popup').foundation('open');
   }
 }
 function closeMessagePopup() {
-  $('#message_popup').foundation('reveal', 'close');
+  $('#message_popup').foundation('close');
 
   // Clear text & icon
   $('#message_popup .titlebar .titleicon span').removeClass();
@@ -331,4 +332,21 @@ function robotSendStop()
 // -------------------------------------------------------------------------------------------------------
 // -------------------------------------------------------------------------------------------------------
 
-$(document).foundation();
+function ClickToEdit(value, placeholder){
+  var self = this;
+  // Data
+  self.value = ko.observable(value);
+  self.editing = ko.observable(false);
+  self.placeholder = placeholder || "empty";
+
+  // Behaviors
+  self.edit = function(){ self.editing(true) }
+
+  self.displayValue = ko.pureComputed(function(){
+      if(self.value() == ""){
+            return "<i style='color: #888;'>" + self.placeholder +"</i>"
+      }
+      return self.value();
+  }, self);
+
+}

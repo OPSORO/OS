@@ -587,7 +587,7 @@ function DrawEye(svg, x, y, width, height) {
     };
     self.Update();
 }
-DrawEyebrow.prototype = new DrawModule;
+DrawEye.prototype = new DrawModule;
 
 var VirtualModel = function() {
     var self = this;

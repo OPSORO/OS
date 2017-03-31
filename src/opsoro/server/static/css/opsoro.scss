@@ -176,9 +176,12 @@ a {
 
 fieldset legend {
   background-color: transparent;
+  margin:0;
 }
 fieldset {
+  border: 1px solid silver;
   margin-top: 0 !important;
+  padding: 0 .5rem;
 }
 
 .tabs {
@@ -620,7 +623,7 @@ fieldset {
     }
 }
 
-.reveal-modal {
+.reveal {
     position: absolute;
     top: 1rem;
     right: 1rem;
@@ -669,7 +672,7 @@ fieldset {
         padding: 1rem;
     }
 
-    .close-reveal {
+    .close-button {
         font-size: 2rem;
         font-weight: normal;
         position: absolute;
@@ -896,4 +899,19 @@ fieldset {
         margin-right: 1rem;
         margin-left: 1rem;
     }
+}
+
+.clickedit span {
+  font-size: 1.4rem;
+}
+.clickedit span.fa-pencil {
+  margin-left: 0.2rem;
+  display: none;
+  color: #888;
+}
+.clickedit input {
+  height: 2.1rem;
+}
+.clickedit:hover span.fa-pencil {
+  display: inline;
 }
