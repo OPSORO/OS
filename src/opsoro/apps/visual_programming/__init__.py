@@ -9,13 +9,17 @@ from ..lua_scripting.scripthost import ScriptHost
 
 from opsoro.robot import Robot
 
-config = {'full_name': 'Visual Programming',
-          'icon': 'fa-puzzle-piece',
-          'color': '#6e00ff',
-          'allowed_background': True,
-          'connection': Robot.Connection.OFFLINE,
-          'activation': Robot.Activation.AUTO}
-config['formatted_name'] = config['full_name'].lower().replace(' ', '_')
+config = {
+    'full_name':            'Visual Programming',
+    'icon':                 'fa-puzzle-piece',
+    'color':                '#6e00ff',
+    'difficulty':           3,
+    'tags':                 ['programming', 'blockly'],
+    'allowed_background':   True,
+    'connection':           Robot.Connection.OFFLINE,
+    'activation':           Robot.Activation.AUTO
+}
+config['formatted_name'] =  config['full_name'].lower().replace(' ', '_')
 
 get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 

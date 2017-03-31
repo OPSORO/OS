@@ -116,11 +116,11 @@ class Eye(Module):
         """
         currentTime = int(round(time.time() * 1000))
         updated = False
-        if Preferences.get('alive', 'blink', False):
+        if Preferences.get('behaviour', 'blink', False):
             if (currentTime - self.dofs['eyelid_closure'].last_set_time) > self.blink_delay:
                 updated = self.blink(self.blink_speed / 1000.0)
 
-        if Preferences.get('alive', 'gaze', False):
+        if Preferences.get('behaviour', 'gaze', False):
             if (currentTime - self.dofs['pupil_horizontal'].last_set_time) > self.look_delay:
                 # Update random looking position
                 # if Robot.look_at_position == self.last_look_position:

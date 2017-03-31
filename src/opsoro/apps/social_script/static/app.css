@@ -142,6 +142,8 @@
 
     border: 2px solid #ddd;
     border-radius: 50%;
+
+    cursor: pointer;
 }
 
 #PickEmotionModal .avatar

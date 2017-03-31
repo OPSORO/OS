@@ -587,7 +587,7 @@ function DrawEye(svg, x, y, width, height) {
     };
     self.Update();
 }
-DrawEyebrow.prototype = new DrawModule;
+DrawEye.prototype = new DrawModule;
 
 var VirtualModel = function() {
     var self = this;
@@ -599,9 +599,7 @@ var VirtualModel = function() {
     self.fileStatus = ko.observable("");
     self.fileExtension = ko.observable(".conf");
 
-    self.config = (config_data == undefined ?
-        undefined :
-        config_data); //JSON.parse(config_data));
+    self.config = (config_data == undefined ? undefined : config_data); //JSON.parse(config_data));
     self.allModules = ['eye', 'eyebrow', 'mouth']; //modules_name;
     self.allSkins = ['ono', 'nmct', 'robo']; //skins_name;
     self.skin = ko.observable((self.allSkins == undefined ?
@@ -855,8 +853,8 @@ var VirtualModel = function() {
     };
 
     self.init = function() {
-        self.config = undefined;
-        self.newConfig = true;
+        // self.config = undefined;
+        // self.newConfig = true;
         self.redraw();
     };
 
@@ -940,6 +938,8 @@ var VirtualModel = function() {
 
     var previousMapIndex = -1;
     self.updateDofVisualisation = function(mapIndex, updateRobot) {
+        // console.log('update dof vis');
+        // console.log(self.modules());
         // alert('');
         if (mapIndex < -1 || previousMapIndex != mapIndex) {
             // Update all modules (when selecting new emotion for mapping)
@@ -955,11 +955,11 @@ var VirtualModel = function() {
     };
 
     self.drawModules = function() {
-        $("image, svg").mousedown(function() {
-            virtualModel.resetSelect();
-            // virtualModel.updateDofVisualisation(-1);
-            return false;
-        });
+        // $("image, svg").mousedown(function() {
+        //     virtualModel.resetSelect();
+        //     // virtualModel.updateDofVisualisation(-1);
+        //     return false;
+        // });
 
         var dx = self.modelwidth / self.skin_image.width();
         var dy = self.modelheight / self.skin_image.height();
@@ -1102,11 +1102,11 @@ var VirtualModel = function() {
         }
     }
     //
-    // if (action_data != undefined && action_data.openfile) {
-    //     self.loadFileData(action_data.openfile || "");
-    // } else {
-    //     self.init();
-    // }
+    if (action_data != undefined && action_data.openfile) {
+        self.loadFileData(action_data.openfile || "");
+    } else {
+        self.init();
+    }
 };
 
 // $(document).ready(function() {

@@ -55,9 +55,9 @@
 {% endblock %}
 {% block app_modals %}
 
-<div id="popup_window" class="reveal-modal" data-reveal>
+<div id="popup_window" class="reveal" data-reveal data-animation-in="fade-in" data-animation-out="fade-out">
 	<div class="titlebar">
-		<a class="close-reveal-modal"><span class="fa fa-close"></span></a>
+		<button class="close-button" data-close aria-label="Close" type="button"><span class="fa fa-close"></span></button>
 		<span class="fa fa-cogs"></span> Popup window!
 	</div>
 	<div class="content">

@@ -82,8 +82,7 @@ class DOF(object):
             sorted_dofs = map(dofs.__getitem__, indexes)
 
             # Create interpolation instance
-            self._interp_poly = interpolate.interp1d(
-                phis, sorted_dofs, kind="linear")
+            self._interp_poly = interpolate.interp1d(phis, sorted_dofs, kind="linear")
 
     def calc(self, r, phi, anim_time=-1):
         """
@@ -104,9 +103,7 @@ class DOF(object):
         dof_at_max_r = float(self._interp_poly(phi))
 
         # Interpolate between neutral DOF pos and max intensity DOF pos
-        self.set_value(
-            float(self._neutral) + (r * (dof_at_max_r - float(self._neutral))),
-            anim_time)
+        self.set_value(float(self._neutral) + (r * (dof_at_max_r - float(self._neutral))), anim_time)
 
         # # Execute overlays
         # for overlay_fn in self.overlays:

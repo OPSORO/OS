@@ -9,13 +9,17 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash
 
 constrain = lambda n, minn, maxn: max(min(maxn, n), minn)
 
-config = {'full_name': 'Sliders',
-          'icon': 'fa-sliders',
-          'color': '#15e678',
-          'allowed_background': False,
-          'connection': Robot.Connection.OFFLINE,
-          'activation': Robot.Activation.AUTO}
-config['formatted_name'] = config['full_name'].lower().replace(' ', '_')
+config = {
+    'full_name':            'Sliders',
+    'icon':                 'fa-sliders',
+    'color':                '#15e678',
+    'difficulty':           2,
+    'tags':                 ['sliders', 'dofs'],
+    'allowed_background':   False,
+    'connection':           Robot.Connection.OFFLINE,
+    'activation':           Robot.Activation.AUTO
+}
+config['formatted_name'] =  config['full_name'].lower().replace(' ', '_')
 
 clientconn = None
 # dof_positions = {}

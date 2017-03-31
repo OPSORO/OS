@@ -9,13 +9,17 @@ from .scripthost import ScriptHost
 
 from opsoro.robot import Robot
 
-config = {'full_name': 'Lua Scripting',
-          'icon': 'fa-terminal',
-          'color': '#36c9ff',
-          'allowed_background': True,
-          'connection': Robot.Connection.OFFLINE,
-          'activation': Robot.Activation.AUTO}
-config['formatted_name'] = config['full_name'].lower().replace(' ', '_')
+config = {
+    'full_name':            'Lua Scripting',
+    'icon':                 'fa-terminal',
+    'color':                '#36c9ff',
+    'difficulty':           7,
+    'tags':                 ['lua', 'code', 'script'],
+    'allowed_background':   True,
+    'connection':           Robot.Connection.OFFLINE,
+    'activation':           Robot.Activation.AUTO
+}
+config['formatted_name'] =  config['full_name'].lower().replace(' ', '_')
 
 clientconn = None
 sh = None

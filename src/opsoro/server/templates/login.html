@@ -11,14 +11,14 @@
 					{% with messages = get_flashed_messages() %}
 					{% if messages %}
 						{% for message in messages %}
-							<div data-alert class="alert-box secondary radius">
+							<div class="callout secondary radius" data-closable>
 								{{ message }}
 							</div>
 						{% endfor %}
 					{% endif %}
 					{% endwith %}
 					{% if error %}
-						<div data-alert class="alert-box secondary radius">
+						<div class="callout secondary radius" data-closable>
 							{{ error }}
 						</div>
 					{% endif %}

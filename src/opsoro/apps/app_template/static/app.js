@@ -33,11 +33,11 @@ $(document).ready(function() {
         // Popup window
         self.popupTextInput = ko.observable("Hi! This text can be changed. Click on the button to change me!");
         self.showPopup = function() {
-            $("#popup_window").foundation("reveal", "open");
+          $("#popup_window").foundation('open');
 
         };
         self.closePopup = function() {
-            $("#popup_window").foundation("reveal", "close");
+            $("#popup_window").foundation('close');
         };
         self.popupButtonHandler = function() {
             self.closePopup();

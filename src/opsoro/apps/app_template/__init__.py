@@ -15,13 +15,17 @@ import os
 constrain = lambda n, minn, maxn: max(min(maxn, n), minn)
 get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 
-config = {'full_name': 'App Template',
-          'icon': 'fa-info',
-          'color': '#15e678',
-          'allowed_background': False,
-          'connection': Robot.Connection.OFFLINE,
-          'activation': Robot.Activation.AUTO}
-config['formatted_name'] = config['full_name'].lower().replace(' ', '_')
+config = {
+    'full_name':            'App Template',
+    'icon':                 'fa-info',
+    'color':                '#15e678',
+    'difficulty':           1,
+    'tags':                 ['template', 'developer'],
+    'allowed_background':   False,
+    'connection':           Robot.Connection.OFFLINE,
+    'activation':           Robot.Activation.AUTO
+}
+config['formatted_name'] =  config['full_name'].lower().replace(' ', '_')
 
 def setup_pages(opsoroapp):
     app_bp = Blueprint(

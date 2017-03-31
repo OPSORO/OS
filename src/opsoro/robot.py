@@ -65,7 +65,7 @@ class _Robot(object):
             Hardware.Servo.init()
         self.start_update_loop()
 
-        if Preferences.get('alive', 'enabled', False):
+        if Preferences.get('behaviour', 'enabled', False):
             self.start_alive_loop()
 
     def start_update_loop(self):

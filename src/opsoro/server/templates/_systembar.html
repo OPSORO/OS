@@ -67,7 +67,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#" data-reveal-id="ShutdownModal" class="action" title="{{ _('Shut down') }}">
+                    <a href="#" data-open="ShutdownModal" class="action" title="{{ _('Shut down') }}">
                         <span class="icon fa fa-power-off"></span>
                     </a>
                 </li>
@@ -85,11 +85,11 @@
 </section>
 
 {% block extra_modals %}
-<div id="ShutdownModal" class="reveal-modal tiny" data-reveal>
+<div id="ShutdownModal" class="reveal tiny" data-reveal data-animation-in="fade-in" data-animation-out="fade-out">
     <div class="titlebar red">
-        <a class="close-reveal-modal">
+        <button class="close-button" data-close aria-label="Close" type="button">
             <span class="fa fa-close"></span>
-        </a>
+        </button>
         <span class="fa fa-power-off"></span>
         {{ _('Shut down') }}
     </div>

@@ -463,7 +463,7 @@ $(document).ready(function() {
         });
 
         self.scriptUI = function() {
-            $("#ScriptUIModal").foundation("reveal", "open");
+            $("#ScriptUIModal").foundation("open");
         };
 
         // if (action_data.openfile) {

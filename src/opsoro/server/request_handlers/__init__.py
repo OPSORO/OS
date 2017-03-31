@@ -10,6 +10,7 @@ from opsoro.expression import Expression
 from opsoro.robot import Robot
 from opsoro.console_msg import *
 from opsoro.preferences import Preferences
+from opsoro.updater import Updater
 from opsoro.server.request_handlers.opsoro_data_requests import *
 from opsoro.play import Play
 
@@ -68,7 +69,7 @@ class RHandler(object):
     def __init__(self, server):
         # title
         self.title = "OPSORO play"
-        self.robotName = "Ono"
+        self.robotName = "Robot"
 
         self.server = server
 
@@ -114,8 +115,9 @@ class RHandler(object):
 
     def render_template(self, template, **kwargs):
         kwargs["app"] = {}
-
         kwargs["title"] = self.title
+        kwargs["version"] = random.randint(0, 10000)
+
         # Set app variables
         if self.server.activeapp in self.server.apps:
             app = self.server.apps[self.server.activeapp]
@@ -182,6 +184,8 @@ class RHandler(object):
                 kwargs["title"] = self.title + " - Login"
                 kwargs["isbusy"] = self.server.active_session_key is not None
                 kwargs["isuser"] = False
+                kwargs["version"] = random.randint(0, 10000)
+
                 return render_template("login.html", **kwargs)
 
             password = request.form["password"]

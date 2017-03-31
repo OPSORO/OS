@@ -11,40 +11,6 @@
 {% endblock %}
 
 {% block app_content %}
-
-
-	<!-- <div id="errors" style="margin-top: -1rem;">
-	{% with messages = get_flashed_messages(category_filter=["message"]) %}
-		{% if messages %}
-			{% for message in messages %}
-				<div data-alert class="alert-box secondary radius">
-					{{ message }}
-					<a href="#" class="close">&times;</a>
-				</div>
-			{% endfor %}
-		{% endif %}
-	{% endwith %}
-	{% with messages = get_flashed_messages(category_filter=["error"]) %}
-		{% if messages %}
-			{% for message in messages %}
-				<div data-alert class="alert-box alert radius">
-					{{ message }}
-					<a href="#" class="close">&times;</a>
-				</div>
-			{% endfor %}
-		{% endif %}
-	{% endwith %}
-	{% with messages = get_flashed_messages(category_filter=["success"]) %}
-		{% if messages %}
-			{% for message in messages %}
-				<div data-alert class="alert-box success radius">
-					{{ message }}
-					<a href="#" class="close">&times;</a>
-				</div>
-			{% endfor %}
-		{% endif %}
-	{% endwith %}
-</div> -->
 	<div id="editorWrapper" class="contentwrapper">
 		<pre id="editor">{{ script }}</pre>
 	</div>
@@ -431,7 +397,7 @@
 				});
 
 				self.scriptUI = function () {
-					$("#ScriptUIModal").foundation("reveal", "open");
+					$("#ScriptUIModal").foundation("open");
 				};
 
 				if (action_data.openfile) {
@@ -455,9 +421,9 @@
 {% block app_modals %}
 
 
-	<div id="ScriptUIModal" class="reveal-modal small" data-reveal>
+	<div id="ScriptUIModal" class="reveal small" data-reveal data-animation-in="fade-in" data-animation-out="fade-out">
 		<div class="titlebar">
-			<a class="close-reveal-modal">
+			<a class="close-button" data-close aria-label="Close" type="button">
 				<span class="fa fa-close"></span>
 			</a>
 			<span class="fa fa-gamepad"></span>
