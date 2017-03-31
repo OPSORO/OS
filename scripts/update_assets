@@ -1,0 +1,9 @@
+#!/bin/sh
+
+DIR="$(dirname "$0")"
+
+echo $DIR/../src/opsoro/server/static
+cd $DIR/../src/opsoro/server/static
+npm install
+bower install
+gulp

@@ -8,9 +8,10 @@
     "foundation-sites": "~6.3.0",
     "motion-ui": "~1.2.2",
     "jquery": "~3.2.1",
+    "jquery-ui": "*",
+    "jqueryui-touch-punch": "*",
     "ace": "~1.2.6",
     "knockout": "^3.4.0",
-
     "font-awesome": "*",
     "flot": "*",
     "jcanvas": "*",

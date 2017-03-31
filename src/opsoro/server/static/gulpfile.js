@@ -33,11 +33,11 @@ var js_common = [
 gulp.task("js-common", function(){
 	return gulp.src(js_common)
 		.pipe($.concat("opsoro-common.js"))
-		// .pipe($.minify({
-		// 	ext: {
-		// 		min: ".js"
-		// 	}
-		// }))
+		.pipe($.minify({
+			ext: {
+				min: ".js"
+			}
+		}))
 		.pipe(gulp.dest("js"));
 });
 
