@@ -1,0 +1,28 @@
+{
+  "name": "opsoro-os-assets",
+  "authors": [
+    "Cesar Vandevelde"
+  ],
+  "private": true,
+  "dependencies": {
+    "foundation-sites": "~6.3.0",
+    "jquery": "~3.2.1",
+    "ace": "~1.2.6",
+    "knockout": "^3.4.0",
+
+    "font-awesome": "*",
+    "flot": "*",
+    "jcanvas": "*",
+    "svg.js": "*",
+    "sockjs-client": "*",
+    "numeraljs": "*",
+    "knockout-sortable": "*"
+  },
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
