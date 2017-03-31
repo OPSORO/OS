@@ -27,7 +27,8 @@ var js_common = [
 	"bower_components/what-input/dist/what-input.js",
 	"bower_components/foundation-sites/dist/js/foundation.js",
 	"bower_components/knockout/dist/knockout.js",
-	"bower_components/sockjs-client/dist/sockjs.js"
+	"bower_components/sockjs-client/dist/sockjs.js",
+	"js/opsoro.js"
 ];
 
 gulp.task("js-common", function(){
