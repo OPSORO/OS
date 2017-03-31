@@ -18,31 +18,31 @@ gulp.task("sass", function(){
 		.pipe($.autoprefixer({
 			browsers: ["last 2 versions", "ie >= 9"]
 		}))
-		.pipe($.rename("opsoro.css"))
+		.pipe($.rename("opsoro-common.css"))
 		.pipe(gulp.dest("css"));
 });
 
 var js_common = [
-	"bower_components/foundation-sites/dist/js/foundation.js",
 	"bower_components/jquery/dist/jquery.js",
+	"bower_components/what-input/dist/what-input.js",
+	"bower_components/foundation-sites/dist/js/foundation.js",
 	"bower_components/knockout/dist/knockout.js",
-	"bower_components/what-input/dist/what-input.js"
+	"bower_components/sockjs-client/dist/sockjs.js"
 ];
 
 gulp.task("js-common", function(){
 	return gulp.src(js_common)
 		.pipe($.concat("opsoro-common.js"))
-		.pipe($.minify({
-			ext: {
-				min: ".js"
-			}
-		}))
+		// .pipe($.minify({
+		// 	ext: {
+		// 		min: ".js"
+		// 	}
+		// }))
 		.pipe(gulp.dest("js"));
 });
 
 var js_libs = [
 	"bower_components/svg.js/dist/svg.min.js",
-	"bower_components/sockjs-client/dist/sockjs.min.js",
 	"bower_components/numeraljs/min/numeral.min.js",
 	"bower_components/numeraljs/min/locales.min.js",
 	"bower_components/knockout-sortable/knockout-sortable.min.js",
