@@ -159,7 +159,7 @@ $(document).ready(function(){
       console.log(msg.action);
       switch(msg.action){
         case 'refresh':
-          location.reload();
+          setTimeout(function() { location.reload(); }, 1000);
           break;
         case 'info':
           console.log(msg);
