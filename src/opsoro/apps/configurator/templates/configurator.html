@@ -10,18 +10,18 @@
 {% endblock %}
 
 {% block app_content %}
-<div class="row small-up-4 medium-up-6 large-up-8" data-equalizer>
-	{% for module in modules %}
-		<div class="module column column-block" data-equalizer-watch>
-			<img class="draggable" id="{{ module }}" src="/static/modules/{{ module }}/front.svg" draggable="true" ondragstart="drag(event)" ></img>
-		</div>
-	{% endfor %}
-</div>
 	<div class="row" data-equalizer>
-		<div class="medium-6 large-5 columns" data-equalizer-watch>
-			<div id="model_screen" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+		<div class="model small-12 medium-7 large-5 columns" data-equalizer-watch>
+			<div class="edit" id="model_screen" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
 		</div>
-		<div class="medium-6 large-7 columns" data-equalizer-watch>
+		<div class="config-settings small-12 medium-5 large-7 columns" data-equalizer-watch>
+			<div class="modules row hide-for-small-only medium-up-4 large-up-6" data-equalizer="modules">
+				{% for module in modules %}
+					<div class="module column column-block" data-equalizer-watch="modules">
+						<img class="draggable" id="{{ module }}" src="/static/modules/{{ module }}/front.svg" title="{{ module }}" draggable="true" ondragstart="drag(event)" ></img>
+					</div>
+				{% endfor %}
+			</div>
 			<div class="config-settings" data-bind="with: selected_module">
 				<fieldset>
 					<legend>
@@ -47,26 +47,28 @@
 								</div>
 							</div>
 						</div>
-						<div class="small-8 large-8 columns">
+						<div class="small-8 large-9 columns">
 							<div class="dofs" data-bind="foreach: dofs">
 								<div class="row dof-settings">
-									<div class="setting small-8 large-2 columns">
-										<span data-bind="text: name"></span>
-									</div>
-									<div class="setting small-4 large-3 columns">
-										<select data-bind="value: servo().pin, valueUpdate: 'input', foreach: $root.available_servos">
-											<option data-bind="text: 'Pin ' + $data, value: $data"></option>
-										</select>
+									<div class="setting small-12 large-5 columns">
+										<div class="settings-item small-7 large-6 columns">
+											<span data-bind="text: name"></span>
+										</div>
+										<div class="settings-item small-5 large-6 columns">
+											<select data-bind="value: servo().pin, valueUpdate: 'input', foreach: $root.available_servos">
+												<option data-bind="text: 'Pin ' + $data, value: $data"></option>
+											</select>
+										</div>
 									</div>
 									<div class="setting small-12 large-7 columns">
-										<div class="settings-item small-8 columns">
-											<div class="slider" data-slider data-inital-start="1500" data-start="500" data-end="2500" data-step="1" data-bind="slider: servo().mid">
-												<span class="slider-handle" data-slider-handle role="slider" tabindex="1" aria-controls="" ></span>
+										<div class="settings-item small-9 columns">
+											<div class="slider" data-slider data-start="500" data-end="2500" data-step="1" data-bind="slider: servo().mid">
+												<span class="slider-handle" data-slider-handle role="slider" tabindex="1" data-bind="attr: { 'aria-controls': name_formatted }"></span>
 											  <span class="slider-fill" data-slider-fill></span>
 											</div>
 										</div>
-										<div class="settings-item small-4 columns">
-										  <input type="number" id="sliderOutput1">
+										<div class="settings-item small-3 columns">
+										  <input type="number" data-bind="attr: { 'id': name_formatted }">
 										</div>
 									</div>
 								</div>
