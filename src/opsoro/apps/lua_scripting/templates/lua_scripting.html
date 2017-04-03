@@ -20,10 +20,9 @@
 
 {% block app_scripts %}
 
-
-	<script src="/static/js/sockjs.min.js"></script>
-	<script src="/static/js/ace/ace.js" type="text/javascript" charset="utf-8"></script>
-	<script src="/static/js/ace/mode-lua.js" type="text/javascript" charset="utf-8"></script>
+	<script src="/static/js/vendor/require.js" type="text/javascript" charset="utf-8"></script>
+	<script src="/static/js/vendor/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+	<script src="/static/js/vendor/ace/mode-lua.js" type="text/javascript" charset="utf-8"></script>
 	<script src="static/ono-lua-highlighter.js" type="text/javascript" charset="utf-8"></script>
 	<script>
 		var action_data = {{ actions|tojson|safe }};
