@@ -4,7 +4,7 @@ from opsoro.robot import Robot
 
 config = {
     'full_name':            'Circumplex',
-    'icon':                 'fa-meh-o',
+    'icon':                 'fa-circle-o-notch',
     'color':                '#15e678',
     'difficulty':           0,
     'tags':                 ['circumplex', 'circle', 'expression'],
