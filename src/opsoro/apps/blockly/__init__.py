@@ -10,11 +10,11 @@ from ..lua_scripting.scripthost import ScriptHost
 from opsoro.robot import Robot
 
 config = {
-    'full_name':            'Visual Programming',
+    'full_name':            'Blockly',
     'icon':                 'fa-puzzle-piece',
     'color':                '#6e00ff',
     'difficulty':           3,
-    'tags':                 ['programming', 'blockly'],
+    'tags':                 ['visual', 'programming', 'blockly'],
     'allowed_background':   True,
     'connection':           Robot.Connection.OFFLINE,
     'activation':           Robot.Activation.AUTO
@@ -121,7 +121,7 @@ def setup_pages(opsoroapp):
         for filename in filenames:
             data['soundfiles'].append(os.path.split(filename)[1])
 
-        return opsoroapp.render_template('blockly.html', **data)
+        return opsoroapp.render_template('blockly_template.html', **data)
 
     # @visprog_bp.route('/filelist')
     # @opsoroapp.app_view
