@@ -26,3 +26,5 @@ var Eye = function(svg_code, specs, config) {
     return self;
 };
 Eye.prototype = new Module;
+
+modules_definition['eye'] = Eye;

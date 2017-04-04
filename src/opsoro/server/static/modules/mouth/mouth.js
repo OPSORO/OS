@@ -18,3 +18,5 @@ var Mouth = function(svg_code, specs, config) {
     return self;
 };
 Mouth.prototype = new Module;
+
+modules_definition['mouth'] = Mouth;

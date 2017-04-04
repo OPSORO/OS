@@ -1,0 +1,85 @@
+{% extends "app_base.html" %}
+
+{% block app_toolbar %}
+	{% include "toolbar/_file_operations.html" %}
+	{% include "toolbar/_file_set_default.html" %}
+{% endblock %}
+
+{% block head %}
+
+{% endblock %}
+
+{% block app_content %}
+	<div class="row" data-equalizer>
+		<div class="model small-12 medium-7 large-5 columns" data-equalizer-watch>
+			<div class="" id="model_screen"></div>
+		</div>
+		<div class="config-settings small-12 medium-5 large-7 columns" data-equalizer-watch>
+			<div class="expressions row hide-for-small-only medium-up-4 large-up-6" data-bind="foreach: expressions" data-equalizer="expressions">
+				<div class="expression column column-block" data-equalizer-watch="expressions">
+					<img class="" id="{{ name }}" src="/static/images/expressions/{{ filename }}/front.svg" title="{{ name }}" ></img>
+				</div>
+			</div>
+			<div class="config-settings" data-bind="with: selected_module">
+				<fieldset>
+					<legend>
+						<strong class="" data-bind="text: name.value"></strong>
+					</legend>
+					<div class="row module-settings">
+						<div class="setting small-4 large-3 columns">
+							<svg data-bind="html: code" height="100" width="100%"></svg>
+						</div>
+						<div class="small-8 large-9 columns">
+							<div class="dofs" data-bind="foreach: dofs">
+								<div class="row dof-settings">
+									<div class="setting small-12 large-4 columns">
+										<span data-bind="text: name"></span>
+									</div>
+									<div class="setting small-12 large-8 columns">
+										<div class="settings-item small-9 columns">
+											<div class="slider" data-slider data-start="-1.01" data-end="1" data-step="0.01" data-bind="slider: value, event: { input: $parent.Update_dofs() }">
+												<span class="slider-handle" data-slider-handle role="slider" tabindex="1" data-bind="attr: { 'aria-controls': name_formatted }"></span>
+											  <span class="slider-fill" data-slider-fill></span>
+											</div>
+										</div>
+										<div class="settings-item small-3 columns">
+										  <input type="number" data-bind="attr: { 'id': name_formatted }">
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</fieldset>
+			</div>
+		</div>
+	</div>
+{% endblock %}
+
+{% block app_scripts %}
+
+	<script>
+		action_data 	= {{ actions|tojson|safe }};
+		// var data 	= {{ data|tojson|safe }};
+		module_names 	= {{ modules|tojson|safe }};
+		skin_names 		= {{ skins|tojson|safe }};
+		specs 				= {{ specs|tojson|safe }};
+		svg_codes 		= {{ svg_codes|tojson|safe }};
+		configs 			= {{ configs|tojson|safe }};
+	</script>
+
+
+	<script src="/static/js/svg/svg.min.js?ver={{ version }}"></script>
+	<script src="/static/js/svg/svg.draggable.min.js?ver={{ version }}"></script>
+	<script src="/static/js/robot/model.js?ver={{ version }}"></script>
+	{% for module in modules %}
+		<script src="/static/modules/{{ module }}/{{ module }}.js?ver={{ version }}"></script>
+
+	{% endfor %}
+
+{% endblock %}
+
+{% block app_modals %}
+
+
+{% endblock %}
