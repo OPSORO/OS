@@ -1,18 +1,6 @@
 {% extends "app_base.html" %}
 
 {% block head %}
-
-<style>
-	.legend table {
-		margin: 0;
-	}
-	.legend table tr th, .legend table tr td {
-		padding: 0.1rem;
-	}
-	.legend td.legendLabel {
-		padding-right: 1rem;
-	}
-</style>
 {% endblock %}
 
 {% block app_content %}
@@ -48,9 +36,8 @@
 {% block app_scripts %}
 
 
-<script src="/static/js/sockjs.min.js"></script>
-<script src="/static/js/flot/jquery.flot.min.js"></script>
-<script src="/static/js/flot/jquery.flot.resize.min.js"></script>
+<script src="/static/js/vendor/jquery.flot.js"></script>
+<script src="/static/js/vendor/jquery.flot.resize.js"></script>
 <script type="text/javascript" charset="utf-8">
 	$(document).ready(function(){
 		var maxPts = 200;

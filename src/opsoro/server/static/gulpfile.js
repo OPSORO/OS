@@ -51,9 +51,6 @@ var js_libs = [
 	"bower_components/jcanvas/jcanvas.min.js",
 	"bower_components/flot/jquery.flot.*.js",
 	"bower_components/flot/jquery.flot.js",
-	//"bower_components/ace/lib/**/*",
-	//"bower_components/ace-builds/src-min/**/*",
-	//"bower_components/requirejs/require.js"
 ];
 
 gulp.task("js-libs", function(){
@@ -67,9 +64,6 @@ gulp.task("js-libs", function(){
 gulp.task("assets", function(){
 	var t1 = gulp.src("bower_components/font-awesome/fonts/*")
 		.pipe(gulp.dest("fonts"));
-	//var t2 = gulp.src();
-
-	//return [t1, t2];
 	return t1
 });
 

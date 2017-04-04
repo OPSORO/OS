@@ -1,0 +1,13 @@
+.legend table {
+	margin: 0;
+	width: auto;
+}
+.legend table tr th, .legend table tr td {
+	padding: 0.1rem;
+}
+.legend td.legendLabel {
+	padding-right: 1rem;
+}
+.legend table tbody tr {
+	background-color: #fff;
+}
