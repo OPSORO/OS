@@ -47,7 +47,7 @@ var js_libs = [
 	"bower_components/svg.draggable.js/dist/svg.draggable.min.js",
 	"bower_components/numeraljs/min/numeral.min.js",
 	"bower_components/numeraljs/min/locales.min.js",
-	"bower_components/knockout-sortable/knockout-sortable.min.js",
+	"bower_components/knockout-sortable/build/knockout-sortable.min.js",
 	"bower_components/jcanvas/jcanvas.min.js",
 	"bower_components/flot/jquery.flot.*.js",
 	"bower_components/flot/jquery.flot.js",
