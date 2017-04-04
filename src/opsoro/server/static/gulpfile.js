@@ -53,7 +53,7 @@ var js_libs = [
 	"bower_components/flot/jquery.flot.js",
 	//"bower_components/ace/lib/**/*",
 	//"bower_components/ace-builds/src-min/**/*",
-	"bower_components/requirejs/require.js"
+	//"bower_components/requirejs/require.js"
 ];
 
 gulp.task("js-libs", function(){

@@ -11,7 +11,6 @@
     "jquery-ui": "*",
     "jqueryui-touch-punch": "*",
     "ace-builds": "~1.2.6",
-    "requirejs": "*",
     "knockout": "^3.4.0",
     "font-awesome": "*",
     "flot": "*",

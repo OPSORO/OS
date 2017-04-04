@@ -20,7 +20,7 @@
 	padding: 0.5rem 1rem;
 	border-bottom-left-radius: 0.75rem;
 	border-bottom-right-radius: 0.75rem;
-	font-family: "Lucida Console", Monaco, monospace !;
+	font-family: "Lucida Console", Monaco, monospace;
 	font-size: 0.75rem;
 	overflow: scroll;
 }

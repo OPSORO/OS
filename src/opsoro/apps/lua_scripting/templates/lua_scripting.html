@@ -20,7 +20,7 @@
 
 {% block app_scripts %}
 
-	<script src="/static/js/vendor/require.js" type="text/javascript" charset="utf-8"></script>
+	<!-- <script src="/static/js/vendor/require.js" type="text/javascript" charset="utf-8"></script> -->
 	<script src="/static/js/vendor/ace/ace.js" type="text/javascript" charset="utf-8"></script>
 	<script src="/static/js/vendor/ace/mode-lua.js" type="text/javascript" charset="utf-8"></script>
 	<script src="static/ono-lua-highlighter.js" type="text/javascript" charset="utf-8"></script>
@@ -33,7 +33,6 @@
 		var isScriptModified = {{ "true" if script_modified else "false" }};
 		var isScriptRunning = {{ "true" if script_running else "false" }};
 		var monitorKeypresses = false;
-		var boilerplate = "";
 
 		function addError(msg) {
 			$("#console").append("<span style=\"color: #ab3226;\">" + msg + "</span><br>");
@@ -262,17 +261,14 @@
 					return data;
 				};
 
-				// New Load boilerplate from server
-				$.get("static/boilerplate.lua", function (data) {
-					boilerplate = data;
-				});
-
 				self.init = function () {
-					editor.setValue(boilerplate);
-					editor.gotoLine(1, 0, false);
+					$.get("static/boilerplate.lua", function (data) {
+						editor.setValue(data);
+						editor.gotoLine(1, 0, false);
 
-					self.fileName("Untitled");
-					self.fileIsModified(false);
+						self.fileName("Untitled");
+						self.fileIsModified(false);
+					});
 				};
 
 				self.startStopScript = function () {
