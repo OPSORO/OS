@@ -46,7 +46,7 @@
 		<audio width="100%" id="recordingAudio" src="" controls data-bind="visible: isRecorded() && !isRecording()"></audio>
 
 		<input type="text" name="text" class="text" style="width: 100%;" data-bind="value: fileName, visible: isRecorded() && !isRecording()"/>
-		<a href="#" class="button" data-bind="click: uploadRecording, visible: isRecorded() && !isRecording()"><span class="fa" data-bind="css { 'fa-upload': !isUploading(), 'fa-circle-o-notch': isUploading(), 'fa-spin': isUploading() }"></span> Upload recording</a>
+		<a href="#" class="button" data-bind="click: uploadRecording, visible: isRecorded() && !isRecording()"><span class="fa" data-binda="css: { 'fa-upload': !isUploading(), 'fa-circle-o-notch': isUploading(), 'fa-spin': isUploading() }"></span> Upload recording</a>
 
 	</div>
 </fieldset>
