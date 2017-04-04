@@ -34,10 +34,8 @@
 		var isScriptRunning = {{ "true" if script_running else "false" }};
 	</script>
 
-	<script src="/static/js/sockjs.min.js"></script>
-
-	<script src="/static/js/ace/ace.js" type="text/javascript" charset="utf-8"></script>
-	<script src="/static/js/ace/mode-lua.js" type="text/javascript" charset="utf-8"></script>
+	<script src="/static/js/vendor/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+	<script src="/static/js/vendor/ace/mode-lua.js" type="text/javascript" charset="utf-8"></script>
 	<script src="/apps/lua_scripting/static/ono-lua-highlighter.js" type="text/javascript" charset="utf-8"></script>
 
 {% endblock %}
