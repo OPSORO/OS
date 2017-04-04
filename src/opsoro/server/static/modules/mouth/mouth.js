@@ -7,7 +7,7 @@ var Mouth = function(svg_code, specs, config) {
 
     self.Update_dofs = function() {
       // Bezier mouth
-      let midY = 9.5;
+      var midY = 9.5;
       self.lip_1.array().value[1][2] = midY + (20 * self.dofs()[0].value());
       self.lip_1.array().value[1][4] = midY + (20 * -self.dofs()[1].value());
       self.lip_1.plot(self.lip_1.array());

@@ -26,8 +26,8 @@ var Turn = function(svg_code, specs, config) {
 
       self.extra.rotate(0, self.extra.cx() + self.arm_anchor_offset()[0], self.extra.cy() + self.arm_anchor_offset()[1]);
       // self.arm.rotate(0, self.x(), self.y());
-      let armX = self.x();
-      let armY = self.y();
+      var armX = self.x();
+      var armY = self.y();
       if (self.rotation()%180 == 0) {
         armX += ((self.rotation()-90) / 90) * virtualModel.grid.space;
       } else if (self.rotation()%180 == 90) {

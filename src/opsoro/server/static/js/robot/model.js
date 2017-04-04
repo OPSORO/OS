@@ -34,9 +34,9 @@ function mm_to_screen(val) {
   return val * virtualModel.grid.scale;
 }
 function snap_to_grid_x(value, object) {
-  let size12 = (object.rotation()%180 == 0 ? object.width() : object.height()) / 2;
-  let min = virtualModel.grid.x + size12;
-  let max = virtualModel.grid.x + virtualModel.grid.width - size12
+  var size12 = (object.rotation()%180 == 0 ? object.width() : object.height()) / 2;
+  var min = virtualModel.grid.x + size12;
+  var max = virtualModel.grid.x + virtualModel.grid.width - size12
 
   // Constrain value
   value = constrain(value, min, max);
@@ -55,9 +55,9 @@ function snap_to_grid_x(value, object) {
   return value;
 }
 function snap_to_grid_y(value, object) {
-  let size12 = (object.rotation()%180 == 0 ? object.height() : object.width()) / 2;
-  let min = virtualModel.grid.y + size12;
-  let max = virtualModel.grid.y + virtualModel.grid.height - size12
+  var size12 = (object.rotation()%180 == 0 ? object.height() : object.width()) / 2;
+  var min = virtualModel.grid.y + size12;
+  var max = virtualModel.grid.y + virtualModel.grid.height - size12
 
   // Constrain value
   value = constrain(value, min, max);
@@ -75,18 +75,35 @@ function snap_to_grid_y(value, object) {
 
   return value;
 }
-var Expression = function(pin, mid, min, max) {
-  let self = this;
-  self.name       = ko.observable(pin || 0);
-  self.filename   = ko.observable(mid || 1500);
+var Expression = function(name, filename) {
+  var self = this;
+  self.name       = ko.observable(name || '');
+  self.filename   = ko.observable(filename || '');
+  self.poly_index = ko.observable(-1);
   self.dof_values = ko.observableArray();
-  for (let i = 0; i < dofs; i++) {
-    self.dof_values().push
+  self.selected   = ko.observable(false);
+
+  for (var i = 0; i < 16; i++) {
+    self.dof_values.push(0);
   }
-  self.max = ko.observable(max || 1000);
+
+  self.select = function() {
+    for (var i = 0; i < virtualModel.expressions().length; i++) {
+      virtualModel.expressions()[i].selected(false);
+    }
+    self.selected(true);
+
+    if (self.poly_index() < 0) {
+      // Use dof values
+
+    } else {
+      // Use dof poly
+
+    }
+  };
 };
 var Grid = function(pin, mid, min, max) {
-  let self = this;
+  var self = this;
   self.x      = 30;
   self.y      = 30;
   self.width  = 410;//205;
@@ -111,21 +128,23 @@ var Grid = function(pin, mid, min, max) {
   });
 };
 var Servo = function(pin, mid, min, max) {
-  let self = this;
+  var self = this;
   self.pin = ko.observable(pin || 0);
   self.mid = ko.observable(mid || 1500);
   self.min = ko.observable(min || -1000);
   self.max = ko.observable(max || 1000);
 };
 var Dof = function(name) {
-  let self = this;
+  var self = this;
   self.name           = ko.observable(name);
   self.name_formatted = ko.observable(name.replace(' ', '_'));
   self.value          = ko.observable(0.00);
   self.isServo        = ko.observable(false);
   self.servo          = ko.observable(new Servo(0, 1500, 0, 0));
-  // self.isMap = ko.observable(false);
-  // self.map = ko.observable(new Mapping(0));
+  self.poly           = ko.observableArray();
+  for (var i = 0; i < 20; i++) {
+      self.poly.push(0);
+  }
 
   self.setServo = function(pin, mid, min, max) {
     self.servo(new Servo(pin, mid, min, max));
@@ -133,7 +152,7 @@ var Dof = function(name) {
   };
 };
 var Module = function(svg_code, specs, config) {
-  let self = this;
+  var self = this;
 
   self.code     = svg_code || '';
   self.specs    = specs || '';
@@ -158,7 +177,7 @@ var Module = function(svg_code, specs, config) {
       console.log('error dofs');
       return;
     }
-    for (let i = 0; i < self.dofs().length; i++) {
+    for (var i = 0; i < self.dofs().length; i++) {
       self.dofs()[i].value(constrain(values[i] || 0, -1, 1));
     }
     self.Update_dofs();
@@ -204,8 +223,8 @@ var Module = function(svg_code, specs, config) {
 
     if (e.detail.event.type != 'mousemove') { return; }
 
-    let x = e.detail.event.pageX - virtualModel.canvasX - self._drag_offset[0];
-    let y = e.detail.event.pageY - virtualModel.canvasY - self._drag_offset[1];
+    var x = e.detail.event.pageX - virtualModel.canvasX - self._drag_offset[0];
+    var y = e.detail.event.pageY - virtualModel.canvasY - self._drag_offset[1];
 
     self.Set_pos(x, y);
   };
@@ -248,12 +267,12 @@ var Module = function(svg_code, specs, config) {
 
     // initialize dofs if the module has any
     if (self.specs.dofs != undefined) {
-      for (let i = 0; i < self.specs.dofs.length; i++) {
-        let newdof = new Dof(self.specs.dofs[i].name);
+      for (var i = 0; i < self.specs.dofs.length; i++) {
+        var newdof = new Dof(self.specs.dofs[i].name);
         if (self.specs.dofs[i].servo != undefined) {
           newdof.setServo(0, 1500, self.specs.dofs[i].servo.min, self.specs.dofs[i].servo.max)
         }
-        self.dofs().push(newdof);
+        self.dofs.push(newdof);
       }
 
       self._update_dofs   = ko.computed(function() {
@@ -271,11 +290,21 @@ var Module = function(svg_code, specs, config) {
     self.Set_rotation(self.config.grid.rotation || 0);
 
     if (self.config.dofs != undefined) {
-      for (let i = 0; i < self.config.dofs.length; i++) {
-        self.dofs()[i].servo().pin(self.config.dofs[i].servo.pin);
-        self.dofs()[i].servo().mid(self.config.dofs[i].servo.mid);
+      for (var i = 0; i < self.config.dofs.length; i++) {
+        var dof = self.config.dofs[i];
+        if (dof.servo != undefined) {
+          self.dofs()[i].servo().pin(dof.servo.pin);
+          self.dofs()[i].servo().mid(dof.servo.mid);
+        }
+        if (dof.mapping != undefined) {
+          for (var i = 0; i < self.dofs()[i].poly().length; i++) {
+            self.dofs()[i].poly()[i] = dof.mapping[i];
+          }
+        }
       }
     }
+
+
   }
   if (self.code != '') {
     self.visual = main_svg.svg(self.code);
@@ -311,7 +340,7 @@ var Module = function(svg_code, specs, config) {
 };
 
 var VirtualModel = function() {
-  let self = this;
+  var self = this;
 
   // create svg drawing
   main_svg = SVG('model_screen');
@@ -322,7 +351,7 @@ var VirtualModel = function() {
   }
 
   self.available_servos = ko.observableArray();
-  for (let i = 0; i < 16; i++) {
+  for (var i = 0; i < 16; i++) {
     self.available_servos.push(i);
   }
 
@@ -331,12 +360,12 @@ var VirtualModel = function() {
   self.selected_module = ko.observable();
   self.init = function() {
     for (var i = 0; i < configs.length; i++) {
-      let mod_type = configs[i].type;
+      var mod_type = configs[i].type;
       self.Add_module(mod_type, configs[i]);
     }
   };
   self.Add_module = function(mod_type, config) {
-    let mod = new modules_definition[mod_type](svg_codes[mod_type], specs[mod_type], config);
+    var mod = new modules_definition[mod_type](svg_codes[mod_type], specs[mod_type], config);
     self.modules.push(mod);
   };
   self.resize = function() {
@@ -346,7 +375,16 @@ var VirtualModel = function() {
     self.canvasY = rect.top;
   };
   self.resize();
-}
+
+  if (expression_data != undefined) {
+    self.expressions = ko.observableArray();
+    for (var i = 0; i < expression_data.length; i++) {
+      var exp = new Expression(expression_data[i].name, expression_data[i].filename);
+      self.expressions.push(exp);
+    }
+    self.expressions()[0].selected(true);
+  }
+};
 
 var main_svg;
 var virtualModel;
