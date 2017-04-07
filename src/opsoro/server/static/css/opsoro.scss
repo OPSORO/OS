@@ -398,6 +398,13 @@ fieldset {
     white-space: nowrap;
     overflow: hidden;
 }
+
+.online {
+  color: color(green);
+}
+.offline {
+  color: color(red);
+}
 // ---------------------------------------------------------------------------------------------------------------------------
 
 

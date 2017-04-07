@@ -118,6 +118,7 @@ class RHandler(object):
         kwargs["app"] = {}
         kwargs["title"] = self.title
         kwargs["version"] = random.randint(0, 10000)
+        kwargs["online"] = Play.is_online()
 
         # Set app variables
         if self.server.activeapp in self.server.apps:
@@ -141,7 +142,7 @@ class RHandler(object):
         if "closebutton" not in kwargs:
             kwargs["closebutton"] = True
 
-        kwargs["isuser"] = True
+        kwargs["isuser"] = current_user.is_authenticated
 
         return render_template(template, **kwargs)
 
@@ -159,8 +160,8 @@ class RHandler(object):
                                          "formatted_name"   : app.config["formatted_name"],
                                          "icon"             : app.config["icon"],
                                          "color"            : app.config['color'],
-                                         "difficulty"    : app.config['difficulty'],
-                                         "tags"          : app.config['tags']
+                                         "difficulty"       : app.config['difficulty'],
+                                         "tags"             : app.config['tags']
                                          }
 
         for appname in sorted(self.server.apps.keys()):
@@ -207,7 +208,7 @@ class RHandler(object):
                 kwargs["isuser"] = False
                 kwargs["version"] = random.randint(0, 10000)
 
-                return render_template("login.html", **kwargs)
+                return self.render_template("login.html", **kwargs)
 
             password = request.form["password"]
 

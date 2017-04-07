@@ -343,6 +343,12 @@ fieldset {
   white-space: nowrap;
   overflow: hidden; }
 
+.online {
+  color: #00E58B; }
+
+.offline {
+  color: #FF517E; }
+
 #header_main {
   position: fixed;
   top: 0;

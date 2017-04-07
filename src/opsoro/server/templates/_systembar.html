@@ -1,42 +1,42 @@
 <section id="header_play" class="nav">
   <div class="row">
     <div class="small-6 columns">
-      {% if isuser %}
-        <div id="activity">
-          <span id="statusicon">
-            {% block status_icon %}
-              {% if app.active %}
-                <span class="icon fa fa-cog fa-spin"></span>
-              {% else %}
-                <span class="icon fa fa-check-circle"></span>
-              {% endif %}
-            {% endblock %}
-          </span>
-            <p>
-              <span id="status">
-                {% block status_text %}
-                  {% if app.active %}
-                    {{ _( opsoro.robot_name + ' running') }}:
-                  {% else %}
-                    {{ _(opsoro.robot_name + ' ready') }}
-                  {% endif %}
-                {% endblock %}
-              </span>
-              <br/>
-              <span id="comment">
-                {% block status_text_comment %}
-                  {% if app.active %}
-                    <span class="fa {{ app.icon }}"></span>
-                    {{ app.name }}
+      <div id="activity">
+        <span id="statusicon">
+          {% block status_icon %}
+            {% if app.active %}
+              <span class="icon fa fa-cog fa-spin"></span>
+            {% else %}
+              <span class="icon fa fa-check-circle"></span>
+            {% endif %}
+          {% endblock %}
+        </span>
+          <p>
+            <span id="status" class="{% if online %}online{% else %}offline{% endif %}">
+              {% block status_text %}
+                {% if app.active %}
+                  {{ _( opsoro.robot_name + ' running') }}:
+                {% else %}
+                  {{ _(opsoro.robot_name + ' ready') }}
+                {% endif %}
+              {% endblock %}
+            </span>
+            <br/>
+            <span id="comment">
+              {% block status_text_comment %}
+                {% if app.active %}
+                  <span class="fa {{ app.icon }}"></span>
+                  {{ app.name }}
+                  {% if isuser %}
                     <a href="/closeapp/" class="closebutton"><span class="fa fa-close"></span></a>
-                  {% else %}
-                    {{ _('No active apps') }}
                   {% endif %}
-                {% endblock %}
-              </span>
-            </p>
-        </div>
-      {% endif %}
+                {% else %}
+                  {{ _('No active apps') }}
+                {% endif %}
+              {% endblock %}
+            </span>
+          </p>
+      </div>
     </div>
     <div class="small-3 columns">
       {% if isuser %}
