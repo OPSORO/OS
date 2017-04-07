@@ -77,11 +77,12 @@ class RHandler(object):
 
         protect = self.server.protected_view
 
-        self.server.flaskapp.add_url_rule("/",          "index",    protect(self.page_index), )
-        self.server.flaskapp.add_url_rule("/login/",    "login",    self.page_login, methods=["GET", "POST"], )
-        self.server.flaskapp.add_url_rule("/logout/",   "logout",   self.page_logout, )
+        self.server.flaskapp.add_url_rule("/",                      "index",            protect(self.page_index), )
+        self.server.flaskapp.add_url_rule("/login/",                "login",            self.page_login, methods=["GET", "POST"], )
+        self.server.flaskapp.add_url_rule("/logout/",               "logout",           self.page_logout, )
         self.server.flaskapp.add_url_rule("/appsockjstoken/",       "appsockjstoken",   self.page_appsockjstoken, )
         self.server.flaskapp.add_url_rule("/shutdown/",             "shutdown",         protect(self.page_shutdown), )
+        self.server.flaskapp.add_url_rule("/restart/",              "restart",          protect(self.page_restart), )
         self.server.flaskapp.add_url_rule("/closeapp/",             "closeapp",         protect(self.page_closeapp), )
         self.server.flaskapp.add_url_rule("/openapp/<appname>/",    "openapp",          protect(self.page_openapp), )
         # self.server.flaskapp.add_url_rule("/preferences", "preferences", protect(self.page_preferences), methods=["GET", "POST"], )
@@ -145,7 +146,7 @@ class RHandler(object):
         return render_template(template, **kwargs)
 
     def page_index(self):
-        data = {"title": self.title, "apps": []}
+        data = {"title": self.title, "index": True, "apps": {}, "other_apps": []}
 
         if self.server.activeapp in self.server.apps:
             app = self.server.apps[self.server.activeapp]
@@ -153,22 +154,42 @@ class RHandler(object):
                 if not app.config['allowed_background']:
                     self.server.stop_current_app()
                 else:
-                    data["activeapp"] = {"name": self.server.activeapp,
-                                         "full_name": app.config["full_name"],
-                                         "formatted_name": app.config["formatted_name"],
-                                         "icon": app.config["icon"],
-                                         "color": app.config['color']
+                    data["activeapp"] = {"name"             : self.server.activeapp,
+                                         "full_name"        : app.config["full_name"],
+                                         "formatted_name"   : app.config["formatted_name"],
+                                         "icon"             : app.config["icon"],
+                                         "color"            : app.config['color'],
+                                         "difficulty"    : app.config['difficulty'],
+                                         "tags"          : app.config['tags']
                                          }
 
         for appname in sorted(self.server.apps.keys()):
             app = self.server.apps[appname]
-            data["apps"].append({"name": appname,
-                                 "full_name": app.config["full_name"],
-                                 "formatted_name": app.config["formatted_name"],
-                                 "icon": app.config["icon"],
-                                 "color": app.config['color'],
-                                 "active": (appname == self.server.activeapp)
-                                 })
+
+            if not app.config['categories']:
+                data["other_apps"].append({ "name"          : appname,
+                                            "full_name"     : app.config["full_name"],
+                                            "formatted_name": app.config["formatted_name"],
+                                            "icon"          : app.config["icon"],
+                                            "color"         : app.config['color'],
+                                            "difficulty"    : app.config['difficulty'],
+                                            "tags"          : app.config['tags'],
+                                            "active"        : (appname == self.server.activeapp)
+                                            })
+
+            for cat in app.config['categories']:
+                if cat not in data["apps"]:
+                    data["apps"][cat] = []
+
+                data["apps"][cat].append({  "name"          : appname,
+                                            "full_name"     : app.config["full_name"],
+                                            "formatted_name": app.config["formatted_name"],
+                                            "icon"          : app.config["icon"],
+                                            "color"         : app.config['color'],
+                                            "difficulty"    : app.config['difficulty'],
+                                            "tags"          : app.config['tags'],
+                                            "active"        : (appname == self.server.activeapp)
+                                            })
 
         return self.render_template("apps.html", **data)
 
@@ -258,6 +279,15 @@ class RHandler(object):
 
         # Run shutdown command with 5 second delay, returns immediately
         subprocess.Popen("sleep 5 && sudo halt", shell=True)
+        self.server.shutdown()
+        return message
+
+    def page_restart(self):
+        message = ""
+        self.server.stop_current_app()
+
+        # Run shutdown command with 5 second delay, returns immediately
+        subprocess.Popen("sleep 5 && sudo reboot", shell=True)
         self.server.shutdown()
         return message
 

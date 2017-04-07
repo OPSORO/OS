@@ -7,27 +7,46 @@
 		<div class="">
 			{% if apps %}
 				<div class="apps_available">
-					{% for app in apps %}
-						<div class='app_container large-2 medium-3 small-6 columns'>
-							{% if not app.active and activeapp %}
-								<a href="#" onclick="showSwitchAppModal('{{ app.icon }}', '{{ app.full_name }}', '/openapp/{{ app.formatted_name }}')">
-									<div class="app_button">
-										<div class="app_icon {{ app.icon }}"></div>
-										<div class="app_banner" style="background-color: {{ app.color }}"></div>
-									</div>
-									<div class="app_label">{{ app.full_name }}</div>
-								</a>
-							{% else %}
-								<a href="/openapp/{{ app.formatted_name }}">
-									<div class="app_button">
-										<div class="app_icon {{ app.icon }}"></div>
-										<div class="app_banner" style="background-color: {{ app.color }}"></div>
-									</div>
-									<div class="app_label">{{ app.full_name }}</div>
-								</a>
-							{% endif %}
+					{% for category in apps|sort %}
+						<div id="{{ category[3:] }}" class="app-category row small-up-3 medium-up-5 large-up-8">
+							<h3>{{ category[3:] }}</h3>
+							{% for app in apps[category] %}
+								<div id="app.formatted_name" class="app_container float-left column column-block">
+									{% if not app.active and activeapp %}
+									<a href="#" onclick="showSwitchAppModal('{{ app.icon }}', '{{ app.full_name }}', '/openapp/{{ app.formatted_name }}')">
+									{% else %}
+									<a href="/openapp/{{ app.formatted_name }}">
+									{% endif %}
+										<div class="app_button background_{{ app.color }}">
+											<div class="app_icon {{ app.icon }}"></div>
+											<div class="app_banner background_{{ app.color }}"></div>
+										</div>
+										<div class="app_label">{{ app.full_name }}</div>
+									</a>
+								</div>
+							{% endfor %}
 						</div>
 					{% endfor %}
+					<div class="app-category row small-up-3 medium-up-5 large-up-8">
+						{% if other_apps %}
+							<h3>Other apps</h3>
+							{% for app in other_apps %}
+								<div class="app_container float-left column column-block">
+									{% if not app.active and activeapp %}
+									<a href="#" onclick="showSwitchAppModal('{{ app.icon }}', '{{ app.full_name }}', '/openapp/{{ app.formatted_name }}')">
+									{% else %}
+									<a href="/openapp/{{ app.formatted_name }}">
+									{% endif %}
+										<div class="app_button background_{{ app.color }}">
+											<div class="app_icon {{ app.icon }}"></div>
+											<div class="app_banner background_{{ app.color }}"></div>
+										</div>
+										<div class="app_label">{{ app.full_name }}</div>
+									</a>
+								</div>
+							{% endfor %}
+						{% endif %}
+					</div>
 				</div>
 			{% else %}
 				<h2>{{ _('No apps available.') }}</h2>
@@ -50,22 +69,22 @@
 					<span class="fa fa-close"></span>
 				</button>
 				<span class="fa fa-power-off"></span>
-				Confirm
+				{{ _('Confirm') }}
 			</div>
 			<div class="content">
 				<p>
-					Are you sure you wish to open
+					{{ _('Are you sure you wish to open') }}
 					<span class="" id="SwitchAppIcon"></span>
 					<span id="SwitchAppName"></span>?
 					<br/>
-					Doing so will close the current app,
+					{{ _('Doing so will close the current app,') }}
 					<span class="fa {{ activeapp.icon }}"></span>
 					{{ activeapp.full_name }}.
 				</p>
 				<div class="text-center">
 					<a href="#" class="button" id="SwitchAppLink">
 						<span class="fa fa-check"></span>
-						Yes, switch app.</a>
+						{{ _('Yes, switch app.') }}</a>
 				</div>
 			</div>
 		</div>
@@ -82,4 +101,7 @@
 			}
 		</script>
 	{% endif %}
+	<script>
+
+	</script>
 {% endblock %}

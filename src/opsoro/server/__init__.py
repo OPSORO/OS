@@ -30,6 +30,13 @@ except ImportError:
     import json
     print_info("Simplejson not available, falling back on json")
 
+
+import yaml
+try:
+    from yaml import CLoader as Loader
+except ImportError:
+    from yaml import Loader
+
 dof_positions = {}
 # Helper function
 get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
@@ -101,6 +108,9 @@ class Server(object):
         # if Preferences.is_update_available():
         #     print_info("Update available")
         #     Preferences.update()
+        apps_layout = []
+        with open(get_path('../config/apps_layout.yaml')) as f:
+            apps_layout = yaml.load(f, Loader=Loader)
 
         for plugin_name in self.plugin_source.list_plugins():
             self.current_bp_app = plugin_name
@@ -108,16 +118,28 @@ class Server(object):
             plugin = self.plugin_source.load_plugin(plugin_name)
             print_apploaded(plugin_name)
 
+            default_config = {  'full_name'             : 'No name',
+                                'formatted_name'        : 'No_name',
+                                'icon'                  : 'fa-warning',
+                                'color'                 : '#333',
+                                'difficulty'            : 0,
+                                'tags'                  : [''],
+                                'allowed_background'    : False,
+                                'connection'            : Robot.Connection.OFFLINE,
+                                'activation'            : Robot.Activation.MANUAL }
+
             if not hasattr(plugin, "config"):
-                plugin.config = {"full_name": "No name",
-                                 "icon": "fa-warning",
-                                 'color': '#333'}
+                plugin.config = default_config
 
-            if "full_name" not in plugin.config:
-                plugin.config["full_name"] = "No name"
+            for item in default_config:
+                if item not in plugin.config:
+                    plugin.config[item] = default_config[item]
 
-            if "icon" not in plugin.config:
-                plugin.config["icon"] = "fa-warning"
+            # Add categories for apps-layout
+            plugin.config['categories'] = []
+            for cat in apps_layout:
+                if plugin.config['formatted_name'] in cat['apps']:
+                    plugin.config['categories'].append(cat['title'])
 
             self.apps[plugin_name] = plugin
             try:
