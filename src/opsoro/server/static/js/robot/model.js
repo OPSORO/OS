@@ -75,30 +75,75 @@ function snap_to_grid_y(value, object) {
 
   return value;
 }
-var Expression = function(name, filename) {
+var Expression = function(name, filename, poly_index, dof_values) {
   var self = this;
-  self.name       = ko.observable(name || '');
-  self.filename   = ko.observable(filename || '');
-  self.poly_index = ko.observable(-1);
-  self.dof_values = ko.observableArray();
+  self.name       = name || '';
+  self.default    = '2753';
+  self.filename   = ko.observable(filename || self.default);
+  self.poly_index = ko.observable(poly_index || -1);
+  self.dof_values = dof_values || [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ];
   self.selected   = ko.observable(false);
 
-  for (var i = 0; i < 16; i++) {
-    self.dof_values.push(0);
-  }
+  self.update = function() {
+    if (!self.selected()) { return; }
+    var dofs = self.dof_values;
+    for (var i = 0; i < virtualModel.modules().length; i++) {
+      var mod = virtualModel.modules()[i];
+      for (var j = 0; j < mod.dofs().length; j++) {
+        dofs[mod.dofs()[j].servo().pin()] = parseFloat(mod.dofs()[j].value());
+      }
+    }
+    self.dof_values = dofs;
+  };
 
   self.select = function() {
     for (var i = 0; i < virtualModel.expressions().length; i++) {
       virtualModel.expressions()[i].selected(false);
     }
-    self.selected(true);
+    virtualModel.selected_expression(self);
 
     if (self.poly_index() < 0) {
       // Use dof values
-
+      for (var i = 0; i < virtualModel.modules().length; i++) {
+        var mod = virtualModel.modules()[i];
+        for (var j = 0; j < mod.dofs().length; j++) {
+          mod.dofs()[j].value(self.dof_values[mod.dofs()[j].servo().pin()]);
+          mod.update_dofs();
+        }
+      }
     } else {
       // Use dof poly
-
+      for (var i = 0; i < virtualModel.modules().length; i++) {
+        virtualModel.modules()[i].apply_poly(self.poly_index());
+      }
+    }
+    self.selected(true);
+  };
+  self.update_icon = function(icon) {
+    self.filename(icon);
+    $("#PickIconModal").foundation("close");
+  };
+  self.change_icon = function() {
+    // Reset icons
+    for (var i = 0; i < virtualModel.used_icons.length; i++) {
+      if (virtualModel.used_icons[i] == self.default) {
+        continue;
+      }
+      virtualModel.icons.push(virtualModel.used_icons[i]);
+    }
+    virtualModel.used_icons = []
+    for (var i = 0; i < virtualModel.expressions().length; i++) {
+      virtualModel.icons.remove(virtualModel.expressions()[i].filename());
+      virtualModel.used_icons.push(virtualModel.expressions()[i].filename());
+    }
+    virtualModel.icons.sort();
+    // View icons
+    $("#PickIconModal").foundation("open");
+  };
+  self.remove = function() {
+    virtualModel.expressions.remove(self);
+    if (virtualModel.expressions().length > 0) {
+      virtualModel.expressions()[0].select();
     }
   };
 };
@@ -123,7 +168,7 @@ var Grid = function(pin, mid, min, max) {
   self.object.draggable().on('dragmove', function(e) { e.preventDefault(); });
   self.object.on('mousedown', function(){
     if (virtualModel.selected_module() != undefined) {
-      virtualModel.selected_module().Deselect();
+      virtualModel.selected_module().deselect();
     }
   });
 };
@@ -138,7 +183,7 @@ var Dof = function(name) {
   var self = this;
   self.name           = ko.observable(name);
   self.name_formatted = ko.observable(name.replace(' ', '_'));
-  self.value          = ko.observable(0.00);
+  self.value          = ko.observable(0);
   self.isServo        = ko.observable(false);
   self.servo          = ko.observable(new Servo(0, 1500, 0, 0));
   self.poly           = ko.observableArray();
@@ -149,6 +194,21 @@ var Dof = function(name) {
   self.setServo = function(pin, mid, min, max) {
     self.servo(new Servo(pin, mid, min, max));
     self.isServo(true);
+  };
+  self.set_poly = function(poly) {
+    if (poly.length < 20) { return; }
+    self.poly.removeAll();
+    for (var i = 0; i < 20; i++) {
+        self.poly.push((constrain(poly[i] || 0, -1, 1)));
+    }
+  };
+  self.update_single_poly = function(index) {
+    if (index < 0 || index > 19) { return; }
+    self.poly()[index] = ((constrain(self.value() || 0, -1, 1)));
+  };
+  self.apply_poly = function(index) {
+    if (index < 0 || index > 19) { return; }
+    self.value(self.poly()[index]);
   };
 };
 var Module = function(svg_code, specs, config) {
@@ -172,7 +232,7 @@ var Module = function(svg_code, specs, config) {
   self.dofs           = ko.observableArray();
   self._drag_offset   = [0, 0];
 
-  self.Set_dofs = function(values) {
+  self.set_dofs = function(values) {
     if (values.length != self.dofs().length) {
       console.log('error dofs');
       return;
@@ -180,10 +240,17 @@ var Module = function(svg_code, specs, config) {
     for (var i = 0; i < self.dofs().length; i++) {
       self.dofs()[i].value(constrain(values[i] || 0, -1, 1));
     }
-    self.Update_dofs();
+    self.update_dofs();
+  };
+  self.apply_poly = function(index) {
+    if (index < 0 || index > 19) { return; }
+    for (var i = 0; i < self.dofs().length; i++) {
+      self.dofs()[i].apply_poly(index);
+    }
+    self.update_dofs();
   };
 
-  self.Set_pos = function(x, y) {
+  self.set_pos = function(x, y) {
     // Reset rotation for position movement
     if (self.object != undefined) {
       self.object.rotate(0, self.x(), self.y());
@@ -192,26 +259,24 @@ var Module = function(svg_code, specs, config) {
     self.y(snap_to_grid_y(y, self));
     self.grid_x(screen_to_grid(self.x()));
     self.grid_y(screen_to_grid(self.y()));
-    self.Update();
+    self.update();
   };
-  self.Set_size = function(width, height) {
+  self.set_size = function(width, height) {
     self.width(width);
     self.height(height);
-    self.Update();
+    self.update();
   };
-  self.Set_rotation = function(rotation) {
+  self.set_rotation = function(rotation) {
     rotation = rotation % 360;
     self.rotation(Math.round(rotation / 90) * 90); // 90° angles only
     // When object is over the side -> reposition
-    self.Set_pos(self.x(), self.y());
+    self.set_pos(self.x(), self.y());
   };
-  self.Rotate = function() {
-    self.Set_rotation(self.rotation() + 90);
+  self.rotate = function() {
+    self.set_rotation(self.rotation() + 90);
   };
-  self.Update_dofs = function() {
-    console.log('wiiiiiiiiiiiiiiiiii');
-  };
-  self.Update = function() {
+  self.update_dofs = function() {};
+  self.update = function() {
     if (self.object == undefined) { return; }
     self.object.size(self.width(), self.height());
     self.object.center(self.x(), self.y());
@@ -226,23 +291,23 @@ var Module = function(svg_code, specs, config) {
     var x = e.detail.event.pageX - virtualModel.canvasX - self._drag_offset[0];
     var y = e.detail.event.pageY - virtualModel.canvasY - self._drag_offset[1];
 
-    self.Set_pos(x, y);
+    self.set_pos(x, y);
   };
   self._mouse_down = function(e) {
     self._drag_offset = [e.pageX - virtualModel.canvasX - self.x(), e.pageY - virtualModel.canvasY - self.y()];
-    self.Select();
+    self.select();
   };
-  self.Remove = function() {
-    self.Deselect();
+  self.remove = function() {
+    self.deselect();
     self.object.remove();
     if (self.extra != undefined) {
       self.extra.remove();
     }
     virtualModel.modules.remove(self);
   };
-  self.Select = function() {
+  self.select = function() {
     if (virtualModel.selected_module() != undefined) {
-      virtualModel.selected_module().Deselect();
+      virtualModel.selected_module().deselect();
     }
     self.object.front();
     if (self.extra != undefined) {
@@ -252,7 +317,7 @@ var Module = function(svg_code, specs, config) {
     virtualModel.selected_module(self);
     Foundation.reInit($('[data-slider]'));
   };
-  self.Deselect = function() {
+  self.deselect = function() {
     self.object.style({ stroke: 'transparent' });
     virtualModel.selected_module(undefined);
   };
@@ -261,7 +326,7 @@ var Module = function(svg_code, specs, config) {
   if (self.specs != '') {
     self.type(self.specs.type);
     self.name.value(self.type());
-    self.Set_size(mm_to_screen(self.specs.size.width), mm_to_screen(self.specs.size.height));
+    self.set_size(mm_to_screen(self.specs.size.width), mm_to_screen(self.specs.size.height));
     self.actual_width(self.specs.size.width);
     self.actual_height(self.specs.size.height);
 
@@ -276,8 +341,19 @@ var Module = function(svg_code, specs, config) {
       }
 
       self._update_dofs   = ko.computed(function() {
-        self.Update_dofs();
+        self.update_dofs();
         if (self.dofs().length == 0) { return undefined; }
+
+        if (virtualModel.selected_expression().selected()) {
+          if (virtualModel.selected_expression().poly_index() < 0) {
+            virtualModel.selected_expression().update();
+          } else {
+            for (var i = 0; i < self.dofs().length; i++) {
+              self.dofs()[i].update_single_poly(virtualModel.selected_expression().poly_index());
+            }
+          }
+        }
+
         return self.dofs()[0].value();
       }, self);
     }
@@ -286,8 +362,8 @@ var Module = function(svg_code, specs, config) {
     self.name.value(self.config.name);
     self.grid_x(self.config.grid.x);
     self.grid_y(self.config.grid.y);
-    self.Set_pos(virtualModel.grid.x + grid_to_screen(self.config.grid.x), virtualModel.grid.y + grid_to_screen(self.config.grid.y));
-    self.Set_rotation(self.config.grid.rotation || 0);
+    self.set_pos(virtualModel.grid.x + grid_to_screen(self.config.grid.x), virtualModel.grid.y + grid_to_screen(self.config.grid.y));
+    self.set_rotation(self.config.grid.rotation || 0);
 
     if (self.config.dofs != undefined) {
       for (var i = 0; i < self.config.dofs.length; i++) {
@@ -297,9 +373,7 @@ var Module = function(svg_code, specs, config) {
           self.dofs()[i].servo().mid(dof.servo.mid);
         }
         if (dof.mapping != undefined) {
-          for (var i = 0; i < self.dofs()[i].poly().length; i++) {
-            self.dofs()[i].poly()[i] = dof.mapping[i];
-          }
+          self.dofs()[i].set_poly(dof.mapping.poly)
         }
       }
     }
@@ -332,10 +406,8 @@ var Module = function(svg_code, specs, config) {
     if (self.extra != undefined) {
       self.extra.on('mousedown', self._mouse_down);
     }
-    self.Update();
+    self.update();
   }
-
-
 
 };
 
@@ -359,31 +431,49 @@ var VirtualModel = function() {
   self.modules = ko.observableArray();
   self.selected_module = ko.observable();
   self.init = function() {
+    if (expression_data != undefined) {
+      for (var i = 0; i < expression_data.length; i++) {
+        var dat = expression_data[i];
+        self.add_expression(dat.name, dat.filename, dat.poly, dat.dofs);
+      }
+      self.expressions()[0].selected(true);
+      self.selected_expression(self.expressions()[0]);
+    }
     for (var i = 0; i < configs.length; i++) {
       var mod_type = configs[i].type;
-      self.Add_module(mod_type, configs[i]);
+      self.add_module(mod_type, configs[i]);
     }
   };
-  self.Add_module = function(mod_type, config) {
+  self.add_module = function(mod_type, config) {
     var mod = new modules_definition[mod_type](svg_codes[mod_type], specs[mod_type], config);
     self.modules.push(mod);
   };
   self.resize = function() {
-    // Update grid x & y reference points
+    // update grid x & y reference points
     var rect = $('svg').first().position();
     self.canvasX = rect.left;
     self.canvasY = rect.top;
   };
   self.resize();
 
-  if (expression_data != undefined) {
-    self.expressions = ko.observableArray();
-    for (var i = 0; i < expression_data.length; i++) {
-      var exp = new Expression(expression_data[i].name, expression_data[i].filename);
-      self.expressions.push(exp);
+  self.icons = ko.observableArray(icon_data);
+  self.used_icons = [];
+
+  self.expressions = ko.observableArray();
+  self.selected_expression = ko.observable();
+  self.add_expression = function(name, filename, poly_index, dof_values) {
+    if (typeof name == 'object') {
+      name = 'custom';
+      filename = '';
     }
-    self.expressions()[0].selected(true);
-  }
+    name      = name || '';
+    var exp = new Expression(name, filename, poly_index, dof_values);
+    self.expressions.push(exp);
+    if (filename == '') {
+      exp.change_icon();
+      self.expressions()[self.expressions().length-1].select();
+    }
+  };
 };
 
 var main_svg;
@@ -410,11 +500,10 @@ function drag(ev) {
 
 function drop(ev) {
   ev.preventDefault();
-  console.log(ev);
   var data = ev.dataTransfer.getData("module_type");
-  virtualModel.Add_module(data, '');
-  virtualModel.modules()[virtualModel.modules().length-1].Set_pos(ev.pageX - virtualModel.canvasX, ev.pageY - virtualModel.canvasY);
-  virtualModel.modules()[virtualModel.modules().length-1].Select();
+  virtualModel.add_module(data, '');
+  virtualModel.modules()[virtualModel.modules().length-1].set_pos(ev.pageX - virtualModel.canvasX, ev.pageY - virtualModel.canvasY);
+  virtualModel.modules()[virtualModel.modules().length-1].select();
 }
 
 function touchHandler(event) {

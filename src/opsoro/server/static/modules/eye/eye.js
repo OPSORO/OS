@@ -7,7 +7,7 @@ var Eye = function(svg_code, specs, config) {
     self.lid_1 = self.group.select('.lid_1').first();
     self.lid_2 = self.group.select('.lid_2').first();
 
-    self.Update_dofs = function() {
+    self.update_dofs = function() {
       var midX    = 35;
       var midY    = 24;
 
@@ -21,7 +21,7 @@ var Eye = function(svg_code, specs, config) {
       self.lid_2.plot(self.lid_2.array());
     };
 
-    self.Set_dofs([0, 0, 0]);
+    self.set_dofs([0, 0, 0]);
 
     return self;
 };

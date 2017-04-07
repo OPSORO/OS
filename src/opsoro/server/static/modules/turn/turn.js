@@ -18,7 +18,7 @@ var Turn = function(svg_code, specs, config) {
     self.extra.size(mm_to_screen(self.arm_width()), mm_to_screen(self.arm_height()));
     self.extra.front();
 
-    self.Update = function() {
+    self.update = function() {
       // self.extra.rotate(0, self.x() + self.arm_anchor_offset()[0], self.y() + self.arm_anchor_offset()[1]);
       self.object.size(self.width(), self.height());
       self.object.center(self.x(), self.y());
@@ -34,16 +34,16 @@ var Turn = function(svg_code, specs, config) {
         armY += ((self.rotation()-180) / 90) * virtualModel.grid.space;
       }
       self.extra.center(armX, armY);
-      self.Update_dofs();
+      self.update_dofs();
     };
 
-    self.Update_dofs = function() {
+    self.update_dofs = function() {
       self.extra.rotate(self.rotation() + self.arm_offset() + (self.dofs()[0].value() * self.arm_range()), self.extra.cx() + self.arm_anchor_offset()[0], self.extra.cy() + self.arm_anchor_offset()[1]);
       // self.extra.rotate(self.rotation()%180 + self.arm_offset() + (self.dofs()[0].value() * self.arm_range()), self.x(), self.y());
     };
 
-    self.Set_dofs([0]);
-    self.Update();
+    self.set_dofs([0]);
+    self.update();
 
     return self;
 };
