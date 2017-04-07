@@ -27,7 +27,7 @@ constrain = lambda n, minn, maxn: max(min(maxn, n), minn)
 config = {
     'full_name':            'Expression Configurator',
     'icon':                 'fa-smile-o',
-    'color':                '#ff517e',
+    'color':                'red',
     'difficulty':           3,
     'tags':                 ['design', 'setup', 'expression', 'configuration'],
     'allowed_background':   False,
@@ -57,6 +57,8 @@ def setup_pages(opsoroapp):
             'configs': {},
             'specs': {},
             'skins': [],
+            'expressions': {},
+            'icons': [],
         }
 
         # action = request.args.get('action', None)
@@ -68,13 +70,13 @@ def setup_pages(opsoroapp):
         #
         modules_folder = '../../modules/'
         modules_static_folder = '../../server/static/modules/'
+        icons_static_folder = '../../server/static/images/emojione/'
         config_folder = '../../config/'
 
         # get modules
         filenames = []
         filenames.extend(glob.glob(get_path(modules_folder + '*/')))
         for filename in filenames:
-            print(filename.split('/')[-2])
             module_name = filename.split('/')[-2]
             data['modules'].append(module_name)
             with open(get_path(modules_folder + module_name + '/specs.yaml')) as f:
@@ -85,6 +87,13 @@ def setup_pages(opsoroapp):
 
         with open(get_path(config_folder + 'new_grid.yaml')) as f:
             data['configs'] = yaml.load(f, Loader=Loader)['modules']
+        with open(get_path(config_folder + 'default_expressions.yaml')) as f:
+            data['expressions'] = yaml.load(f, Loader=Loader)['expressions']
+
+        filenames = []
+        filenames.extend(glob.glob(get_path(icons_static_folder + '*.svg')))
+        for filename in filenames:
+            data['icons'].append(os.path.splitext(os.path.split(filename)[1])[0])
 
         # filenames = []
         # filenames.extend(glob.glob(get_path('static/images/skins/*.svg')))

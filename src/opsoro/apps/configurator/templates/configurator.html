@@ -36,12 +36,12 @@
 							<svg data-bind="html: code" height="100" width="100%"></svg>
 							<div class="row">
 								<div class="text-left small-6 columns">
-									<button href="" class="button rotate" data-bind="click: Rotate">
+									<button href="" class="button rotate" data-bind="click: rotate">
 										<span class="fa fa-rotate-right"></span>
 									</button>
 								</div>
 								<div class="text-right small-6 columns">
-									<button href="" class="button alert" data-bind="click: Remove">
+									<button href="" class="button alert" data-bind="click: remove">
 										<span class="fa fa-trash"></span>
 									</button>
 								</div>
@@ -84,13 +84,15 @@
 {% block app_scripts %}
 
 	<script>
-		action_data 	= {{ actions|tojson|safe }};
-		// var data 	= {{ data|tojson|safe }};
-		module_names 	= {{ modules|tojson|safe }};
-		skin_names 		= {{ skins|tojson|safe }};
-		specs 				= {{ specs|tojson|safe }};
-		svg_codes 		= {{ svg_codes|tojson|safe }};
-		configs 			= {{ configs|tojson|safe }};
+		action_data 		= {{ actions|tojson|safe }};
+		// var data 		= {{ data|tojson|safe }};
+		module_names 		= {{ modules|tojson|safe }};
+		skin_names 			= {{ skins|tojson|safe }};
+		specs 					= {{ specs|tojson|safe }};
+		svg_codes 			= {{ svg_codes|tojson|safe }};
+		configs 				= {{ configs|tojson|safe }};
+		expression_data = undefined;
+		icons_data 			= undefined;
 	</script>
 
 

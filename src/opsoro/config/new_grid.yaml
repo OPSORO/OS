@@ -55,7 +55,7 @@ modules:
     type: mouth
     grid:
       x: 12
-      y: 18
+      y: 20
       rotation: 0
     dofs:
       - name: rotation left
@@ -134,7 +134,7 @@ modules:
     type: speaker
     grid:
       x: 12
-      y: 24
+      y: 27
       rotation: 0
 
   - name: heart
