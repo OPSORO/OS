@@ -31,7 +31,7 @@ constrain = lambda n, minn, maxn: max(min(maxn, n), minn)
 config = {
     'full_name':            'Social Script',
     'icon':                 'fa-commenting-o',
-    'color':                '#15e678',
+    'color':                'orange',
     'difficulty':           4,
     'tags':                 [''],
     'allowed_background':   False,

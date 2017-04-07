@@ -21,7 +21,7 @@ get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 config = {
     'full_name':            'Social Response',
     'icon':                 'fa-share-square',
-    'color':                '#15e678',
+    'color':                'blue',
     'difficulty':           3,
     'tags':                 ['social', 'facebook', 'twitter'],
     'allowed_background':   True,

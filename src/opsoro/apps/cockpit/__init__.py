@@ -11,7 +11,7 @@ constrain = lambda n, minn, maxn: max(min(maxn, n), minn)
 config = {
     'full_name':            'Cockpit',
     'icon':                 'fa-rocket',
-    'color':                '#ff517e',
+    'color':                'red',
     'difficulty':           9,
     'tags':                 [''],
     'allowed_background':   False,

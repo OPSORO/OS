@@ -12,7 +12,7 @@ from opsoro.robot import Robot
 config = {
     'full_name':            'Sounds',
     'icon':                 'fa-volume-up',
-    'color':                '#15e678',
+    'color':                'yellow',
     'difficulty':           3,
     'tags':                 ['sound', 'music', 'speech', 'TTS', 'recording'],
     'allowed_background':   False,

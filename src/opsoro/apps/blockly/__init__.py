@@ -12,7 +12,7 @@ from opsoro.robot import Robot
 config = {
     'full_name':            'Blockly',
     'icon':                 'fa-puzzle-piece',
-    'color':                '#6e00ff',
+    'color':                'blue',
     'difficulty':           3,
     'tags':                 ['visual', 'programming', 'blockly'],
     'allowed_background':   True,

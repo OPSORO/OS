@@ -13,7 +13,7 @@ from opsoro.hardware import Hardware
 config = {
     'full_name':            'Touch Graph',
     'icon':                 'fa-hand-o-down',
-    'color':                '#ffaf19',
+    'color':                'gray_light',
     'difficulty':           3,
     'tags':                 ['capacitive', 'touch', 'button'],
     'allowed_background':   False,

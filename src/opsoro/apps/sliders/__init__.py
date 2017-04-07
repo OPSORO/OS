@@ -12,7 +12,7 @@ constrain = lambda n, minn, maxn: max(min(maxn, n), minn)
 config = {
     'full_name':            'Sliders',
     'icon':                 'fa-sliders',
-    'color':                '#15e678',
+    'color':                'gray_light',
     'difficulty':           2,
     'tags':                 ['sliders', 'dofs'],
     'allowed_background':   False,

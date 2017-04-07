@@ -13,7 +13,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash
 config = {
     'full_name':            'Preferences',
     'icon':                 'fa-cog',
-    'color':                '#555',
+    'color':                'gray_dark',
     'difficulty':           3,
     'tags':                 ['settings', 'setup'],
     'allowed_background':   False,

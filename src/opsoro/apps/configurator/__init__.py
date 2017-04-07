@@ -27,7 +27,7 @@ constrain = lambda n, minn, maxn: max(min(maxn, n), minn)
 config = {
     'full_name':            'Configurator',
     'icon':                 'fa-pencil',
-    'color':                '#ff517e',
+    'color':                'red',
     'difficulty':           3,
     'tags':                 ['design', 'setup', 'configuration'],
     'allowed_background':   False,

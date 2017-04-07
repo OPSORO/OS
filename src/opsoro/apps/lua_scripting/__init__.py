@@ -12,7 +12,7 @@ from opsoro.robot import Robot
 config = {
     'full_name':            'Lua Scripting',
     'icon':                 'fa-terminal',
-    'color':                '#36c9ff',
+    'color':                'orange',
     'difficulty':           7,
     'tags':                 ['lua', 'code', 'script'],
     'allowed_background':   True,
