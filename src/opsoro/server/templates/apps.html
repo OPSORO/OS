@@ -6,12 +6,14 @@
 	<section class="apps">
 		<div class="">
 			{% if apps %}
+				<div id="search-apps">
+				</div>
 				<div class="apps_available">
 					{% for category in apps|sort %}
 						<div id="{{ category[3:] }}" class="app-category row small-up-3 medium-up-5 large-up-8">
 							<h3>{{ category[3:] }}</h3>
 							{% for app in apps[category] %}
-								<div id="app.formatted_name" class="app_container float-left column column-block">
+								<div class="app_container float-left column column-block {{ app.formatted_name }}">
 									{% if not app.active and activeapp %}
 									<a href="#" onclick="showSwitchAppModal('{{ app.icon }}', '{{ app.full_name }}', '/openapp/{{ app.formatted_name }}')">
 									{% else %}
@@ -22,6 +24,9 @@
 											<div class="app_banner background_{{ app.color }}"></div>
 										</div>
 										<div class="app_label">{{ app.full_name }}</div>
+										{% for tag in app.tags %}
+											<div class="hide app-tag">{{ tag }}</div>
+										{% endfor %}
 									</a>
 								</div>
 							{% endfor %}
@@ -31,7 +36,7 @@
 						{% if other_apps %}
 							<h3>Other apps</h3>
 							{% for app in other_apps %}
-								<div class="app_container float-left column column-block">
+								<div class="app_container float-left column column-block {{ app.formatted_name }}">
 									{% if not app.active and activeapp %}
 									<a href="#" onclick="showSwitchAppModal('{{ app.icon }}', '{{ app.full_name }}', '/openapp/{{ app.formatted_name }}')">
 									{% else %}
@@ -42,6 +47,9 @@
 											<div class="app_banner background_{{ app.color }}"></div>
 										</div>
 										<div class="app_label">{{ app.full_name }}</div>
+										{% for tag in app.tags %}
+											<div class="hide app-tag">{{ tag }}</div>
+										{% endfor %}
 									</a>
 								</div>
 							{% endfor %}
@@ -102,6 +110,21 @@
 		</script>
 	{% endif %}
 	<script>
+		var $apps = $('.app_container');
+		var $categories = $('.app-category');
 
+		$('#search').keyup(function() {
+			var val = $.trim($(this).val()).replace(/ +/g, ' ').toLowerCase();
+			$apps.show().filter(function() {
+				var text = $(this).text().replace(/\s+/g, ' ').toLowerCase();
+				return !~text.indexOf(val);
+			}).hide();
+			$categories.show().filter(function() {
+				var all_apps = $(this).find(".app_container").length;
+				var invis_apps = $(this).find(".app_container[style='display: none;']").length;
+				var vis_apps = all_apps - invis_apps
+				return vis_apps < 1;
+			}).hide();
+		});
 	</script>
 {% endblock %}
