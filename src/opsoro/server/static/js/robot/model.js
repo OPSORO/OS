@@ -253,7 +253,8 @@ var Module = function(svg_code, specs, config) {
   self.set_pos = function(x, y) {
     // Reset rotation for position movement
     if (self.object != undefined) {
-      self.object.rotate(0, self.x(), self.y());
+      // self.object.rotate(0, self.x(), self.y());
+      // self.group.rotate(0);
     }
     self.x(snap_to_grid_x(x, self));
     self.y(snap_to_grid_y(y, self));
@@ -278,10 +279,13 @@ var Module = function(svg_code, specs, config) {
   self.update_dofs = function() {};
   self.update = function() {
     if (self.object == undefined) { return; }
-    self.object.size(self.width(), self.height());
-    self.object.center(self.x(), self.y());
-    self.object.rotate(self.rotation(), self.x(), self.y());
 
+    var maxSize = Math.max(self.width(), self.height());
+    self.object.size(maxSize, maxSize);
+
+    self.object.center(self.x(), self.y());
+    // self.object.rotate(self.rotation(), self.x(), self.y());
+    self.group.rotate(self.rotation());
   };
   self._drag_move = function(e) {
     e.preventDefault();
@@ -313,12 +317,12 @@ var Module = function(svg_code, specs, config) {
     if (self.extra != undefined) {
       self.extra.front();
     }
-    self.object.style({ stroke: 'rgb(255, 206, 57)' });
+    self.object.addClass('selected_module');
     virtualModel.selected_module(self);
     Foundation.reInit($('[data-slider]'));
   };
   self.deselect = function() {
-    self.object.style({ stroke: 'transparent' });
+    self.object.removeClass('selected_module');
     virtualModel.selected_module(undefined);
   };
 
@@ -341,7 +345,6 @@ var Module = function(svg_code, specs, config) {
       }
 
       self._update_dofs   = ko.computed(function() {
-        self.update_dofs();
         if (self.dofs().length == 0) { return undefined; }
 
         if (virtualModel.selected_expression().selected()) {
@@ -353,7 +356,7 @@ var Module = function(svg_code, specs, config) {
             }
           }
         }
-
+        self.update_dofs();
         return self.dofs()[0].value();
       }, self);
     }
@@ -436,9 +439,11 @@ var VirtualModel = function() {
         var dat = expression_data[i];
         self.add_expression(dat.name, dat.filename, dat.poly, dat.dofs);
       }
-      self.expressions()[0].selected(true);
-      self.selected_expression(self.expressions()[0]);
+    } else {
+      self.add_expression('', '1f610');
     }
+    self.expressions()[0].selected(true);
+    self.selected_expression(self.expressions()[0]);
     for (var i = 0; i < configs.length; i++) {
       var mod_type = configs[i].type;
       self.add_module(mod_type, configs[i]);
@@ -485,9 +490,7 @@ $(document).ready(function() {
   ko.applyBindings(virtualModel);
 
   $(window).resize(virtualModel.resize);
-
-  // setTimeout("location.reload();", 200);
-  init();
+  init_touch();
 });
 
 function allowDrop(ev) {
@@ -523,7 +526,7 @@ function touchHandler(event) {
   event.preventDefault();
 }
 
-function init() {
+function init_touch() {
   document.addEventListener("touchstart", touchHandler, true);
   document.addEventListener("touchmove", touchHandler, true);
   document.addEventListener("touchend", touchHandler, true);

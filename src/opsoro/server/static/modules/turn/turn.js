@@ -20,9 +20,12 @@ var Turn = function(svg_code, specs, config) {
 
     self.update = function() {
       // self.extra.rotate(0, self.x() + self.arm_anchor_offset()[0], self.y() + self.arm_anchor_offset()[1]);
-      self.object.size(self.width(), self.height());
+      var maxSize = Math.max(self.width(), self.height());
+      self.object.size(maxSize, maxSize);
+      // self.object.size(self.width(), self.height());
       self.object.center(self.x(), self.y());
-      self.object.rotate(self.rotation(), self.x(), self.y());
+      // self.object.rotate(self.rotation(), self.x(), self.y());
+      self.group.rotate(self.rotation());
 
       self.extra.rotate(0, self.extra.cx() + self.arm_anchor_offset()[0], self.extra.cy() + self.arm_anchor_offset()[1]);
       // self.arm.rotate(0, self.x(), self.y());
