@@ -16,7 +16,7 @@
 		<pre id="editor"></pre>
 	</div>
 	<div id="pnlBlockly" class="contentwrapper">
-		<iframe id="blocklyFrame" src="blockly"></iframe>
+		<iframe id="blocklyFrame" src="/blockly"></iframe>
 	</div>
 	<div id="console" class="console"></div>
 
@@ -27,9 +27,7 @@
 	<script>
 		var action_data = {{ actions|tojson|safe }};
 
-		var scriptname ={% if script_name %}"{{ script_name }}"
-		{% else %}
-			null{% endif %};
+		var scriptname = {% if script_name %}"{{ script_name }}"{% else %}null{% endif %};
 		var isScriptModified = {{ "true" if script_modified else "false" }};
 		var isScriptRunning = {{ "true" if script_running else "false" }};
 	</script>

@@ -286,7 +286,7 @@ $(document).ready(function() {
 
                   // Update filename and asterisk var filename_no_ext = filename; if (filename_no_ext.slice(-4) == ".lua" || filename_no_ext.slice(-4) == ".LUA") { 	filename_no_ext = filename_no_ext.slice(0, -4); } self.fileName(filename_no_ext);
                   self.fileIsModified(false);
-                }, 500);
+                }, 1000);
                 return;
             }
             // Load script

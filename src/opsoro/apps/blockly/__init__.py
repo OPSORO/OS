@@ -78,13 +78,13 @@ def ui_add_key(key):
 
 
 def setup_pages(opsoroapp):
-    visprog_bp = Blueprint(
+    app_bp = Blueprint(
         config['formatted_name'],
         __name__,
         template_folder='templates',
         static_folder='static')
 
-    @visprog_bp.route('/', methods=['GET'])
+    @app_bp.route('/', methods=['GET'])
     @opsoroapp.app_view
     def index():
         global sh
@@ -111,19 +111,19 @@ def setup_pages(opsoroapp):
 
         return opsoroapp.render_template(config['formatted_name'] + '.html', **data)
 
-    @visprog_bp.route('/blockly')
-    @opsoroapp.app_view
-    def blockly_inner():
-        data = {'soundfiles': []}
+    # @app_bp.route('/blockly')
+    # @opsoroapp.app_view
+    # def blockly_inner():
+    #     data = {'soundfiles': []}
+    #
+    #     filenames = glob.glob(get_path('../../data/sounds/*.wav'))
+    #
+    #     for filename in filenames:
+    #         data['soundfiles'].append(os.path.split(filename)[1])
+    #
+    #     return opsoroapp.render_template('blockly_template.html', **data)
 
-        filenames = glob.glob(get_path('../../data/sounds/*.wav'))
-
-        for filename in filenames:
-            data['soundfiles'].append(os.path.split(filename)[1])
-
-        return opsoroapp.render_template('blockly_template.html', **data)
-
-    # @visprog_bp.route('/filelist')
+    # @app_bp.route('/filelist')
     # @opsoroapp.app_view
     # def filelist():
     # 	data = {
@@ -138,7 +138,7 @@ def setup_pages(opsoroapp):
     #
     # 	return opsoroapp.render_template('filelist.html', **data)
     #
-    # @visprog_bp.route('/save', methods=['POST'])
+    # @app_bp.route('/save', methods=['POST'])
     # @opsoroapp.app_api
     # def save():
     # 	xmlfile = request.form.get('file', type=str, default='')
@@ -163,7 +163,7 @@ def setup_pages(opsoroapp):
     #
     # 	return {'status': 'success', 'filename': filename}
     #
-    # @visprog_bp.route('/delete/<scriptfile>', methods=['POST'])
+    # @app_bp.route('/delete/<scriptfile>', methods=['POST'])
     # @opsoroapp.app_api
     # def delete(scriptfile):
     # 	scriptfiles = []
@@ -180,12 +180,12 @@ def setup_pages(opsoroapp):
     # 	else:
     # 		return {'status': 'error', 'message': 'Unknown file.'}
     #
-    # @visprog_bp.route('/scripts/<scriptfile>')
+    # @app_bp.route('/scripts/<scriptfile>')
     # @opsoroapp.app_view
     # def scripts(scriptfile):
     # 	return send_from_directory(get_path('../../data/visprog/scripts/'), scriptfile)
 
-    @visprog_bp.route('/startscript', methods=['POST'])
+    @app_bp.route('/startscript', methods=['POST'])
     @opsoroapp.app_api
     def startscript():
         global sh
@@ -209,7 +209,7 @@ def setup_pages(opsoroapp):
 
         return {'status': 'success'}
 
-    @visprog_bp.route('/stopscript', methods=['POST'])
+    @app_bp.route('/stopscript', methods=['POST'])
     @opsoroapp.app_api
     def stopscript():
         global sh
@@ -259,7 +259,7 @@ def setup_pages(opsoroapp):
         button = str(data.pop('button', ''))
         sh.ui.set_button_status(button, False)
 
-    opsoroapp.register_app_blueprint(visprog_bp)
+    opsoroapp.register_app_blueprint(app_bp)
 
 
 def setup(opsoroapp):

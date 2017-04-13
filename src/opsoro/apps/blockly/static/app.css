@@ -1,7 +1,7 @@
 
 .contentwrapper {
 	margin: 0;
-	height: calc(100vh - 26.15rem);
+	height: calc(100vh - 15rem);
 }
 
 #blocklyFrame {

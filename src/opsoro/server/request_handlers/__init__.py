@@ -85,6 +85,8 @@ class RHandler(object):
         self.server.flaskapp.add_url_rule("/restart/",              "restart",          protect(self.page_restart), )
         self.server.flaskapp.add_url_rule("/closeapp/",             "closeapp",         protect(self.page_closeapp), )
         self.server.flaskapp.add_url_rule("/openapp/<appname>/",    "openapp",          protect(self.page_openapp), )
+
+        self.server.flaskapp.add_url_rule("/blockly/",              "blockly",          protect(self.page_blockly), )
         # self.server.flaskapp.add_url_rule("/preferences", "preferences", protect(self.page_preferences), methods=["GET", "POST"], )
         # self.server.flaskapp.add_url_rule("/app/<appname>/files/<action>", "files", protect(self.page_files), methods=["GET", "POST"], )
 
@@ -324,12 +326,8 @@ class RHandler(object):
 
     def page_file_list(self):
         data = docs_file_list()
-        return self.render_template(
-            "_filelist.html",
-            title=self.title + " - Files",
-            # page_caption=appSpecificFolderPath,
-            page_icon="fa-folder",
-            **data)
+        # page_caption=appSpecificFolderPath
+        return self.render_template("_filelist.html", title=self.title + " - Files", page_icon="fa-folder", **data)
 
     def page_virtual(self):
         # clientconn = None
@@ -359,13 +357,30 @@ class RHandler(object):
             # config_data = send_from_directory(file_location, file_name)
             # print_info("Default config loaded")
 
-        return self.render_template(
-            "virtual.html",
-            title="Virtual Model",
-            page_caption="Virtual model",
-            page_icon="fa-smile-o",
-            modules=Robot.modules,
-            config=config_data)
+        return self.render_template("virtual.html", title="Virtual Model", page_caption="Virtual model", page_icon="fa-smile-o", modules=Robot.modules, config=config_data)
+
+    def page_blockly(self):
+        data = {'soundfiles': [], 'apps_blockly': {}}
+
+        apps_dir = '../../apps/'
+        filenames = glob.glob(get_path('../../data/sounds/*.wav'))
+
+        for filename in filenames:
+            data['soundfiles'].append(os.path.split(filename)[1])
+
+        for appname in sorted(self.server.apps.keys()):
+            app_blockly_path = get_path(apps_dir + appname + '/blockly/')
+            if os.path.isdir(app_blockly_path):
+                if os.path.exists(app_blockly_path + appname + '.xml') and os.path.exists(app_blockly_path + appname + '.js'):
+                    data['apps_blockly'][appname] = {}
+                    data['apps_blockly'][appname]['name'] = self.server.apps[appname].config["full_name"]
+                    with open(app_blockly_path + appname + '.xml') as f:
+                        data['apps_blockly'][appname]['xml'] = f.read()
+                    with open(app_blockly_path + appname + '.js') as f:
+                        data['apps_blockly'][appname]['js'] = f.read()
+
+
+        return self.render_template('blockly_template.html', **data)
 
     def show_errormessage(self, error):
         print_error(error)
