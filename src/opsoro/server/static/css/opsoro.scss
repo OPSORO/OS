@@ -458,9 +458,10 @@ fieldset {
   max-width: 75rem;
   height: 4rem;
   margin: 0 auto 2rem;
-  background-color: color(actionbar_background);
-  color: color(actionbar_text);
+  background-color: color(statusbar_background);
+  color: color(statusbar_text);
   padding: .2rem 1.4rem 0;
+  z-index: 9;
   @include round-corners(2.5rem);
   // -webkit-box-shadow: 2px 2px 3px 1px rgba(0, 0, 0, .75);
   // -moz-box-shadow: 2px 2px 3px 1px rgba(0, 0, 0, .75);
@@ -545,11 +546,14 @@ fieldset {
     // display: inline;
     margin: 0;
     padding: 0;
-    color: color(gray_dark);
+    color: color(statusbar_text);
 
     .icon {
       margin: .6rem 0 0.5rem 1rem;
       font-size: 2.3rem;
+    }
+    &:hover {
+      color: color(statusbar_text_hover);
     }
   }
 
@@ -765,12 +769,12 @@ fieldset {
 
         &.red {
             border-bottom: 0.25rem solid #79261d;
-            background: #b2382a;
+            background: color(reveal_red);
         }
 
         &.green {
             border-bottom: 0.25rem solid #26791d;
-            background: #38b22a;
+            background: color(reveal_green);
         }
     }
 
@@ -854,17 +858,18 @@ fieldset {
 
 .actionbar {
     min-height: 4rem;
-    margin: -0.5rem 0 1rem; // 1rem;
-    padding: 0.5rem 1rem;
-    background: #23774e;
-    border-radius: 0.5rem;
+    margin: -2rem 2rem 1rem; // 1rem;
+    padding: 1.5rem 1rem .5rem;
+    background: color(actionbar_background);
+    @include round_border(rounding(small));
+
 
     .action {
         display: inline-block;
         min-width: 3rem;
         padding: 0 0.5rem;
         text-align: center;
-        color: #fff;
+        color: color(actionbar_text);
         -webkit-border-radius: 0.25rem;
         -moz-border-radius: 0.25rem;
         border-radius: 0.25rem;
@@ -878,8 +883,8 @@ fieldset {
 
     .action.active,
     .action:hover {
-        color: #4d4d4d;
-        background: #fff;
+        color: color(actionbar_text_hover);
+        // background: #fff;
     }
 
     .spacer {
@@ -894,7 +899,7 @@ fieldset {
         max-width: 20rem;
         white-space: nowrap;
         text-overflow: ellipsis;
-        color: #fff;
+        color: color(actionbar_text);
 
         .filename {
             font-weight: bold;
@@ -1062,4 +1067,13 @@ fieldset {
   font-size: 3rem;
   text-align: center;
   display: inline-block;
+}
+
+.draggable {
+  cursor: move;
+}
+
+.selected_module path,
+.selected_module rect {
+  stroke: #FFCE39 !important;
 }

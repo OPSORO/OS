@@ -386,6 +386,7 @@ fieldset {
   background-color: #E8E8E8;
   color: #313334;
   padding: .2rem 1.4rem 0;
+  z-index: 9;
   -webkit-border-radius: 2.5rem;
   -moz-border-radius: 2.5rem;
   border-radius: 2.5rem; }
@@ -449,6 +450,8 @@ fieldset {
     #header_play a .icon {
       margin: .6rem 0 0.5rem 1rem;
       font-size: 2.3rem; }
+    #header_play a:hover {
+      color: #1C1D1D; }
   #header_play .status {
     margin: 0.5rem 0; }
 
@@ -692,16 +695,18 @@ fieldset {
 
 .actionbar {
   min-height: 4rem;
-  margin: -0.5rem 0 1rem;
-  padding: 0.5rem 1rem;
-  background: #23774e;
-  border-radius: 0.5rem; }
+  margin: -2rem 2rem 1rem;
+  padding: 1.5rem 1rem .5rem;
+  background: #CCC;
+  -webkit-border-radius: 0.7rem;
+  -moz-border-radius: 0.7rem;
+  border-radius: 0.7rem; }
   .actionbar .action {
     display: inline-block;
     min-width: 3rem;
     padding: 0 0.5rem;
     text-align: center;
-    color: #fff;
+    color: #313334;
     -webkit-border-radius: 0.25rem;
     -moz-border-radius: 0.25rem;
     border-radius: 0.25rem; }
@@ -711,8 +716,7 @@ fieldset {
       text-transform: uppercase; }
   .actionbar .action.active,
   .actionbar .action:hover {
-    color: #4d4d4d;
-    background: #fff; }
+    color: #1C1D1D; }
   .actionbar .spacer {
     display: inline-block;
     width: 2rem; }
@@ -723,7 +727,7 @@ fieldset {
     max-width: 20rem;
     white-space: nowrap;
     text-overflow: ellipsis;
-    color: #fff; }
+    color: #313334; }
     .actionbar .filebox .filename {
       font-weight: bold;
       text-transform: uppercase; }
@@ -844,3 +848,10 @@ fieldset {
   font-size: 3rem;
   text-align: center;
   display: inline-block; }
+
+.draggable {
+  cursor: move; }
+
+.selected_module path,
+.selected_module rect {
+  stroke: #FFCE39 !important; }
