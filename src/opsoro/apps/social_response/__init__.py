@@ -62,17 +62,17 @@ def get_page_data(page_id,fields,access_token):
 
 page_id = 'opsoro' # username or id
 field = 'fan_count'
-token = 'EAAaBZCzjU8H8BAFV7KudJn0K1V12CDBHqTIxYu6pVh7cpZAbt1WbZCyZBeSZC472fpPd0ZAkWC1tMrfAY26XnQJUR2rNrMQncQ9OGJlie3dUeQVvabZCwNmGaLL4FGHjZBVTajid16FL5niGWytlwZCiFDgj6yjIsZAAAZD'  # Access Token
+token = ''  # Access Token
 
 # ------------------------------------------------------------------------------
 # Twitter stuff ----------------------------------------------------------------
 # ------------------------------------------------------------------------------
 import tweepy
 #Variables that contains the user credentials to access Twitter API
-access_token = '735437381696905216-BboISY7Qcqd1noMDY61zN75CdGT0OSc'
-access_token_secret = 'd3A8D1ttrCxYV76pBOB389YqoLB32LiE0RVyoFwuMKUMb'
-consumer_key = 'AcdgqgujzF06JF6zWrfwFeUfF'
-consumer_secret = 'ss0wVcBTFAT6nR6hXrqyyOcFOhpa2sNW4cIap9JOoepcch93ky'
+access_token = ''
+access_token_secret = ''
+consumer_key = ''
+consumer_secret = ''
 
 twitterWords = ['#opsoro']
 
@@ -231,14 +231,6 @@ def setup_pages(opsoroapp):
             data['actions'][action] = request.args.get('param', None)
 
         return opsoroapp.render_template(config['formatted_name'] + '.html', **data)
-
-    # @app_bp.route('/demo')
-    # @opsoroapp.app_view
-    # def demo():
-    # 	data = {
-    # 	}
-    #
-    # 	return opsoroapp.render_template('app.html', **data)
 
     opsoroapp.register_app_blueprint(app_bp)
 
