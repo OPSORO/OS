@@ -114,7 +114,6 @@ class Server(object):
 
         for plugin_name in self.plugin_source.list_plugins():
             self.current_bp_app = plugin_name
-
             plugin = self.plugin_source.load_plugin(plugin_name)
             print_apploaded(plugin_name)
 
@@ -372,7 +371,6 @@ class Server(object):
 
     def app_view(self, f):
         appname = f.__module__.split(".")[-1]
-
         @wraps(f)
         def wrapper(*args, **kwargs):
             # Protected page
@@ -432,13 +430,9 @@ class Server(object):
                         session.pop("active_session_key", None)
                         return jsonify(status="error", message="You have been logged out because a more recent session is active.")
                 else:
-                    return jsonify(
-                        status="error",
-                        message="You do not have permission to access the requested page.")
+                    return jsonify(status="error", message="You do not have permission to access the requested page.")
             else:
-                return jsonify(
-                    status="error",
-                    message="You do not have permission to access the requested page.")
+                return jsonify(status="error", message="You do not have permission to access the requested page.")
 
             # Check if app is active
             if appname == self.activeapp:
@@ -454,8 +448,7 @@ class Server(object):
                 # Return app not active page
                 assert appname in self.apps, "Could not find %s in list of loaded apps." % appname
 
-                return jsonify(
-                    status="error", message="This app is not active.")
+                return jsonify(status="error", message="This app is not active.")
 
         return wrapper
 
