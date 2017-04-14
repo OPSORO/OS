@@ -1,7 +1,7 @@
 Blockly.Blocks['servo_init'] = {
   init: function() {
     this.appendDummyInput()
-        .appendField(new Blockly.FieldImage("static/icons/fa-gears.png", 16, 18, ""))
+        .appendField(new Blockly.FieldImage("/static/images/fontawesome/white/svg/gears.svg", 16, 18, ""))
         .appendField("Initialize servos");
     this.setPreviousStatement(true);
     this.setNextStatement(true);
@@ -17,7 +17,7 @@ Blockly.Lua['servo_init'] = function(block) {
 Blockly.Blocks['servo_enabledisable'] = {
   init: function() {
     this.appendDummyInput()
-        .appendField(new Blockly.FieldImage("static/icons/fa-gears.png", 16, 18, ""))
+        .appendField(new Blockly.FieldImage("/static/images/fontawesome/white/svg/gears.svg", 16, 18, ""))
         .appendField("Turn all servos")
         .appendField(new Blockly.FieldDropdown([["on", "ON"], ["off", "OFF"]]), "ONOFF");
     this.setPreviousStatement(true);
@@ -40,7 +40,7 @@ Blockly.Lua['servo_enabledisable'] = function(block) {
 Blockly.Blocks['servo_set'] = {
   init: function() {
     this.appendDummyInput()
-        .appendField(new Blockly.FieldImage("static/icons/fa-gears.png", 16, 18, ""))
+        .appendField(new Blockly.FieldImage("/static/images/fontawesome/white/svg/gears.svg", 16, 18, ""))
         .appendField("Set servo ")
         .appendField(new Blockly.FieldDropdown(
 					[

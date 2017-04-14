@@ -3,7 +3,7 @@ Blockly.Lua.addReservedWords("UI");
 Blockly.Blocks['interface_init'] = {
   init: function() {
     this.appendDummyInput()
-        .appendField(new Blockly.FieldImage("static/icons/fa-gamepad.png", 16, 18, ""))
+        .appendField(new Blockly.FieldImage("/static/images/fontawesome/white/svg/gamepad.svg", 16, 18, ""))
         .appendField("Initialize interface");
     this.setPreviousStatement(true);
     this.setNextStatement(true);
@@ -19,7 +19,7 @@ Blockly.Lua['interface_init'] = function(block) {
 Blockly.Blocks['interface_addbutton'] = {
   init: function() {
     this.appendDummyInput()
-        .appendField(new Blockly.FieldImage("static/icons/fa-gamepad.png", 16, 18, ""))
+        .appendField(new Blockly.FieldImage("/static/images/fontawesome/white/svg/gamepad.svg", 16, 18, ""))
         .appendField("Add button")
         .appendField(new Blockly.FieldTextInput("Press Me!"), "NAME")
         .appendField("with icon")
@@ -46,7 +46,7 @@ Blockly.Lua['interface_addbutton'] = function(block) {
 Blockly.Blocks['interface_addtogglebutton'] = {
   init: function() {
     this.appendDummyInput()
-        .appendField(new Blockly.FieldImage("static/icons/fa-gamepad.png", 16, 18, ""))
+        .appendField(new Blockly.FieldImage("/static/images/fontawesome/white/svg/gamepad.svg", 16, 18, ""))
         .appendField("Add toggle button")
         .appendField(new Blockly.FieldTextInput("Toggle Me!"), "NAME")
         .appendField("with icon")
@@ -73,7 +73,7 @@ Blockly.Lua['interface_addtogglebutton'] = function(block) {
 Blockly.Blocks['interface_addkey'] = {
   init: function() {
     this.appendDummyInput()
-        .appendField(new Blockly.FieldImage("static/icons/fa-gamepad.png", 16, 18, ""))
+        .appendField(new Blockly.FieldImage("/static/images/fontawesome/white/svg/gamepad.svg", 16, 18, ""))
         .appendField("Add keyboard key")
         .appendField(new Blockly.FieldDropdown([["up", "up"], ["down", "down"], ["left", "left"], ["right", "right"], ["space", "space"]]), "KEY");
     this.setPreviousStatement(true);
@@ -91,7 +91,7 @@ Blockly.Lua['interface_addkey'] = function(block) {
 Blockly.Blocks['interface_addkey2'] = {
   init: function() {
     this.appendDummyInput()
-        .appendField(new Blockly.FieldImage("static/icons/fa-gamepad.png", 16, 18, ""))
+        .appendField(new Blockly.FieldImage("/static/images/fontawesome/white/svg/gamepad.svg", 16, 18, ""))
         .appendField("Add keyboard key")
         .appendField(new Blockly.FieldTextInput("a"), "KEY");
     this.setPreviousStatement(true);
@@ -109,7 +109,7 @@ Blockly.Lua['interface_addkey2'] = function(block) {
 Blockly.Blocks['interface_keypress'] = {
   init: function() {
     this.appendDummyInput()
-        .appendField(new Blockly.FieldImage("static/icons/fa-gamepad.png", 16, 18, ""))
+        .appendField(new Blockly.FieldImage("/static/images/fontawesome/white/svg/gamepad.svg", 16, 18, ""))
         .appendField("When key")
         .appendField(new Blockly.FieldDropdown(interface_keypress_dd), "KEY")
         .appendField("is")
@@ -163,7 +163,7 @@ Blockly.Lua['interface_keypress'] = function(block) {
 Blockly.Blocks['interface_buttonpress'] = {
   init: function() {
     this.appendDummyInput()
-        .appendField(new Blockly.FieldImage("static/icons/fa-gamepad.png", 16, 18, ""))
+        .appendField(new Blockly.FieldImage("/static/images/fontawesome/white/svg/gamepad.svg", 16, 18, ""))
         .appendField("When button")
         .appendField(new Blockly.FieldDropdown(interface_buttonpress_dd), "BUTTON")
         .appendField("is")

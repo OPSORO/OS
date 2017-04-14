@@ -3,7 +3,7 @@ Blockly.Lua.addReservedWords("Hardware");
 Blockly.Blocks['hardware_ledonoff'] = {
   init: function() {
     this.appendDummyInput()
-        .appendField(new Blockly.FieldImage("static/icons/fa-wrench.png", 16, 18, ""))
+        .appendField(new Blockly.FieldImage("/static/images/fontawesome/white/svg/wrench.svg", 16, 18, ""))
         .appendField("Turn status LED")
         .appendField(new Blockly.FieldDropdown([["on", "ON"], ["off", "OFF"]]), "ONOFF");
     this.setPreviousStatement(true);
@@ -26,7 +26,7 @@ Blockly.Lua['hardware_ledonoff'] = function(block) {
 Blockly.Blocks['hardware_readanalog'] = {
   init: function() {
     this.appendDummyInput()
-        .appendField(new Blockly.FieldImage("static/icons/fa-wrench.png", 16, 18, ""))
+        .appendField(new Blockly.FieldImage("/static/images/fontawesome/white/svg/wrench.svg", 16, 18, ""))
         .appendField("Read analog sensor")
         .appendField(new Blockly.FieldDropdown([["A0", "0"], ["A1", "1"], ["A2", "2"], ["A3", "3"]]), "CHANNEL");
     this.setOutput(true);

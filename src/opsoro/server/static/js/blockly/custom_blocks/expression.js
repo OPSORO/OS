@@ -3,7 +3,7 @@ Blockly.Lua.addReservedWords("Expression");
 Blockly.Blocks['expression_update'] = {
   init: function() {
     this.appendDummyInput()
-        .appendField(new Blockly.FieldImage("static/icons/fa-smile-o.png", 16, 18, ""))
+        .appendField(new Blockly.FieldImage("/static/images/fontawesome/white/svg/smile-o.svg", 16, 18, ""))
         .appendField("Update expression");
     this.setPreviousStatement(true);
     this.setNextStatement(true);
@@ -19,7 +19,7 @@ Blockly.Lua['expression_update'] = function(block) {
 Blockly.Blocks['expression_setekman'] = {
   init: function() {
     this.appendDummyInput()
-        .appendField(new Blockly.FieldImage("static/icons/fa-smile-o.png", 16, 18, ""))
+        .appendField(new Blockly.FieldImage("/static/images/fontawesome/white/svg/smile-o.svg", 16, 18, ""))
         .appendField("set emotion to")
         .appendField(new Blockly.FieldDropdown([["neutral", "NEUTRAL"], ["happy", "HAPPY"], ["sad", "SAD"], ["angry", "ANGRY"], ["surprise", "SURPRISE"], ["fear", "FEAR"], ["disgust", "DISGUST"]]), "EMOTION");
     this.setPreviousStatement(true);
@@ -46,7 +46,7 @@ Blockly.Lua['expression_setekman'] = function(block) {
 Blockly.Blocks['expression_setva'] = {
   init: function() {
     this.appendDummyInput()
-        .appendField(new Blockly.FieldImage("static/icons/fa-smile-o.png", 16, 18, ""))
+        .appendField(new Blockly.FieldImage("/static/images/fontawesome/white/svg/smile-o.svg", 16, 18, ""))
         .appendField("Set emotion to");
     this.appendValueInput("VALENCE")
         .setCheck("Number")
@@ -73,7 +73,7 @@ Blockly.Lua['expression_setva'] = function(block) {
 Blockly.Blocks['expression_setrphi'] = {
   init: function() {
     this.appendDummyInput()
-        .appendField(new Blockly.FieldImage("static/icons/fa-smile-o.png", 16, 18, ""))
+        .appendField(new Blockly.FieldImage("/static/images/fontawesome/white/svg/smile-o.svg", 16, 18, ""))
         .appendField("Set emotion to");
     this.appendValueInput("R")
         .setCheck("Number")

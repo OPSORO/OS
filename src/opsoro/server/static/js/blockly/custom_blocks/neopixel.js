@@ -1,7 +1,7 @@
 Blockly.Blocks['neo_init'] = {
   init: function() {
     this.appendDummyInput()
-        .appendField(new Blockly.FieldImage("static/icons/fa-lightbulb-o.png", 16, 18, ""))
+        .appendField(new Blockly.FieldImage("/static/images/fontawesome/white/svg/lightbulb-o.svg", 16, 18, ""))
         .appendField("Initialize")
         .appendField(new Blockly.FieldTextInput("8"), "NUMPIXELS")
         .appendField("NeoPixels");
@@ -21,7 +21,7 @@ Blockly.Blocks['neo_brightness'] = {
   init: function() {
     this.appendValueInput("BRIGHTNESS")
         .setCheck("Number")
-        .appendField(new Blockly.FieldImage("static/icons/fa-lightbulb-o.png", 16, 18, ""))
+        .appendField(new Blockly.FieldImage("/static/images/fontawesome/white/svg/lightbulb-o.svg", 16, 18, ""))
         .appendField("Set brightness to");
     this.setPreviousStatement(true);
     this.setNextStatement(true);
@@ -38,7 +38,7 @@ Blockly.Lua['neo_brightness'] = function(block) {
 Blockly.Blocks['neo_update'] = {
   init: function() {
     this.appendDummyInput()
-        .appendField(new Blockly.FieldImage("static/icons/fa-lightbulb-o.png", 16, 18, ""))
+        .appendField(new Blockly.FieldImage("/static/images/fontawesome/white/svg/lightbulb-o.svg", 16, 18, ""))
         .appendField("Update pixels");
     this.setPreviousStatement(true);
     this.setNextStatement(true);
@@ -55,7 +55,7 @@ Blockly.Blocks['neo_setpixel'] = {
   init: function() {
     this.appendValueInput("PIXEL")
         .setCheck("Number")
-        .appendField(new Blockly.FieldImage("static/icons/fa-lightbulb-o.png", 16, 18, ""))
+        .appendField(new Blockly.FieldImage("/static/images/fontawesome/white/svg/lightbulb-o.svg", 16, 18, ""))
         .appendField("Set pixel");
     this.appendDummyInput()
         .appendField("to color")
@@ -83,7 +83,7 @@ Blockly.Blocks['neo_setrange'] = {
   init: function() {
     this.appendValueInput("START")
         .setCheck("Number")
-        .appendField(new Blockly.FieldImage("static/icons/fa-lightbulb-o.png", 16, 18, ""))
+        .appendField(new Blockly.FieldImage("/static/images/fontawesome/white/svg/lightbulb-o.svg", 16, 18, ""))
         .appendField("Set pixels from");
     this.appendValueInput("END")
         .setCheck("Number")
@@ -114,7 +114,7 @@ Blockly.Lua['neo_setrange'] = function(block) {
 Blockly.Blocks['neo_setall'] = {
   init: function() {
     this.appendDummyInput()
-        .appendField(new Blockly.FieldImage("static/icons/fa-lightbulb-o.png", 16, 18, ""))
+        .appendField(new Blockly.FieldImage("/static/images/fontawesome/white/svg/lightbulb-o.svg", 16, 18, ""))
         .appendField("Set all pixels to color")
         .appendField(new Blockly.FieldColour("#ff0000"), "COLOR");
     this.setPreviousStatement(true);
