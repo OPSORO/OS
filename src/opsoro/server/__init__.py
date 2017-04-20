@@ -15,6 +15,7 @@ from opsoro.robot import Robot
 from opsoro.console_msg import *
 from opsoro.preferences import Preferences
 from opsoro.server.request_handlers import RHandler
+from opsoro.apps import Apps
 
 import pluginbase
 import os
@@ -91,68 +92,14 @@ class Server(object):
         # Client then sends the token to the server via SockJS, validating the connection
         self.sockjs_token = None
 
-        # Setup app system
-        self.plugin_base = pluginbase.PluginBase(package="opsoro.server.apps")
-        self.plugin_source = self.plugin_base.make_plugin_source(searchpath=[get_path("./../apps")])
-
-        self.apps = {}
-        self.activeapp = None
-        self.apps_can_register_bp = True    # Make sure apps are only registered during setup
-        self.current_bp_app = ""            # Keep track of current app for blueprint setup
-
         # Socket callback dicts
         self.sockjs_connect_cb = {}
         self.sockjs_disconnect_cb = {}
         self.sockjs_message_cb = {}
 
-        # if Preferences.is_update_available():
-        #     print_info("Update available")
-        #     Preferences.update()
-        apps_layout = []
-        with open(get_path('../config/apps_layout.yaml')) as f:
-            apps_layout = yaml.load(f, Loader=Loader)
-
-        for plugin_name in self.plugin_source.list_plugins():
-            self.current_bp_app = plugin_name
-            plugin = self.plugin_source.load_plugin(plugin_name)
-            print_apploaded(plugin_name)
-
-            default_config = {  'full_name'             : 'No name',
-                                'formatted_name'        : 'No_name',
-                                'icon'                  : 'fa-warning',
-                                'color'                 : '#333',
-                                'difficulty'            : 0,
-                                'tags'                  : [''],
-                                'allowed_background'    : False,
-                                'connection'            : Robot.Connection.OFFLINE,
-                                'activation'            : Robot.Activation.MANUAL }
-
-            if not hasattr(plugin, "config"):
-                plugin.config = default_config
-
-            for item in default_config:
-                if item not in plugin.config:
-                    plugin.config[item] = default_config[item]
-
-            # Add categories for apps-layout
-            plugin.config['categories'] = []
-            for cat in apps_layout:
-                if plugin.config['formatted_name'] in cat['apps']:
-                    plugin.config['categories'].append(cat['title'])
-
-            self.apps[plugin_name] = plugin
-            try:
-                plugin.setup(self)
-            except AttributeError:
-                print_info("%s has no setup function" % plugin_name)
-
-            try:
-                plugin.setup_pages(self)
-            except AttributeError:
-                print_info("%s has no setup_pages function" % plugin_name)
-
-        self.current_bp_app = ""
-        self.apps_can_register_bp = False
+        # Setup app system
+        Apps.register_apps(self)
+        self.activeapp = None
 
         # Initialize all URLs
         self.request_handler.set_urls()
@@ -184,12 +131,6 @@ class Server(object):
                 return AdminUser()
             else:
                 return None
-
-    def register_app_blueprint(self, bp):
-        assert self.apps_can_register_bp, "Apps can only register blueprints at setup!"
-
-        prefix = "/apps/" + self.current_bp_app
-        self.flaskapp.register_blueprint(bp, url_prefix=prefix)
 
     def render_template(self, template, **kwargs):
         return self.request_handler.render_template(template, **kwargs)
@@ -284,10 +225,7 @@ class Server(object):
                 conn.update_users()
 
             def send_error(conn, message):
-                return conn.send(json.dumps({"action": "error",
-                                             "status": "error",
-                                             "message": message
-                                            }))
+                return conn.send(json.dumps({"action": "error", "status": "error", "message": message}))
 
             def send_data(conn, action, data):
                 msg = {"action": action, "status": "success"}
@@ -315,7 +253,7 @@ class Server(object):
 
         # Start default app
         startup_app = Preferences.get('general', 'startup_app', None)
-        if startup_app in self.apps:
+        if startup_app in Apps.apps:
             self.request_handler.page_openapp(startup_app)
 
         # SSL security
@@ -333,10 +271,10 @@ class Server(object):
 
     def stop_current_app(self):
         Robot.stop()
-        if self.activeapp in self.apps:
+        if self.activeapp in Apps.apps:
             print_appstopped(self.activeapp)
             try:
-                self.apps[self.activeapp].stop(self)
+                Apps.apps[self.activeapp].stop(self)
             except AttributeError:
                 print_info("%s has no stop function" % self.activeapp)
         self.activeapp = None
@@ -390,28 +328,28 @@ class Server(object):
                 return redirect(url_for("login"))
 
             # Check if app is active
-            if appname == self.activeapp:
+            if appname in Apps.active_apps:
                 # This app is active
                 return f(*args, **kwargs)
             else:
                 # Return app not active page
-                assert appname in self.apps, "Could not find %s in list of loaded apps." % appname
+                assert appname in Apps.apps, "Could not find %s in list of loaded apps." % appname
                 data = {
                     "app": {},
                     # "appname": appname,
-                    "page_icon":    self.apps[appname].config["icon"],
-                    "page_caption": self.apps[appname].config["full_name"]
+                    "page_icon":    Apps.apps[appname].config["icon"],
+                    "page_caption": Apps.apps[appname].config["full_name"]
                 }
                 data["title"] = self.request_handler.title
-                if self.activeapp in self.apps:
-                    # Another app is active
-                    data["app"]["active"]   = True
-                    data["app"]["name"]     = self.apps[self.activeapp].config["full_name"]
-                    data["app"]["icon"]     = self.apps[self.activeapp].config["icon"]
-                    data["title"]           += " - %s" % self.apps[self.activeapp].config["full_name"]
-                else:
-                    # No app is active
-                    data["app"]["active"]   = False
+                # if self.activeapp in Apps.apps:
+                #     # Another app is active
+                #     data["app"]["active"]   = True
+                #     data["app"]["name"]     = Apps.apps[self.activeapp].config["full_name"]
+                #     data["app"]["icon"]     = Apps.apps[self.activeapp].config["icon"]
+                #     data["title"]           += " - %s" % Apps.apps[self.activeapp].config["full_name"]
+                # else:
+                #     # No app is active
+                #     data["app"]["active"]   = False
 
                 return render_template("app_not_active.html", **data)
 
@@ -446,36 +384,8 @@ class Server(object):
                 return jsonify(data)
             else:
                 # Return app not active page
-                assert appname in self.apps, "Could not find %s in list of loaded apps." % appname
+                assert appname in Apps.apps, "Could not find %s in list of loaded apps." % appname
 
                 return jsonify(status="error", message="This app is not active.")
 
         return wrapper
-
-    def app_socket_connected(self, f):
-        appname = f.__module__.split(".")[-1]
-
-        self.sockjs_connect_cb[appname] = f
-
-        return f
-
-    def app_socket_disconnected(self, f):
-        appname = f.__module__.split(".")[-1]
-
-        self.sockjs_disconnect_cb[appname] = f
-
-        return f
-
-    def app_socket_message(self, action=""):
-        def inner(f):
-            appname = f.__module__.split(".")[-1]
-
-            # Create new dict for app if necessary
-            if appname not in self.sockjs_message_cb:
-                self.sockjs_message_cb[appname] = {}
-
-            self.sockjs_message_cb[appname][action] = f
-
-            return f
-
-        return inner

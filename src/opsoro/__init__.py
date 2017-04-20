@@ -4,12 +4,9 @@ import signal
 import sys
 import logging
 import logging.handlers
-import random
 import os
 import tornado.log
 import datetime
-
-# from opsoro.server import Server
 
 from opsoro.console_msg import *
 from opsoro.server import Server

@@ -1,6 +1,6 @@
 <section id="header_play" class="nav">
   <div class="row">
-    <div class="small-6 columns">
+    <div class="small-8 medium-6 columns">
       <div id="activity">
         <span id="statusicon">
           {% block status_icon %}
@@ -28,7 +28,7 @@
                   <span class="fa {{ app.icon }}"></span>
                   {{ app.name }}
                   {% if isuser %}
-                    <a href="/closeapp/" class="closebutton"><span class="fa fa-close"></span></a>
+                    <a href="/app/close/{{ app.name }}" class="closebutton"><span class="fa fa-close"></span></a>
                   {% endif %}
                 {% else %}
                   {{ _('No active apps') }}
@@ -38,14 +38,14 @@
           </p>
       </div>
     </div>
-    <div class="small-3 columns">
+    <div class="hide-for-small-only medium-3 columns">
       {% if isuser %}
         {% if index %}
           <input id="search" type="text" placeholder="{{ _('Search') }}" />
         {% endif %}
       {% endif %}
     </div>
-    <div class="small-3 columns">
+    <div class="small-4 medium-3 columns">
       <ul class="">
         {% if isuser %}
           {% if not index %}

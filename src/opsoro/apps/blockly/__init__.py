@@ -111,80 +111,6 @@ def setup_pages(opsoroapp):
 
         return opsoroapp.render_template(config['formatted_name'] + '.html', **data)
 
-    # @app_bp.route('/blockly')
-    # @opsoroapp.app_view
-    # def blockly_inner():
-    #     data = {'soundfiles': []}
-    #
-    #     filenames = glob.glob(get_path('../../data/sounds/*.wav'))
-    #
-    #     for filename in filenames:
-    #         data['soundfiles'].append(os.path.split(filename)[1])
-    #
-    #     return opsoroapp.render_template('blockly_template.html', **data)
-
-    # @app_bp.route('/filelist')
-    # @opsoroapp.app_view
-    # def filelist():
-    # 	data = {
-    # 		'scriptfiles':	[]
-    # 	}
-    #
-    # 	filenames = []
-    # 	filenames.extend(glob.glob(get_path('../../data/visprog/scripts/*.xml')))
-    #
-    # 	for filename in filenames:
-    # 		data['scriptfiles'].append(os.path.split(filename)[1])
-    #
-    # 	return opsoroapp.render_template('filelist.html', **data)
-    #
-    # @app_bp.route('/save', methods=['POST'])
-    # @opsoroapp.app_api
-    # def save():
-    # 	xmlfile = request.form.get('file', type=str, default='')
-    # 	filename = request.form.get('filename', type=str, default='')
-    # 	overwrite = request.form.get('overwrite', type=int, default=0)
-    #
-    # 	if filename == '':
-    # 		return {'status': 'error', 'message': 'No filename given.'}
-    #
-    # 	if filename[-4:] != '.xml':
-    # 		filename = filename + '.xml'
-    # 	filename = secure_filename(filename)
-    #
-    # 	full_path = os.path.join(get_path('../../data/visprog/scripts/'), filename)
-    #
-    # 	if overwrite == 0:
-    # 		if os.path.isfile(full_path):
-    # 			return {'status': 'error', 'message': 'File already exists.'}
-    #
-    # 	with open(full_path, 'w') as f:
-    # 		f.write(xmlfile)
-    #
-    # 	return {'status': 'success', 'filename': filename}
-    #
-    # @app_bp.route('/delete/<scriptfile>', methods=['POST'])
-    # @opsoroapp.app_api
-    # def delete(scriptfile):
-    # 	scriptfiles = []
-    # 	filenames = []
-    # 	filenames.extend(glob.glob(get_path('../../data/visprog/scripts/*.xml')))
-    # 	filenames.extend(glob.glob(get_path('../../data/visprog/scripts/*.XML')))
-    #
-    # 	for filename in filenames:
-    # 		scriptfiles.append(os.path.split(filename)[1])
-    #
-    # 	if scriptfile in scriptfiles:
-    # 		os.remove(os.path.join(get_path('../../data/visprog/scripts/'), scriptfile))
-    # 		return {'status': 'success', 'message': 'File %s deleted.' % scriptfile}
-    # 	else:
-    # 		return {'status': 'error', 'message': 'Unknown file.'}
-    #
-    # @app_bp.route('/scripts/<scriptfile>')
-    # @opsoroapp.app_view
-    # def scripts(scriptfile):
-    # 	return send_from_directory(get_path('../../data/visprog/scripts/'), scriptfile)
-
     @app_bp.route('/startscript', methods=['POST'])
     @opsoroapp.app_api
     def startscript():
@@ -198,8 +124,7 @@ def setup_pages(opsoroapp):
         script_name = request.form.get('name', type=str, default=None)
         script_modified = request.form.get('modified', type=int, default=0)
 
-        with open(
-                get_path('../../data/' + config['formatted_name'] + '/scripts/currentscript.xml.tmp'), 'w') as f:
+        with open(get_path('../../data/' + config['formatted_name'] + '/scripts/currentscript.xml.tmp'), 'w') as f:
             f.write(script_xml)
 
         if sh.is_running:
@@ -218,8 +143,7 @@ def setup_pages(opsoroapp):
             sh.stop_script()
             return {'status': 'success'}
         else:
-            return {'status': 'error',
-                    'message': 'There is no active script to stop.'}
+            return {'status': 'error', 'message': 'There is no active script to stop.'}
 
     @opsoroapp.app_socket_connected
     def s_connected(conn):

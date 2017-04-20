@@ -13,6 +13,7 @@ from opsoro.preferences import Preferences
 from opsoro.updater import Updater
 from opsoro.server.request_handlers.opsoro_data_requests import *
 from opsoro.play import Play
+from opsoro.apps import Apps
 
 import random
 import os
@@ -83,8 +84,8 @@ class RHandler(object):
         self.server.flaskapp.add_url_rule("/appsockjstoken/",       "appsockjstoken",   self.page_appsockjstoken, )
         self.server.flaskapp.add_url_rule("/shutdown/",             "shutdown",         protect(self.page_shutdown), )
         self.server.flaskapp.add_url_rule("/restart/",              "restart",          protect(self.page_restart), )
-        self.server.flaskapp.add_url_rule("/closeapp/",             "closeapp",         protect(self.page_closeapp), )
-        self.server.flaskapp.add_url_rule("/openapp/<appname>/",    "openapp",          protect(self.page_openapp), )
+        self.server.flaskapp.add_url_rule("/app/close/<appname>/",  "closeapp",         protect(self.page_closeapp), )
+        self.server.flaskapp.add_url_rule("/app/open/<appname>/",   "openapp",          protect(self.page_openapp), )
 
         self.server.flaskapp.add_url_rule("/blockly/",              "blockly",          protect(self.page_blockly), )
         # self.server.flaskapp.add_url_rule("/preferences", "preferences", protect(self.page_preferences), methods=["GET", "POST"], )
@@ -116,15 +117,15 @@ class RHandler(object):
 
         self.server.flaskapp.context_processor(self.inject_opsoro_vars)
 
-    def render_template(self, template, **kwargs):
+    def render_template(self, template, appname='', **kwargs):
         kwargs["app"] = {}
         kwargs["title"] = self.title
         kwargs["version"] = random.randint(0, 10000)
         kwargs["online"] = Play.is_online()
 
         # Set app variables
-        if self.server.activeapp in self.server.apps:
-            app = self.server.apps[self.server.activeapp]
+        if appname in Apps.active_apps:
+            app = Apps.apps[appname]
             kwargs["app"]["active"]         = True
             kwargs["app"]["name"]           = app.config["full_name"].title()
             kwargs["app"]["full_name"]      = app.config["full_name"]
@@ -151,23 +152,23 @@ class RHandler(object):
     def page_index(self):
         data = {"title": self.title, "index": True, "apps": {}, "other_apps": []}
 
-        if self.server.activeapp in self.server.apps:
-            app = self.server.apps[self.server.activeapp]
-            if app.config.has_key('allowed_background'):
-                if not app.config['allowed_background']:
-                    self.server.stop_current_app()
-                else:
-                    data["activeapp"] = {"name"             : self.server.activeapp,
-                                         "full_name"        : app.config["full_name"],
-                                         "formatted_name"   : app.config["formatted_name"],
-                                         "icon"             : app.config["icon"],
-                                         "color"            : app.config['color'],
-                                         "difficulty"       : app.config['difficulty'],
-                                         "tags"             : app.config['tags']
-                                         }
+        # if self.server.activeapp in Apps.apps:
+        #     app = Apps.apps[self.server.activeapp]
+        #     if app.config.has_key('allowed_background'):
+        #         if not app.config['allowed_background']:
+        #             self.server.stop_current_app()
+        #         else:
+        #             data["activeapp"] = {"name"             : self.server.activeapp,
+        #                                  "full_name"        : app.config["full_name"],
+        #                                  "formatted_name"   : app.config["formatted_name"],
+        #                                  "icon"             : app.config["icon"],
+        #                                  "color"            : app.config['color'],
+        #                                  "difficulty"       : app.config['difficulty'],
+        #                                  "tags"             : app.config['tags']
+        #                                  }
 
-        for appname in sorted(self.server.apps.keys()):
-            app = self.server.apps[appname]
+        for appname in sorted(Apps.apps.keys()):
+            app = Apps.apps[appname]
 
             if not app.config['categories']:
                 data["other_apps"].append({ "name"          : appname,
@@ -177,7 +178,8 @@ class RHandler(object):
                                             "color"         : app.config['color'],
                                             "difficulty"    : app.config['difficulty'],
                                             "tags"          : app.config['tags'],
-                                            "active"        : (appname == self.server.activeapp)
+                                            "active"        : (appname in Apps.active_apps),
+                                            "connection"    : app.config['connection'],
                                             })
 
             for cat in app.config['categories']:
@@ -191,7 +193,8 @@ class RHandler(object):
                                             "color"         : app.config['color'],
                                             "difficulty"    : app.config['difficulty'],
                                             "tags"          : app.config['tags'],
-                                            "active"        : (appname == self.server.activeapp)
+                                            "active"        : (appname in Apps.active_apps),
+                                            "connection"    : app.config['connection'],
                                             })
 
         return self.render_template("apps.html", **data)
@@ -294,32 +297,12 @@ class RHandler(object):
         self.server.shutdown()
         return message
 
-    def page_closeapp(self):
-        self.server.stop_current_app()
+    def page_closeapp(self, appname):
+        Apps.deactivate_app(appname)
         return redirect(url_for("index"))
 
     def page_openapp(self, appname):
-        # Check if another app is running, if so, run its stop function
-        if self.server.activeapp == appname:
-            return redirect("/apps/%s/" % appname)
-
-        self.server.stop_current_app()
-
-        if appname in self.server.apps:
-            # robot activation:
-            if self.server.apps[appname].config.has_key('activation'):
-                # print_info(self.server.apps[appname].config['activation'])
-                if self.server.apps[appname].config['activation'] >= Robot.Activation.AUTO:
-                    Robot.start()
-
-            self.server.activeapp = appname
-
-            try:
-                print_appstarted(appname)
-                self.server.apps[appname].start(self.server)
-            except AttributeError:
-                print_info("%s has no start function" % self.server.activeapp)
-
+        if Apps.activate_app(appname):
             return redirect("/apps/%s/" % appname)
         else:
             return redirect(url_for("index"))
@@ -368,12 +351,12 @@ class RHandler(object):
         for filename in filenames:
             data['soundfiles'].append(os.path.split(filename)[1])
 
-        for appname in sorted(self.server.apps.keys()):
+        for appname in sorted(Apps.apps.keys()):
             app_blockly_path = get_path(apps_dir + appname + '/blockly/')
             if os.path.isdir(app_blockly_path):
                 if os.path.exists(app_blockly_path + appname + '.xml') and os.path.exists(app_blockly_path + appname + '.js'):
                     data['apps_blockly'][appname] = {}
-                    data['apps_blockly'][appname]['name'] = self.server.apps[appname].config["full_name"]
+                    data['apps_blockly'][appname]['name'] = Apps.apps[appname].config["full_name"]
                     with open(app_blockly_path + appname + '.xml') as f:
                         data['apps_blockly'][appname]['xml'] = f.read()
                     with open(app_blockly_path + appname + '.js') as f:

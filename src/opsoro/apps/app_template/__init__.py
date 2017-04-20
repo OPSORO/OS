@@ -27,14 +27,13 @@ config = {
 }
 config['formatted_name'] =  config['full_name'].lower().replace(' ', '_')
 
-def setup_pages(server):
+def setup_pages(apps):
     app_bp = Blueprint(config['formatted_name'], __name__, template_folder='templates', static_folder='static')
-
     # Public function declarations
-    app_bp.add_url_rule('/demo',    'demo',     server.app_api(demo),       methods=['GET', 'POST'])
+    app_bp.add_url_rule('/demo',    'demo',     apps.app_api(demo),       methods=['GET', 'POST'])
 
     @app_bp.route('/')
-    @server.app_view
+    @apps.app_view
     def index():
         data = {
             'actions': {},
@@ -44,9 +43,8 @@ def setup_pages(server):
         if action != None:
             data['actions'][action] = request.args.get('param', None)
 
-        return server.render_template(config['formatted_name'] + '.html', **data)
-
-    server.register_app_blueprint(app_bp)
+        return apps.render_template(config['formatted_name'] + '.html', **data)
+    apps.register_app_blueprint(app_bp)
 
 def demo():
     # publicly accessible function
