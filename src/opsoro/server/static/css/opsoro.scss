@@ -1,7 +1,10 @@
 // Compile this!
-@import 'colors';
-@import 'fonts';
-@import 'mixins';
+@import 'font-awesome/font-awesome';
+
+@import 'opsoro/colors';
+@import 'opsoro/fonts';
+@import 'opsoro/mixins';
+@import 'opsoro/animations';
 
 html {
   height: 100%;
@@ -224,8 +227,8 @@ fieldset legend {
   margin:0;
 }
 fieldset {
-  border: 1px solid silver;
-  margin-top: 0 !important;
+  // border: 1px solid silver;
+  margin-top: 1rem !important;
   padding: 0 .5rem;
 }
 
@@ -562,8 +565,8 @@ fieldset {
   }
 }
 
-.sidebar_left,
-.sidebar_right {
+.sidebar-left,
+.sidebar-right {
     position: fixed;
     /*padding-top: 1rem;*/
     z-index: 8;
@@ -601,7 +604,7 @@ fieldset {
     margin-top: 0.5rem;
     margin-right: auto;
     margin-left: auto;
-    padding: 0;
+    padding: 0 1rem;
 }
 
 .announcements {
@@ -662,12 +665,16 @@ fieldset {
 }
 
 .apps {
+    h3 {
+      margin: 1rem 0;
+    }
+
     max-width: 100%;
     margin-right: auto;
     margin-left: auto;
     padding: 0;
 
-    .app_container {
+    .app-container {
         margin: 0 auto 1rem;
 
         a {
@@ -677,15 +684,15 @@ fieldset {
                 text-decoration: none;
                 color: color(button_text) !important;
 
-                .app_icon {
+                .app-icon {
                     color: color(button_icon) !important;
-                    font-size: 5rem;
-                    margin: 1rem auto;
+                    font-size: 4rem;
+                    margin: 1.5rem auto;
                 }
             }
         }
 
-        .app_button {
+        .app-button {
             position: relative;
             display: block;
             overflow: hidden;
@@ -694,35 +701,39 @@ fieldset {
             margin: 0 auto;
             text-align: center;
             vertical-align: middle;
-            opacity: 1;
+            // opacity: 1;
             background-color: color(button_background);
             @include round_border(rounding(small));
-            @include light-shadow();
-            // -webkit-box-shadow: 2px 2px 3px 1px rgba(0, 0, 0, .75);
-            // -moz-box-shadow: 2px 2px 3px 1px rgba(0, 0, 0, .75);
-            // box-shadow: 2px 2px 3px 1px rgba(0, 0, 0, .75);
-            // @include shadow();
 
-            .app_icon {
+            .app-icon {
                 color: color(button_icon) !important;
-                font: normal normal normal 14px/1 FontAwesome;
-                font-size: 4rem;
+                font: font(awesome);
+                font-size: 3.5rem;
                 display: inline-block;
                 width: 100%;
-                margin: 1.5rem auto;
+                margin: 1.75rem auto;
             }
 
-            .app_banner {
+            .app-banner {
                 position: absolute;
                 display: block;
-                bottom: 0;
-                left: 0;
-                width: 100%;
-                height: 1rem;
+                top: .5rem;
+                left: .5rem;
+
+                * {
+                  font: font(awesome);
+                  color: color(white);
+                  font-size: 1.1rem;
+                }
+
+                .app-beat {
+                  @include heartbeat(speed(fast));
+                }
             }
         }
 
-        .app_label {
+        .app-label {
+          margin-top: .5rem;
             color: color(button_text);
             font-size: 1rem;
             font-weight: normal;
@@ -824,7 +835,7 @@ fieldset {
 
       .icon {
         color: color(button_icon) !important;
-        font: normal normal normal 14px/1 FontAwesome;
+        font: font(awesome);
         font-size: 3rem;
         display: inline-block;
         width: 100%;
@@ -843,7 +854,7 @@ fieldset {
         text-decoration: underline;
         color: color(button_text) !important;
 
-        .app_icon {
+        .app-icon {
           color: color(button_icon) !important;
           font-size: 4rem;
           margin: 0 auto;
@@ -1076,4 +1087,21 @@ fieldset {
 .selected_module path,
 .selected_module rect {
   stroke: #FFCE39 !important;
+}
+
+
+.slider {
+  .slider-handle {
+    background-color: color(slider_handle);
+  }
+}
+
+.button {
+  background-color: color(default_button);
+  &.alert {
+    background-color: color(alert_button);
+  }
+  &.success {
+    background-color: color(success_button);
+  }
 }
