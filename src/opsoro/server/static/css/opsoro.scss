@@ -79,7 +79,7 @@ footer {
     font-weight: normal;
   }
   a:hover {
-    color: color(color_gray) !important;
+    color: color(gray) !important;
     text-decoration: underline;
   }
 
@@ -1078,6 +1078,10 @@ fieldset {
   font-size: 3rem;
   text-align: center;
   display: inline-block;
+  // Fix chrome transparent background
+  background-image: url("/static/images/emoji_background.png");
+  background-size: contain;
+  background-repeat: no-repeat;
 }
 
 .draggable {

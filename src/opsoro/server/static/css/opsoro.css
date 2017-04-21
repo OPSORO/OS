@@ -2429,7 +2429,7 @@ footer {
     color: #DDD;
     font-weight: normal; }
   footer a:hover {
-    color: #666 !important;
+    color: #DDD !important;
     text-decoration: underline; }
   footer .footer-col {
     padding: 0 5rem;
@@ -3185,7 +3185,10 @@ fieldset {
   font-family: 'EmojiOne' !important;
   font-size: 3rem;
   text-align: center;
-  display: inline-block; }
+  display: inline-block;
+  background-image: url("/static/images/emoji_background.png");
+  background-size: contain;
+  background-repeat: no-repeat; }
 
 .draggable {
   cursor: move; }

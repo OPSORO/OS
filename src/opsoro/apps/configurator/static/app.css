@@ -17,10 +17,10 @@
 	margin: 0rem;
 	margin-left: -1px;
 	padding: 0.5rem;
-	border: 1px solid silver;
+	/*border: 1px solid silver;*/
 }
 .module:hover {
-	border-style: none;
+	background-color: #B0FFCB;
 }
 .module img {
 	height: 100%;
