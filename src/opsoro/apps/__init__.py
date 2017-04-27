@@ -1,21 +1,24 @@
-from functools import wraps, partial
-from flask import Blueprint
+import os
+from functools import partial, wraps
+
 import pluginbase
+import yaml
+from flask import Blueprint
 
 from opsoro.console_msg import *
 from opsoro.robot import Robot
 
-import yaml
 try:
     from yaml import CLoader as Loader
 except ImportError:
     from yaml import Loader
 
-from functools import partial
-import os
 
-constrain = lambda n, minn, maxn: max(min(maxn, n), minn)
+def constrain(n, minn, maxn): return max(min(maxn, n), minn)
+
+
 get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
+
 
 class _Apps(object):
     def __init__(self):
@@ -31,10 +34,16 @@ class _Apps(object):
         self.apps = {}
         self.active_apps = []
 
-        self.apps_can_register_bp = True    # Make sure apps are only registered during setup
+        # Make sure apps are only registered during setup
+        self.apps_can_register_bp = True
         self.current_bp_app = ""            # Keep track of current app for blueprint setup
 
-    def activate_app(self, appname):
+        # Socket callback dicts
+        # self.sockjs_connect_cb = {}
+        # self.sockjs_disconnect_cb = {}
+        self.sockjs_message_cb = {}
+
+    def start(self, appname):
         if appname in self.active_apps:
             # already activated
             return True
@@ -56,11 +65,11 @@ class _Apps(object):
 
         return False
 
-    def deactivate_app(self, appname):
+    def stop(self, appname):
         if appname in self.active_apps:
             print_appstopped(appname)
             try:
-                self.active_apps[appname].stop(self)
+                self.apps[appname].stop(self)
             except AttributeError:
                 print_info("%s has no stop function" % appname)
             self.active_apps.remove(appname)
@@ -70,6 +79,19 @@ class _Apps(object):
         #     if app.config['activation'] == Robot.Activation.MANUAL:
         #         Robot.stop()
         #         break
+
+        if len(self.active_apps) < 1:
+            Robot.stop()
+
+    def stop_all(self):
+        for appname in self.active_apps:
+            print_appstopped(appname)
+            try:
+                self.apps[appname].stop(self)
+            except AttributeError:
+                print_info("%s has no stop function" % appname)
+
+        self.active_apps = []
 
         if len(self.active_apps) < 1:
             Robot.stop()
@@ -90,22 +112,22 @@ class _Apps(object):
         return self.server.render_template(template, **kwargs)
 
     def app_socket_connected(self, f):
-        appname = f.__module__.split(".")[-1]
-        self.server.sockjs_connect_cb[appname] = f
+        # appname = f.__module__.split(".")[-1]
+        # self.sockjs_connect_cb[appname] = f
         return f
 
     def app_socket_disconnected(self, f):
-        appname = f.__module__.split(".")[-1]
-        self.server.sockjs_disconnect_cb[appname] = f
+        # appname = f.__module__.split(".")[-1]
+        # self.sockjs_disconnect_cb[appname] = f
         return f
 
     def app_socket_message(self, action=""):
         def inner(f):
             appname = f.__module__.split(".")[-1]
             # Create new dict for app if necessary
-            if appname not in self.server.sockjs_message_cb:
-                self.server.sockjs_message_cb[appname] = {}
-            self.server.sockjs_message_cb[appname][action] = f
+            if appname not in self.sockjs_message_cb:
+                self.sockjs_message_cb[appname] = {}
+            self.sockjs_message_cb[appname][action] = f
             return f
         return inner
 
@@ -120,15 +142,15 @@ class _Apps(object):
             plugin = self.plugin_source.load_plugin(plugin_name)
             print_apploaded(plugin_name)
 
-            default_config = {  'full_name'             : 'No name',
-                                'formatted_name'        : 'No_name',
-                                'icon'                  : 'fa-warning',
-                                'color'                 : '#333',
-                                'difficulty'            : 0,
-                                'tags'                  : [''],
-                                'allowed_background'    : False,
-                                'connection'            : Robot.Connection.OFFLINE,
-                                'activation'            : Robot.Activation.MANUAL }
+            default_config = {'full_name': 'No name',
+                              'formatted_name': 'No_name',
+                              'icon': 'fa-warning',
+                              'color': '#333',
+                              'difficulty': 0,
+                              'tags': [''],
+                              'allowed_background': False,
+                              'connection': Robot.Connection.OFFLINE,
+                              'activation': Robot.Activation.MANUAL}
 
             if not hasattr(plugin, "config"):
                 plugin.config = default_config
@@ -158,5 +180,6 @@ class _Apps(object):
         self.current_bp_app = ""
         self.apps_can_register_bp = False
         return self.apps
+
 
 Apps = _Apps()

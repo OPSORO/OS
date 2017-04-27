@@ -1,13 +1,19 @@
 from __future__ import with_statement
 
+import os
+from functools import partial
+
+import yaml
+from flask import Blueprint, flash, redirect, render_template, request, url_for
+
 from opsoro.console_msg import *
 from opsoro.expression import Expression
-from opsoro.robot import Robot
 from opsoro.hardware import Hardware
+from opsoro.robot import Robot
 
-from flask import Blueprint, render_template, request, redirect, url_for, flash
 
-constrain = lambda n, minn, maxn: max(min(maxn, n), minn)
+def constrain(n, minn, maxn): return max(min(maxn, n), minn)
+
 
 config = {
     'full_name':            'Sliders',
@@ -19,16 +25,12 @@ config = {
     'connection':           Robot.Connection.OFFLINE,
     'activation':           Robot.Activation.AUTO
 }
-config['formatted_name'] =  config['full_name'].lower().replace(' ', '_')
+config['formatted_name'] = config['full_name'].lower().replace(' ', '_')
 
-clientconn = None
 # dof_positions = {}
 
-import os
-from functools import partial
 get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 
-import yaml
 try:
     from yaml import CLoader as Loader
 except ImportError:
@@ -36,13 +38,7 @@ except ImportError:
 
 
 def setup_pages(opsoroapp):
-    sliders_bp = Blueprint(
-        config['formatted_name'],
-        __name__,
-        template_folder='templates',
-        static_folder='static')
-
-    global clientconn
+    sliders_bp = Blueprint(config['formatted_name'], __name__, template_folder='templates', static_folder='static')
 
     @sliders_bp.route('/')
     @opsoroapp.app_view
@@ -69,16 +65,6 @@ def setup_pages(opsoroapp):
             data['config'] = yaml.load(f, Loader=Loader)
 
         return opsoroapp.render_template(config['formatted_name'] + '.html', **data)
-
-    @opsoroapp.app_socket_connected
-    def s_connected(conn):
-        global clientconn
-        clientconn = conn
-
-    @opsoroapp.app_socket_disconnected
-    def s_disconnected(conn):
-        global clientconn
-        clientconn = None
 
     @opsoroapp.app_socket_message('setDofPos')
     def s_setdofpos(conn, data):

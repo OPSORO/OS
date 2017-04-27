@@ -283,24 +283,8 @@ $(document).ready(function(){
 		};
 
 		// Setup websocket connection.
-		self.conn = null;
-		self.connReady = false;
-		self.conn = new SockJS("http://" + window.location.host + "/appsockjs");
-
-		self.conn.onopen = function(){
-			$.ajax({
-				url: "/appsockjstoken",
-				cache: false
-			})
-			.done(function(data) {
-				self.conn.send(JSON.stringify({action: "authenticate", token: data}));
-				self.connReady = true;
-			});
-		};
-
-		self.conn.onmessage = function(e){
-			var msg = $.parseJSON(e.data);
-			switch(msg.action){
+		app_socket_handler = function(data) {
+      switch (data.action) {
 				case "soundStopped":
 					if (self.selectedVoiceLine() != undefined) {
 						self.selectedVoiceLine().isPlaying(false);
@@ -309,12 +293,6 @@ $(document).ready(function(){
 					break;
 			}
 		};
-
-		self.conn.onclose = function(){
-			self.conn = null;
-			self.connReady = false;
-		};
-
 
 		// if (action_data.openfile) {
 		// 	self.loadFileData(loadFileHandler(action_data.openfile || ""));

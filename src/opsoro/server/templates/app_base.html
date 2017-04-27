@@ -19,4 +19,7 @@
 
 {% block default_app_scripts %}
 	<script src="static/app.js?ver={{ version }}"></script>
+	<script>
+		app_data = {{ app|tojson|safe }};
+	</script>
 {% endblock %}

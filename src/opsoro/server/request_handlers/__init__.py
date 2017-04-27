@@ -1,26 +1,26 @@
-from flask import Flask, request, render_template, redirect, url_for, flash, session, send_from_directory
-from flask_login import login_user, logout_user, current_user
-from werkzeug.exceptions import default_exceptions
-
-from sockjs.tornado import SockJSRouter, SockJSConnection
-
+import base64
+import glob
+import os
+import platform
+import random
+import subprocess
 from functools import partial
 
-from opsoro.expression import Expression
-from opsoro.robot import Robot
-from opsoro.console_msg import *
-from opsoro.preferences import Preferences
-from opsoro.updater import Updater
-from opsoro.server.request_handlers.opsoro_data_requests import *
-from opsoro.play import Play
+from flask import (Flask, flash, redirect, render_template, request,
+                   send_from_directory, session, url_for)
+from flask_login import current_user, login_user, logout_user
+from sockjs.tornado import SockJSConnection, SockJSRouter
+from werkzeug.exceptions import default_exceptions
+
 from opsoro.apps import Apps
-
-import random
-import os
-import subprocess
-import base64
-
-import glob
+from opsoro.console_msg import *
+from opsoro.expression import Expression
+from opsoro.play import Play
+from opsoro.preferences import Preferences
+from opsoro.robot import Robot
+from opsoro.server.request_handlers.opsoro_data_requests import *
+from opsoro.updater import Updater
+from opsoro.users import Users, usertypes
 
 try:
     import simplejson as json
@@ -30,40 +30,6 @@ except ImportError:
 dof_positions = {}
 # Helper function
 get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
-
-
-# Helper class to deal with login
-class AdminUser(object):
-    def is_authenticated(self):
-        return True
-
-    def is_active(self):
-        return True
-
-    def is_anonymous(self):
-        return False
-
-    def get_id(self):
-        return "admin"
-
-    def is_admin(self):
-        return True
-
-class OfflineUser(object):
-    def is_authenticated(self):
-        return True
-
-    def is_active(self):
-        return True
-
-    def is_anonymous(self):
-        return False
-
-    def get_id(self):
-        return "admin"
-
-    def is_admin(self):
-        return True
 
 
 class RHandler(object):
@@ -81,15 +47,13 @@ class RHandler(object):
         self.server.flaskapp.add_url_rule("/",                      "index",            protect(self.page_index), )
         self.server.flaskapp.add_url_rule("/login/",                "login",            self.page_login, methods=["GET", "POST"], )
         self.server.flaskapp.add_url_rule("/logout/",               "logout",           self.page_logout, )
-        self.server.flaskapp.add_url_rule("/appsockjstoken/",       "appsockjstoken",   self.page_appsockjstoken, )
+        self.server.flaskapp.add_url_rule("/sockjstoken/",          "sockjstoken",      self.page_sockjstoken, )
         self.server.flaskapp.add_url_rule("/shutdown/",             "shutdown",         protect(self.page_shutdown), )
         self.server.flaskapp.add_url_rule("/restart/",              "restart",          protect(self.page_restart), )
         self.server.flaskapp.add_url_rule("/app/close/<appname>/",  "closeapp",         protect(self.page_closeapp), )
         self.server.flaskapp.add_url_rule("/app/open/<appname>/",   "openapp",          protect(self.page_openapp), )
 
         self.server.flaskapp.add_url_rule("/blockly/",              "blockly",          protect(self.page_blockly), )
-        # self.server.flaskapp.add_url_rule("/preferences", "preferences", protect(self.page_preferences), methods=["GET", "POST"], )
-        # self.server.flaskapp.add_url_rule("/app/<appname>/files/<action>", "files", protect(self.page_files), methods=["GET", "POST"], )
 
         # ----------------------------------------------------------------------
         # DOCUMENTS
@@ -117,7 +81,8 @@ class RHandler(object):
 
         self.server.flaskapp.context_processor(self.inject_opsoro_vars)
 
-    def render_template(self, template, appname='', **kwargs):
+    def render_template(self, template, **kwargs):
+        appname = template.split('.')[0]
         kwargs["app"] = {}
         kwargs["title"] = self.title
         kwargs["version"] = random.randint(0, 10000)
@@ -126,15 +91,15 @@ class RHandler(object):
         # Set app variables
         if appname in Apps.active_apps:
             app = Apps.apps[appname]
-            kwargs["app"]["active"]         = True
-            kwargs["app"]["name"]           = app.config["full_name"].title()
-            kwargs["app"]["full_name"]      = app.config["full_name"]
+            kwargs["app"]["active"] = True
+            kwargs["app"]["name"] = app.config["full_name"].title()
+            kwargs["app"]["full_name"] = app.config["full_name"]
             kwargs["app"]["formatted_name"] = app.config["formatted_name"]
-            kwargs["app"]["icon"]           = app.config["icon"]
-            kwargs["app"]["color"]          = app.config["color"]
-            kwargs["title"]      += " - %s" % app.config["full_name"].title()
-            kwargs["page_icon"]             = app.config["icon"]
-            kwargs["page_caption"]          = app.config["full_name"]
+            kwargs["app"]["icon"] = app.config["icon"]
+            kwargs["app"]["color"] = app.config["color"]
+            kwargs["title"] += " - %s" % app.config["full_name"].title()
+            kwargs["page_icon"] = app.config["icon"]
+            kwargs["page_caption"] = app.config["full_name"]
         else:
             kwargs["app"]["active"] = False
 
@@ -150,7 +115,7 @@ class RHandler(object):
         return render_template(template, **kwargs)
 
     def page_index(self):
-        data = {"title": self.title, "index": True, "apps": {}, "other_apps": []}
+        data = {"title": self.title, "index": True, "apps": {}, "active_apps": [], "other_apps": []}
 
         # if self.server.activeapp in Apps.apps:
         #     app = Apps.apps[self.server.activeapp]
@@ -167,49 +132,52 @@ class RHandler(object):
         #                                  "tags"             : app.config['tags']
         #                                  }
 
-        for appname in sorted(Apps.apps.keys()):
+        for appname in sorted(Apps.active_apps):
+            app = Apps.apps[appname]
+            data["active_apps"].append(app.config["full_name"])
+
+        for appname in sorted(Apps.apps):
             app = Apps.apps[appname]
 
             if not app.config['categories']:
-                data["other_apps"].append({ "name"          : appname,
-                                            "full_name"     : app.config["full_name"],
-                                            "formatted_name": app.config["formatted_name"],
-                                            "icon"          : app.config["icon"],
-                                            "color"         : app.config['color'],
-                                            "difficulty"    : app.config['difficulty'],
-                                            "tags"          : app.config['tags'],
-                                            "active"        : (appname in Apps.active_apps),
-                                            "connection"    : app.config['connection'],
-                                            })
+                data["other_apps"].append({"name": appname,
+                                           "full_name": app.config["full_name"],
+                                           "formatted_name": app.config["formatted_name"],
+                                           "icon": app.config["icon"],
+                                           "color": app.config['color'],
+                                           "difficulty": app.config['difficulty'],
+                                           "tags": app.config['tags'],
+                                           "active": (appname in Apps.active_apps),
+                                           "connection": app.config['connection'],
+                                           })
 
             for cat in app.config['categories']:
                 if cat not in data["apps"]:
                     data["apps"][cat] = []
 
-                data["apps"][cat].append({  "name"          : appname,
-                                            "full_name"     : app.config["full_name"],
-                                            "formatted_name": app.config["formatted_name"],
-                                            "icon"          : app.config["icon"],
-                                            "color"         : app.config['color'],
-                                            "difficulty"    : app.config['difficulty'],
-                                            "tags"          : app.config['tags'],
-                                            "active"        : (appname in Apps.active_apps),
-                                            "connection"    : app.config['connection'],
-                                            })
+                data["apps"][cat].append({"name": appname,
+                                          "full_name": app.config["full_name"],
+                                          "formatted_name": app.config["formatted_name"],
+                                          "icon": app.config["icon"],
+                                          "color": app.config['color'],
+                                          "difficulty": app.config['difficulty'],
+                                          "tags": app.config['tags'],
+                                          "active": (appname in Apps.active_apps),
+                                          "connection": app.config['connection'],
+                                          })
 
         return self.render_template("apps.html", **data)
 
     def page_login(self):
-        if 'active_session_key' in session:
-            if session['active_session_key'] == self.server.active_session_key:
-                return redirect(url_for('index'))
+        if current_user.is_authenticated:
+            return redirect(url_for("index"))
 
         if Play.is_online():
             print_info('ONLINE MODE')
             if request.method == "GET":
                 kwargs = {}
                 kwargs["title"] = self.title + " - Login"
-                kwargs["isbusy"] = self.server.active_session_key is not None
+                kwargs["isbusy"] = False
                 kwargs["isuser"] = False
                 kwargs["version"] = random.randint(0, 10000)
 
@@ -218,14 +186,12 @@ class RHandler(object):
             password = request.form["password"]
 
             if password == Preferences.get("general", "password", default="opsoro123"):
-                login_user(AdminUser())
-                self.server.active_session_key = os.urandom(24)
-                session["active_session_key"] = self.server.active_session_key
+                Users.login_admin()
 
                 # self.server.user_socketrouter.broadcast(self.server.client_sockets, {'action': 'logout'})
-                for e in self.server.client_sockets:
-                    e.broadcast_data('refresh', {})
-                    break
+                # for e in self.server.client_sockets:
+                #     e.broadcast_data('refresh', {})
+                #     break
 
                 return redirect(url_for("index"))
             else:
@@ -233,76 +199,51 @@ class RHandler(object):
                 return redirect(url_for("login"))
         else:
             print_info('OFFLINE MODE')
-            login_user(OfflineUser())
-            self.server.active_session_key = os.urandom(24)
-            session["active_session_key"] = self.server.active_session_key
+            login_user(usertypes.Guest())
+
             return redirect(url_for("index"))
 
     def page_logout(self):
-        logout_user()
-        self.server.active_session_key = None
-        # if session["socket_session_key"] in self.server.socket_session_keys:
-        #     self.server.socket_session_keys.remove(session["socket_session_key"])
-
-        session.pop("active_session_key", None)
-        # session.pop("socket_session_key", None)
-
-        # if 'socket_session_key' in session
-        #     self.server.socket_sessions[self.server.socket_session_keys.index(session["socket_session_key"])].send_data('logout', {})
-        # for socket_session in self.server.socket_sessions:
-        #     socket_session.send_data('logout', {})
-        # SockJSConnection.send('logout')
-
+        Users.logout()
 
         flash("You have been logged out.")
         return redirect(url_for("login"))
 
-    def page_appsockjstoken(self):
-        if current_user.is_authenticated:
-            if current_user.is_admin():
-                if session["active_session_key"] == self.server.active_session_key:
-                    # Valid user, generate a token
-                    self.server.sockjs_token = os.urandom(24)
-                    return base64.b64encode(self.server.sockjs_token)
-                else:
-                    logout_user()
-                    session.pop("active_session_key", None)
-
-        # Socket already exist
-        # if 'socket_session_key' in session and session["socket_session_key"] in self.server.socket_session_keys:
-        #     # return base64.b64encode(session["socket_session_key"])
-        #     pass
-        # else:
-        #     session["socket_session_key"] = os.urandom(24)
-        #     self.server.socket_session_keys.append(session["socket_session_key"])
-        # return base64.b64encode(session["socket_session_key"])
-
-        return ""  # Not a valid user, return nothing!
+    def page_sockjstoken(self):
+        return base64.b64encode(current_user.token)
 
     def page_shutdown(self):
+        if current_user is None or not current_user.is_authenticated or not current_user.is_admin:
+            return
         message = ""
-        self.server.stop_current_app()
+        Apps.stop_all()
+        Users.broadcast_message('The robot has been shutdown, goodbye!')
 
         # Run shutdown command with 5 second delay, returns immediately
-        subprocess.Popen("sleep 5 && sudo halt", shell=True)
+        if platform.machine() != 'x86_64':
+            subprocess.Popen("sleep 5 && sudo halt", shell=True)
         self.server.shutdown()
         return message
 
     def page_restart(self):
+        if current_user is None or not current_user.is_authenticated or not current_user.is_admin:
+            return
         message = ""
-        self.server.stop_current_app()
+        Apps.stop_all()
+        Users.broadcast_message('The robot is restarting, please reconnect in a couple of seconds.')
 
         # Run shutdown command with 5 second delay, returns immediately
-        subprocess.Popen("sleep 5 && sudo reboot", shell=True)
+        if platform.machine() != 'x86_64':
+            subprocess.Popen("sleep 5 && sudo reboot", shell=True)
         self.server.shutdown()
         return message
 
     def page_closeapp(self, appname):
-        Apps.deactivate_app(appname)
+        Apps.stop(appname)
         return redirect(url_for("index"))
 
     def page_openapp(self, appname):
-        if Apps.activate_app(appname):
+        if Apps.start(appname):
             return redirect("/apps/%s/" % appname)
         else:
             return redirect(url_for("index"))
@@ -313,12 +254,9 @@ class RHandler(object):
         return self.render_template("_filelist.html", title=self.title + " - Files", page_icon="fa-folder", **data)
 
     def page_virtual(self):
-        # clientconn = None
 
         # def send_stopped():
-        #     global clientconn
-        #     if clientconn:
-        #         clientconn.send_data("soundStopped", {})
+        #     Users.send_app_data(config['formatted_name'], "soundStopped", {})
 
         # if request.method == "POST":
         #     dataOnly = request.form.get("getdata", type=int, default=0)
@@ -361,7 +299,6 @@ class RHandler(object):
                         data['apps_blockly'][appname]['xml'] = f.read()
                     with open(app_blockly_path + appname + '.js') as f:
                         data['apps_blockly'][appname]['js'] = f.read()
-
 
         return self.render_template('blockly_template.html', **data)
 

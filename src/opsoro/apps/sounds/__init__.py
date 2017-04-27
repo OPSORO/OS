@@ -1,13 +1,14 @@
 from __future__ import with_statement
 
-from functools import partial
-import os
 import glob
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+import os
+from functools import partial
+
+from flask import Blueprint, flash, redirect, render_template, request, url_for
 from werkzeug import secure_filename
 
-from opsoro.sound import Sound
 from opsoro.robot import Robot
+from opsoro.sound import Sound
 
 config = {
     'full_name':            'Sounds',
@@ -19,18 +20,14 @@ config = {
     'connection':           Robot.Connection.OFFLINE,
     'activation':           Robot.Activation.MANUAL
 }
-config['formatted_name'] =  config['full_name'].lower().replace(' ', '_')
+config['formatted_name'] = config['full_name'].lower().replace(' ', '_')
 
 
 get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 
 
 def setup_pages(opsoroapp):
-    sounds_bp = Blueprint(
-        config['formatted_name'],
-        __name__,
-        template_folder='templates',
-        static_folder='static')
+    sounds_bp = Blueprint(config['formatted_name'], __name__, template_folder='templates', static_folder='static')
 
     @sounds_bp.route('/')
     @opsoroapp.app_view

@@ -135,25 +135,37 @@ function popupWindow(mylink, windowname)
 // Socket connection
 //--------------------------------------------------------------------------------------------------------
 // Setup websocket connection.
+var app_socket_handler = undefined;
+var conn = null;
+var connReady = false;
 $(document).ready(function(){
-  conn = null;
-  connReady = false;
-  conn = new SockJS('http://' + window.location.host + '/usersockjs');
+  conn = new SockJS('http://' + window.location.host + '/sockjs');
+
 
   conn.onopen = function(){
-    // $.ajax({
-    //   url: '/appsockjstoken',
-    //   cache: false
-    // })
-    // .done(function(data) {
-    //   conn.send(JSON.stringify({action: 'authenticate', token: data}));
-    //   console.log('SOCKET connected');
-    //   connReady = true;
-    // });
+    console.log("SockJS connected.");
+    $.ajax({
+      url: "/sockjstoken/",
+      cache: false
+    }).done(function(data) {
+      var appname = undefined;
+
+      if (app_data != undefined) {
+        if ('formatted_name' in app_data) {
+          appname = app_data['formatted_name'];
+        }
+      }
+      conn.send(JSON.stringify({
+        app: appname,
+        action: "authenticate",
+        token: data
+      }));
+      connReady = true;
+      console.log("SockJS authenticated.");
+    });
   };
 
   conn.onmessage = function(e){
-    console.log('SOCKET message');
     try {
       var msg = $.parseJSON(e.data);
       console.log(msg.action);
@@ -162,11 +174,26 @@ $(document).ready(function(){
           setTimeout(function() { location.reload(); }, 1000);
           break;
         case 'info':
-          console.log(msg);
+          console.log(msg.text);
+          showMessagePopup('fa-info', 'Server info', msg.text, {btnOk: function() { location.reload(); }});
           break;
         case 'users':
+          var text = ' user';
+          if (msg.count > 1) { text += 's' }
+          text += ' connected.'
+
+          $('.online_users').html(msg.count + text);
           console.log(msg.count);
           break;
+        case 'app':
+          console.log(msg.data);
+          if (app_socket_handler != undefined) {
+            app_socket_handler(msg.data);
+          }
+          break;
+        // case 'shutdown':
+        //   showMessagePopup('fa-info', 'Server info', msg.text, {btnOk: function() { location.reload(); }});
+        //   break;
       }
     } catch (e) {
       console.log(e);
@@ -181,6 +208,7 @@ $(document).ready(function(){
     conn = null;
     connReady = false;
   };
+
 });
 // -------------------------------------------------------------------------------------------------------
 // Robot control functions

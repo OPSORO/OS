@@ -1,21 +1,33 @@
 from __future__ import with_statement
 
-from flask import Blueprint, render_template, request, redirect, url_for, flash, send_from_directory
-
-from opsoro.console_msg import *
-from opsoro.hardware import Hardware
-from opsoro.robot import Robot
-from opsoro.expression import Expression
-from opsoro.stoppable_thread import StoppableThread
-from opsoro.sound import Sound
-
-
-from functools import partial
+import json
 import os
 import time
+# ------------------------------------------------------------------------------
+# Facebook stuff ---------------------------------------------------------------
+# ------------------------------------------------------------------------------
+import urllib2
+from functools import partial
 from random import randint
 
-constrain = lambda n, minn, maxn: max(min(maxn, n), minn)
+# ------------------------------------------------------------------------------
+# Twitter stuff ----------------------------------------------------------------
+# ------------------------------------------------------------------------------
+import tweepy
+from flask import (Blueprint, flash, redirect, render_template, request,
+                   send_from_directory, url_for)
+
+from opsoro.console_msg import *
+from opsoro.expression import Expression
+from opsoro.hardware import Hardware
+from opsoro.robot import Robot
+from opsoro.sound import Sound
+from opsoro.stoppable_thread import StoppableThread
+
+
+def constrain(n, minn, maxn): return max(min(maxn, n), minn)
+
+
 get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 
 config = {
@@ -28,23 +40,16 @@ config = {
     'connection':           Robot.Connection.ONLINE,
     'activation':           Robot.Activation.AUTO
 }
-config['formatted_name'] =  config['full_name'].lower().replace(' ', '_')
-
+config['formatted_name'] = config['full_name'].lower().replace(' ', '_')
 
 loop_t = None
 loop_button_t = None
-# clientconn = None
 # running = False
 
-# ------------------------------------------------------------------------------
-# Facebook stuff ---------------------------------------------------------------
-# ------------------------------------------------------------------------------
-import urllib2
-import json
 
-def get_page_data(page_id,fields,access_token):
+def get_page_data(page_id, fields, access_token):
     api_endpoint = "https://graph.facebook.com/v2.4/"
-    fb_graph_url = api_endpoint+page_id+'?fields='+fields+'&access_token='+access_token
+    fb_graph_url = api_endpoint + page_id + '?fields=' + fields + '&access_token=' + access_token
     try:
         api_request = urllib2.Request(fb_graph_url)
         api_response = urllib2.urlopen(api_request)
@@ -60,26 +65,25 @@ def get_page_data(page_id,fields,access_token):
         elif hasattr(e, 'reason'):
             return e.reason
 
-page_id = 'opsoro' # username or id
-field = 'fan_count'
-token = ''  # Access Token
 
-# ------------------------------------------------------------------------------
-# Twitter stuff ----------------------------------------------------------------
-# ------------------------------------------------------------------------------
-import tweepy
-#Variables that contains the user credentials to access Twitter API
-access_token = ''
-access_token_secret = ''
-consumer_key = ''
-consumer_secret = ''
+page_id = 'opsoro'  # username or id
+field = 'fan_count'
+token = 'EAAaBZCzjU8H8BAFV7KudJn0K1V12CDBHqTIxYu6pVh7cpZAbt1WbZCyZBeSZC472fpPd0ZAkWC1tMrfAY26XnQJUR2rNrMQncQ9OGJlie3dUeQVvabZCwNmGaLL4FGHjZBVTajid16FL5niGWytlwZCiFDgj6yjIsZAAAZD'  # Access Token
+
+# Variables that contains the user credentials to access Twitter API
+access_token = '735437381696905216-BboISY7Qcqd1noMDY61zN75CdGT0OSc'
+access_token_secret = 'd3A8D1ttrCxYV76pBOB389YqoLB32LiE0RVyoFwuMKUMb'
+consumer_key = 'AcdgqgujzF06JF6zWrfwFeUfF'
+consumer_secret = 'ss0wVcBTFAT6nR6hXrqyyOcFOhpa2sNW4cIap9JOoepcch93ky'
 
 twitterWords = ['#opsoro']
 
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
 
-#override tweepy.StreamListener to add logic to on_status
+# override tweepy.StreamListener to add logic to on_status
+
+
 class MyStreamListener(tweepy.StreamListener):
     def on_status(self, status):
         # print(status.text)
@@ -89,9 +93,10 @@ class MyStreamListener(tweepy.StreamListener):
             txt = txt.replace(tword, '')
         Go_Crazy(text=txt, twitter=True)
 
+
 api = tweepy.API(auth)
 myStreamListener = MyStreamListener()
-myStream = tweepy.Stream(auth = api.auth, listener=myStreamListener)
+myStream = tweepy.Stream(auth=api.auth, listener=myStreamListener)
 
 # followers = []
 # likes = 0
@@ -110,7 +115,6 @@ prev_emotion_int = emotion_int
 prev_sound_int = sound_int
 
 
-
 def Go_Crazy(text='', twitter=False, facebook=False):
     print_info('Do something!')
 
@@ -120,10 +124,10 @@ def Go_Crazy(text='', twitter=False, facebook=False):
     global sound_int
 
     while sound_int == prev_sound_int:
-        sound_int = randint(0,len(sounds)-1)
+        sound_int = randint(0, len(sounds) - 1)
 
     while emotion_int == prev_emotion_int:
-        emotion_int = randint(0,len(emotions_phis)-1)
+        emotion_int = randint(0, len(emotions_phis) - 1)
 
     prev_sound_int = sound_int
     prev_emotion_int = emotion_int
@@ -144,8 +148,8 @@ def Go_Crazy(text='', twitter=False, facebook=False):
 
     loop_t.sleep(2)
 
-
     print_info('Done doing something!')
+
 
 def LoopButton():
     time.sleep(0.05)  # delay
@@ -154,6 +158,7 @@ def LoopButton():
             Go_Crazy()
             Sound.wait_for_sound()
         loop_button_t.sleep(0.02)
+
 
 def Loop():
     time.sleep(0.05)  # delay
@@ -208,15 +213,11 @@ def Loop():
             print e
             print_warning('Social error, internet, limit, ...?')
 
-
         loop_t.sleep(sleep_time)
 
+
 def setup_pages(opsoroapp):
-    app_bp = Blueprint(
-        config['formatted_name'],
-        __name__,
-        template_folder='templates',
-        static_folder='static')
+    app_bp = Blueprint(config['formatted_name'], __name__, template_folder='templates', static_folder='static')
 
     @app_bp.route('/', methods=['GET'])
     @opsoroapp.app_view
@@ -238,6 +239,7 @@ def setup_pages(opsoroapp):
 def setup(opsoroapp):
     pass
 
+
 def start(opsoroapp):
     global loop_t
     global loop_button_t
@@ -245,6 +247,7 @@ def start(opsoroapp):
     myStream.filter(track=twitterWords, async=True)
     loop_t = StoppableThread(target=Loop)
     loop_button_t = StoppableThread(target=LoopButton)
+
 
 def stop(opsoroapp):
     global loop_t

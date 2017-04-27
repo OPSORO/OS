@@ -12,14 +12,11 @@ config = {
     'connection':           Robot.Connection.OFFLINE,
     'activation':           Robot.Activation.AUTO
 }
-config['formatted_name'] =  config['full_name'].lower().replace(' ', '_')
+config['formatted_name'] = config['full_name'].lower().replace(' ', '_')
+
 
 def setup_pages(opsoroapp):
-    circumplex_bp = Blueprint(
-        config['formatted_name'],
-        __name__,
-        template_folder='templates',
-        static_folder='static')
+    circumplex_bp = Blueprint(config['formatted_name'], __name__, template_folder='templates', static_folder='static')
 
     @circumplex_bp.route('/')
     @opsoroapp.app_view

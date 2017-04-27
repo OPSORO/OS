@@ -1,16 +1,17 @@
 from __future__ import with_statement
 
-from flask import request, send_from_directory
-
-from opsoro.robot import Robot
-from opsoro.hardware import Hardware
-from opsoro.expression import Expression
-from opsoro.sound import Sound
-from opsoro.console_msg import *
-
 import glob
 import os
 from functools import partial
+
+import yaml
+from flask import request, send_from_directory
+
+from opsoro.console_msg import *
+from opsoro.expression import Expression
+from opsoro.hardware import Hardware
+from opsoro.robot import Robot
+from opsoro.sound import Sound
 
 get_abs_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 
@@ -19,7 +20,6 @@ try:
 except ImportError:
     import json
 
-import yaml
 try:
     from yaml import CLoader as Loader
 except ImportError:
@@ -97,8 +97,7 @@ def docs_file_delete(app_name):
     file_name_ext = request.form.get('file_name_ext', type=str, default=None)
 
     if not is_safe_path(file_name_ext):
-        return json.dumps({'success': False,
-                           'message': 'Provided data error.'})
+        return json.dumps({'success': False, 'message': 'Provided data error.'})
 
     defaultPath = docs_data_path
     if app_name is not None:
@@ -117,8 +116,7 @@ def docs_file_delete(app_name):
         deleted = True
 
     if not deleted:
-        return json.dumps({'success': False,
-                           'message': 'File could not be removed.'})
+        return json.dumps({'success': False, 'message': 'File could not be removed.'})
 
     return json.dumps({'success': True})
 
