@@ -24,6 +24,7 @@
             <br/>
             <span id="comment">
               {% block status_text_comment %}
+                  <span class="online_users"></span>
                 {% if app.active %}
                   <span class="fa {{ app.icon }}"></span>
                   {{ app.name }}
@@ -73,7 +74,7 @@
 </section>
 
 {% block extra_modals %}
-<div id="ShutdownModal" class="reveal tiny" data-reveal data-animation-in="fade-in" data-animation-out="fade-out">
+<div id="ShutdownModal" class="reveal" data-reveal data-animation-in="fade-in" data-animation-out="fade-out">
   <div class="titlebar red">
     <button class="close-button" data-close aria-label="Close" type="button">
         <span class="fa fa-close"></span>
@@ -89,6 +90,7 @@
             <strong>{{ _('Note') }}:</strong>
             {{ _('Never power off ' + opsoro.robot_name + ' without completely shutting down first! Cutting power without properly shutting down the operating system can result in a corrupt file system.') }}
         </span>
+        <br/><br/>
     </p>
     <div class="row small-up-3">
       <div class="text-center column column-block">
