@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 
-import signal
-import sys
+import datetime
 import logging
 import logging.handlers
 import os
+import signal
+import sys
+
 import tornado.log
-import datetime
 
 from opsoro.console_msg import *
 from opsoro.server import Server
@@ -30,7 +31,8 @@ try:
     tornado.log.enable_pretty_logging()
     logger = logging.getLogger()
     logger.setLevel(LOG_LEVEL)
-    handler = logging.handlers.TimedRotatingFileHandler(LOG_FILENAME, when="midnight", backupCount=3)
+    handler = logging.handlers.TimedRotatingFileHandler(
+        LOG_FILENAME, when="midnight", backupCount=3)
     formatter = logging.Formatter("%(asctime)s %(levelname)-8s %(message)s")
     handler.setFormatter(formatter)
     logger.addHandler(handler)
@@ -44,6 +46,7 @@ def main():
     print_info("OPSORO OS started...")
     app = Server()
     app.run()
+
 
 # Initialization
 if __name__ == "__main__":
