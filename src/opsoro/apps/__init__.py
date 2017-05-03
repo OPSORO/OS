@@ -7,6 +7,7 @@ from flask import Blueprint
 
 from opsoro.console_msg import *
 from opsoro.robot import Robot
+from opsoro.users import Users
 
 try:
     from yaml import CLoader as Loader
@@ -41,7 +42,6 @@ class _Apps(object):
         # Socket callback dicts
         # self.sockjs_connect_cb = {}
         # self.sockjs_disconnect_cb = {}
-        self.sockjs_message_cb = {}
 
     def start(self, appname):
         if appname in self.active_apps:
@@ -125,9 +125,9 @@ class _Apps(object):
         def inner(f):
             appname = f.__module__.split(".")[-1]
             # Create new dict for app if necessary
-            if appname not in self.sockjs_message_cb:
-                self.sockjs_message_cb[appname] = {}
-            self.sockjs_message_cb[appname][action] = f
+            if appname not in Users.sockjs_message_cb:
+                Users.sockjs_message_cb[appname] = {}
+            Users.sockjs_message_cb[appname][action] = f
             return f
         return inner
 

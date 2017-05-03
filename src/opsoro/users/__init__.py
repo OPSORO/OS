@@ -9,9 +9,7 @@ from flask import Blueprint
 from flask_login import LoginManager, current_user, login_user, logout_user
 from sockjs.tornado import SockJSConnection
 
-from opsoro.apps import Apps
 from opsoro.console_msg import *
-from opsoro.robot import Robot
 
 from . import usertypes
 
@@ -41,6 +39,7 @@ class _Users(object):
 
         """
         self.users = {}
+        self.sockjs_message_cb = {}
 
     def setup(self, flaskapp):
         # Setup login manager
@@ -67,7 +66,7 @@ class _Users(object):
 
     def logout(self):
         # send message to all instances of the user
-        self.broadcast_data('refresh')
+        self.broadcast_data('refresh', {}, current_user.sockets)
         # remove user from list
 
         if current_user.id in self.users:
@@ -100,10 +99,18 @@ class _Users(object):
                         return
 
     def broadcast_data(self, action, data={}, sockets=None):
+        sender = None
+
         if sockets:
             sender = set(sockets)
         elif current_user and current_user.sockets:
             sender = set(current_user.sockets)
+        else:
+            for usr_id, usr in self.users.iteritems():
+                if usr.sockets:
+                    sender = set(usr.sockets)
+                    break
+
         if sender:
             sender.pop().broadcast_data(action, data, sockets)
 
@@ -115,7 +122,6 @@ class _Users(object):
         def load_user(token):
             if token in self.users:
                 return self.users.get(token)
-
             return
 
         @self.login_manager.unauthorized_handler
@@ -174,9 +180,9 @@ class SocketConnection(SockJSConnection):
             # Decode action and trigger callback, if it exists.
             action = message.pop("action", "")
 
-            if self._activeapp in Apps.sockjs_message_cb:
-                if action in Apps.sockjs_message_cb[self._activeapp]:
-                    Apps.sockjs_message_cb[self._activeapp][action](self, message)
+            if self._activeapp in Users.sockjs_message_cb:
+                if action in Users.sockjs_message_cb[self._activeapp]:
+                    Users.sockjs_message_cb[self._activeapp][action](self, message)
 
     def on_open(self, info):
         # Connect callback is triggered when socket is authenticated.

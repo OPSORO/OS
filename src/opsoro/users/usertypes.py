@@ -17,16 +17,6 @@ class _User(object):
         self.id = self.token
 
         self.sockets = set()
-    #     # self.socket_token = None
-    #
-    # def merge(self, user):
-    #     self.id = user.id
-    #     self.name = user.name
-    #     self.authenticated = user.authenticated
-    #     self.admin = user.admin
-    #
-    #     self.socket = user.socket
-    #     self.socket_token = user.socket_token
 
     @property
     def is_authenticated(self):
