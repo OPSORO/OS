@@ -254,31 +254,45 @@ class RHandler(object):
         return self.render_template("_filelist.html", title=self.title + " - Files", page_icon="fa-folder", **data)
 
     def page_virtual(self):
+        data = {
+            'actions': {},
+            'data': [],
+            'modules': [],
+            'svg_codes': {},
+            'configs': {},
+            'specs': {},
+            'skins': [],
+            'expressions': {},
+            'icons': [],
+        }
 
-        # def send_stopped():
-        #     Users.send_app_data(config['formatted_name'], "soundStopped", {})
+        # action = request.args.get('action', None)
+        # if action != None:
+        data['actions']['openfile'] = request.args.get('f', None)
 
-        # if request.method == "POST":
-        #     dataOnly = request.form.get("getdata", type=int, default=0)
-        #     if dataOnly == 1:
-        #         tempDofs = Robot.dof_values()
-        #         return json.dumps({'success': True, 'dofs': tempDofs})
-        # # 		return Expression.dof_values
-        #     frameOnly = request.form.get("frame", type=int, default=0)
-        #     if frameOnly == 1:
-        #         #return self.render_template("virtual.html", title="Virtual Model", page_caption="Virtual model", page_icon="fa-smile-o", modules=Modules.modules)
-        #         pass
+        # with open(get_path('../../config/modules_configs/ono.yaml')) as f:
+        # 	data['config'] = yaml.load(f, Loader=Loader)
+        #
+        modules_folder = '../../modules/'
+        modules_static_folder = '../static/modules/'
+        config_folder = '../../config/'
 
-        file_location = get_path('../../config/')
-        file_name = 'default.conf'
-        config_data = ''
-        if os.path.isfile(file_location + file_name):
-            with open(get_path(file_location + file_name), "r") as f:
-                config_data = f.read()
-            # config_data = send_from_directory(file_location, file_name)
-            # print_info("Default config loaded")
+        # get modules
+        filenames = []
+        filenames.extend(glob.glob(get_path(modules_folder + '*/')))
+        for filename in filenames:
+            module_name = filename.split('/')[-2]
+            data['modules'].append(module_name)
+            with open(get_path(modules_folder + module_name + '/specs.yaml')) as f:
+                data['specs'][module_name] = yaml.load(f, Loader=Loader)
 
-        return self.render_template("virtual.html", title="Virtual Model", page_caption="Virtual model", page_icon="fa-smile-o", modules=Robot.modules, config=config_data)
+            with open(get_path(modules_static_folder + module_name + '/front.svg')) as f:
+                data['svg_codes'][module_name] = f.read()
+
+        with open(get_path(config_folder + 'robot_config.yaml')) as f:
+            data['configs'] = yaml.load(f, Loader=Loader)['modules']
+
+        return self.render_template('virtual.html', **data)
 
     def page_blockly(self):
         data = {'soundfiles': [], 'apps_blockly': {}}

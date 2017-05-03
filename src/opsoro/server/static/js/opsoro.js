@@ -168,7 +168,7 @@ $(document).ready(function(){
   conn.onmessage = function(e){
     try {
       var msg = $.parseJSON(e.data);
-      console.log(msg.action);
+      // console.log(msg);
       switch(msg.action){
         case 'refresh':
           setTimeout(function() { location.reload(); }, 1000);
@@ -189,6 +189,14 @@ $(document).ready(function(){
           console.log(msg.data);
           if (app_socket_handler != undefined) {
             app_socket_handler(msg.data);
+          }
+          break;
+        case 'robot':
+          // console.log(msg.dofs);
+          if (typeof virtualModel != 'undefined') {
+            if (typeof virtualModel.update_dofs === "function") {
+              virtualModel.update_dofs(msg.dofs);
+            }
           }
           break;
         // case 'shutdown':

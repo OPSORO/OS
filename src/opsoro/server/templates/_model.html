@@ -1,26 +1,33 @@
-
-<!-- <script src="/static/js/svg/svg.min.js"></script>
-<script src="/static/js/svg/svg.draggable.min.js"></script>
-<script src="/static/js/robot/modules.js"></script> -->
+{% extends "site_base.html" %}
 
 
+{% block topbar_base %}{% endblock %}
 
+{% block body %}
 <div id="virtualModelDiv" >
-	<!-- <canvas id="virtualModelCanvas" width="600" height="600"></canvas> -->
-	<!-- <div id="model" width="600" height="600"></div> -->
-
-	<div id="model_screen" width="600" height="600"></div>
+	<div class="" id="model_screen"></div>
 </div>
+{% endblock %}
 
-<script>
+{% block app_scripts %}
+	<script>
+		// config_data = {{ config | safe }};
 
-	config_data = {{ config | safe }};
-</script>
-<!-- <script src="/static/js/vendor/jquery.js"></script> -->
-<!-- <script src="/static/js/vendor/foundation.min.js"></script> -->
-<script src="/static/js/jcanvas.min.js"></script>
-<script src="/static/js/numeral.min.js"></script>
+		action_data 		= {{ actions|tojson|safe }};
 
-<script src="/static/js/robot/modules.js?ver={{ version }}"></script>
-<script src="/static/js/svg/svg.min.js"></script>
-<script src="/static/js/robot/virtual.js?ver={{ version }}"></script>
+		module_names 		= {{ modules|tojson|safe }};
+		skin_names 			= {{ skins|tojson|safe }};
+		specs 					= {{ specs|tojson|safe }};
+		svg_codes 			= {{ svg_codes|tojson|safe }};
+		configs 				= {{ configs|tojson|safe }};
+		expression_data = undefined;
+		icon_data 			= undefined;
+	</script>
+
+	<script src="/static/js/svg/svg.min.js?ver={{ version }}"></script>
+	<script src="/static/js/svg/svg.draggable.min.js?ver={{ version }}"></script>
+	<script src="/static/js/robot/model_minimal.js?ver={{ version }}"></script>
+	{% for module in modules %}
+		<script src="/static/modules/{{ module }}/{{ module }}.js?ver={{ version }}"></script>
+	{% endfor %}
+{% endblock %}
