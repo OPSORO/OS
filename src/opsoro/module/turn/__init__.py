@@ -1,5 +1,5 @@
 from opsoro.module import Module
 
 
-class Rotation(Module):
+class Turn(Module):
     pass

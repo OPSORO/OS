@@ -22,7 +22,6 @@ except ImportError:
     from yaml import Loader
 
 
-
 def constrain(n, minn, maxn): return max(min(maxn, n), minn)
 
 
@@ -72,7 +71,6 @@ def setup_pages(opsoroapp):
         filenames = []
         filenames.extend(glob.glob(get_path(modules_folder + '*/')))
         for filename in filenames:
-            print(filename.split('/')[-2])
             module_name = filename.split('/')[-2]
             data['modules'].append(module_name)
             with open(get_path(modules_folder + module_name + '/specs.yaml')) as f:
@@ -81,7 +79,7 @@ def setup_pages(opsoroapp):
             with open(get_path(modules_static_folder + module_name + '/front.svg')) as f:
                 data['svg_codes'][module_name] = f.read()
 
-        with open(get_path(config_folder + 'new_grid.yaml')) as f:
+        with open(get_path(config_folder + 'robot_config.yaml')) as f:
             data['configs'] = yaml.load(f, Loader=Loader)['modules']
 
         # filenames = []

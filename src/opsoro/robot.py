@@ -8,42 +8,52 @@ This module defines the interface for communicating with the robot.
 """
 
 
-from opsoro.console_msg import *
-from opsoro.stoppable_thread import StoppableThread
-from opsoro.hardware import Hardware
-from opsoro.preferences import Preferences
-
-from functools import partial
-from enum import IntEnum
 import os
 import time
+from functools import partial
+
+import yaml
+from enum import IntEnum
+from flask_login import current_user
+
+from opsoro.console_msg import *
+from opsoro.hardware import Hardware
+from opsoro.module import *
+from opsoro.module.eye import Eye
+from opsoro.module.mouth import Mouth
+from opsoro.module.turn import Turn
+from opsoro.preferences import Preferences
+from opsoro.stoppable_thread import StoppableThread
+from opsoro.users import Users
 
 try:
     import simplejson as json
 except ImportError:
     import json
 
+try:
+    from yaml import CLoader as Loader
+except ImportError:
+    from yaml import Loader
+
+
 get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 
-# Modules
-from opsoro.module import *
-from opsoro.module.eye import Eye
-from opsoro.module.eyebrow import Eyebrow
-from opsoro.module.mouth import Mouth
 
-MODULES = {'eye': Eye, 'eyebrow': Eyebrow, 'mouth': Mouth}
+MODULES = {'eye': Eye, 'turn': Turn, 'mouth': Mouth}
+
 
 class _Robot(object):
     class Activation(IntEnum):
-        MANUAL          = 0     # 0: Manual start/stop
-        AUTO            = 1     # 1: Start robot automatically (alive feature according to preferences)
-        AUTO_ALIVE      = 2     # 2: Start robot automatically and enable alive feature
-        AUTO_NOT_ALIVE  = 3     # 3: Start robot automatically and disable alive feature
+        MANUAL = 0     # 0: Manual start/stop
+        AUTO = 1     # 1: Start robot automatically (alive feature according to preferences)
+        AUTO_ALIVE = 2     # 2: Start robot automatically and enable alive feature
+        AUTO_NOT_ALIVE = 3     # 3: Start robot automatically and disable alive feature
 
     class Connection(IntEnum):
-        OFFLINE     = 0         # 0: No online capability
-        PARTLY      = 1         # 1: Needs online for extras, but works without
-        ONLINE      = 2         # 2: Requires to be online to work
+        OFFLINE = 0         # 0: No online capability
+        PARTLY = 1         # 1: Needs online for extras, but works without
+        ONLINE = 2         # 2: Requires to be online to work
 
     def __init__(self):
         self.modules = {}
@@ -69,6 +79,8 @@ class _Robot(object):
             self.start_alive_loop()
 
     def start_update_loop(self):
+        Users.broadcast_data('robot', {'dofs': self.get_dof_values(False)}, None)
+
         if self._dof_t is not None:
             self._dof_t.stop()
 
@@ -105,24 +117,29 @@ class _Robot(object):
 
     def config(self, config=None):
         if config is not None and len(config) > 0:
-            self._config = json.loads(config)
+            # self._config = json.loads(config)
             # Create all module-objects from data
             self.modules = {}
             modules_count = {}
             for module_data in self._config['modules']:
-                if module_data['module'] in MODULES:
+                module_type = module_data['type']
+                if module_type in MODULES:
                     # Create module object
-                    module = MODULES[module_data['module']](module_data)
+                    module = MODULES[module_type](module_data)
 
                     # Count different modules
-                    if module_data['module'] not in modules_count:
-                        modules_count[module_data['module']] = 0
-                    modules_count[module_data['module']] += 1
+                    if module_type not in modules_count:
+                        modules_count[module_type] = 0
+                    modules_count[module_type] += 1
                     self.modules[module.name] = module
 
             # print module feedback
             print_info("Modules: " + str(modules_count))
         return self._config
+
+    def set_dof(self, tags=[], value=0, anim_time=-1):
+        for name, module in self.modules.iteritems():
+            module.set_dof(tags, value, anim_time)
 
     def set_dof_value(self, module_name, dof_name, dof_value, anim_time=-1):
         if module_name is None:
@@ -137,8 +154,7 @@ class _Robot(object):
     def set_dof_values(self, dof_values, anim_time=-1):
         for module_name, dofs in dof_values.iteritems():
             for dof_name, dof_value in dofs.iteritems():
-                self.modules[module_name].set_dof_value(dof_name, dof_value,
-                                                        anim_time)
+                self.modules[module_name].set_dof_value(dof_name, dof_value, anim_time)
 
         self.start_update_loop()
 
@@ -146,19 +162,22 @@ class _Robot(object):
         for name, module in self.modules.iteritems():
             for name, dof in module.dofs.iteritems():
                 if hasattr(dof, 'pin') and dof.pin is not None:
-                    if dof.pin > 0 and dof.pin < len(dof_values):
+                    if dof.pin >= 0 and dof.pin < len(dof_values):
                         dof.set_value(dof_values[dof.pin], anim_time)
 
         self.start_update_loop()
 
-    def get_dof_values(self):
+    def get_dof_values(self, current=True):
         dofs = []
         for i in range(16):
             dofs.append(0)
         for module_name, module in self.modules.iteritems():
             for dof_name, dof in module.dofs.iteritems():
                 if hasattr(dof, 'pin'):
-                    dofs[int(dof.pin)] = float(dof.value)
+                    if current:
+                        dofs[int(dof.pin)] = float(dof.value)
+                    else:
+                        dofs[int(dof.pin)] = float(dof.to_value)
 
         return dofs
 
@@ -201,16 +220,19 @@ class _Robot(object):
         for name, module in self.modules.iteritems():
             if module.update():
                 updated = True
+
+        # Users.broadcast_data('robot', {'dofs': self.get_dof_values()}, None)
+
         return updated
 
-    def load_config(self, file_name='default.conf'):
+    def load_config(self, file_name='robot_config.yaml'):
         # Load modules from file
         if file_name is None:
             return False
 
         try:
             with open(get_path("config/" + file_name)) as f:
-                self._config = f.read()
+                self._config = yaml.load(f, Loader=Loader)
 
             if self._config is None or len(self._config) == 0:
                 print_warning("Config contains no data: " + file_name)
@@ -252,6 +274,7 @@ class _Robot(object):
     def wake(self):
         print_info('I am awake!')
         pass
+
 
 # Global instance that can be accessed by apps and scripts
 Robot = _Robot()
