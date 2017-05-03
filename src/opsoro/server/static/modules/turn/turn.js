@@ -13,10 +13,15 @@ var Turn = function(svg_code, specs, config) {
 
     self.extra = main_svg.image('/static/images/robot/arms/' + self.arm_image());
 
+    self.resize_extra = function() {
+      self.extra.rotate(0, self.extra.cx() + self.arm_anchor_offset()[0], self.extra.cy() + self.arm_anchor_offset()[1]);
+      self.extra.size(mm_to_screen(self.arm_width()), mm_to_screen(self.arm_height()));
+      self.update_dofs();
+    };
+    self.resize_extra();
+
     self.base(svg_code, specs, config);
 
-    self.extra.size(mm_to_screen(self.arm_width()), mm_to_screen(self.arm_height()));
-    self.extra.front();
 
     self.update = function() {
       // self.extra.rotate(0, self.x() + self.arm_anchor_offset()[0], self.y() + self.arm_anchor_offset()[1]);
@@ -38,6 +43,7 @@ var Turn = function(svg_code, specs, config) {
       }
       self.extra.center(armX, armY);
       self.update_dofs();
+      self.extra.front();
     };
 
     self.update_dofs = function() {
