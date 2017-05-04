@@ -79,7 +79,7 @@ class _Robot(object):
             self.start_alive_loop()
 
     def start_update_loop(self):
-        Users.broadcast_data('robot', {'dofs': self.get_dof_values(False)}, None)
+        Users.broadcast_robot({'dofs': self.get_dof_values(False)})
 
         if self._dof_t is not None:
             self._dof_t.stop()
@@ -221,8 +221,6 @@ class _Robot(object):
             if module.update():
                 updated = True
 
-        # Users.broadcast_data('robot', {'dofs': self.get_dof_values()}, None)
-
         return updated
 
     def load_config(self, file_name='robot_config.yaml'):
@@ -238,8 +236,8 @@ class _Robot(object):
                 print_warning("Config contains no data: " + file_name)
                 return False
             # print module feedback
-            print_info("Modules loaded [" + file_name + "]")
             self.config(self._config)
+            print_info("%i modules loaded [%s]" % (len(self.modules), file_name))
 
         except IOError:
             self._config = {}

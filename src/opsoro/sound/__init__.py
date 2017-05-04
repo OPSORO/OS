@@ -7,13 +7,16 @@ This module defines the interface for communicating with the sound module.
    :show-inheritance:
 """
 
-from functools import partial
 import os
 import platform
 import subprocess
+from functools import partial
+
 from opsoro.sound.tts import TTS
+from opsoro.users import Users
 
 get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
+
 
 class _Sound(object):
     def __init__(self):
@@ -50,7 +53,6 @@ class _Sound(object):
                 stdout=FNULL,
                 stderr=subprocess.STDOUT)
 
-
     def say_tts(self, text, generate_only=False):
         """
         Converts a string to a soundfile using Text-to-Speech libraries
@@ -62,6 +64,8 @@ class _Sound(object):
 
         if generate_only:
             return
+
+        Users.broadcast_robot({'sound': text})
 
         self.stop_sound()
         self._play(full_path)
@@ -81,6 +85,9 @@ class _Sound(object):
                 break
         if path is None:
             raise ValueError("Could not find soundfile \"%s\"." % filename)
+
+        name, extension = os.path.splitext(os.path.basename(filename))
+        Users.broadcast_robot({'sound': 'Sound: %s' % name})
 
         self._play(path)
 
@@ -103,6 +110,7 @@ class _Sound(object):
 
         self.playProcess.wait()
         self.playProcess = None
+
 
 # Global instance that can be accessed by apps and scripts
 Sound = _Sound()

@@ -15,6 +15,7 @@ from werkzeug import secure_filename
 
 import cmath
 from opsoro.console_msg import *
+from opsoro.expression import Expression
 from opsoro.hardware import Hardware
 from opsoro.robot import Robot
 from opsoro.sound import Sound
@@ -73,8 +74,7 @@ def setup_pages(opsoroapp):
         if action != None:
             data['actions'][action] = request.args.get('param', None)
 
-        with open(get_path('emotions.yaml')) as f:
-            data['emotions'] = yaml.load(f, Loader=Loader)
+        data['emotions'] = Expression.expressions
 
         filenames = glob.glob(get_path('../../data/sounds/*.wav'))
 

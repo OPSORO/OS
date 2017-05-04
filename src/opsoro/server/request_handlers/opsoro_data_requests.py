@@ -25,11 +25,13 @@ try:
 except ImportError:
     from yaml import Loader
 
-constrain = lambda n, minn, maxn: max(min(maxn, n), minn)
+
+def constrain(n, minn, maxn): return max(min(maxn, n), minn)
 
 # ------------------------------------------------------------------------------
 # DOCUMENTS
 # ------------------------------------------------------------------------------
+
 
 docs_data_path = '../../data/'
 
@@ -227,7 +229,10 @@ def robot_dofs_data():
     # print(dof_values)
     if dof_values is not None:
         dof_values = yaml.load(dof_values, Loader=Loader)
-        Robot.set_dof_values(dof_values)
+        if type(dof_values) is dict:
+            Robot.set_dof_values(dof_values)
+        elif type(dof_values) is list:
+            Robot.set_dof_list(dof_values)
 
     tempDofs = Robot.get_dof_values()
     return json.dumps({'success': True, 'dofs': tempDofs})

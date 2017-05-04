@@ -6,7 +6,7 @@
 
 {% block app_content %}
 {% if config %}
-	{% for module in config.modules %}
+	{% for module in config %}
 		{% for dof in module.dofs %}
 			{% if dof.servo %}
 				<div class="sliderrow row">

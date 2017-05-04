@@ -94,6 +94,7 @@ var Expression = function(name, filename, poly_index, dof_values) {
       }
     }
     self.dof_values = dofs;
+    robotSendReceiveAllDOF(self.dof_values);
   };
 
   self.select = function() {
@@ -108,6 +109,7 @@ var Expression = function(name, filename, poly_index, dof_values) {
         var mod = virtualModel.modules()[i];
         for (var j = 0; j < mod.dofs().length; j++) {
           mod.dofs()[j].value(self.dof_values[mod.dofs()[j].servo().pin()]);
+
           mod.update_dofs();
         }
       }
@@ -146,6 +148,7 @@ var Expression = function(name, filename, poly_index, dof_values) {
       virtualModel.expressions()[0].select();
     }
   };
+
 };
 var Grid = function(pin, mid, min, max) {
   var self = this;
@@ -344,17 +347,17 @@ var Module = function(svg_code, specs, config) {
         self.dofs.push(newdof);
       }
 
-      self._update_dofs   = ko.computed(function() {
+      self._update_dofs = ko.computed(function() {
         if (self.dofs().length == 0) { return undefined; }
 
         if (virtualModel.selected_expression().selected()) {
           if (virtualModel.selected_expression().poly_index() < 0) {
-            virtualModel.selected_expression().update();
           } else {
             for (var i = 0; i < self.dofs().length; i++) {
               self.dofs()[i].update_single_poly(virtualModel.selected_expression().poly_index());
             }
           }
+          virtualModel.selected_expression().update();
         }
         self.update_dofs();
         return self.dofs()[0].value();

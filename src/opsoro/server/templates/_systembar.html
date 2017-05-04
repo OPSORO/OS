@@ -25,6 +25,7 @@
             <span id="comment">
               {% block status_text_comment %}
                   <span class="online_users"></span>
+                  <span class="active_apps">
                 {% if app.active %}
                   <span class="fa {{ app.icon }}"></span>
                   {{ app.name }}
@@ -34,6 +35,7 @@
                 {% else %}
                   {{ _('No active apps') }}
                 {% endif %}
+                  </span>
               {% endblock %}
             </span>
           </p>

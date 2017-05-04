@@ -442,12 +442,11 @@ var VirtualModel = function() {
     for (var i = 0; i < self.modules().length; i++) {
       self.modules()[i].resize();
     }
-
   };
   self.resize();
 
   self.update_dofs = function(dofs) {
-    console.log(dofs);
+    // console.log(dofs);
     for (var i = 0; i < self.modules().length; i++) {
       var mod = self.modules()[i];
       for (var j = 0; j < mod.dofs().length; j++) {
@@ -455,6 +454,10 @@ var VirtualModel = function() {
         dof.set_value(dofs[dof.servo().pin()], mod.update_dofs);
       }
     }
+  };
+
+  self.update_sound = function(msg) {
+    $('.robot_sound').html(msg);
   };
 
   // self.icons = ko.observableArray(icon_data);
@@ -486,5 +489,11 @@ $(document).ready(function() {
   ko.applyBindings(virtualModel);
 
   $(window).resize(virtualModel.resize);
+
+  setTimeout(function () {
+    if (connReady) {
+      conn.send(JSON.stringify({action: "robot"}));
+    }
+  }, 500);
 
 });

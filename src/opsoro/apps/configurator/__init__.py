@@ -89,6 +89,17 @@ def setup_pages(opsoroapp):
 
         return opsoroapp.render_template(config['formatted_name'] + '.html', **data)
 
+    @opsoroapp.app_socket_message('setServoPos')
+    def s_setServoPos(conn, data):
+        pin = str(data.pop('pin', None))
+        value = str(data.pop('value', None))
+
+        if pin is None or value is None:
+            conn.send_data('error', {'message': 'No valid pin or value given.'})
+            return
+
+        Hardware.servo.set(pin, value)
+
     opsoroapp.register_app_blueprint(app_bp)
 
 

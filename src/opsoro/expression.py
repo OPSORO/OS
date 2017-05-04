@@ -10,6 +10,8 @@ This module defines the interface for communicating with the expression.
 from __future__ import with_statement
 
 import math
+import os
+from functools import partial
 
 import yaml
 
@@ -26,14 +28,17 @@ except ImportError:
 def constrain(n, minn, maxn): return max(min(maxn, n), minn)
 
 
+get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
+
+
 class _Expression(object):
     def __init__(self):
         self._emotion = 0 + 0j
         self._anim = None
 
-        self._config = {}
-
         self.expressions = []
+
+        self.load_config()
 
     def set_emotion_e(self, e=0 + 0j, anim_time=-1):
         """
@@ -161,24 +166,25 @@ class _Expression(object):
             # send dofs directly to the robot
             Robot.set_dof_list(exp['dofs'], anim_time)
 
-    def load_config(self, file_name='expressions_config.yaml'):
+    def load_config(self, file_name='robot_expressions.yaml'):
         # Load modules from file
         if file_name is None:
             return False
 
         try:
             with open(get_path("config/" + file_name)) as f:
-                self._config = yaml.load(f, Loader=Loader)['expressions']
+                self.expressions = yaml.load(f, Loader=Loader)['expressions']
 
-            if self._config is None or len(self._config) == 0:
+            if self.expressions is None or len(self.expressions) == 0:
                 print_warning("Config contains no data: " + file_name)
                 return False
+
             # print module feedback
-            print_info("Modules loaded [" + file_name + "]")
-            self.config(self._config)
+            print_info("%i expressions loaded [%s]" % (len(self.expressions), file_name))
+            # print(self.expressions)
 
         except IOError:
-            self._config = {}
+            self.expressions = {}
             print_warning("Could not open " + file_name)
             return False
 

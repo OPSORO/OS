@@ -47,21 +47,7 @@ def setup_pages(opsoroapp):
             # 'dofs':				[]
         }
 
-        # global dof_positions
-        #
-        # for servo in Expression.servos:
-        # 	if servo.pin >= 0 and servo.pin < 16:
-        # 		# Pin is valid, add to the page
-        # 		data['dofs'].append({
-        # 			'name':		servo.dofname,
-        # 			'pin':		servo.pin,
-        # 			'min':		servo.min_range,
-        # 			'mid':		servo.mid_pos,
-        # 			'max':		servo.max_range,
-        # 			'current':	dof_positions[servo.dofname]
-        # 		})
-
-        with open(get_path('../../config/default.conf')) as f:
+        with open(get_path('../../config/robot_config.yaml')) as f:
             data['config'] = yaml.load(f, Loader=Loader)
 
         return opsoroapp.render_template(config['formatted_name'] + '.html', **data)
@@ -74,28 +60,11 @@ def setup_pages(opsoroapp):
 
         if modulename is None or dofname is None:
             conn.send_data('error', {'message': 'No valid dof name given.'})
+            return
 
         Robot.set_dof_value(modulename, dofname, pos, 0)
-        # global dof_positions
-        # if dofname not in dof_positions:
-        # conn.send_data('error', {'message': 'Unknown DOF name.'})
-        # else:
-        # pos = constrain(pos, -1.0, 1.0)
-        # dof_positions[dofname] = pos
-
-        # with Expression.lock:
-        # Expression.update()
 
     opsoroapp.register_app_blueprint(sliders_bp)
-
-# def overlay_fn(dof_pos, dof):
-#     # Overwrite all DOFs to use the ones from the slider app
-#     global dof_positions
-#
-#     if dof.name in dof_positions:
-#         return dof_positions[dof.name]
-#     else:
-#         return dof_pos
 
 
 def setup(opsoroapp):

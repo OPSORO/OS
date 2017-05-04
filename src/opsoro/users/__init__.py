@@ -20,10 +20,10 @@ except ImportError:
 
 try:
     import simplejson as json
-    print_info("Using simplejson")
+    print_info('Using simplejson')
 except ImportError:
     import json
-    print_info("Simplejson not available, falling back on json")
+    print_info('Simplejson not available, falling back on json')
 
 
 def constrain(n, minn, maxn): return max(min(maxn, n), minn)
@@ -46,7 +46,7 @@ class _Users(object):
         self.login_manager = LoginManager()
         self.login_manager.init_app(flaskapp)
         self.login_manager.anonymous_user = usertypes.Guest
-        self.login_manager.login_view = "login"
+        self.login_manager.login_view = 'login'
         self.setup_loaders()
 
     def login_guest(self):
@@ -114,6 +114,16 @@ class _Users(object):
         if sender:
             sender.pop().broadcast_data(action, data, sockets)
 
+    def broadcast_robot(self, data={}):
+        sender = None
+        for usr_id, usr in self.users.iteritems():
+            if usr.sockets:
+                sender = set(usr.sockets)
+                break
+
+        if sender:
+            sender.pop().broadcast_robot(data)
+
     def broadcast_message(self, message='', sockets=None):
         self.broadcast_data('info', {'text': message}, sockets)
 
@@ -143,33 +153,34 @@ class SocketConnection(SockJSConnection):
         self._authenticated = False
         self._activeapp = None
         self._token = None
+        self._robot = False
 
     def on_message(self, msg):
         # Attempt to decode JSON
         try:
             message = json.loads(msg)
         except ValueError:
-            self.send_error("Invalid JSON")
+            self.send_error('Invalid JSON')
             return
+
+        action = message.pop('action', '')
+        if action == 'robot':
+            self._robot = True
 
         if not self._authenticated:
             # Attempt to authenticate the socket
             try:
-                if message["action"] == "authenticate":
-                    token = base64.b64decode(message["token"])
+                if action == 'authenticate':
+                    token = base64.b64decode(message['token'])
                     if token is not None and token in Users.users.keys():
                         usr = Users.users.get(token)
                         if usr is not None and usr.token == token and usr.token is not None:
                             # Auth succeeded
                             self._authenticated = True
                             self._token = token
-                            self._activeapp = message.pop("app", None)
+                            self._activeapp = message.pop('app', None)
 
                             usr.sockets.add(self)
-                            # Trigger connect callback
-                            # if self._activeapp in Apps.sockjs_connect_cb:
-                            #     Apps.sockjs_connect_cb[self._activeapp](self)
-
                             return
                 # Auth failed
                 return
@@ -178,8 +189,6 @@ class SocketConnection(SockJSConnection):
                 return
         else:
             # Decode action and trigger callback, if it exists.
-            action = message.pop("action", "")
-
             if self._activeapp in Users.sockjs_message_cb:
                 if action in Users.sockjs_message_cb[self._activeapp]:
                     Users.sockjs_message_cb[self._activeapp][action](self, message)
@@ -199,21 +208,27 @@ class SocketConnection(SockJSConnection):
         self.update_users()
 
     def send_error(self, message):
-        return self.send(json.dumps({"action": "error", "status": "error", "message": message}))
+        return self.send(json.dumps({'action': 'error', 'status': 'error', 'message': message}))
 
     def send_data(self, action, data):
-        msg = {"action": action, "status": "success"}
+        msg = {'action': action, 'status': 'success'}
         msg.update(data)
 
         return self.send(json.dumps(msg))
 
-    def broadcast_data(self, action, data, sockets=None):
-        msg = {"action": action, "status": "success"}
+    def broadcast_data(self, action, data, socks=None):
+        msg = {'action': action, 'status': 'success'}
         msg.update(data)
-        if sockets is None:
-            sockets = self.sockets
+        if socks is None:
+            socks = self.sockets
+        return self.broadcast(socks, json.dumps(msg))
 
-        return self.broadcast(sockets, json.dumps(msg))
+    def broadcast_robot(self, data={}):
+        socks = set()
+        for sock in self.sockets:
+            if sock._robot:
+                socks.add(sock)
+        return self.broadcast_data('robot', data, socks)
 
     def update_users(self):
         # Print current client count
