@@ -107,7 +107,7 @@ def setup_pages(opsoroapp):
         script_name = request.form.get('name', type=str, default=None)
         script_modified = request.form.get('modified', type=int, default=0)
 
-        with open(get_path('../../data/' + config['formatted_name'] + '/scripts/currentscript.xml.tmp'), 'w') as f:
+        with open(get_path('../../data/' + config['formatted_name'] + '/currentscript.xml.tmp'), 'w') as f:
             f.write(script_xml)
 
         if sh.is_running:

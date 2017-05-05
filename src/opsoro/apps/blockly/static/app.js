@@ -52,7 +52,7 @@ function blocklyLoaded(blockly, ws) {
   // if (isScriptRunning) {
   //     // Load current script into workspace
   //     $.ajax({
-  //         url: "scripts/currentscript.xml.tmp",
+  //         url: "currentscript.xml.tmp",
   //         dataType: "text",
   //         cache: false,
   //         success: function(data) {
@@ -77,7 +77,7 @@ function blocklyLoaded(blockly, ws) {
 
   // $(document).ready(function() {
   //     if (model != null) {
-  //         config_file_operations("scripts", model.fileExtension(), model.saveFileData, model.loadFileData, model.init);
+  //         config_file_operations("", model.fileExtension(), model.saveFileData, model.loadFileData, model.init);
   //     }
   //
   // });
@@ -451,7 +451,7 @@ $(document).ready(function() {
   model.fileIsModified(false);
 
   // if (Blockly != null) {
-  config_file_operations("scripts", model.fileExtension(), model.saveFileData, model.loadFileData, model.init);
-  loadFileHandler('scripts/currentscript.xml.tmp');
+  config_file_operations("", model.fileExtension(), model.saveFileData, model.loadFileData, model.init);
+  loadFileHandler('currentscript.xml.tmp');
   // }
 });

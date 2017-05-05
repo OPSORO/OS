@@ -1,28 +1,25 @@
+<span class="icon fa {{ app.icon }}"></span>
 <div class="filebox">
     <span data-bind="text: file_name" class="filename"></span>
     <span data-bind="visible: fileIsModified()" class="fa fa-asterisk"></span><br>
     <span class="fa" data-bind="css: { 'fa-lock': fileIsLocked(), 'fa-pencil': !fileIsLocked() && !isRunning(), 'fa-circle-o-notch fa-spin': isRunning() }" style="font-size: 0.75rem;"></span>
     <span class="status" data-bind="text: isRunning() ? '{{ _('Running') }}' : fileIsLocked() ? '{{ _('Locked') }}' : '{{ _('Editing') }}'"></span>
 </div>
-<div class="spacer"></div>
-
-<a href="#" class="action" data-bind="click: newFile">
-    <span class="fa fa-file"></span><br/>
-    <span class="text">{{ _('New') }}</span>
+<a href="#" class="action" data-bind="click: saveAsFile">
+    <span class="fa fa-save"></span><br/>
+    <span class="text">{{ _('Save As...') }}</span>
 </a>
-
-<a href="#" class="action" data-bind="click: openFile">
-    <span class="fa fa-folder"></span><br/>
-    <span class="text">{{ _('Open') }}</span>
-</a>
-
 <a href="#" class="action" data-bind="click: saveFile">
     <span class="fa fa-save"></span><br/>
     <span class="text">{{ _('Save') }}</span>
 </a>
-<a href="#" class="action" data-bind="click: saveAsFile">
-    <span class="fa fa-save"></span><br/>
-    <span class="text">{{ _('Save As...') }}</span>
+<a href="#" class="action" data-bind="click: openFile">
+    <span class="fa fa-folder"></span><br/>
+    <span class="text">{{ _('Open') }}</span>
+</a>
+<a href="#" class="action" data-bind="click: newFile">
+    <span class="fa fa-file"></span><br/>
+    <span class="text">{{ _('New') }}</span>
 </a>
 
 <div class="spacer"></div>
@@ -117,8 +114,8 @@
         _CurrentPath = currentpath;
         _OnlyFolders = onlyFolders;
         _SaveFileView = saveFileView;
-        showPopup("fa-folder-open", "{{ app.full_name }}/" + currentpath, "filebrowser", "");
-        $("#popup .content").load("/docs/list/?" + $.param({a: "{{ app.formatted_name }}", p: currentpath, e: extension, f: onlyFolders, s: saveFileView}), function () {
+        showPopup("fa-folder-open", "{{ app.full_name }}", "filebrowser", "");
+        $("#popup .content").load("/docs/list/?" + $.param({a: "{{ app.formatted_name }}", e: extension, s: saveFileView}), function () {
             // Delete and Open button events need to be rebound here because filelist is loaded via AJAX
             $("#popup .btnDeleteFile").off("click");
             $("#popup .btnDeleteFile").on("click", function () {
@@ -164,7 +161,7 @@
                 type: "POST",
                 url: "/docs/delete/{{ app.formatted_name }}/",
                 data: {
-                    file_name_ext: filename
+                    filename: filename
                 },
                 success: function (data) {
                     if (!data.success) {
@@ -280,9 +277,8 @@
             $.ajax({
                 dataType: "json",
                 data: {
-                    file_name: filename,
-                    file_data: json_data,
-                    file_extension: extension
+                    filename: filename + extension,
+                    data: json_data
                 },
                 type: "POST",
                 url: "/docs/save/{{ app.formatted_name }}/",

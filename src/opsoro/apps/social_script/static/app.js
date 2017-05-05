@@ -179,7 +179,7 @@ $(document).ready(function(){
 			$.each(dataobj.voice_lines, function(idx, line){
 				var emo = self.emotions[0];
 				$.each(self.emotions, function(idx, emot){
-					if(emot.name == line.emotion){
+					if(emot.name.toLowerCase() == line.emotion.toLowerCase()){
 						emo = emot;
 					}
 				});
@@ -256,6 +256,6 @@ $(document).ready(function(){
 	ko.applyBindings(model);
 	model.fileIsModified(false);
 
-	config_file_operations("scripts", model.fileExtension(), model.saveFileData, model.loadFileData, model.init);
+	config_file_operations("", model.fileExtension(), model.saveFileData, model.loadFileData, model.init);
 
 });

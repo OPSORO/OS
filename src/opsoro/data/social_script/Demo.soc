@@ -1,42 +1,42 @@
 {
   "voice_lines": [
     {
-      "emotion": "Happy",
+      "emotion": "happy",
       "output": {
         "type": "tts",
-        "data": "Hello"
+        "data": "HelloOOO"
       }
     },
     {
-      "emotion": "Surprised",
+      "emotion": "surprised",
       "output": {
         "type": "wav",
         "data": "fart-01.wav"
       }
     },
     {
-      "emotion": "Afraid",
+      "emotion": "afraid",
       "output": {
         "type": "tts",
         "data": "Ouch!"
       }
     },
     {
-      "emotion": "Angry",
+      "emotion": "angry",
       "output": {
         "type": "wav",
         "data": "smb3_jump.wav"
       }
     },
     {
-      "emotion": "Disgusted",
+      "emotion": "disgusted",
       "output": {
         "type": "tts",
         "data": "No!"
       }
     },
     {
-      "emotion": "Sad",
+      "emotion": "sad",
       "output": {
         "type": "wav",
         "data": "smb_vine.wav"
