@@ -60,11 +60,15 @@ class _Sound(object):
         :param string text:         text to convert to speech
         :param bool generate_only:  do not play the soundfile once it is created
         """
+        if text is None:
+            return
+
         full_path = TTS.create(text)
 
         if generate_only:
             return
 
+        # Send sound to virtual robots
         Users.broadcast_robot({'sound': text})
 
         self.stop_sound()
@@ -75,6 +79,9 @@ class _Sound(object):
         Plays an audio file according to the given filename.
 
         :param string filename:     file to play
+
+        :return:        True if sound is playing.
+        :rtype:         bool
         """
         self.stop_sound()
         path = None
@@ -84,12 +91,15 @@ class _Sound(object):
                 path = f
                 break
         if path is None:
-            raise ValueError("Could not find soundfile \"%s\"." % filename)
+            print_error("Could not find soundfile \"%s\"." % filename)
+            return False
 
+        # Send sound to virtual robots
         name, extension = os.path.splitext(os.path.basename(filename))
         Users.broadcast_robot({'sound': 'Sound: %s' % name})
 
         self._play(path)
+        return True
 
     def stop_sound(self):
         """

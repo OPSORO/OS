@@ -63,22 +63,6 @@ class Server(object):
         # Setup login manager
         Users.setup(self.flaskapp)
 
-        # Variable to keep track of the active user
-        # self.active_session_key = None
-        # self.socket_session_keys = []
-        # self.client_sockets = set()
-
-        # Token to authenticate socket connections
-        # Client requests token via AJAX, server generates token if session is valid
-        # Client then sends the token to the server via SockJS, validating the
-        # connection
-        # self.sockjs_token = None
-
-        # # Socket callback dicts
-        # self.sockjs_connect_cb = {}
-        # self.sockjs_disconnect_cb = {}
-        # self.sockjs_message_cb = {}
-
         # Setup app system
         Apps.register_apps(self)
         # self.activeapp = None
