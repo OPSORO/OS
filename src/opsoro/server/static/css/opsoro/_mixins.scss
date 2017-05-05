@@ -1,7 +1,10 @@
 $rounding: (
+  micro   : .25rem,
+  mini    : .5rem,
   small   : .7rem,
   medium  : 1rem,
   large   : 1.5rem,
+  all     : 50%,
 );
 
 @mixin no_selection() {
@@ -11,11 +14,6 @@ $rounding: (
   -moz-user-select: none;      /* Firefox */
   -ms-user-select: none;       /* Internet Explorer/Edge */
   user-select: none;           /* Non-prefixed version, currently not supported by any browser */
-}
-@mixin round_border($rounding) { // OLD OLD OLD
-  -webkit-border-radius: $rounding;
-  -moz-border-radius: $rounding;
-  border-radius: $rounding;
 }
 
 @mixin round-corners($radius) {

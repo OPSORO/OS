@@ -2496,7 +2496,8 @@ footer {
       max-width: 3.5rem;
       margin-bottom: 0.5rem; }
 
-h1, h2 {
+h1,
+h2 {
   text-transform: uppercase; }
 
 h1 {
@@ -2522,7 +2523,7 @@ img {
   padding: 0; }
 
 section {
-  margin: 0 auto 4rem auto; }
+  margin: 0 auto 4rem; }
 
 article {
   padding: 1rem;
@@ -2544,13 +2545,13 @@ fieldset legend {
 
 fieldset {
   margin-top: 1rem !important;
-  padding: 0 .5rem; }
+  padding: 0 0.5rem; }
 
 .tabs {
   width: 100% !important;
   max-width: 100% !important; }
   .tabs .tab-title > a {
-    padding: 1rem 1rem; }
+    padding: 1rem; }
 
 .tabs-content .content {
   padding-top: 0; }
@@ -2696,11 +2697,12 @@ fieldset {
   #header_main nav .logo {
     width: 2.5rem;
     height: 2rem;
-    margin: 0.75rem 0.75rem 0.75rem 0rem;
+    margin: 0.75rem 0.75rem 0.75rem 0;
     display: inline-block;
     background-image: url("../images/logo/opsoro_icon_light.png");
     background-size: cover; }
-  #header_main nav a.active, #header_main nav a.active:visited {
+  #header_main nav a.active,
+  #header_main nav a.active:visited {
     border-bottom: 2px solid; }
 
 #header_main.on-top {
@@ -2712,14 +2714,14 @@ fieldset {
 
 #header_play {
   position: relative;
-  top: .8rem;
+  top: 0.8rem;
   overflow: hidden;
   max-width: 75rem;
   height: 4rem;
-  margin: 0 auto 2rem;
+  margin: 0 auto 1rem;
   background-color: #F2F2F2;
   color: #313334;
-  padding: .2rem 1.4rem 0;
+  padding: 0.2rem 1.4rem 0;
   z-index: 9;
   -webkit-border-radius: 2.5rem;
   -moz-border-radius: 2.5rem;
@@ -2739,7 +2741,7 @@ fieldset {
     background-color: #FFF;
     border: none;
     padding-left: 1rem;
-    margin-top: .5rem;
+    margin-top: 0.5rem;
     color: #313334;
     -webkit-border-radius: 1.3rem;
     -moz-border-radius: 1.3rem;
@@ -2782,10 +2784,10 @@ fieldset {
     padding: 0;
     color: #313334; }
     #header_play a .icon {
-      margin: .6rem 0 0.5rem 1rem;
+      margin: 0.6rem 0 0.5rem 1rem;
       font-size: 2.3rem; }
     #header_play a:hover {
-      color: #1C1D1D; }
+      color: #000; }
   #header_play .status {
     margin: 0.5rem 0; }
 
@@ -2918,8 +2920,8 @@ fieldset {
       .apps .app-container .app-button .app-banner {
         position: absolute;
         display: block;
-        top: .5rem;
-        left: .5rem; }
+        top: 0.5rem;
+        left: 0.5rem; }
         .apps .app-container .app-button .app-banner * {
           font: normal normal normal 14px/1 FontAwesome;
           color: #FFF;
@@ -2928,7 +2930,7 @@ fieldset {
           animation: beat 0.5s infinite alternate;
           transform-origin: center; }
     .apps .app-container .app-label {
-      margin-top: .5rem;
+      margin-top: 0.5rem;
       color: #313334;
       font-size: 1rem;
       font-weight: normal;
@@ -2938,34 +2940,30 @@ fieldset {
 
 .reveal {
   position: absolute;
+  left: 0;
+  right: 0;
   top: 1rem;
-  right: 1rem;
-  left: 1rem;
   margin-right: auto;
   margin-left: auto;
   padding: 0;
   color: #4d4d4d;
   border: 0;
   border-radius: 0.75rem;
-  background: #fff;
-  -webkit-box-shadow: 3px 3px 2px rgba(0, 0, 0, 0.8);
-  -moz-box-shadow: 3px 3px 2px rgba(0, 0, 0, 0.8);
-  box-shadow: 3px 3px 2px rgba(0, 0, 0, 0.8); }
+  -webkit-border-radius: 0.7rem;
+  -moz-border-radius: 0.7rem;
+  border-radius: 0.7rem;
+  background: #FFF;
+  -webkit-box-shadow: 0px 1px 4px 2px rgba(0, 0, 0, 0.1);
+  -moz-box-shadow: 0px 1px 4px 2px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 1px 4px 2px rgba(0, 0, 0, 0.1); }
   .reveal .titlebar {
-    font-size: 2rem;
+    font-size: 1.5rem;
     font-weight: bold;
     position: relative;
     padding: 0.5rem;
     text-align: center;
-    color: #fff;
-    border-bottom: 0.25rem solid #545454;
-    -webkit-border-top-left-radius: 0.5rem;
-    -moz-border-radius-topleft: 0.5rem;
-    border-top-left-radius: 0.5rem;
-    -webkit-border-top-right-radius: 0.5rem;
-    -moz-border-radius-topright: 0.5rem;
-    border-top-right-radius: 0.5rem;
-    background: #b2afa1; }
+    color: #313334;
+    background: #FFF; }
     .reveal .titlebar.red {
       border-bottom: 0.25rem solid #79261d;
       background: #FF517E; }
@@ -2978,28 +2976,14 @@ fieldset {
     font-size: 2rem;
     font-weight: normal;
     position: absolute;
-    top: 1rem;
-    right: auto;
-    left: 1rem;
+    top: 0.5rem;
+    right: 1rem;
     cursor: pointer;
-    color: #fff; }
+    color: #313334; }
     .reveal .close-button:hover {
       font-size: 2.5rem;
-      top: 0.75rem;
-      left: 0.75rem; }
-  .reveal .btnClose {
-    font-size: 2rem;
-    font-weight: normal;
-    position: absolute;
-    top: 0.5rem;
-    right: auto;
-    left: 1rem;
-    cursor: pointer;
-    color: #fff; }
-    .reveal .btnClose:hover {
-      font-size: 2.5rem;
       top: 0.25rem;
-      left: 0.75rem; }
+      right: 0.75rem; }
   .reveal .big-button {
     width: 7rem;
     height: 7rem;
@@ -3013,7 +2997,7 @@ fieldset {
       font-size: 3rem;
       display: inline-block;
       width: 100%;
-      margin: .5rem auto; }
+      margin: 0.5rem auto; }
     .reveal .big-button .text {
       color: #FFF;
       font-weight: normal;
@@ -3033,31 +3017,43 @@ fieldset {
 
 .actionbar {
   min-height: 4rem;
-  margin: -2rem 2rem 1rem;
-  padding: 1.5rem 1rem .5rem;
-  background: #FFF;
-  -webkit-border-radius: 0.7rem;
-  -moz-border-radius: 0.7rem;
-  border-radius: 0.7rem; }
+  margin: 0 -1rem 1rem;
+  padding: 0.5rem 1.5rem 0.3rem;
+  color: #FFF;
+  background: #DDD;
+  -webkit-border-radius: 2.5rem;
+  -moz-border-radius: 2.5rem;
+  border-radius: 2.5rem; }
   .actionbar .action {
     display: inline-block;
     min-width: 3rem;
     padding: 0 0.5rem;
     text-align: center;
-    color: #313334;
+    color: #FFF;
+    float: right;
     -webkit-border-radius: 0.25rem;
     -moz-border-radius: 0.25rem;
     border-radius: 0.25rem; }
     .actionbar .action .text {
+      color: #FFF;
       font-size: 0.75rem;
       font-weight: bold;
       text-transform: uppercase; }
   .actionbar .action.active,
   .actionbar .action:hover {
-    color: #1C1D1D; }
+    color: #F2F2F2; }
+  .actionbar .icon {
+    color: #FFF;
+    vertical-align: top;
+    display: inline-block;
+    font-size: 3rem;
+    margin: 0 0.8rem 0 0; }
   .actionbar .spacer {
     display: inline-block;
-    width: 2rem; }
+    width: 2rem;
+    float: right;
+    margin: 0;
+    padding: 0.5rem; }
   .actionbar .filebox {
     display: inline-block;
     overflow: hidden;
@@ -3065,7 +3061,7 @@ fieldset {
     max-width: 20rem;
     white-space: nowrap;
     text-overflow: ellipsis;
-    color: #313334; }
+    color: #FFF; }
     .actionbar .filebox .filename {
       font-weight: bold;
       text-transform: uppercase; }
@@ -3106,59 +3102,77 @@ fieldset {
 
 .filebrowser {
   position: fixed;
-  /*top: 5rem;*/
-  right: 1rem;
   bottom: 3rem;
-  left: 1rem; }
+  -webkit-touch-callout: none;
+  /* iOS Safari */
+  -webkit-user-select: none;
+  /* Chrome/Safari/Opera */
+  -khtml-user-select: none;
+  /* Konqueror */
+  -moz-user-select: none;
+  /* Firefox */
+  -ms-user-select: none;
+  /* Internet Explorer/Edge */
+  user-select: none;
+  /* Non-prefixed version, currently not supported by any browser */ }
   .filebrowser .content {
     position: absolute;
     top: 4rem;
     bottom: 0;
-    width: 100%; }
+    width: 100%;
+    padding: 0; }
   .filebrowser .actionbar .actionBarItem {
     position: relative;
     float: left;
     min-width: 4rem; }
   .filebrowser .foldercontent {
     position: absolute;
-    top: 4.5rem;
+    top: 0.5rem;
     bottom: 0.5rem;
     left: 0;
     overflow-x: hidden;
     overflow-y: scroll;
     width: 100%;
-    padding: 0 3rem 3rem; }
-    .filebrowser .foldercontent .button {
-      font-size: 1.5rem;
-      width: 5rem;
-      margin-left: 0.5rem;
-      padding: .5rem 0; }
-    .filebrowser .foldercontent .alert {
-      width: 2.5rem; }
+    padding: 0 1rem 1rem; }
     .filebrowser .foldercontent .browseritem {
       width: 100%;
-      min-height: 2rem;
-      margin: 0.1rem;
-      padding: 0.2rem;
-      border-radius: 0.25rem; }
-      .filebrowser .foldercontent .browseritem:hover {
-        background-color: #f2f2f2; }
-        .filebrowser .foldercontent .browseritem:hover .browseritemoptions {
-          opacity: 1; }
-      .filebrowser .foldercontent .browseritem a {
-        margin: 0; }
+      text-align: left;
+      margin: 0;
+      padding: 0.2rem 1rem;
+      border-radius: 0.25rem;
+      background-color: #FFF;
+      color: #1C1D1D;
+      overflow-x: hidden;
+      white-space: nowrap; }
+      .filebrowser .foldercontent .browseritem:hover .browseritemname {
+        color: #00E58B; }
+      .filebrowser .foldercontent .browseritem:hover .browseritemoptions {
+        opacity: 1; }
+      .filebrowser .foldercontent .browseritem .icon {
+        vertical-align: middle;
+        color: #00E58B;
+        font-size: 1.5rem; }
       .filebrowser .foldercontent .browseritem .browseritemname {
-        font-size: 1.5rem;
+        color: #313334;
+        font-size: 1rem;
         font-weight: bold;
-        margin-left: 2rem; }
+        margin-left: 1rem;
+        overflow-x: hidden; }
       .filebrowser .foldercontent .browseritem .browseritemoptions {
         float: right;
-        padding: 0.15rem; }
-      .filebrowser .foldercontent .browseritem .browseritemoptions {
+        padding: 0.15rem;
         -webkit-transition: opacity 0.1s ease-in-out;
         -moz-transition: opacity 0.1s ease-in-out;
         transition: opacity 0.1s ease-in-out;
         opacity: 0; }
+        .filebrowser .foldercontent .browseritem .browseritemoptions .button {
+          color: #C7C8C9;
+          background-color: transparent;
+          margin: 0;
+          padding: 0;
+          font-size: 1rem; }
+          .filebrowser .foldercontent .browseritem .browseritemoptions .button:hover {
+            color: #000; }
 
 #message_popup .content .buttons {
   position: relative;

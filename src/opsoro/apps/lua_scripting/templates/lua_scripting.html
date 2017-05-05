@@ -5,9 +5,9 @@
 {% endblock %}
 
 {% block app_toolbar %}
-	{% include "toolbar/_file_operations.html" %}
-	{% include "toolbar/_script_operations.html" %}
 	{% include "toolbar/_expand_collapse.html" %}
+	{% include "toolbar/_script_operations.html" %}
+	{% include "toolbar/_file_operations.html" %}
 {% endblock %}
 
 {% block app_content %}
@@ -391,7 +391,7 @@
 			ko.applyBindings(model);
 			model.fileIsModified(false);
 
-			config_file_operations("scripts", model.fileExtension(), model.saveFileData, model.loadFileData, model.init);
+			config_file_operations("", model.fileExtension(), model.saveFileData, model.loadFileData, model.init);
 		});
 	</script>
 

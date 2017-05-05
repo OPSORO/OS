@@ -1,14 +1,38 @@
 function showMainError(msg){
-  $('#errors').append("<div class='callout alert' data-closable>" + msg + "<button class='close-button' aria-label='Dismiss' type='button' data-close><span aria-hidden='true'>&times;</span></button></div>");
+  $('#errors').append("<div class='callout alert' style='display: none;' data-closable>" + msg + "<button class='close-button' aria-label='Dismiss' type='button' data-close><span aria-hidden='true'>&times;</span></button></div>");
+  $('#errors .callout.alert').slideDown("fast", function() {});
+  setTimeout(function () {
+    $('#errors .callout.alert').slideUp( "slow", function() {
+      $('#errors .callout.alert').remove();
+    });
+  }, 5000);
 }
 function showMainWarning(msg){
-  $('#errors').append("<div class='callout warning' data-closable>" + msg + "<button class='close-button' aria-label='Dismiss' type='button' data-close><span aria-hidden='true'>&times;</span></button></div>");
+  $('#errors').append("<div class='callout warning' style='display: none;' data-closable>" + msg + "<button class='close-button' aria-label='Dismiss' type='button' data-close><span aria-hidden='true'>&times;</span></button></div>");
+  $('#errors .callout.warning').slideDown("fast", function() {});
+  setTimeout(function () {
+    $('#errors .callout.warning').slideUp( "slow", function() {
+      $('#errors .callout.warning').remove();
+    });
+  }, 4000);
 }
 function showMainMessage(msg){
-  $('#errors').append("<div class='callout primary' data-closable>" + msg + "<button class='close-button' aria-label='Dismiss' type='button' data-close><span aria-hidden='true'>&times;</span></button></div>");
+  $('#errors').append("<div class='callout primary' style='display: none;' data-closable>" + msg + "<button class='close-button' aria-label='Dismiss' type='button' data-close><span aria-hidden='true'>&times;</span></button></div>");
+  $('#errors .callout.primary').slideDown("fast", function() {});
+  setTimeout(function () {
+    $('#errors .callout.primary').slideUp( "slow", function() {
+      $('#errors .callout.primary').remove();
+    });
+  }, 3000);
 }
 function showMainSuccess(msg){
-  $('#errors').append("<div class='callout success' data-closable>" + msg + "<button class='close-button' aria-label='Dismiss' type='button' data-close><span aria-hidden='true'>&times;</span></button></div>");
+  $('#errors').append("<div class='callout success' style='display: none;' data-closable>" + msg + "<button class='close-button' aria-label='Dismiss' type='button' data-close><span aria-hidden='true'>&times;</span></button></div>");
+  $('#errors .callout.success').slideDown("fast", function() {});
+  setTimeout(function () {
+    $('#errors .callout.success').slideUp( "slow", function() {
+      $('#errors .callout.success').remove();
+    });
+  }, 2000);
 }
 var popup_classes;
 function showPopup(sIcon, sTitle, sClass, sContent) {
@@ -225,7 +249,7 @@ function connectSocket() {
           }, 500);
         }, 1000);
 
-        showMainWarning('Disconnected from robot, trying to reconnect...');
+        showMainError('Disconnected from robot, trying to reconnect...');
         $('.online_users').html('Disconnected, trying to reconnect...');
         $('.active_apps').html('');
         setTimeout(function() { location.reload(); }, 5000);

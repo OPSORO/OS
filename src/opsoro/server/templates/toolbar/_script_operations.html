@@ -1,20 +1,22 @@
-<a href="#" class="action" data-bind="click: startStopScript">
-  <span class="fa" data-bind="css : { 'fa-stop': isRunning(), 'fa-play': !isRunning()}"></span><br/>
-  <span class="text" data-bind="text: isRunning() ? '{{ _('Stop') }}' : '{{ _('Start') }}' "></span>
-</a>
-<a href="#" class="action" data-bind="click: scriptUI, visible: isUI()">
-  <span class="fa fa-gamepad"></span><br/>
-  <span class="text">{{ _('Script UI') }}</span>
-</a>
-<a href="#" class="action" data-bind="click: clearLog">
-  <span class="fa fa-magic"></span><br/>
-  <span class="text">{{ _('Clear log') }}</span>
-</a>
+
 <a href="#" class="action" data-bind="click: codeView">
   <span class="fa fa-code"></span><br/>
   <span class="text">{{ _('Code view') }}</span>
 </a>
 
+<a href="#" class="action" data-bind="click: scriptUI, visible: isUI()">
+  <span class="fa fa-gamepad"></span><br/>
+  <span class="text">{{ _('Script UI') }}</span>
+</a>
+<!-- <a href="#" class="action" data-bind="click: clearLog">
+  <span class="fa fa-magic"></span><br/>
+  <span class="text">{{ _('Clear log') }}</span>
+</a> -->
+<a href="#" class="action" data-bind="click: startStopScript">
+  <span class="fa" data-bind="css : { 'fa-stop': isRunning(), 'fa-play': !isRunning()}"></span><br/>
+  <span class="text" data-bind="text: isRunning() ? '{{ _('Stop') }}' : '{{ _('Start') }}' "></span>
+</a>
+<div class="spacer"></div>
 <script>
 startStopScript = function(){
   showMainError("The function startStopScript is not yet defined.");
