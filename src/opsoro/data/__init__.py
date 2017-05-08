@@ -24,7 +24,7 @@ class _Data(object):
         """
         pass
 
-    def filelist(self, appname, extension='.*'):
+    def filelist(self, appname, extension='.*', trim_ext=True):
         """
         Get the list of files of a certain app, filtered by an extension.
 
@@ -41,7 +41,10 @@ class _Data(object):
 
         filepaths = glob.glob(get_path('%s/*%s') % (appname, extension))
         for filepath in filepaths:
-            filenames.append(os.path.splitext(os.path.basename(filepath))[0])
+            if trim_ext:
+                filenames.append(os.path.splitext(os.path.basename(filepath))[0])
+            else:
+                filenames.append(os.path.basename(filepath))
         filenames.sort()
 
         return filenames
