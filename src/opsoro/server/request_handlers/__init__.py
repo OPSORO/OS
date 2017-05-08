@@ -66,7 +66,8 @@ class RHandler(object):
         # ----------------------------------------------------------------------
         # ROBOT
         # ----------------------------------------------------------------------
-        self.server.flaskapp.add_url_rule("/robot/",            "robot",            self.page_virtual,          methods=["GET", "POST"], )
+        self.server.flaskapp.add_url_rule("/robot/",            "robot",            self.page_virtual,          methods=["GET"], )
+        self.server.flaskapp.add_url_rule("/sound/",            "sound",            self.sound_data,            methods=["GET"], )
         self.server.flaskapp.add_url_rule("/robot/config/",     "robot_config",     protect(robot_config_data), methods=["GET", "POST"], )
         self.server.flaskapp.add_url_rule("/robot/emotion/",    "robot_emotion",    protect(robot_emotion),     methods=["GET", "POST"], )
         self.server.flaskapp.add_url_rule("/robot/dof/",        "robot_dof",        protect(robot_dof_data),    methods=["GET", "POST"], )
@@ -253,6 +254,18 @@ class RHandler(object):
         # page_caption=appSpecificFolderPath
         return self.render_template("_filelist.html", title=self.title + " - Files", page_icon="fa-folder", **data)
 
+    def sound_data(self):
+        sound_type = request.args.get('t', None)
+        sound_file = request.args.get('f', None)
+
+        if sound_type is None or sound_file is None:
+            return None
+
+        if sound_type == 'tts':
+            return Sound.get_file(sound_file, True)
+        else:
+            return Sound.get_file(sound_file, False)
+
     def page_virtual(self):
         data = {
             'actions': {},
@@ -268,7 +281,7 @@ class RHandler(object):
 
         # action = request.args.get('action', None)
         # if action != None:
-        data['actions']['openfile'] = request.args.get('f', None)
+        # data['actions']['openfile'] = request.args.get('f', None)
 
         # with open(get_path('../../config/modules_configs/ono.yaml')) as f:
         # 	data['config'] = yaml.load(f, Loader=Loader)

@@ -456,8 +456,23 @@ var VirtualModel = function() {
     }
   };
 
-  self.update_sound = function(msg) {
-    $('.robot_sound').html(msg);
+  self.sound = undefined;
+  self.update_sound = function(type, msg) {
+    var icon = 'fa-music'
+    if (type == 'tts') {
+      icon = 'fa-commenting-o'
+    }
+    $('.robot_sound').html('<span class="fa ' + icon + '"></span> ' + msg);
+
+    var sound_src = '/sound/?t=' + type + '&f=' + msg;
+    if (self.sound == undefined) {
+      self.sound = new Audio(sound_src);
+    } else {
+      self.sound.pause();
+      self.sound.src = sound_src;
+      self.sound.load();
+    }
+    self.sound.play();
   };
 
   // self.icons = ko.observableArray(icon_data);

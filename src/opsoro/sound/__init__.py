@@ -7,11 +7,13 @@ This module defines the interface for communicating with the sound module.
    :show-inheritance:
 """
 
+import glob
 import os
 import platform
 import subprocess
 from functools import partial
 
+from opsoro.console_msg import *
 from opsoro.sound.tts import TTS
 from opsoro.users import Users
 
@@ -69,7 +71,7 @@ class _Sound(object):
             return
 
         # Send sound to virtual robots
-        Users.broadcast_robot({'sound': text})
+        Users.broadcast_robot({'sound': 'tts', 'msg': text})
 
         self.stop_sound()
         self._play(full_path)
@@ -85,21 +87,62 @@ class _Sound(object):
         """
         self.stop_sound()
         path = None
+        if os.path.splitext(filename)[1] == '':
+            filename += '.*'
         for folder in self.sound_folders:
             f = os.path.join(get_path(folder), filename)
-            if os.path.isfile(f):
-                path = f
+            files = glob.glob(f)
+            if files:
+                path = files[0]
                 break
+
         if path is None:
             print_error("Could not find soundfile \"%s\"." % filename)
             return False
 
         # Send sound to virtual robots
         name, extension = os.path.splitext(os.path.basename(filename))
-        Users.broadcast_robot({'sound': 'Sound: %s' % name})
+        Users.broadcast_robot({'sound': 'file', 'msg': name})
 
         self._play(path)
         return True
+
+    def get_file(self, filename, tts=False):
+        """
+        Returns audio file data according to the given filename.
+
+        :param string filename:     file to return the data from
+
+        :return:        Soundfile data.
+        :rtype:         var
+        """
+        path = None
+        data = None
+
+        if tts:
+            path = TTS.create(filename)
+        else:
+            if os.path.splitext(filename)[1] == '':
+                filename += '.*'
+            for folder in self.sound_folders:
+                f = os.path.join(get_path(folder), filename)
+                files = glob.glob(f)
+                if files:
+                    path = files[0]
+                    break
+
+        if path is None:
+            print_error("Could not find soundfile \"%s\"." % filename)
+            return data
+
+        try:
+            with open(get_path(path)) as f:
+                data = f.read()
+        except Exception as e:
+            print_error(e)
+
+        # Send sound to virtual robots
+        return data
 
     def stop_sound(self):
         """

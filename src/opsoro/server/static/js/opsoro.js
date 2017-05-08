@@ -216,9 +216,10 @@ function connectSocket() {
               if (typeof msg.dofs != 'undefined' && typeof virtualModel.update_dofs === "function") {
                 virtualModel.update_dofs(msg.dofs);
               }
-              if (typeof msg.sound != 'undefined' && typeof virtualModel.update_sound === "function") {
-                virtualModel.update_sound(msg.sound);
+              if (typeof msg.sound != 'undefined' && typeof msg.msg != 'undefined' && typeof virtualModel.update_sound === "function") {
+                virtualModel.update_sound(msg.sound, msg.msg);
               }
+
             }
 
             break;
@@ -240,19 +241,21 @@ function connectSocket() {
 
       // Only reconnect if the connection was successfull in the first place
       if (connReady) {
-        setInterval(function () {
-          connectSocket();
-          setTimeout(function() {
-            if (connReady) {
-              location.reload();
-            }
-          }, 500);
-        }, 1000);
+        setTimeout(function() {
+          setInterval(function () {
+            connectSocket();
+            setTimeout(function() {
+              if (connReady) {
+                location.reload();
+              }
+            }, 500);
+          }, 1000);
 
-        showMainError('Disconnected from robot, trying to reconnect...');
-        $('.online_users').html('Disconnected, trying to reconnect...');
-        $('.active_apps').html('');
-        setTimeout(function() { location.reload(); }, 5000);
+          showMainError('Disconnected from robot, trying to reconnect...');
+          $('.online_users').html('Disconnected, trying to reconnect...');
+          $('.active_apps').html('');
+          setTimeout(function() { location.reload(); }, 5000);
+        }, 500);
       }
 
       connReady = false;
