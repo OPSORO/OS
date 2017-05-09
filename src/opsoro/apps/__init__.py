@@ -3,7 +3,7 @@ from functools import partial, wraps
 
 import pluginbase
 import yaml
-from flask import Blueprint
+from flask import Blueprint, flash
 
 from opsoro.console_msg import *
 from opsoro.robot import Robot
@@ -34,10 +34,13 @@ class _Apps(object):
 
         self.apps = {}
         self.active_apps = []
+        self.background_apps = []
 
         # Make sure apps are only registered during setup
         self.apps_can_register_bp = True
         self.current_bp_app = ""            # Keep track of current app for blueprint setup
+
+        Users.app_change_handler = self.refresh_active
 
         # Socket callback dicts
         # self.sockjs_connect_cb = {}
@@ -46,11 +49,16 @@ class _Apps(object):
     def start(self, appname):
         if appname in self.active_apps:
             # already activated
-            return True
+            if not self.apps[appname].config['multi_user']:
+                flash("This app can only be opened once, and is running elsewhere.")
+                return False
+        elif appname in self.background_apps:
+            self.background_apps.remove(appname)
+            self.active_apps.append(appname)
         else:
             if appname in self.apps:
                 # robot activation:
-                if Apps.apps[appname].config['activation'] >= Robot.Activation.AUTO:
+                if self.apps[appname].config['activation'] >= Robot.Activation.AUTO:
                     Robot.start()
 
                 self.active_apps.append(appname)
@@ -61,11 +69,24 @@ class _Apps(object):
                 except AttributeError:
                     print_info("%s has no start function" % appname)
 
-                return True
+            else:
+                return False
 
-        return False
+        running_apps = []
+        running_apps.extend(self.active_apps)
+        running_apps.extend(self.background_apps)
+
+        return True
 
     def stop(self, appname):
+        app_count = 0
+        for sock in Users.sockets:
+            if sock.activeapp == appname:
+                app_count += 1
+
+        if app_count > 1:
+            return
+
         if appname in self.active_apps:
             print_appstopped(appname)
             try:
@@ -74,14 +95,31 @@ class _Apps(object):
                 print_info("%s has no stop function" % appname)
             self.active_apps.remove(appname)
 
-        # # Stop robot if no app starts it
-        # for app in self.active_apps:
-        #     if app.config['activation'] == Robot.Activation.MANUAL:
-        #         Robot.stop()
-        #         break
-
         if len(self.active_apps) < 1:
             Robot.stop()
+
+    def refresh_active(self):
+        act_apps = []
+        locked_apps = []
+        for sock in Users.sockets:
+            if sock.activeapp in self.apps:
+                act_apps.append(sock.activeapp)
+
+        for app in self.active_apps:
+            if app not in act_apps:
+                if not self.apps[app].config['allowed_background']:
+                    self.stop(app)
+                else:
+                    self.background_apps.append(app)
+                    self.active_apps.remove(app)
+            else:
+                if not self.apps[app].config['multi_user']:
+                    locked_apps.append(app)
+
+        running_apps = []
+        running_apps.extend(self.active_apps)
+        running_apps.extend(self.background_apps)
+        Users.broadcast_data('apps', {'active': running_apps, 'locked': locked_apps})
 
     def stop_all(self):
         for appname in self.active_apps:
@@ -144,11 +182,13 @@ class _Apps(object):
 
             default_config = {'full_name': 'No name',
                               'formatted_name': 'No_name',
+                              'author': 'OPSORO',
                               'icon': 'fa-warning',
                               'color': '#333',
                               'difficulty': 0,
                               'tags': [''],
                               'allowed_background': False,
+                              'multi_user': False,
                               'connection': Robot.Connection.OFFLINE,
                               'activation': Robot.Activation.MANUAL}
 

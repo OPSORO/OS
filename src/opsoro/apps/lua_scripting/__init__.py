@@ -13,11 +13,13 @@ from .scripthost import ScriptHost
 
 config = {
     'full_name':            'Lua Scripting',
+    'author':               'OPSORO',
     'icon':                 'fa-terminal',
     'color':                'orange',
     'difficulty':           7,
     'tags':                 ['lua', 'code', 'script'],
     'allowed_background':   True,
+    'multi_user':           False,
     'connection':           Robot.Connection.OFFLINE,
     'activation':           Robot.Activation.AUTO
 }

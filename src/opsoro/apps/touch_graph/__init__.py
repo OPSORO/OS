@@ -12,11 +12,13 @@ from opsoro.stoppable_thread import StoppableThread
 
 config = {
     'full_name':            'Touch Graph',
+    'author':               'OPSORO',
     'icon':                 'fa-hand-o-down',
     'color':                'gray_light',
     'difficulty':           3,
     'tags':                 ['capacitive', 'touch', 'button'],
     'allowed_background':   False,
+    'multi_user':           False,
     'connection':           Robot.Connection.OFFLINE,
     'activation':           Robot.Activation.MANUAL
 }

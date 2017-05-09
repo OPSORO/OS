@@ -27,11 +27,13 @@ def constrain(n, minn, maxn): return max(min(maxn, n), minn)
 
 config = {
     'full_name':            'Configurator',
+    'author':               'OPSORO',
     'icon':                 'fa-pencil',
     'color':                'red',
     'difficulty':           3,
     'tags':                 ['design', 'setup', 'configuration'],
     'allowed_background':   False,
+    'multi_user':           False,
     'connection':           Robot.Connection.OFFLINE,
     'activation':           Robot.Activation.MANUAL
 }

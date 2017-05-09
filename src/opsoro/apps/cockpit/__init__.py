@@ -12,11 +12,13 @@ def constrain(n, minn, maxn): return max(min(maxn, n), minn)
 
 config = {
     'full_name':            'Cockpit',
+    'author':               'OPSORO',
     'icon':                 'fa-rocket',
     'color':                'red',
     'difficulty':           9,
     'tags':                 [''],
     'allowed_background':   False,
+    'multi_user':           False,
     'connection':           Robot.Connection.OFFLINE,
     'activation':           Robot.Activation.AUTO
 }

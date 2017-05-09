@@ -32,11 +32,13 @@ get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 
 config = {
     'full_name':            'Social Response',
+    'author':               'OPSORO',
     'icon':                 'fa-share-square',
     'color':                'blue',
     'difficulty':           3,
     'tags':                 ['social', 'facebook', 'twitter'],
     'allowed_background':   True,
+    'multi_user':           False,
     'connection':           Robot.Connection.ONLINE,
     'activation':           Robot.Activation.AUTO
 }

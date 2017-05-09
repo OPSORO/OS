@@ -34,11 +34,13 @@ def constrain(n, minn, maxn): return max(min(maxn, n), minn)
 
 config = {
     'full_name':            'Social Script',
+    'author':               'OPSORO',
     'icon':                 'fa-commenting-o',
     'color':                'orange',
     'difficulty':           4,
     'tags':                 [''],
     'allowed_background':   False,
+    'multi_user':           True,
     'connection':           Robot.Connection.OFFLINE,
     'activation':           Robot.Activation.AUTO
 }

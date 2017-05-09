@@ -181,6 +181,10 @@ function connectSocket() {
         }));
         connReady = true;
         console.log("SockJS authenticated.");
+
+        if (typeof virtual_robot != 'undefined' && virtual_robot) {
+          conn.send(JSON.stringify({action: "robot"}));
+        }
       });
     };
 
@@ -188,13 +192,30 @@ function connectSocket() {
       try {
         var msg = $.parseJSON(e.data);
         console.log(msg);
-        switch(msg.action){
+        switch(msg.action) {
           case 'refresh':
             setTimeout(function() { location.reload(); }, 1000);
             break;
           case 'info':
-            console.log(msg.text);
-            showMessagePopup('fa-info', 'Server info', msg.text, {btnOk: function() { location.reload(); }});
+            if (typeof msg.type != 'undefined' && typeof msg.text != 'undefined') {
+              switch(msg.type) {
+                case 'popup':
+                  showMessagePopup('fa-info', 'Server info', msg.text, {btnOk: function() { location.reload(); }});
+                  break;
+                case 'error':
+                  showMainError(msg.text);
+                  break;
+                case 'warning':
+                  showMainWarning(msg.text);
+                  break;
+                case 'message':
+                  showMainMessage(msg.text);
+                  break;
+                case 'success':
+                  showMainSuccess(msg.text);
+                  break;
+              }
+            }
             break;
           case 'users':
             var text = ' user';
@@ -202,7 +223,23 @@ function connectSocket() {
             text += ' connected.'
 
             $('.online_users').html(msg.count + text);
-            console.log(msg.count);
+            break;
+          case 'apps':
+            $('.app-active').css('display', 'none');
+            $('.app-locked').css('display', 'none');
+
+            if (typeof msg.active != 'undefined') {
+              for (var i = 0; i < msg.active.length; i++) {
+                var app = msg.active[i];
+                $('.' + app + ' .app-active').css('display', 'inline-block');
+              }
+            }
+            if (typeof msg.locked != 'undefined') {
+              for (var i = 0; i < msg.locked.length; i++) {
+                var app = msg.locked[i];
+                $('.' + app + ' .app-locked').css('display', 'inline-block');
+              }
+            }
             break;
           case 'app':
             console.log(msg.data);
@@ -242,11 +279,16 @@ function connectSocket() {
       // Only reconnect if the connection was successfull in the first place
       if (connReady) {
         setTimeout(function() {
-          setInterval(function () {
+          var retry_socket = setInterval(function () {
             connectSocket();
             setTimeout(function() {
               if (connReady) {
-                location.reload();
+                clearInterval(retry_socket);
+                if (typeof virtual_robot != 'undefined' && virtual_robot) {
+
+                } else {
+                  location.reload();
+                }
               }
             }, 500);
           }, 1000);
@@ -254,7 +296,11 @@ function connectSocket() {
           showMainError('Disconnected from robot, trying to reconnect...');
           $('.online_users').html('Disconnected, trying to reconnect...');
           $('.active_apps').html('');
-          setTimeout(function() { location.reload(); }, 5000);
+          if (typeof virtual_robot != 'undefined' && virtual_robot) {
+
+          } else {
+            setTimeout(function() { location.reload(); }, 5000);
+          }
         }, 500);
       }
 

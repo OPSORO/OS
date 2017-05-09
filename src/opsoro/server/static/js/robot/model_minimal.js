@@ -497,6 +497,7 @@ var VirtualModel = function() {
 
 var main_svg;
 var virtualModel;
+var virtual_robot = true
 
 $(document).ready(function() {
   virtualModel = new VirtualModel();
@@ -504,11 +505,5 @@ $(document).ready(function() {
   ko.applyBindings(virtualModel);
 
   $(window).resize(virtualModel.resize);
-
-  setTimeout(function () {
-    if (connReady) {
-      conn.send(JSON.stringify({action: "robot"}));
-    }
-  }, 500);
 
 });

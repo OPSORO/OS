@@ -17,11 +17,13 @@ def constrain(n, minn, maxn): return max(min(maxn, n), minn)
 
 config = {
     'full_name':            'Sliders',
+    'author':               'OPSORO',
     'icon':                 'fa-sliders',
     'color':                'gray_light',
     'difficulty':           2,
     'tags':                 ['sliders', 'dofs'],
     'allowed_background':   False,
+    'multi_user':           False,
     'connection':           Robot.Connection.OFFLINE,
     'activation':           Robot.Activation.AUTO
 }

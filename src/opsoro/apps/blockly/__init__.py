@@ -15,11 +15,13 @@ from ..lua_scripting.scripthost import ScriptHost
 
 config = {
     'full_name':            'Blockly',
+    'author':               'OPSORO',
     'icon':                 'fa-puzzle-piece',
     'color':                'blue',
     'difficulty':           3,
     'tags':                 ['visual', 'programming', 'blockly'],
     'allowed_background':   True,
+    'multi_user':           False,
     'connection':           Robot.Connection.OFFLINE,
     'activation':           Robot.Activation.AUTO
 }

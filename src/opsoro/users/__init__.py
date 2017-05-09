@@ -36,10 +36,13 @@ class _Users(object):
     def __init__(self):
         """
         Users class.
-
         """
         self.users = {}
+        self.sockets = set()
+        self.robot_sockets = set()
         self.sockjs_message_cb = {}
+        self.last_robot_data = {}
+        self.app_change_handler = None
 
     def setup(self, flaskapp):
         # Setup login manager
@@ -90,42 +93,30 @@ class _Users(object):
         self.broadcast_message('You have been logged out by an admin.', socks)
 
     def send_app_data(self, appname, action, data={}):
-        for usr_id, usr in self.users.iteritems():
-            if usr and usr.sockets:
-                for sock in usr.sockets:
-                    if sock._activeapp == appname:
-                        data['action'] = action
-                        sock.send_data('app', {'data': data})
-                        return
+        for sock in self.sockets:
+            if sock.activeapp == appname:
+                data['action'] = action
+                sock.send_data('app', {'data': data})
+                return
 
     def broadcast_data(self, action, data={}, sockets=None):
         sender = None
 
         if sockets:
             sender = set(sockets)
-        elif current_user and current_user.sockets:
-            sender = set(current_user.sockets)
         else:
-            for usr_id, usr in self.users.iteritems():
-                if usr.sockets:
-                    sender = set(usr.sockets)
-                    break
+            sender = set(self.sockets)
 
         if sender:
             sender.pop().broadcast_data(action, data, sockets)
 
-    def broadcast_robot(self, data={}):
-        sender = None
-        for usr_id, usr in self.users.iteritems():
-            if usr.sockets:
-                sender = set(usr.sockets)
-                break
-
-        if sender:
-            sender.pop().broadcast_robot(data)
+    def broadcast_robot(self, data={}, save_last=False):
+        if save_last:
+            self.last_robot_data = data
+        self.broadcast_data('robot', data, self.robot_sockets)
 
     def broadcast_message(self, message='', sockets=None):
-        self.broadcast_data('info', {'text': message}, sockets)
+        self.broadcast_data('info', {'type': 'popup', 'text': message}, sockets)
 
     def setup_loaders(self):
         @self.login_manager.user_loader
@@ -151,9 +142,9 @@ class SocketConnection(SockJSConnection):
     def __init__(self, *args, **kwargs):
         super(SocketConnection, self).__init__(*args, **kwargs)
         self._authenticated = False
-        self._activeapp = None
+        self.activeapp = None
         self._token = None
-        self._robot = False
+        self.robot = False
 
     def on_message(self, msg):
         # Attempt to decode JSON
@@ -165,7 +156,10 @@ class SocketConnection(SockJSConnection):
 
         action = message.pop('action', '')
         if action == 'robot':
-            self._robot = True
+            self.robot = True
+            Users.sockets.remove(self)
+            Users.robot_sockets.add(self)
+            self.send_data('robot', Users.last_robot_data)
 
         if not self._authenticated:
             # Attempt to authenticate the socket
@@ -178,7 +172,8 @@ class SocketConnection(SockJSConnection):
                             # Auth succeeded
                             self._authenticated = True
                             self._token = token
-                            self._activeapp = message.pop('app', None)
+                            self.activeapp = message.pop('app', None)
+                            Users.app_change_handler()
 
                             usr.sockets.add(self)
                             return
@@ -189,22 +184,25 @@ class SocketConnection(SockJSConnection):
                 return
         else:
             # Decode action and trigger callback, if it exists.
-            if self._activeapp in Users.sockjs_message_cb:
-                if action in Users.sockjs_message_cb[self._activeapp]:
-                    Users.sockjs_message_cb[self._activeapp][action](self, message)
+            if self.activeapp in Users.sockjs_message_cb:
+                if action in Users.sockjs_message_cb[self.activeapp]:
+                    Users.sockjs_message_cb[self.activeapp][action](self, message)
 
     def on_open(self, info):
         # Connect callback is triggered when socket is authenticated.
-        self.sockets.add(self)
+        Users.sockets.add(self)
         self.update_users()
 
     def on_close(self):
         if self._token is not None and self._token in Users.users:
             usr = Users.users.get(self._token)
             usr.sockets.discard(self)
-            # if len(usr.sockets) == 0:
-            #     Users.users.pop(self._token)
-        self.sockets.remove(self)
+        if self.activeapp:
+            Users.app_change_handler()
+        if self in Users.sockets:
+            Users.sockets.remove(self)
+        if self in Users.robot_sockets:
+            Users.robot_sockets.remove(self)
         self.update_users()
 
     def send_error(self, message):
@@ -220,15 +218,8 @@ class SocketConnection(SockJSConnection):
         msg = {'action': action, 'status': 'success'}
         msg.update(data)
         if socks is None:
-            socks = self.sockets
+            socks = Users.sockets
         return self.broadcast(socks, json.dumps(msg))
-
-    def broadcast_robot(self, data={}):
-        socks = set()
-        for sock in self.sockets:
-            if sock._robot:
-                socks.add(sock)
-        return self.broadcast_data('robot', data, socks)
 
     def update_users(self):
         # Print current client count

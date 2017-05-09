@@ -12,11 +12,13 @@ from opsoro.sound import Sound
 
 config = {
     'full_name':            'Sounds',
+    'author':               'OPSORO',
     'icon':                 'fa-volume-up',
     'color':                'yellow',
     'difficulty':           3,
     'tags':                 ['sound', 'music', 'speech', 'TTS', 'recording'],
     'allowed_background':   False,
+    'multi_user':           False,
     'connection':           Robot.Connection.OFFLINE,
     'activation':           Robot.Activation.MANUAL
 }

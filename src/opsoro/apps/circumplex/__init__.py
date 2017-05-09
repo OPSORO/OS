@@ -4,11 +4,13 @@ from opsoro.robot import Robot
 
 config = {
     'full_name':            'Circumplex',
+    'author':               'OPSORO',
     'icon':                 'fa-circle-o-notch',
     'color':                'green',
     'difficulty':           0,
     'tags':                 ['circumplex', 'circle', 'expression'],
     'allowed_background':   False,
+    'multi_user':           True,
     'connection':           Robot.Connection.OFFLINE,
     'activation':           Robot.Activation.AUTO
 }

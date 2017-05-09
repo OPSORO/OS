@@ -13,11 +13,13 @@ from opsoro.updater import Updater
 
 config = {
     'full_name':            'Preferences',
+    'author':               'OPSORO',
     'icon':                 'fa-cog',
     'color':                'gray_dark',
     'difficulty':           3,
     'tags':                 ['settings', 'setup'],
     'allowed_background':   False,
+    'multi_user':           False,
     'connection':           Robot.Connection.OFFLINE,
     'activation':           Robot.Activation.MANUAL
 }
