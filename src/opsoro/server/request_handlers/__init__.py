@@ -96,6 +96,7 @@ class RHandler(object):
             kwargs["app"]["name"] = app.config["full_name"].title()
             kwargs["app"]["full_name"] = app.config["full_name"]
             kwargs["app"]["formatted_name"] = app.config["formatted_name"]
+            kwargs["app"]["author"] = app.config["author"]
             kwargs["app"]["icon"] = app.config["icon"]
             kwargs["app"]["color"] = app.config["color"]
             kwargs["title"] += " - %s" % app.config["full_name"].title()
@@ -144,12 +145,14 @@ class RHandler(object):
                 data["other_apps"].append({"name": appname,
                                            "full_name": app.config["full_name"],
                                            "formatted_name": app.config["formatted_name"],
+                                           "author": app.config["author"],
                                            "icon": app.config["icon"],
                                            "color": app.config['color'],
                                            "difficulty": app.config['difficulty'],
                                            "tags": app.config['tags'],
                                            "active": (appname in Apps.active_apps),
                                            "connection": app.config['connection'],
+                                           "background": app.config['allowed_background'],
                                            })
 
             for cat in app.config['categories']:
@@ -159,12 +162,14 @@ class RHandler(object):
                 data["apps"][cat].append({"name": appname,
                                           "full_name": app.config["full_name"],
                                           "formatted_name": app.config["formatted_name"],
+                                          "author": app.config["author"],
                                           "icon": app.config["icon"],
                                           "color": app.config['color'],
                                           "difficulty": app.config['difficulty'],
                                           "tags": app.config['tags'],
                                           "active": (appname in Apps.active_apps),
                                           "connection": app.config['connection'],
+                                          "background": app.config['allowed_background'],
                                           })
 
         return self.render_template("apps.html", **data)
@@ -279,13 +284,6 @@ class RHandler(object):
             'icons': [],
         }
 
-        # action = request.args.get('action', None)
-        # if action != None:
-        # data['actions']['openfile'] = request.args.get('f', None)
-
-        # with open(get_path('../../config/modules_configs/ono.yaml')) as f:
-        # 	data['config'] = yaml.load(f, Loader=Loader)
-        #
         modules_folder = '../../modules/'
         modules_static_folder = '../static/modules/'
         config_folder = '../../config/'
@@ -308,13 +306,18 @@ class RHandler(object):
         return self.render_template('virtual.html', **data)
 
     def page_blockly(self):
-        data = {'soundfiles': [], 'apps_blockly': {}}
+        data = {'soundfiles': [], 'configs': {}, 'expressions': {}, 'apps_blockly': {}}
 
         apps_dir = '../../apps/'
+        config_folder = '../../config/'
         filenames = glob.glob(get_path('../../data/sounds/*.wav'))
-
         for filename in filenames:
             data['soundfiles'].append(os.path.split(filename)[1])
+
+        with open(get_path(config_folder + 'robot_config.yaml')) as f:
+            data['configs'] = yaml.load(f, Loader=Loader)['modules']
+        with open(get_path(config_folder + 'robot_expressions.yaml')) as f:
+            data['expressions'] = yaml.load(f, Loader=Loader)['expressions']
 
         for appname in sorted(Apps.apps.keys()):
             app_blockly_path = get_path(apps_dir + appname + '/blockly/')

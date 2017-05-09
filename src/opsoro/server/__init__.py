@@ -137,12 +137,10 @@ class Server(object):
                     # the actual page
                     return f(*args, **kwargs)
                 else:
-                    flash(
-                        "You do not have permission to access the requested page. Please log in below.")
+                    flash("You do not have permission to access the requested page. Please log in below.")
                     return redirect(url_for("login"))
             else:
-                flash(
-                    "You do not have permission to access the requested page. Please log in below.")
+                flash("You do not have permission to access the requested page. Please log in below.")
                 return redirect(url_for("login"))
 
         return wrapper
@@ -155,12 +153,10 @@ class Server(object):
             # Protected page
             if current_user.is_authenticated:
                 if not current_user.is_admin:
-                    flash(
-                        "You do not have permission to access the requested page. Please log in below.")
+                    flash("You do not have permission to access the requested page. Please log in below.")
                     return redirect(url_for("login"))
             else:
-                flash(
-                    "You do not have permission to access the requested page. Please log in below.")
+                flash("You do not have permission to access the requested page. Please log in below.")
                 return redirect(url_for("login"))
 
             # Check if app is active
