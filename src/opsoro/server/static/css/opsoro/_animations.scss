@@ -1,5 +1,6 @@
 
 $speed: (
+  fastest : .1s,
   faster  : .2s,
   fast    : .5s,
   slow    : 1s,
@@ -13,7 +14,7 @@ $speed: (
 }
 
 /* Heart beat animation */
-@keyframes beat{
+@keyframes beat {
 	to { transform: scale(.8); }
 }
 
