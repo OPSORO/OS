@@ -75,13 +75,16 @@ class Module(object):
         :param float value:         value to set the DOF
         :param int anim_time:       animation time in ms
         """
+        if type(tags) == 'unicode':
+            tags = tags.split(' ')
         for name, dof in self.dofs.iteritems():
-            if not tags:
-                dof.set_value(value, anim_time)
-
+            all_tags = True
             for tag in tags:
                 if tag not in dof.tags:
+                    all_tags = False
                     break
+
+            if all_tags:
                 dof.set_value(value, anim_time)
 
     def load_module(self, data):
@@ -136,6 +139,9 @@ class Module(object):
                                    servo_data['max'], )
                 else:
                     dof = DOF(dof_name, neutral, poly)
+
+                dof.tags.extend(self.name.split(' '))
+                dof.tags.extend(dof_name.split(' '))
 
                 self.dofs[dof.name] = dof
 

@@ -79,7 +79,7 @@ class _Robot(object):
             self.start_alive_loop()
 
     def start_update_loop(self):
-        Users.broadcast_robot({'dofs': self.get_dof_values(False)})
+        Users.broadcast_robot({'dofs': self.get_dof_values(False)}, True)
 
         if self._dof_t is not None:
             self._dof_t.stop()
@@ -140,14 +140,14 @@ class _Robot(object):
     def set_dof(self, tags=[], value=0, anim_time=-1):
         for name, module in self.modules.iteritems():
             module.set_dof(tags, value, anim_time)
+        self.start_update_loop()
 
     def set_dof_value(self, module_name, dof_name, dof_value, anim_time=-1):
         if module_name is None:
             for name, module in self.modules.iteritems():
                 module.set_dof_value(None, dof_value, anim_time)
         else:
-            self.modules[module_name].set_dof_value(dof_name, dof_value,
-                                                    anim_time)
+            self.modules[module_name].set_dof_value(dof_name, dof_value, anim_time)
 
         self.start_update_loop()
 
@@ -182,8 +182,6 @@ class _Robot(object):
         return dofs
 
     def apply_poly(self, r, phi, anim_time=-1):
-        # print_info('Apply robot poly; r: %f, phi: %f, time: %f' %
-        #            (r, phi, anim_time))
         for name, module in self.modules.iteritems():
             module.apply_poly(r, phi, anim_time)
 
@@ -267,10 +265,12 @@ class _Robot(object):
 
     def sleep(self):
         print_info('Night night... ZZZZzzzz....')
+        self.set_dof(['eye', 'lid'], -1)
         pass
 
     def wake(self):
         print_info('I am awake!')
+        self.set_dof(['eye', 'lid'], 1)
         pass
 
 
