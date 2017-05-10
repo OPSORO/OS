@@ -181,6 +181,26 @@ var Servo = function(pin, mid, min, max) {
   self.mid = ko.observable(mid || 1500);
   self.min = ko.observable(min || -1000);
   self.max = ko.observable(max || 1000);
+
+  self.update_mid = function() {
+    if(connReady){
+      conn.send(JSON.stringify({
+        action: "setServoPos",
+        pin: self.pin(),
+        value: self.mid(),
+      }));
+    }
+  };
+  self._update_mid = ko.computed(function() {
+    if(connReady){
+      conn.send(JSON.stringify({
+        action: "setServoPos",
+        pin: self.pin(),
+        value: self.mid(),
+      }));
+    }
+    return self.mid();
+  }, self);
 };
 var Dof = function(name) {
   var self = this;
