@@ -205,7 +205,8 @@ class RHandler(object):
                 return redirect(url_for("login"))
         else:
             print_info('OFFLINE MODE')
-            login_user(usertypes.Guest())
+            Users.login_admin()
+            # login_user(usertypes.Guest())
 
             return redirect(url_for("index"))
 

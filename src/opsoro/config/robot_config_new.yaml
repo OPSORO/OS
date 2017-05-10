@@ -26,7 +26,7 @@ modules:
       - name: horizontal
         servo:
           pin: 15
-          mid: 1600
+          mid: 1500
           min: 300
           max: -300
         mapping:
@@ -44,9 +44,9 @@ modules:
       - name: lid
         servo:
           pin: 13
-          mid: 1550
-          min: -200
-          max: 200
+          mid: 1300
+          min: -400
+          max: 450
         mapping:
           neutral: 0.7
           poly: [ 0.7, 1, 1, 0.65, 0.25, 0, 0.05, -0.05, 0, -0.05, -0.15, -0.35, -0.65, -1, -0.45, -0.15, 0.15, 0.4, 0.5, 0.5 ]
@@ -88,7 +88,7 @@ modules:
       - name: horizontal
         servo:
           pin: 0
-          mid: 1600
+          mid: 1500
           min: 300
           max: -300
         mapping:
@@ -106,9 +106,9 @@ modules:
       - name: lid
         servo:
           pin: 2
-          mid: 1600
-          min: -200
-          max: 200
+          mid: 1300
+          min: -400
+          max: 450
         mapping:
           neutral: 0.7
           poly: [ 0.7, 1, 1, 0.65, 0.25, 0, 0.05, -0.05, 0, -0.05, -0.15, -0.35, -0.65, -1, -0.45, -0.15, 0.15, 0.4, 0.5, 0.5 ]
