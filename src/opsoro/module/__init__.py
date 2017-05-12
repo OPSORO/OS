@@ -75,8 +75,12 @@ class Module(object):
         :param float value:         value to set the DOF
         :param int anim_time:       animation time in ms
         """
-        if type(tags) == 'unicode':
-            tags = tags.split(' ')
+        if type(tags) is not type([]):
+            try:
+                tags = tags.split(' ')
+            except Exception as e:
+                print_warning('Unknow tag format. Unable to split unicode.')
+
         for name, dof in self.dofs.iteritems():
             all_tags = True
             for tag in tags:
@@ -101,13 +105,10 @@ class Module(object):
         self.position = {}
         self.size = {}
 
-        if 'canvas' in data:
-            canvas_data = data['canvas']
+        if 'grid' in data:
+            canvas_data = data['grid']
             self.position['x'] = canvas_data['x']
             self.position['y'] = canvas_data['y']
-
-            self.size['width'] = canvas_data['width']
-            self.size['height'] = canvas_data['height']
             self.size['rotation'] = canvas_data['rotation']
 
         if 'dofs' in data:
@@ -121,12 +122,8 @@ class Module(object):
 
                 neutral = 0.0
                 poly = None
-                if 'mapping' in dof_data:
-                    mapping_data = dof_data['mapping']
-                    if 'neutral' in mapping_data:
-                        neutral = mapping_data['neutral']
-                    if 'poly' in mapping_data:
-                        poly = mapping_data['poly']
+                if 'poly' in dof_data:
+                    poly = dof_data['poly']
 
                 dof = None
                 if 'servo' in dof_data:
@@ -140,6 +137,7 @@ class Module(object):
                 else:
                     dof = DOF(dof_name, neutral, poly)
 
+                # Add name as tags
                 dof.tags.extend(self.name.split(' '))
                 dof.tags.extend(dof_name.split(' '))
 

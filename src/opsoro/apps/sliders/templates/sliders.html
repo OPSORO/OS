@@ -8,7 +8,7 @@
 {% if config %}
 	{% for module in config %}
 		{% for dof in module.dofs %}
-			{% if dof.servo %}
+			{% if dof.servo and dof.servo.pin >= 0 %}
 				<div class="sliderrow row">
 					<!-- <div class="small-12 columns hide-for-medium-up"><strong>{{ dof.name|upper }}</strong></div> -->
 					<div class="medium-5 large-3 columns">

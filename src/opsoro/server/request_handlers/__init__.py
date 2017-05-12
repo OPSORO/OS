@@ -27,7 +27,7 @@ try:
 except ImportError:
     import json
 
-dof_positions = {}
+
 # Helper function
 get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 
@@ -66,16 +66,17 @@ class RHandler(object):
         # ----------------------------------------------------------------------
         # ROBOT
         # ----------------------------------------------------------------------
-        self.server.flaskapp.add_url_rule("/robot/",            "robot",            self.page_virtual,          methods=["GET"], )
-        self.server.flaskapp.add_url_rule("/sound/",            "sound",            self.sound_data,            methods=["GET"], )
-        self.server.flaskapp.add_url_rule("/robot/config/",     "robot_config",     protect(robot_config_data), methods=["GET", "POST"], )
-        self.server.flaskapp.add_url_rule("/robot/emotion/",    "robot_emotion",    protect(robot_emotion),     methods=["GET", "POST"], )
-        self.server.flaskapp.add_url_rule("/robot/dof/",        "robot_dof",        protect(robot_dof_data),    methods=["GET", "POST"], )
-        self.server.flaskapp.add_url_rule("/robot/dofs/",       "robot_dofs",       protect(robot_dofs_data),   methods=["GET", "POST"], )
-        self.server.flaskapp.add_url_rule("/robot/tts/",        "robot_tts",        protect(robot_tts),         methods=["GET", "POST"], )
-        self.server.flaskapp.add_url_rule("/robot/sound/",      "robot_sound",      protect(robot_sound),       methods=["GET", "POST"], )
-        self.server.flaskapp.add_url_rule("/robot/servo/",      "robot_servo",      protect(robot_servo),       methods=["GET", "POST"], )
-        self.server.flaskapp.add_url_rule("/robot/stop/",       "robot_stop",       protect(robot_stop),        methods=["GET", "POST"], )
+        self.server.flaskapp.add_url_rule("/sound/",             "sound",             self.sound_data,                    methods=["GET"], )
+        self.server.flaskapp.add_url_rule("/robot/",             "robot",             self.page_virtual,                  methods=["GET"], )
+        self.server.flaskapp.add_url_rule("/config/robot/",      "config_robot",      protect(config_robot_data),         methods=["GET", "POST"], )
+        self.server.flaskapp.add_url_rule("/config/expression/", "config_expression", protect(config_expressions_data),   methods=["GET", "POST"], )
+        self.server.flaskapp.add_url_rule("/robot/emotion/",     "robot_emotion",     protect(robot_emotion),             methods=["GET", "POST"], )
+        self.server.flaskapp.add_url_rule("/robot/dof/",         "robot_dof",         protect(robot_dof_data),            methods=["GET", "POST"], )
+        self.server.flaskapp.add_url_rule("/robot/dofs/",        "robot_dofs",        protect(robot_dofs_data),           methods=["GET", "POST"], )
+        self.server.flaskapp.add_url_rule("/robot/tts/",         "robot_tts",         protect(robot_tts),                 methods=["GET", "POST"], )
+        self.server.flaskapp.add_url_rule("/robot/sound/",       "robot_sound",       protect(robot_sound),               methods=["GET", "POST"], )
+        self.server.flaskapp.add_url_rule("/robot/servo/",       "robot_servo",       protect(robot_servo),               methods=["GET", "POST"], )
+        self.server.flaskapp.add_url_rule("/robot/stop/",        "robot_stop",        protect(robot_stop),                methods=["GET", "POST"], )
 
         for _exc in default_exceptions:
             self.server.flaskapp.errorhandler(_exc)(self.show_errormessage)
@@ -119,21 +120,6 @@ class RHandler(object):
     def page_index(self):
         data = {"title": self.title, "index": True, "apps": {}, "active_apps": [], "other_apps": []}
 
-        # if self.server.activeapp in Apps.apps:
-        #     app = Apps.apps[self.server.activeapp]
-        #     if app.config.has_key('allowed_background'):
-        #         if not app.config['allowed_background']:
-        #             self.server.stop_current_app()
-        #         else:
-        #             data["activeapp"] = {"name"             : self.server.activeapp,
-        #                                  "full_name"        : app.config["full_name"],
-        #                                  "formatted_name"   : app.config["formatted_name"],
-        #                                  "icon"             : app.config["icon"],
-        #                                  "color"            : app.config['color'],
-        #                                  "difficulty"       : app.config['difficulty'],
-        #                                  "tags"             : app.config['tags']
-        #                                  }
-
         for appname in sorted(Apps.active_apps):
             app = Apps.apps[appname]
             data["active_apps"].append(app.config["full_name"])
@@ -170,6 +156,7 @@ class RHandler(object):
                                           "active": (appname in Apps.active_apps),
                                           "connection": app.config['connection'],
                                           "background": app.config['allowed_background'],
+                                          "category_index": app.config['category_index'],
                                           })
 
         return self.render_template("apps.html", **data)
@@ -193,11 +180,6 @@ class RHandler(object):
 
             if password == Preferences.get("general", "password", default="opsoro123"):
                 Users.login_admin()
-
-                # self.server.user_socketrouter.broadcast(self.server.client_sockets, {'action': 'logout'})
-                # for e in self.server.client_sockets:
-                #     e.broadcast_data('refresh', {})
-                #     break
 
                 return redirect(url_for("index"))
             else:
@@ -287,7 +269,6 @@ class RHandler(object):
 
         modules_folder = '../../modules/'
         modules_static_folder = '../static/modules/'
-        config_folder = '../../config/'
 
         # get modules
         filenames = []
@@ -301,8 +282,7 @@ class RHandler(object):
             with open(get_path(modules_static_folder + module_name + '/front.svg')) as f:
                 data['svg_codes'][module_name] = f.read()
 
-        with open(get_path(config_folder + 'robot_config.yaml')) as f:
-            data['configs'] = yaml.load(f, Loader=Loader)['modules']
+        data['configs'] = Robot.config
 
         return self.render_template('virtual.html', **data)
 
@@ -310,15 +290,12 @@ class RHandler(object):
         data = {'soundfiles': [], 'configs': {}, 'expressions': {}, 'apps_blockly': {}}
 
         apps_dir = '../../apps/'
-        config_folder = '../../config/'
         filenames = glob.glob(get_path('../../data/sounds/*.wav'))
         for filename in filenames:
             data['soundfiles'].append(os.path.split(filename)[1])
 
-        with open(get_path(config_folder + 'robot_config.yaml')) as f:
-            data['configs'] = yaml.load(f, Loader=Loader)['modules']
-        with open(get_path(config_folder + 'robot_expressions.yaml')) as f:
-            data['expressions'] = yaml.load(f, Loader=Loader)['expressions']
+        data['configs'] = Robot.config
+        data['expressions'] = Expression.expressions
 
         for appname in sorted(Apps.apps.keys()):
             app_blockly_path = get_path(apps_dir + appname + '/blockly/')

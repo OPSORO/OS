@@ -12,17 +12,10 @@
 
 {% block app_scripts %}
 	<script>
-		// config_data = {{ config | safe }};
-
-		action_data 		= {{ actions|tojson|safe }};
-
-		module_names 		= {{ modules|tojson|safe }};
-		skin_names 			= {{ skins|tojson|safe }};
+		var virtual_robot = true
 		specs 					= {{ specs|tojson|safe }};
 		svg_codes 			= {{ svg_codes|tojson|safe }};
 		configs 				= {{ configs|tojson|safe }};
-		expression_data = undefined;
-		icon_data 			= undefined;
 	</script>
 
 	<script src="/static/js/svg/svg.min.js?ver={{ version }}"></script>

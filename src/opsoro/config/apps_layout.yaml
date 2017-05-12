@@ -1,7 +1,8 @@
+---
 # Always use '#. ' before the actual title, for sorting purposes
 - title: 1. Getting started
   apps:
-  - configurator
+  - robot_configurator
   - expression_configurator
   - preferences
   - circumplex

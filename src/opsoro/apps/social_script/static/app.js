@@ -131,8 +131,7 @@ $(document).ready(function(){
 		});
 		self.fixedVoiceLine = new VoiceLine(self.emotions[0], "tts", "", "");
 
-		self.init = function(){
-			// self.fileName("Untitled");
+		self.newFileData = function(){
 			self.voiceLines.removeAll();
 			self.voiceLines.push(new VoiceLine(self.emotions[0], "tts", "", ""));
 			self.unlockFile();
@@ -244,18 +243,12 @@ $(document).ready(function(){
 					break;
 			}
 		};
-
-		// if (action_data.openfile) {
-		// 	self.loadFileData(loadFileHandler(action_data.openfile || ""));
-		// } else {
-		// 	self.init();
-		// }
 	};
 	// This makes Knockout get to work
 	var model = new SocialScriptModel();
 	ko.applyBindings(model);
 	model.fileIsModified(false);
 
-	config_file_operations("", model.fileExtension(), model.saveFileData, model.loadFileData, model.init);
+	config_file_operations("", model.fileExtension(), model.saveFileData, model.loadFileData, model.newFileData);
 
 });

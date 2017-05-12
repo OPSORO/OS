@@ -13,16 +13,14 @@ import math
 import os
 from functools import partial
 
-import yaml
-
 import cmath
 from opsoro.console_msg import *
 from opsoro.robot import Robot
 
 try:
-    from yaml import CLoader as Loader
+    import simplejson as json
 except ImportError:
-    from yaml import Loader
+    import json
 
 
 def constrain(n, minn, maxn): return max(min(maxn, n), minn)
@@ -166,28 +164,53 @@ class _Expression(object):
             # send dofs directly to the robot
             Robot.set_dof_list(exp['dofs'], anim_time)
 
-    def load_config(self, file_name='robot_expressions.yaml'):
+    def set_config(self, config=None):
+        if config is not None and len(config) > 0:
+            save_new_config = (self.expressions != config)
+            self.expressions = json.loads(config)
+            # Create all module-objects from data
+
+            if save_new_config:
+                self.save_config()
+
+        return self.expressions
+
+    def load_config(self, file_name='robot_expressions.conf'):
         # Load modules from file
         if file_name is None:
             return False
 
         try:
             with open(get_path("config/" + file_name)) as f:
-                self.expressions = yaml.load(f, Loader=Loader)['expressions']
+                self.expressions = f.read()
 
             if self.expressions is None or len(self.expressions) == 0:
                 print_warning("Config contains no data: " + file_name)
                 return False
 
+            self.set_config(self.expressions)
             # print module feedback
             print_info("%i expressions loaded [%s]" % (len(self.expressions), file_name))
-            # print(self.expressions)
 
         except IOError:
             self.expressions = {}
             print_warning("Could not open " + file_name)
             return False
 
+        return True
+
+    def save_config(self, file_name='robot_expressions.conf'):
+        # Save modules to json file
+        if file_name is None:
+            return False
+
+        try:
+            with open(get_path("config/" + file_name), "w") as f:
+                f.write(json.dumps(self.expressions))
+            print_info("Expressions saved: " + file_name)
+        except IOError:
+            print_warning("Could not save " + file_name)
+            return False
         return True
 
 

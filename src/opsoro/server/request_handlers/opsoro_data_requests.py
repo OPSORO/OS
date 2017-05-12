@@ -82,14 +82,20 @@ def docs_file_list():
 # ------------------------------------------------------------------------------
 # ROBOT
 # ------------------------------------------------------------------------------
-def robot_config_data():
+def config_robot_data():
     config_data = request.form.get('config_data', type=str, default=None)
 
     # This function also handles the None value and returns the current configuration
-    tempConfig = Robot.config(config_data)
+    tempConfig = Robot.set_config(config_data)
 
-    if config_data is not None:
-        Robot.save_config()
+    return json.dumps({'success': True, 'config': tempConfig})
+
+
+def config_expressions_data():
+    config_data = request.form.get('config_data', type=str, default=None)
+
+    # This function also handles the None value and returns the current configuration
+    tempConfig = Expression.set_config(config_data)
 
     return json.dumps({'success': True, 'config': tempConfig})
 

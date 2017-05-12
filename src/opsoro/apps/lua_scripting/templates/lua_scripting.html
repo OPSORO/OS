@@ -247,7 +247,7 @@
 					boilerplate = data;
 				});
 
-				self.init = function () {
+				self.newFileData = function () {
 					editor.setValue(boilerplate);
 					editor.gotoLine(1, 0, false);
 
@@ -379,19 +379,13 @@
 					$("#ScriptUIModal").foundation("open");
 				};
 
-				if (action_data.openfile) {
-					self.loadFileData(action_data.openfile || "");
-				} else {
-					self.init();
-				}
-
 			};
 			// This makes Knockout get to work
 			var model = new Model();
 			ko.applyBindings(model);
 			model.fileIsModified(false);
 
-			config_file_operations("", model.fileExtension(), model.saveFileData, model.loadFileData, model.init);
+			config_file_operations("", model.fileExtension(), model.saveFileData, model.loadFileData, model.newFileData);
 		});
 	</script>
 

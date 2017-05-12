@@ -43,9 +43,8 @@ $(document).ready(function() {
             self.closePopup();
         };
 
-        self.init = function() {
+        self.newFileData = function() {
             // Clear data, new file, ...
-            self.fileName("Untitled");
             self.unlockFile();
             self.fileIsModified(false);
         };
@@ -78,5 +77,5 @@ $(document).ready(function() {
     model.fileIsModified(false);
 
     // Configurate toolbar handlers
-    //config_file_operations("", model.fileExtension(), model.saveFileData, model.loadFileData, model.init);
+    //config_file_operations("", model.fileExtension(), model.saveFileData, model.loadFileData, model.newFileData);
 });

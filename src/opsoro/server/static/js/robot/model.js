@@ -154,19 +154,11 @@ var Grid = function(pin, mid, min, max) {
   var self = this;
   self.x      = 30;
   self.y      = 30;
-  self.width  = 410;//205;
-  self.height = 586;//293;
   self.holesX = 25;
   self.holesY = 36;
-  self.scale  = self.width / 205;
-  self.start  = 6.5 * self.scale;
-  self.space  = 8 * self.scale;
-
-  main_svg.size(self.width + self.x * 2, self.height + self.y * 2);
 
   self.object = main_svg.image('/static/images/robot/grids/A4_portrait.svg');
   self.object.addClass('grid');
-  self.object.size(self.width, self.height);
   self.object.move(self.x, self.y);
   self.object.draggable().on('dragmove', function(e) { e.preventDefault(); });
   self.object.on('mousedown', function(){
@@ -174,13 +166,26 @@ var Grid = function(pin, mid, min, max) {
       virtualModel.selected_module().deselect();
     }
   });
+  self.resize = function(width) {
+    self.width  = width - (2 * self.x);
+    self.scale  = self.width / 205;
+    self.height = 293 * self.scale;
+    self.start  = 6.5 * self.scale;
+    self.space  = 8 * self.scale;
+
+    main_svg.size(width, self.height + (2 * self.y));
+
+    self.object.size(self.width, self.height);
+  };
+
+  self.resize(470);
 };
 var Servo = function(pin, mid, min, max) {
   var self = this;
   self.pin = ko.observable(pin || 0);
   self.mid = ko.observable(mid || 1500);
-  self.min = ko.observable(min || -1000);
-  self.max = ko.observable(max || 1000);
+  self.min = ko.observable(min || -100);
+  self.max = ko.observable(max || 100);
 
   self.update_mid = function() {
     if(connReady){
@@ -484,24 +489,6 @@ var VirtualModel = function() {
   };
   self.resize();
 
-  self.icons = ko.observableArray(icon_data);
-  self.used_icons = [];
-
-  self.expressions = ko.observableArray();
-  self.selected_expression = ko.observable();
-  self.add_expression = function(name, filename, poly_index, dof_values) {
-    if (typeof name == 'object') {
-      name = 'custom';
-      filename = '';
-    }
-    name      = name || '';
-    var exp = new Expression(name, filename, poly_index, dof_values);
-    self.expressions.push(exp);
-    if (filename == '') {
-      exp.change_icon();
-      self.expressions()[self.expressions().length-1].select();
-    }
-  };
 };
 
 var main_svg;

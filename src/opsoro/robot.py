@@ -12,7 +12,6 @@ import os
 import time
 from functools import partial
 
-import yaml
 from enum import IntEnum
 from flask_login import current_user
 
@@ -30,11 +29,6 @@ try:
     import simplejson as json
 except ImportError:
     import json
-
-try:
-    from yaml import CLoader as Loader
-except ImportError:
-    from yaml import Loader
 
 
 get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
@@ -57,7 +51,7 @@ class _Robot(object):
 
     def __init__(self):
         self.modules = {}
-        self._config = {}
+        self.config = {}
         self.load_config()
         self._dof_t = None
         self._alive_t = None
@@ -115,13 +109,14 @@ class _Robot(object):
         self.stop_alive_loop()
         self.stop_update_loop()
 
-    def config(self, config=None):
+    def set_config(self, config=None):
         if config is not None and len(config) > 0:
-            # self._config = json.loads(config)
+            save_new_config = (self.config != config)
+            self.config = json.loads(config)
             # Create all module-objects from data
             self.modules = {}
             modules_count = {}
-            for module_data in self._config['modules']:
+            for module_data in self.config['modules']:
                 module_type = module_data['type']
                 if module_type in MODULES:
                     # Create module object
@@ -131,11 +126,22 @@ class _Robot(object):
                     if module_type not in modules_count:
                         modules_count[module_type] = 0
                     modules_count[module_type] += 1
+
+                    if module.name in self.modules:
+                        for i in range(1000):
+                            if ('%s %i' % (module.name, i)) not in self.modules:
+                                module.name = ('%s %i' % (module.name, i))
+                                break
+
                     self.modules[module.name] = module
 
             # print module feedback
             print_info("Modules: " + str(modules_count))
-        return self._config
+
+            if save_new_config:
+                self.save_config()
+            Users.broadcast_robot({'refresh': True})
+        return self.config
 
     def set_dof(self, tags=[], value=0, anim_time=-1):
         for name, module in self.modules.iteritems():
@@ -173,11 +179,12 @@ class _Robot(object):
             dofs.append(0)
         for module_name, module in self.modules.iteritems():
             for dof_name, dof in module.dofs.iteritems():
-                if hasattr(dof, 'pin'):
-                    if current:
-                        dofs[int(dof.pin)] = float(dof.value)
-                    else:
-                        dofs[int(dof.pin)] = float(dof.to_value)
+                if hasattr(dof, 'pin') and dof.pin is not None:
+                    if dof.pin >= 0 and dof.pin < len(dofs):
+                        if current:
+                            dofs[dof.pin] = float(dof.value)
+                        else:
+                            dofs[dof.pin] = float(dof.to_value)
 
         return dofs
 
@@ -221,37 +228,38 @@ class _Robot(object):
 
         return updated
 
-    def load_config(self, file_name='robot_config.yaml'):
+    def load_config(self, file_name='robot_config.conf'):
         # Load modules from file
         if file_name is None:
             return False
 
         try:
             with open(get_path("config/" + file_name)) as f:
-                self._config = yaml.load(f, Loader=Loader)
+                self.config = f.read()
 
-            if self._config is None or len(self._config) == 0:
+            if self.config is None or len(self.config) == 0:
                 print_warning("Config contains no data: " + file_name)
                 return False
+
+            self.set_config(self.config)
             # print module feedback
-            self.config(self._config)
             print_info("%i modules loaded [%s]" % (len(self.modules), file_name))
 
         except IOError:
-            self._config = {}
+            self.config = {}
             print_warning("Could not open " + file_name)
             return False
 
         return True
 
-    def save_config(self, file_name='default.conf'):
+    def save_config(self, file_name='robot_config.conf'):
         # Save modules to json file
         if file_name is None:
             return False
 
         try:
             with open(get_path("config/" + file_name), "w") as f:
-                f.write(json.dumps(self._config))
+                f.write(json.dumps(self.config))
             print_info("Modules saved: " + file_name)
         except IOError:
             print_warning("Could not save " + file_name)

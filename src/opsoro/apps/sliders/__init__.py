@@ -49,8 +49,7 @@ def setup_pages(opsoroapp):
             # 'dofs':				[]
         }
 
-        with open(get_path('../../config/robot_config.yaml')) as f:
-            data['config'] = yaml.load(f, Loader=Loader)['modules']
+        data['config'] = Robot.config['modules']
 
         return opsoroapp.render_template(config['formatted_name'] + '.html', **data)
 

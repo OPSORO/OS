@@ -8,7 +8,7 @@ import yaml
 from flask import Blueprint, render_template, request
 
 from opsoro.console_msg import *
-from opsoro.expression import Expression
+from opsoro.hardware import Hardware
 from opsoro.robot import Robot
 
 try:
@@ -21,14 +21,14 @@ def constrain(n, minn, maxn): return max(min(maxn, n), minn)
 
 
 config = {
-    'full_name':            'Expression Configurator',
+    'full_name':            'Robot Configurator',
     'author':               'OPSORO',
-    'icon':                 'fa-smile-o',
+    'icon':                 'fa-pencil',
     'color':                'red',
     'difficulty':           3,
-    'tags':                 ['design', 'setup', 'expression', 'configuration'],
+    'tags':                 ['design', 'setup', 'robot', 'configuration'],
     'allowed_background':   False,
-    'multi_user':           True,
+    'multi_user':           False,
     'connection':           Robot.Connection.OFFLINE,
     'activation':           Robot.Activation.MANUAL
 }
@@ -51,17 +51,12 @@ def setup_pages(opsoroapp):
             'configs': {},
             'specs': {},
             'skins': [],
-            'expressions': {},
-            'icons': [],
         }
 
-        # action = request.args.get('action', None)
-        # if action != None:
         data['actions']['openfile'] = request.args.get('f', None)
 
         modules_folder = '../../modules/'
         modules_static_folder = '../../server/static/modules/'
-        icons_static_folder = '../../server/static/images/emojione/'
 
         # get modules
         filenames = []
@@ -76,12 +71,6 @@ def setup_pages(opsoroapp):
                 data['svg_codes'][module_name] = f.read()
 
         data['configs'] = Robot.config
-        data['expressions'] = Expression.expressions
-
-        filenames = []
-        filenames.extend(glob.glob(get_path(icons_static_folder + '*.svg')))
-        for filename in filenames:
-            data['icons'].append(os.path.splitext(os.path.split(filename)[1])[0])
 
         # filenames = []
         # filenames.extend(glob.glob(get_path('static/images/skins/*.svg')))
@@ -90,18 +79,16 @@ def setup_pages(opsoroapp):
 
         return opsoroapp.render_template(config['formatted_name'] + '.html', **data)
 
-    @opsoroapp.app_socket_message('setDofs')
-    def s_setDofs(conn, data):
-        dof_values = data.pop('dofs', None)
+    @opsoroapp.app_socket_message('setServoPos')
+    def s_setServoPos(conn, data):
+        pin = constrain(int(data.pop('pin', None)), 0, 15)
+        value = constrain(int(data.pop('value', None)), 500, 2500)
 
-        if dof_values is None:
+        if pin is None or value is None:
             conn.send_data('error', {'message': 'No valid pin or value given.'})
             return
 
-        if type(dof_values) is dict:
-            Robot.set_dof_values(dof_values)
-        elif type(dof_values) is list:
-            Robot.set_dof_list(dof_values)
+        Hardware.Servo.set(pin, value)
 
     opsoroapp.register_app_blueprint(app_bp)
 

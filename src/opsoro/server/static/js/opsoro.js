@@ -145,7 +145,7 @@ function popupWindow(mylink, windowname)
 	   href=mylink;
 	else
 	   href=mylink.href;
-	window.open(href, windowname, 'width=400,height=400,scrollbars=no');
+	window.open(href, windowname, 'width=400,height=500,scrollbars=no');
 	return false;
 }
 
@@ -256,7 +256,9 @@ function connectSocket() {
               if (typeof msg.sound != 'undefined' && typeof msg.msg != 'undefined' && typeof virtualModel.update_sound === "function") {
                 virtualModel.update_sound(msg.sound, msg.msg);
               }
-
+              if (typeof msg.refresh != 'undefined') {
+                location.reload();
+              }
             }
 
             break;
@@ -319,7 +321,25 @@ function robotSendReceiveConfig(config_data)
   $.ajax({
     dataType: 'json',
     type: 'POST',
-    url: '/robot/config/',
+    url: '/config/robot/',
+    data: { config_data: json_data },
+    success: function(data){
+      if (!data.success) {
+        showMainError(data.message);
+      } else {
+        return data.config;
+      }
+    }
+  });
+}
+
+function robotSendReceiveExpressions(config_data)
+{
+  var json_data = ko.toJSON(config_data, null, 2);
+  $.ajax({
+    dataType: 'json',
+    type: 'POST',
+    url: '/config/expression/',
     data: { config_data: json_data },
     success: function(data){
       if (!data.success) {

@@ -332,7 +332,7 @@
 		];
 		var doflist = [
 			{% if configs %}
-				{% for mod in configs %}
+				{% for mod in configs['modules'] %}
 					{% if mod.dofs %}
 						{% for dof in mod.dofs %}
 							["{{ mod.name + ' ' + dof.name }}", "{{ mod.name + ' ' + dof.name }}"]{% if not loop.last %},{% endif %}

@@ -25,8 +25,9 @@
 <div class="spacer"></div>
 
 <script>
-
-    file_name = "{{ _('Untitled') }}";
+    file_name_default = "{{ _('Default') }}";
+    file_name_untitled = "{{ _('Untitled') }}";
+    file_name = file_name_untitled;
     fileIsModified = function () {
         if ($(".filebox .fa-asterisk").css("display") == "none") {
             return false
@@ -62,15 +63,17 @@
     var _SaveFileView = 0;
 
     var saveFile = function () {
-        if ($(".filebox .filename").text() == "{{ _('Untitled') }}") {
-            showFiles(folderpath, 0, 1);
+        if ($(".filebox .filename").text() == file_name_untitled) {
+            saveItem('', 1, 0);
+            // showFiles(folderpath, 0, 1);
         } else {
             saveItem($(".filebox .filename").text(), 1, 1);
         }
         return;
     };
     var saveAsFile = function () {
-        showFiles(folderpath, 0, 1);
+        saveItem('', 1, 0);
+        // showFiles(folderpath, 0, 1);
         return;
     };
     var openFile = function () {
@@ -89,6 +92,7 @@
     };
     var newFile = function () {
         var yesHandler = function () {
+            file_name = file_name_untitled;
             $(".filebox .filename").text(file_name);
             window.history.pushState("", "New", "?");
             newFileHandler();
@@ -316,7 +320,15 @@
                 f: filename
             },
             success: function (data) {
-                // if (!data.success) {   showMainError(data.message);   return; }
+                var jdata = {};
+                try {
+                  jdata = JSON.parse(data);
+                } catch (e) {}
+
+                if (jdata.success != undefined && !jdata.success) {
+                  showMainError(jdata.message);
+                  data = undefined;
+                }
                 loaded_data = data;
                 // Load script
                 loadDataHandler(data)

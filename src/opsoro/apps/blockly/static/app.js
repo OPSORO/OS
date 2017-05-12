@@ -74,13 +74,6 @@ function blocklyLoaded(blockly, ws) {
     }
     ignoreNextChangeEvt = false;
   });
-
-  // $(document).ready(function() {
-  //     if (model != null) {
-  //         config_file_operations("", model.fileExtension(), model.saveFileData, model.loadFileData, model.init);
-  //     }
-  //
-  // });
 }
 
 function generateLua() {
@@ -100,7 +93,7 @@ $(document).ready(function() {
 
     self.fileIsLocked = ko.observable(false);
     self.fileIsModified = ko.observable(isScriptModified);
-    self.fileName = ko.observable("Untitled");
+    // self.fileName = ko.observable("Untitled");
     self.fileStatus = ko.observable("Editing");
     self.fileExtension = ko.observable(".xml");
     self.isRunning = ko.observable(isScriptRunning);
@@ -247,7 +240,6 @@ $(document).ready(function() {
         return;
       }
       if (Blockly == null) {
-        console.log('LOAD');
         // Wait for blockly to load
         setTimeout(function() {
           // Load script
@@ -263,7 +255,6 @@ $(document).ready(function() {
         return;
       }
       // Load script
-      console.log("Open file");
       ignoreNextChangeEvt = true;
       Blockly.mainWorkspace.clear();
       var xml = Blockly.Xml.textToDom(data);
@@ -273,14 +264,12 @@ $(document).ready(function() {
       self.fileIsModified(false);
     };
 
-    self.init = function() {
-      console.log("New file");
+    self.newFileData = function() {
       ignoreNextChangeEvt = true;
       if (Blockly != null) {
         Blockly.mainWorkspace.clear();
       }
 
-      self.fileName("Untitled");
       self.fileIsModified(false);
     };
 
@@ -438,12 +427,6 @@ $(document).ready(function() {
       $("#ScriptUIModal").foundation("open");
     };
 
-    // if (action_data.openfile) {
-    //     self.loadFileData(action_data.openfile || "");
-    // } else {
-    //     self.init();
-    // }
-
   };
   // This makes Knockout get to work
   var model = new Model();
@@ -451,7 +434,7 @@ $(document).ready(function() {
   model.fileIsModified(false);
 
   // if (Blockly != null) {
-  config_file_operations("", model.fileExtension(), model.saveFileData, model.loadFileData, model.init);
+  config_file_operations("", model.fileExtension(), model.saveFileData, model.loadFileData, model.newFileData);
   loadFileHandler('currentscript.xml.tmp');
   // }
 });
