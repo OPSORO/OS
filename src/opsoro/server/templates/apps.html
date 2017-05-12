@@ -10,7 +10,7 @@
 					{% for category in apps|sort %}
 						<div id="{{ category[3:] }}" class="app-category">
 							<h3>{{ category[3:] }}</h3>
-							{% for app in apps[category] %}
+							{% for app in apps[category]|sort(attribute='category_index') %}
 								{{ app_macro(app) }}
 							{% endfor %}
 						</div>
