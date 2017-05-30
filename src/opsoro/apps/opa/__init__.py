@@ -18,7 +18,7 @@ get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 config = {
     'full_name':            'Opsoro Personal Assistant',
     'icon':                 'fa-hand-spock-o',
-    'color':                'orange',
+    'color':                'green',
     'difficulty':           1,
     'tags':                 ['template', 'developer'],
     'allowed_background':   False,
