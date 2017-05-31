@@ -1,12 +1,19 @@
 # Always use '#. ' before the actual title, for sorting purposes
-- title: 1. Getting started
+- title: 1. Telegram apps
+  apps:
+  - telegram
+  - contacten
+  - verdoemde wooreden
+  - idk..
+
+- title: 2. Getting started
   apps:
   - configurator
   - expression_configurator
   - preferences
   - circumplex
 
-- title: 2. Ready-to-use apps
+- title: 3. Ready-to-use apps
   apps:
   - circumplex
   - sliders
@@ -16,7 +23,7 @@
   - blockly
   - lua_scripting
 
-- title: 3. Community apps
+- title: 4. Community apps
   apps:
   - social_response
   - app_template

@@ -1,0 +1,79 @@
+{% extends "app_base.html" %}
+{% block app_head %}
+
+	<!-- <script src="/site_media/static/js/....js"></script> -->
+
+{% endblock %}
+{% block app_toolbar %}
+	<p style="color: white">This is the toolbar, you can add/remove options.<br/>To remove the toolbar completely, just remove the blocks: "block app_toolbar" and "endblock".</p>
+	<!--
+{% include "toolbar/_file_operations.html" %}
+{% include "toolbar/_script_operations.html" %}
+{% include "toolbar/_lock_unlock.html" %}
+-->
+{% endblock %}
+
+<!-- These sidebars can be removed by removing the block tags -->
+{% block sidebar_left %}{% endblock %}
+{% block sidebar_right %}{% endblock %}
+
+{% block app_content %}
+	<fieldset>
+		<legend>
+			<span class="fa fa-commenting"></span>
+			{{ _('Popup demo') }}</legend>
+		<div class="row">
+			<div class="content">
+				<span class="" data-bind="text: popupTextInput"></span>
+			</div>
+		</div>
+		<div class="row">
+			<div class="content">
+				<a href="#" class="button" data-bind="click: showPopup">
+					<span class="fa fa-cog" style="font-size: 1.5rem"></span>
+					{{ _('Change text popup') }}
+				</a>
+			</div>
+		</div>
+	</fieldset>
+
+	{% if not online %}
+		<!-- Content in this section is not displayed online, only on the robot. For example: it is a perfect place to put controls that access hardware stuff, which is not available online. -->
+	{% endif %}
+
+{% endblock %}
+{% block app_scripts %}
+
+	<script>
+		// var action_data = {{ actions|tojson|safe }};
+
+		// var data = {{ data|tojson|safe }};
+	</script>
+
+	<!-- <script src="/site_media/static/js/....js"></script> -->
+
+{% endblock %}
+{% block app_modals %}
+
+<div id="popup_window" class="reveal" data-reveal data-animation-in="fade-in" data-animation-out="fade-out">
+	<div class="titlebar">
+		<button class="close-button" data-close aria-label="Close" type="button"><span class="fa fa-close"></span></button>
+		<span class="fa fa-cogs"></span> Popup window!
+	</div>
+	<div class="content">
+		<p>This is a popup window.</p>
+		<form>
+			<div class="row collapse">
+				<div class="small-9 columns">
+					<input type="text" name="text" class="error" style="width: 100%;" data-bind="value: popupTextInput">
+					<small class="error hide"></small>
+				</div>
+				<div class="small-3 columns">
+					<a href="#" class="button" style="width: 100%;" data-bind="click: popupButtonHandler()"><span class="fa fa-save"></span> Save</a>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+
+{% endblock %}
