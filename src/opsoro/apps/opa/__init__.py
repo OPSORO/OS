@@ -17,7 +17,7 @@ get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 
 config = {
     'full_name':            'opsoro personal assistant',
-    'icon':                 'fa-hand-spock-o',
+    'icon':                 'fa-child',
     'color':                'green',
     'difficulty':           1,
     'tags':                 ['template', 'developer'],
@@ -25,7 +25,7 @@ config = {
     'connection':           Robot.Connection.OFFLINE,
     'activation':           Robot.Activation.AUTO
 }
-config['formatted_name'] =  config['full_name'].lower().replace(' ', '_')
+config['formatted_name'] =  'opa'
 
 def setup_pages(server):
     app_bp = Blueprint(config['formatted_name'], __name__, template_folder='templates', static_folder='static')
