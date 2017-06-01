@@ -1,8 +1,8 @@
 audio:
-  master_volume: 60
+  master_volume: 100
   tts_engine: espeak
-  tts_gender: f
-  tts_language: en
+  tts_gender: m
+  tts_language: nl
 behaviour:
   blink: false
   caffeine: 0
