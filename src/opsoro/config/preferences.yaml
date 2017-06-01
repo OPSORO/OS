@@ -1,5 +1,5 @@
 audio:
-  master_volume: 60
+  master_volume: 0
   tts_engine: espeak
   tts_gender: f
   tts_language: en
@@ -12,8 +12,8 @@ general:
   robot_name: robot
   startup_app: --None--
 security:
-  password: opsoro123
+  password: q
 wireless:
-  channel: 6
+  channel: 5
   password: RobotOpsoro
   ssid: OPSORO-bot
