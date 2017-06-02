@@ -8,6 +8,9 @@
 
 {% block app_head %}{% endblock %}
 
+
+{% block actionbar_class %}background_{{ app.color }}{% endblock %}
+
 {% block status_text_comment %}{{ app.name }}{% endblock %}
 
 {% block app_body %}
@@ -16,4 +19,7 @@
 
 {% block default_app_scripts %}
 	<script src="static/app.js?ver={{ version }}"></script>
+	<script>
+		app_data = {{ app|tojson|safe }};
+	</script>
 {% endblock %}

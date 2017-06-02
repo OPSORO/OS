@@ -47,36 +47,12 @@
 <script>
 $(document).ready(function(){
 	// Setup websocket connection.
-	var conn = null;
-	var connReady = false;
-	conn = new SockJS("http://" + window.location.host + "/sockjs");
-
-	conn.onopen = function(){
-		console.log("SockJS connected.");
-		$.ajax({
-			url: "/sockjstoken",
-			cache: false
-		})
-		.done(function(data) {
-			conn.send(JSON.stringify({action: "authenticate", token: data}));
-			connReady = true;
-			console.log("SockJS authenticated.");
-		});
-	};
-
-	conn.onmessage = function(e){
-		var msg = $.parseJSON(e.data);
-		switch(msg.action){
+	app_socket_handler = function(data) {
+		switch (data.action) {
 			case "error":
-				showMainError(msg.message);
+				showMainError(data.message);
 				break;
 		}
-	};
-
-	conn.onclose = function(){
-		console.log("SockJS disconnected.");
-		conn = null;
-		connReady = false;
 	};
 
 	$(".slider").on("moved.zf.slider", function(){

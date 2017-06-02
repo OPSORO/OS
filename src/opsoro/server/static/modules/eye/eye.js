@@ -12,9 +12,9 @@ var Eye = function(svg_code, specs, config) {
       var midY    = 24;
 
       var dPupil  = 10;
-      self.pupil.center(midX + dPupil * self.dofs()[0].value(), midY + dPupil * self.dofs()[1].value());
+      self.pupil.center(midX + dPupil * self.dofs[0].value, midY + dPupil * self.dofs[1].value);
 
-      var lid1 = 4 + 10 * (1 - self.dofs()[2].value());
+      var lid1 = 4 + 10 * (1 - self.dofs[2].value);
       self.lid_1.array().value[2][2] = self.lid_1.array().value[2][4] = lid1;
       self.lid_1.plot(self.lid_1.array());
       self.lid_2.array().value[2][2] = self.lid_2.array().value[2][4] = midY*2 - lid1;

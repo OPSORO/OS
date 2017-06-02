@@ -5,9 +5,9 @@
 {% endblock %}
 
 {% block app_toolbar %}
-	{% include "toolbar/_file_operations.html" %}
-	{% include "toolbar/_script_operations.html" %}
 	{% include "toolbar/_expand_collapse.html" %}
+	{% include "toolbar/_script_operations.html" %}
+	{% include "toolbar/_file_operations.html" %}
 {% endblock %}
 
 {% block app_content %}
@@ -111,25 +111,10 @@
 				});
 
 				// Setup websocket connection.
-				var conn = null;
-				var connReady = false;
-				conn = new SockJS("http://" + window.location.host + "/appsockjs");
-
-				conn.onopen = function () {
-					console.log("SockJS connected.");
-					$.ajax({url: "/appsockjstoken", cache: false}).done(function (data) {
-						conn.send(JSON.stringify({action: "authenticate", token: data}));
-						connReady = true;
-						console.log("SockJS authenticated.");
-					});
-				};
-
-				conn.onmessage = function (e) {
-					var msg = $.parseJSON(e.data);
-
-					switch (msg.action) {
+				app_socket_handler = function(data) {
+		      switch (data.action) {
 						case "addConsole":
-							addConsole(msg.message, msg.color, msg.icon);
+							addConsole(data.message, data.color, data.icon);
 							break;
 						case "scriptStarted":
 							addConsole("Script started.", "#888888", "fa-play");
@@ -161,9 +146,9 @@
 							}
 
 							var li = "<li>";
-							li += "<a href=\"#\" class=\"button btnScriptUI\" data-toggle=\"" + msg.toggle + "\" data-buttonname=\"" + msg.name + "\">";
-							li += "<span class=\"fa " + msg.icon + " fa-2x\"></span><br>"
-							li += msg.caption;
+							li += "<a href=\"#\" class=\"button btnScriptUI\" data-toggle=\"" + data.toggle + "\" data-buttonname=\"" + data.name + "\">";
+							li += "<span class=\"fa " + data.icon + " fa-2x\"></span><br>"
+							li += data.caption;
 							li += "</a>";
 							li += "</li>";
 							$("#ScriptUIButtons").append(li);
@@ -206,15 +191,15 @@
 								"z": 90
 							};
 
-							if (msg.key == "space") {
+							if (data.key == "space") {
 								// Key is space bar
-								div = "<div class=\"keyboardKey space\" data-key=\"" + msg.key + "\" data-keycode=\"" + keymap[msg.key] + "\">&nbsp;</div>";
-							} else if (arrows.indexOf(msg.key) > -1) {
+								div = "<div class=\"keyboardKey space\" data-key=\"" + data.key + "\" data-keycode=\"" + keymap[data.key] + "\">&nbsp;</div>";
+							} else if (arrows.indexOf(data.key) > -1) {
 								// Key is an arrow
-								div = "<div class=\"keyboardKey\"  data-key=\"" + msg.key + "\" data-keycode=\"" + keymap[msg.key] + "\"><span class=\"fa fa-caret-" + msg.key + "\"></span></div>";
-							} else if (alphabet.indexOf(msg.key) > -1) {
+								div = "<div class=\"keyboardKey\"  data-key=\"" + data.key + "\" data-keycode=\"" + keymap[data.key] + "\"><span class=\"fa fa-caret-" + data.key + "\"></span></div>";
+							} else if (alphabet.indexOf(data.key) > -1) {
 								// Key is a letter
-								div = "<div class=\"keyboardKey letter\"  data-key=\"" + msg.key + "\" data-keycode=\"" + keymap[msg.key] + "\">" + msg.key + "</div>";
+								div = "<div class=\"keyboardKey letter\"  data-key=\"" + data.key + "\" data-keycode=\"" + keymap[data.key] + "\">" + data.key + "</div>";
 							} else {
 								return;
 							}
@@ -229,12 +214,6 @@
 
 							break;
 					}
-				};
-
-				conn.onclose = function () {
-					console.log("SockJS disconnected.");
-					conn = null;
-					connReady = false;
 				};
 
 				// Don't submit form on enter
@@ -268,7 +247,7 @@
 					boilerplate = data;
 				});
 
-				self.init = function () {
+				self.newFileData = function () {
 					editor.setValue(boilerplate);
 					editor.gotoLine(1, 0, false);
 
@@ -400,19 +379,13 @@
 					$("#ScriptUIModal").foundation("open");
 				};
 
-				if (action_data.openfile) {
-					self.loadFileData(action_data.openfile || "");
-				} else {
-					self.init();
-				}
-
 			};
 			// This makes Knockout get to work
 			var model = new Model();
 			ko.applyBindings(model);
 			model.fileIsModified(false);
 
-			config_file_operations("scripts", model.fileExtension(), model.saveFileData, model.loadFileData, model.init);
+			config_file_operations("", model.fileExtension(), model.saveFileData, model.loadFileData, model.newFileData);
 		});
 	</script>
 

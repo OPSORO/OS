@@ -1,10 +1,9 @@
 .model {
 	padding: 0;
-	margin-left: -30px;
 	margin-top: -30px;
 }
 .config-settings {
-	/*margin-top: 1rem;*/
+	margin-top: 0;
 	padding: 0;
 }
 .expressions {
@@ -25,8 +24,7 @@
 }
 .expression:hover {
 	color: #000;
-	background-color: transparent;
-	border: 1px solid silver;
+	background-color: #B0FFCB;
 }
 .selected,
 .selected:hover {
@@ -102,7 +100,7 @@
 	margin: 0;
 }
 .module-settings .slider {
-	margin: .5rem 0;
+	margin: .5rem .5rem 0 0;
 }
 .dof-settings {
 	font-size: .85rem;

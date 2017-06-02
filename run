@@ -3,70 +3,9 @@
 import os
 import sys
 
-import os.path
-# import shutil
-# import stat
-# import subprocess
-
-from git import Git, Repo
-
 basedir = os.path.dirname(os.path.realpath(__file__))
-
 # insert opsoro src system path to enable calling opsoro classes
 sys.path.insert(0, os.path.join(basedir, "src"))
-
-# ----------------------------------------------------------------------
-# UPDATER
-# ----------------------------------------------------------------------
-# git_dir = os.path.abspath(basedir) + '/'
-# backup_dir = '/home/pi/OPSORO/backup/'
-
-# Check if update is needed
-# if os.path.isfile(os.path.join(basedir, 'update.var')):
-    # print('Updating...')
-    # if os.path.exists(backup_dir):
-    #     # remove previous backup
-    #     try:
-    #         shutil.rmtree(backup_dir)
-    #     except Exception as e:
-    #         print('Remove backup failed: ', str(e))
-    #         pass
-    #
-    # try:
-    #     shutil.copytree(basedir, backup_dir)
-    # except Exception as e:
-    #     print('Backup copy failed: ', str(e))
-    #     pass
-    #
-    # # Link git & update
-    # try:
-    #     g = Git(git_dir)
-    #     g.fetch('--all')
-    #     g.reset('--hard', 'origin/' + g.branch().split()[-1])
-    #     # g.pull()
-    # except Exception as e:
-    #     print('Git failed to update: ', str(e))
-    #     pass
-    #
-    # # Set script executable for deamon
-    # try:
-    #     st = os.stat(os.path.join(basedir, 'run'))
-    #     os.chmod(
-    #         os.path.join(basedir, 'run'), st.st_mode | stat.S_IXUSR |
-    #         stat.S_IXGRP | stat.S_IXOTH)
-    # except Exception as e:
-    #     print('Exec state set failed: ', str(e))
-    #     pass
-    #
-    # # Clear update var file
-    # os.remove(os.path.join(basedir, 'update.var'))
-    #
-    # # restart service
-    # command = ['/usr/sbin/service', 'opsoro', 'restart']
-    # #shell=FALSE for sudo to work.
-    # subprocess.call(command, shell=False)
-
-# ----------------------------------------------------------------------
 
 import opsoro
 opsoro.main()

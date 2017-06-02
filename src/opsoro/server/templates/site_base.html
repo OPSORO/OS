@@ -19,6 +19,7 @@
 {% endblock %}
 
 {% block body %}
+	<div class="actionbar {% block actionbar_class %}{% endblock %}">{% block app_toolbar %}{% endblock %}</div>
 	<div id="errors">
 		{% with messages = get_flashed_messages(category_filter = ["message"]) %}
 		{% if messages %}
@@ -51,12 +52,13 @@
 		{% endif %}
 		{% endwith %}
 	</div>
-	<div class="actionbar">{% block app_toolbar %}{% endblock %}</div>
-	<div class="sidebar_left">{% block sidebar_left %}{% endblock %}</div>
+	{% block app %}
+		<div class="sidebar-left">{% block sidebar_left %}{% endblock %}</div>
 
-	<div class="app_body">{% block app_body %}{% endblock %}</div>
+		<div class="app-body">{% block app_body %}{% endblock %}</div>
 
-	<div class="sidebar_right">{% block sidebar_right %}{% endblock %}</div>
+		<div class="sidebar-right">{% block sidebar_right %}{% endblock %}</div>
+	{% endblock %}
 {% endblock %}
 
 {% block footer %}

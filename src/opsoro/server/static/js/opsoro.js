@@ -1,18 +1,38 @@
 function showMainError(msg){
-  $('#errors').append("<div class='callout alert' data-closable>" + msg + "<button class='close-button' aria-label='Dismiss' type='button' data-close><span aria-hidden='true'>&times;</span></button></div>");
-  $(document).foundation('reflow');
+  $('#errors').append("<div class='callout alert' style='display: none;' data-closable>" + msg + "<button class='close-button' aria-label='Dismiss' type='button' data-close><span aria-hidden='true'>&times;</span></button></div>");
+  $('#errors .callout.alert').slideDown("fast", function() {});
+  setTimeout(function () {
+    $('#errors .callout.alert').slideUp( "slow", function() {
+      $('#errors .callout.alert').remove();
+    });
+  }, 5000);
 }
 function showMainWarning(msg){
-  $('#errors').append("<div class='callout warning' data-closable>" + msg + "<button class='close-button' aria-label='Dismiss' type='button' data-close><span aria-hidden='true'>&times;</span></button></div>");
-  $(document).foundation('reflow');
+  $('#errors').append("<div class='callout warning' style='display: none;' data-closable>" + msg + "<button class='close-button' aria-label='Dismiss' type='button' data-close><span aria-hidden='true'>&times;</span></button></div>");
+  $('#errors .callout.warning').slideDown("fast", function() {});
+  setTimeout(function () {
+    $('#errors .callout.warning').slideUp( "slow", function() {
+      $('#errors .callout.warning').remove();
+    });
+  }, 4000);
 }
 function showMainMessage(msg){
-  $('#errors').append("<div class='callout primary' data-closable>" + msg + "<button class='close-button' aria-label='Dismiss' type='button' data-close><span aria-hidden='true'>&times;</span></button></div>");
-  $(document).foundation('reflow');
+  $('#errors').append("<div class='callout primary' style='display: none;' data-closable>" + msg + "<button class='close-button' aria-label='Dismiss' type='button' data-close><span aria-hidden='true'>&times;</span></button></div>");
+  $('#errors .callout.primary').slideDown("fast", function() {});
+  setTimeout(function () {
+    $('#errors .callout.primary').slideUp( "slow", function() {
+      $('#errors .callout.primary').remove();
+    });
+  }, 3000);
 }
 function showMainSuccess(msg){
-  $('#errors').append("<div class='callout success' data-closable>" + msg + "<button class='close-button' aria-label='Dismiss' type='button' data-close><span aria-hidden='true'>&times;</span></button></div>");
-  $(document).foundation('reflow');
+  $('#errors').append("<div class='callout success' style='display: none;' data-closable>" + msg + "<button class='close-button' aria-label='Dismiss' type='button' data-close><span aria-hidden='true'>&times;</span></button></div>");
+  $('#errors .callout.success').slideDown("fast", function() {});
+  setTimeout(function () {
+    $('#errors .callout.success').slideUp( "slow", function() {
+      $('#errors .callout.success').remove();
+    });
+  }, 2000);
 }
 var popup_classes;
 function showPopup(sIcon, sTitle, sClass, sContent) {
@@ -125,7 +145,7 @@ function popupWindow(mylink, windowname)
 	   href=mylink;
 	else
 	   href=mylink.href;
-	window.open(href, windowname, 'width=400,height=400,scrollbars=no');
+	window.open(href, windowname, 'width=400,height=500,scrollbars=no');
 	return false;
 }
 
@@ -135,52 +155,162 @@ function popupWindow(mylink, windowname)
 // Socket connection
 //--------------------------------------------------------------------------------------------------------
 // Setup websocket connection.
-$(document).ready(function(){
-  conn = null;
-  connReady = false;
-  conn = new SockJS('http://' + window.location.host + '/usersockjs');
+var app_socket_handler = undefined;
+var conn = null;
+var connReady = false;
+function connectSocket() {
+    conn = new SockJS('http://' + window.location.host + '/sockjs');
 
-  conn.onopen = function(){
-    // $.ajax({
-    //   url: '/appsockjstoken',
-    //   cache: false
-    // })
-    // .done(function(data) {
-    //   conn.send(JSON.stringify({action: 'authenticate', token: data}));
-    //   console.log('SOCKET connected');
-    //   connReady = true;
-    // });
-  };
+    conn.onopen = function(){
+      console.log("SockJS connected.");
+      $.ajax({
+        url: "/sockjstoken/",
+        cache: false
+      }).done(function(data) {
+        var appname = undefined;
 
-  conn.onmessage = function(e){
-    console.log('SOCKET message');
-    try {
-      var msg = $.parseJSON(e.data);
-      console.log(msg.action);
-      switch(msg.action){
-        case 'refresh':
-          setTimeout(function() { location.reload(); }, 1000);
-          break;
-        case 'info':
-          console.log(msg);
-          break;
-        case 'users':
-          console.log(msg.count);
-          break;
+        if (app_data != undefined) {
+          if ('formatted_name' in app_data) {
+            appname = app_data['formatted_name'];
+          }
+        }
+        conn.send(JSON.stringify({
+          app: appname,
+          action: "authenticate",
+          token: data
+        }));
+        connReady = true;
+        console.log("SockJS authenticated.");
+
+        if (typeof virtual_robot != 'undefined' && virtual_robot) {
+          conn.send(JSON.stringify({action: "robot"}));
+        }
+      });
+    };
+
+    conn.onmessage = function(e){
+      try {
+        var msg = $.parseJSON(e.data);
+        console.log(msg);
+        switch(msg.action) {
+          case 'refresh':
+            setTimeout(function() { location.reload(); }, 1000);
+            break;
+          case 'info':
+            if (typeof msg.type != 'undefined' && typeof msg.text != 'undefined') {
+              switch(msg.type) {
+                case 'popup':
+                  showMessagePopup('fa-info', 'Server info', msg.text, {btnOk: function() { location.reload(); }});
+                  break;
+                case 'error':
+                  showMainError(msg.text);
+                  break;
+                case 'warning':
+                  showMainWarning(msg.text);
+                  break;
+                case 'message':
+                  showMainMessage(msg.text);
+                  break;
+                case 'success':
+                  showMainSuccess(msg.text);
+                  break;
+              }
+            }
+            break;
+          case 'users':
+            var text = ' user';
+            if (msg.count > 1) { text += 's' }
+            text += ' connected.'
+
+            $('.online_users').html(msg.count + text);
+            break;
+          case 'apps':
+            $('.app-active').css('display', 'none');
+            $('.app-locked').css('display', 'none');
+
+            if (typeof msg.active != 'undefined') {
+              for (var i = 0; i < msg.active.length; i++) {
+                var app = msg.active[i];
+                $('.' + app + ' .app-active').css('display', 'inline-block');
+              }
+            }
+            if (typeof msg.locked != 'undefined') {
+              for (var i = 0; i < msg.locked.length; i++) {
+                var app = msg.locked[i];
+                $('.' + app + ' .app-locked').css('display', 'inline-block');
+              }
+            }
+            break;
+          case 'app':
+            console.log(msg.data);
+            if (app_socket_handler != undefined) {
+              app_socket_handler(msg.data);
+            }
+            break;
+          case 'robot':
+            // console.log(msg.dofs);
+            if (typeof virtualModel != 'undefined') {
+              if (typeof msg.dofs != 'undefined' && typeof virtualModel.update_dofs === "function") {
+                virtualModel.update_dofs(msg.dofs);
+              }
+              if (typeof msg.sound != 'undefined' && typeof msg.msg != 'undefined' && typeof virtualModel.update_sound === "function") {
+                virtualModel.update_sound(msg.sound, msg.msg);
+              }
+              if (typeof msg.refresh != 'undefined') {
+                location.reload();
+              }
+            }
+
+            break;
+          // case 'shutdown':
+          //   showMessagePopup('fa-info', 'Server info', msg.text, {btnOk: function() { location.reload(); }});
+          //   break;
+        }
+      } catch (e) {
+        console.log(e);
+      } finally {
+
       }
-    } catch (e) {
-      console.log(e);
-    } finally {
 
-    }
+    };
 
-  };
+    conn.onclose = function(){
+      console.log('SOCKET close');
+      conn = null;
 
-  conn.onclose = function(){
-    console.log('SOCKET close');
-    conn = null;
-    connReady = false;
-  };
+      // Only reconnect if the connection was successfull in the first place
+      if (connReady) {
+        setTimeout(function() {
+          var retry_socket = setInterval(function () {
+            connectSocket();
+            setTimeout(function() {
+              if (connReady) {
+                clearInterval(retry_socket);
+                if (typeof virtual_robot != 'undefined' && virtual_robot) {
+
+                } else {
+                  location.reload();
+                }
+              }
+            }, 500);
+          }, 1000);
+
+          showMainError('Disconnected from robot, trying to reconnect...');
+          $('.online_users').html('Disconnected, trying to reconnect...');
+          $('.active_apps').html('');
+          if (typeof virtual_robot != 'undefined' && virtual_robot) {
+
+          } else {
+            setTimeout(function() { location.reload(); }, 5000);
+          }
+        }, 500);
+      }
+
+      connReady = false;
+    };
+}
+$(document).ready(function(){
+  connectSocket();
 });
 // -------------------------------------------------------------------------------------------------------
 // Robot control functions
@@ -191,7 +321,25 @@ function robotSendReceiveConfig(config_data)
   $.ajax({
     dataType: 'json',
     type: 'POST',
-    url: '/robot/config/',
+    url: '/config/robot/',
+    data: { config_data: json_data },
+    success: function(data){
+      if (!data.success) {
+        showMainError(data.message);
+      } else {
+        return data.config;
+      }
+    }
+  });
+}
+
+function robotSendReceiveExpressions(config_data)
+{
+  var json_data = ko.toJSON(config_data, null, 2);
+  $.ajax({
+    dataType: 'json',
+    type: 'POST',
+    url: '/config/expression/',
     data: { config_data: json_data },
     success: function(data){
       if (!data.success) {

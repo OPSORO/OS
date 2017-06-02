@@ -1,29 +1,34 @@
 from __future__ import with_statement
 
-from functools import partial
-import os
 import glob
-from flask import Blueprint, render_template, request, redirect, url_for, flash, send_from_directory
+import os
+from functools import partial
+
+from flask import (Blueprint, flash, redirect, render_template, request,
+                   send_from_directory, url_for)
 from werkzeug import secure_filename
-from ..lua_scripting.scripthost import ScriptHost
 
 from opsoro.robot import Robot
+from opsoro.users import Users
+
+from ..lua_scripting.scripthost import ScriptHost
 
 config = {
     'full_name':            'Blockly',
+    'author':               'OPSORO',
     'icon':                 'fa-puzzle-piece',
     'color':                'blue',
     'difficulty':           3,
     'tags':                 ['visual', 'programming', 'blockly'],
     'allowed_background':   True,
+    'multi_user':           False,
     'connection':           Robot.Connection.OFFLINE,
     'activation':           Robot.Activation.AUTO
 }
-config['formatted_name'] =  config['full_name'].lower().replace(' ', '_')
+config['formatted_name'] = config['full_name'].lower().replace(' ', '_')
 
 get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 
-clientconn = None
 sh = None
 script = ''
 script_name = None
@@ -31,58 +36,38 @@ script_modified = False
 
 
 def add_console(message, color='#888888', icon=None):
-    global clientconn
-    if clientconn:
-        clientconn.send_data('addConsole', {'message': message,
-                                            'color': color,
-                                            'icon': icon})
+    Users.send_app_data(config['formatted_name'], 'addConsole', {'message': message, 'color': color, 'icon': icon})
 
 
 def send_started():
-    global clientconn
-    if clientconn:
-        clientconn.send_data('scriptStarted', {})
+    Users.send_app_data(config['formatted_name'], 'scriptStarted', {})
 
 
 def send_stopped():
-    global clientconn
-    if clientconn:
-        clientconn.send_data('scriptStopped', {})
+    Users.send_app_data(config['formatted_name'], 'scriptStopped', {})
 
 
 def init_ui():
-    global clientconn
-    if clientconn:
-        clientconn.send_data('initUI', {})
+    Users.send_app_data(config['formatted_name'], 'initUI', {})
 
 
 def ui_add_button(name, caption, icon, toggle=False):
-    global clientconn
-    if clientconn:
-        clientconn.send_data('UIAddButton', {'name': name,
-                                             'caption': caption,
-                                             'icon': icon,
-                                             'toggle': toggle})
+    Users.send_app_data(config['formatted_name'], 'UIAddButton', {'name': name, 'caption': caption, 'icon': icon, 'toggle': toggle})
 
 
 def ui_add_key(key):
-    global clientconn
     global sh
-    if clientconn:
-        valid_keys = ['up', 'down', 'left', 'right', 'space']
-        valid_keys += list('abcdefghijklmnopqrstuvwxyz')
-        if key in valid_keys:
-            clientconn.send_data('UIAddKey', {'key': key})
-        else:
-            sh.generate_lua_error('Invalid key: %s' % key)
+
+    valid_keys = ['up', 'down', 'left', 'right', 'space']
+    valid_keys += list('abcdefghijklmnopqrstuvwxyz')
+    if key in valid_keys:
+        Users.send_app_data(config['formatted_name'], 'UIAddKey', {'key': key})
+    else:
+        sh.generate_lua_error('Invalid key: %s' % key)
 
 
 def setup_pages(opsoroapp):
-    app_bp = Blueprint(
-        config['formatted_name'],
-        __name__,
-        template_folder='templates',
-        static_folder='static')
+    app_bp = Blueprint(config['formatted_name'], __name__, template_folder='templates', static_folder='static')
 
     @app_bp.route('/', methods=['GET'])
     @opsoroapp.app_view
@@ -111,80 +96,6 @@ def setup_pages(opsoroapp):
 
         return opsoroapp.render_template(config['formatted_name'] + '.html', **data)
 
-    # @app_bp.route('/blockly')
-    # @opsoroapp.app_view
-    # def blockly_inner():
-    #     data = {'soundfiles': []}
-    #
-    #     filenames = glob.glob(get_path('../../data/sounds/*.wav'))
-    #
-    #     for filename in filenames:
-    #         data['soundfiles'].append(os.path.split(filename)[1])
-    #
-    #     return opsoroapp.render_template('blockly_template.html', **data)
-
-    # @app_bp.route('/filelist')
-    # @opsoroapp.app_view
-    # def filelist():
-    # 	data = {
-    # 		'scriptfiles':	[]
-    # 	}
-    #
-    # 	filenames = []
-    # 	filenames.extend(glob.glob(get_path('../../data/visprog/scripts/*.xml')))
-    #
-    # 	for filename in filenames:
-    # 		data['scriptfiles'].append(os.path.split(filename)[1])
-    #
-    # 	return opsoroapp.render_template('filelist.html', **data)
-    #
-    # @app_bp.route('/save', methods=['POST'])
-    # @opsoroapp.app_api
-    # def save():
-    # 	xmlfile = request.form.get('file', type=str, default='')
-    # 	filename = request.form.get('filename', type=str, default='')
-    # 	overwrite = request.form.get('overwrite', type=int, default=0)
-    #
-    # 	if filename == '':
-    # 		return {'status': 'error', 'message': 'No filename given.'}
-    #
-    # 	if filename[-4:] != '.xml':
-    # 		filename = filename + '.xml'
-    # 	filename = secure_filename(filename)
-    #
-    # 	full_path = os.path.join(get_path('../../data/visprog/scripts/'), filename)
-    #
-    # 	if overwrite == 0:
-    # 		if os.path.isfile(full_path):
-    # 			return {'status': 'error', 'message': 'File already exists.'}
-    #
-    # 	with open(full_path, 'w') as f:
-    # 		f.write(xmlfile)
-    #
-    # 	return {'status': 'success', 'filename': filename}
-    #
-    # @app_bp.route('/delete/<scriptfile>', methods=['POST'])
-    # @opsoroapp.app_api
-    # def delete(scriptfile):
-    # 	scriptfiles = []
-    # 	filenames = []
-    # 	filenames.extend(glob.glob(get_path('../../data/visprog/scripts/*.xml')))
-    # 	filenames.extend(glob.glob(get_path('../../data/visprog/scripts/*.XML')))
-    #
-    # 	for filename in filenames:
-    # 		scriptfiles.append(os.path.split(filename)[1])
-    #
-    # 	if scriptfile in scriptfiles:
-    # 		os.remove(os.path.join(get_path('../../data/visprog/scripts/'), scriptfile))
-    # 		return {'status': 'success', 'message': 'File %s deleted.' % scriptfile}
-    # 	else:
-    # 		return {'status': 'error', 'message': 'Unknown file.'}
-    #
-    # @app_bp.route('/scripts/<scriptfile>')
-    # @opsoroapp.app_view
-    # def scripts(scriptfile):
-    # 	return send_from_directory(get_path('../../data/visprog/scripts/'), scriptfile)
-
     @app_bp.route('/startscript', methods=['POST'])
     @opsoroapp.app_api
     def startscript():
@@ -198,8 +109,7 @@ def setup_pages(opsoroapp):
         script_name = request.form.get('name', type=str, default=None)
         script_modified = request.form.get('modified', type=int, default=0)
 
-        with open(
-                get_path('../../data/' + config['formatted_name'] + '/scripts/currentscript.xml.tmp'), 'w') as f:
+        with open(get_path('../../data/' + config['formatted_name'] + '/currentscript.xml.tmp'), 'w') as f:
             f.write(script_xml)
 
         if sh.is_running:
@@ -218,18 +128,7 @@ def setup_pages(opsoroapp):
             sh.stop_script()
             return {'status': 'success'}
         else:
-            return {'status': 'error',
-                    'message': 'There is no active script to stop.'}
-
-    @opsoroapp.app_socket_connected
-    def s_connected(conn):
-        global clientconn
-        clientconn = conn
-
-    @opsoroapp.app_socket_disconnected
-    def s_disconnected(conn):
-        global clientconn
-        clientconn = None
+            return {'status': 'error', 'message': 'There is no active script to stop.'}
 
     @opsoroapp.app_socket_message('keyDown')
     def s_key_down(conn, data):

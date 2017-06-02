@@ -12,14 +12,14 @@
 {% block app_content %}
 	<div class="row" data-equalizer>
 		<div class="model small-12 medium-7 large-5 columns" data-equalizer-watch>
-			<div class="" id="model_screen"></div>
+			<div class="edit" id="model_screen"></div>
 		</div>
 		<div class="config-settings small-12 medium-5 large-7 columns" data-equalizer-watch>
 			<div class="expressions row small-up-5 medium-up-4 large-up-8" data-equalizer="expressions">
 				<!-- ko foreach: expressions -->
 				<div class="expression button text-center column column-block" data-bind="click: select, css: { selected: selected() }" data-equalizer="expressions">
 					<span class="emoji" data-bind="html: '&#x' + filename() + ';'"></span>
-					<span class="text" data-bind="text: name"></span>
+					<span class="text" data-bind="text: name.value"></span>
 				</div>
 				<!-- /ko -->
 				<div class="add-button button text-center column column-block" data-bind="click: $root.add_expression" >
@@ -29,7 +29,11 @@
 			<div class="config-settings" data-bind="with: selected_expression">
 				<fieldset>
 					<legend>
-						<strong data-bind="text: name"></strong>
+						<strong class="clickedit" data-bind="click: name.edit">
+							<span data-bind="visible: !name.editing(), html: name.displayValue">&nbsp;</span>
+				     <input name="name" style="width: 100%" data-bind="visible: name.editing, value: name.value, hasFocus: name.editing" />
+				     <span data-bind="visible: !name.editing()" class="fa fa-pencil"></span>
+						</strong>
 					</legend>
 					<div class="row module-settings">
 						<div class="setting small-3 columns">
@@ -59,9 +63,9 @@
 									<div class="setting small-12 large-4 columns">
 										<span data-bind="text: name"></span>
 									</div>
-									<div class="setting small-12 large-8 columns">
+									<div class="setting small-12 large-8 columns" data-bind="if: pin >= 0">
 										<div class="settings-item small-9 columns">
-											<div class="slider" data-slider data-start="-1.01" data-end="1" data-step="0.01" data-bind="slider: value, event: { input: $parent.update_dofs() }">
+											<div class="slider" data-slider data-start="-1.01" data-end="1" data-step="0.01" data-bind="slider: value">
 												<span class="slider-handle" data-slider-handle role="slider" tabindex="1" data-bind="attr: { 'aria-controls': name_formatted }"></span>
 											  <span class="slider-fill" data-slider-fill></span>
 											</div>
@@ -69,6 +73,9 @@
 										<div class="settings-item small-3 columns">
 										  <input type="number" data-bind="attr: { 'id': name_formatted }">
 										</div>
+									</div>
+									<div class="setting small-12 large-8 columns" data-bind="if: pin < 0">
+										<p class="callout warning">{{ _('This DOF has no servo pin selected.') }}</p>
 									</div>
 								</div>
 							</div>
@@ -95,7 +102,7 @@
 
 	<script src="/static/js/svg/svg.min.js?ver={{ version }}"></script>
 	<script src="/static/js/svg/svg.draggable.min.js?ver={{ version }}"></script>
-	<script src="/static/js/robot/model.js?ver={{ version }}"></script>
+	<script src="/static/js/robot/model_minimal.js?ver={{ version }}"></script>
 	{% for module in modules %}
 		<script src="/static/modules/{{ module }}/{{ module }}.js?ver={{ version }}"></script>
 
@@ -108,7 +115,7 @@
 	<div id="PickIconModal" class="small reveal" data-reveal data-animation-in="fade-in" data-animation-out="fade-out">
 		<div class="content">
 			<div class="row small-up-8" data-bind="foreach: icons" data-equalizer="icons">
-					<div id="" class="expression eicon button column column-block" data-bind="attr: { 'id': $data }, click: $root.selected_expression().update_icon" data-equalizer-watch="icons">
+					<div id="" class="expression eicon button column column-block" data-bind="attr: { 'id': $data }, click: $root.update_icon" data-equalizer-watch="icons">
 						<span class="emoji" data-bind="html: '&#x' + $data + ';'"></span>
 					</div>
 			</div>

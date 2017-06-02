@@ -6,9 +6,9 @@
 
 {% block app_content %}
 {% if config %}
-	{% for module in config.modules %}
+	{% for module in config %}
 		{% for dof in module.dofs %}
-			{% if dof.servo %}
+			{% if dof.servo and dof.servo.pin >= 0 %}
 				<div class="sliderrow row">
 					<!-- <div class="small-12 columns hide-for-medium-up"><strong>{{ dof.name|upper }}</strong></div> -->
 					<div class="medium-5 large-3 columns">
@@ -50,38 +50,14 @@
 <script>
 	$(document).ready(function(){
 		// Setup websocket connection.
-		var conn = null;
-		var connReady = false;
-		conn = new SockJS("http://" + window.location.host + "/appsockjs");
-
-		conn.onopen = function(){
-			console.log("SockJS connected.");
-			$.ajax({
-				url: "/appsockjstoken",
-				cache: false
-			})
-			.done(function(data) {
-				conn.send(JSON.stringify({action: "authenticate", token: data}));
-				connReady = true;
-				console.log("SockJS authenticated.");
-			});
-		};
-
-		conn.onmessage = function(e){
-			let msg = $.parseJSON(e.data);
-
-			switch(msg.action){
+		app_socket_handler = function(data) {
+      switch (data.action) {
 				case "error":
-					showMainError(msg.message);
+					showMainError(data.message);
 					break;
 			}
 		};
 
-		conn.onclose = function(){
-			console.log("SockJS disconnected.");
-			conn = null;
-			connReady = false;
-		};
 		let _slider_changed = function(){
 			let dofpos = $(this).find(".slider-handle").attr("aria-valuenow");
 			if( dofpos != $(this).data("lastpos") ){
