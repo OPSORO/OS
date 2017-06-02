@@ -1,148 +1,106 @@
 from __future__ import with_statement
 
-from opsoro.console_msg import *
+from flask import Blueprint, render_template, request, redirect, url_for, flash, send_from_directory
+from werkzeug import secure_filename
+from opsoro.sound import Sound
+
+import math
+import cmath
+
 from opsoro.robot import Robot
-# from opsoro.hardware import Hardware
-from opsoro.preferences import Preferences
-from opsoro.updater import Updater
+from opsoro.console_msg import *
+from opsoro.hardware import Hardware
+from opsoro.stoppable_thread import StoppableThread
 
-from flask import Blueprint, render_template, request, redirect, url_for, flash
-
-# constrain = lambda n, minn, maxn: max(min(maxn, n), minn)
-
-config = {
-    'full_name':            'Namen',
-    'icon':                 'fa-cog',
-    'color':                'orange',
-    'difficulty':           3,
-    'tags':                 ['settings', 'setup'],
-    'allowed_background':   False,
-    'connection':           Robot.Connection.OFFLINE,
-    'activation':           Robot.Activation.MANUAL
-}
-config['formatted_name'] =  config['full_name'].lower().replace(' ', '_')
-
-# clientconn = None
-# dof_positions = {}
-
-# import os
-# from functools import partial
-
+from functools import partial
+from exceptions import RuntimeError
+import os
+import glob
+import shutil
+import time
 import yaml
 try:
     from yaml import CLoader as Loader
 except ImportError:
     from yaml import Loader
 
+constrain = lambda n, minn, maxn: max(min(maxn, n), minn)
+
+# from opsoro.expression import Expression
+
+config = {
+    'full_name':            'names',
+    'icon':                 'fa-commenting-o',
+    'color':                'orange',
+    'difficulty':           2,
+    'tags':                 ['contacts'],
+    'allowed_background':   False,
+    'connection':           Robot.Connection.OFFLINE,
+    'activation':           Robot.Activation.AUTO
+}
+config['formatted_name'] =  config['full_name'].lower().replace(' ', '_')
+
+
+get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
+
+dof_positions = {}
+
+clientconn = None
+
+
+def send_stopped():
+    global clientconn
+    if clientconn:
+        clientconn.send_data('soundStopped', {})
+
+
+def SocialscriptRun():
+    Sound.wait_for_sound()
+    send_stopped()
+
+
+socialscript_t = None
+
 
 def setup_pages(opsoroapp):
-    app_bp = Blueprint(
+    socialscript_bp = Blueprint(
         config['formatted_name'],
         __name__,
         template_folder='templates',
         static_folder='static')
 
-    global clientconn
-
-    @app_bp.route('/', methods=['GET', 'POST'])
+    @socialscript_bp.route('/', methods=['GET'])
     @opsoroapp.app_view
     def index():
-        data = {}
-        if request.method == 'POST':
-            # Update preferences
-            request.form.get('file_name_ext', type=str, default=None)
-            Preferences.set('general', 'robot_name', request.form.get('robotName', type=str, default=None))
-            Preferences.set('general', 'startup_app', request.form.get('startupApp', type=str, default=None))
+        #data megeven
+        data = {'actions': {}, 'emotions': [], 'sounds': []}
 
-            pass1 = request.form.get('robotPassword', type=str, default=None)
-            pass2 = request.form.get('robotPasswordConfirm', type=str, default=None)
-            if pass1 is not None and pass1 == pass2:
-                if pass1 != '':
-                    Preferences.set('security', 'password', pass1)
+        action = request.args.get('action', None)
+        if action != None:
+            data['actions'][action] = request.args.get('param', None)
 
-            # Preferences.set('update', 'branch', request.form.get('updateBranch', type=str, default=None))
-            # Preferences.set('update', 'auto_update',
-            #                 request.form.get('updateAuto', type=str, default=None))
+        with open(get_path('emotions.yaml')) as f:
+            data['emotions'] = yaml.load(f, Loader=Loader)
 
-            Preferences.set('behaviour', 'enabled', request.form.get('behaviourEnabled', type=bool, default=False))
-            # Preferences.set('behaviour', 'caffeine', request.form.get('caffeine', type=str, default=None))
-            Preferences.set('behaviour', 'caffeine', 0)
-            Preferences.set('behaviour', 'blink', request.form.get('behaviourBlink', type=bool, default=False))
-            Preferences.set('behaviour', 'gaze', request.form.get('behaviourGaze', type=bool, default=False))
+        filenames = glob.glob(get_path('../../data/sounds/*.wav'))
 
-            Preferences.set('audio', 'master_volume', request.form.get('volume', type=int))
-            Preferences.set('audio', 'tts_engine', request.form.get('ttsEngine', type=str, default=None))
-            Preferences.set('audio', 'tts_language', request.form.get('ttsLanguage', type=str, default=None))
-            Preferences.set('audio', 'tts_gender', request.form.get('ttsGender', type=str, default=None))
-
-            Preferences.set('wireless', 'ssid', request.form.get('wirelessSsid', type=str, default=None))
-            Preferences.set('wireless', 'channel', request.form.get('wirelessChannel', type=int))
-
-            if request.form.get('wirelessSamePass', None) == 'on':
-                # Set to same password
-                Preferences.set('wireless', 'password', Preferences.get('general', 'password', 'RobotOpsoro'))
-            else:
-                pass1 = request.form.get('wirelessPassword', type=str, default=None)
-                pass2 = request.form.get('wirelessPasswordConfirm', type=str, default=None)
-                if pass1 is not None and pass1 == pass2:
-                    if pass1 != '':
-                        Preferences.set('wireless', 'password', pass1)
-
-            flash('Preferences have been saved.', 'success')
-            Preferences.save_prefs()
-            Preferences.apply_prefs(
-                update_audio=True,
-                update_wireless=True,
-                restart_wireless=False)
-
-        # Prepare json string with prefs data
-        data['prefs'] = {
-            'general': {
-                'robotName':    Preferences.get('general', 'robot_name', 'Robot'),
-                'startupApp':   Preferences.get('general', 'startup_app', '')
-            },
-            'update': {
-                'available':    Updater.is_update_available(),
-                'branch':       Preferences.get('update', 'branch', Updater.get_current_branch()),
-                'revision':     Preferences.get('update', 'revision', Updater.get_current_revision()),
-                # 'branches':   Preferences.get_remote_branches(),
-                'autoUpdate':   Preferences.get('update', 'auto_update', False)
-            },
-            'behaviour': {
-                'enabled':      Preferences.get('behaviour', 'enabled', False),
-                'caffeine':     Preferences.get('behaviour', 'caffeine', '0'),
-                'blink':        Preferences.get('behaviour', 'blink', True),
-                'gaze':         Preferences.get('behaviour', 'gaze', True)
-            },
-            'audio': {
-                'volume':       Preferences.get('audio', 'master_volume', 66),
-                'ttsEngine':    Preferences.get('audio', 'tts_engine', 'pico'),
-                'ttsLanguage':  Preferences.get('audio', 'tts_language', 'nl'),
-                'ttsGender':    Preferences.get('audio', 'tts_gender', 'm')
-            },
-            'wireless': {
-                'ssid':         Preferences.get('wireless', 'ssid', 'OPSORO' + '_bot'),
-                'samePassword': Preferences.get('general', 'password', 'opsoro123') ==
-                                Preferences.get('wireless', 'password', 'opsoro123'),
-                'channel':      Preferences.get('wireless', 'channel', '1')
-            }
-        }
-
-        print data
-
-        data['apps'] = []
-        for appi in opsoroapp.apps:
-            data['apps'].append(str(appi))
+        for filename in filenames:
+            data['sounds'].append(os.path.split(filename)[1])
+        data['sounds'].sort()
 
         return opsoroapp.render_template(config['formatted_name'] + '.html', **data)
 
-    @app_bp.route('/update', methods=['GET', 'POST'])
-    @opsoroapp.app_view
-    def update():
-        Updater.update()
-        return redirect("/")
+    @opsoroapp.app_socket_connected
+    def s_connected(conn):
+        global clientconn
+        clientconn = conn
 
-    opsoroapp.register_app_blueprint(app_bp)
+    @opsoroapp.app_socket_disconnected
+    def s_disconnected(conn):
+        global clientconn
+        clientconn = None
+
+    opsoroapp.register_app_blueprint(socialscript_bp)
 
 
 def setup(opsoroapp):

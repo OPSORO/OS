@@ -72,6 +72,7 @@ def setup_pages(opsoroapp):
     @socialscript_bp.route('/', methods=['GET'])
     @opsoroapp.app_view
     def index():
+        #data megeven
         data = {'actions': {}, 'emotions': [], 'sounds': []}
 
         action = request.args.get('action', None)

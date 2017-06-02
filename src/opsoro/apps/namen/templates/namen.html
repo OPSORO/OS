@@ -11,8 +11,7 @@ overzicht
 blacklist
  -->
 
-<form data-abide method="post" id="contacts-form">
-<div class="">
+<div class="main">
 	<ul class="accordion" data-responsive-accordion-tabs="tabs small-accordion medium-tabs large-tabs" id="contacts-tabs">
 	  <li class="accordion-item is-active" data-accordion-item>
 			<a href="#overzicht">
@@ -24,21 +23,29 @@ blacklist
 						<span class="fa fa-cog"></span>
 						overzicht
 					</legend>
+
+
+					<div class="contacts" data-bind="visible: $root.fileIsLocked()">
+						<div id="">
+
+						</div>
+					</div>
+
 					<ul class="contact_list">
 						<li>
 							<div class="contact">
-								<span class=""></span>
+								<span class="personIcon"></span>
 								<div class="contact_data">
-									<p>Name</p>
-									<p>Number</p>
+									<p>Name: <span data-bind="text: personName"></span></p>
+									<p>Number: <span data-bind="text: personNumber"></p>
 									<a href="#">Delete</a>
 								</div>
 							</div>
 						</li>
 
 						<li>
-							<div class="contact">
-								<span class=""></span>
+							<div class="contact" id="person">
+								<span class="personIcon"></span>
 								<div class="contact_data">
 									<p>Name</p>
 									<p>Number</p>
@@ -48,7 +55,7 @@ blacklist
 						</li>
 						<li>
 							<div class="contact">
-								<span class=""></span>
+								<span class="personIcon"></span>
 								<div class="contact_data">
 									<p>Name</p>
 									<p>Number</p>
@@ -57,7 +64,7 @@ blacklist
 							</div>
 						</li><li>
 							<div class="contact">
-								<span class=""></span>
+								<span class="personIcon"></span>
 								<div class="contact_data">
 									<p>Name</p>
 									<p>Number</p>
@@ -66,7 +73,7 @@ blacklist
 							</div>
 						</li><li>
 							<div class="contact">
-								<span class=""></span>
+								<span class="personIcon"></span>
 								<div class="contact_data">
 									<p>Name</p>
 									<p>Number</p>
@@ -87,7 +94,7 @@ blacklist
 								<label for="name" class="text-right inline">Name</label>
 							</div>
 							<div class="small-8 medium-6 large-4 columns end">
-								<input type="text" id="name" name="name" value="" data-bind="value: name" required pattern="[a-zA-Z]+">
+								<input type="text" id="name" name="name" value="" data-bind="value: personName" required pattern="[a-zA-Z]+">
 								<small class="error">A valid name is required</small>
 							</div>
 						</div>
@@ -97,7 +104,7 @@ blacklist
 								<label for="number" class="text-right inline">Number</label>
 							</div>
 							<div class="small-8 medium-6 large-4 columns end">
-								<input type="number" id="number" name="number" value="" data-bind="value: number" required pattern="[0-9]*">
+								<input type="number" id="number" name="number" value="" data-bind="value: personNumber" required pattern="[0-9]*">
 								<small class="error">A valid number is required</small>
 							</div>
 						</div>
@@ -199,40 +206,11 @@ blacklist
 	</ul>
 </div>
 
-</form>
 {% endblock %}
 {% block app_scripts %}
 
 	<script>
-		var prefsJson = {{ prefs|tojson|safe }};
+
 		var appsJson = {{ apps|tojson|safe }};
 	</script>
-{% endblock %}
-
-
-{% block app_modals %}
-<div id="UpdateModal" class="reveal tiny" data-reveal data-animation-in="fade-in" data-animation-out="fade-out">
-    <div class="titlebar red">
-        <button class="close-button" data-close aria-label="Close" type="button">
-            <span class="fa fa-close"></span>
-        </button>
-        <span class="fa fa-refresh"></span>
-        {{ _('Update') }}
-    </div>
-    <div class="content">
-        <p>
-            {{ _('Are you sure you wish to update ' + opsoro.robot_name + '?') }}
-            <br/>
-            <span class="note">
-                <strong>{{ _('Note') }}:</strong>
-                {{ _('Never power off ' + opsoro.robot_name + ' while updating! Cutting power without properly shutting down the operating system can result in a corrupt file system.') }}
-            </span>
-        </p>
-        <div class="text-center">
-            <a href="update" class="button" >
-                <span class="fa fa-refresh"></span>
-                {{ _('Yes, update ' + opsoro.robot_name) }}</a>
-        </div>
-    </div>
-</div>
 {% endblock %}
