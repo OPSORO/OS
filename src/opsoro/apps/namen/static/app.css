@@ -1,3 +1,4 @@
+
 .contact_list{
   display: flex;
   flex-direction: row;
@@ -12,7 +13,17 @@
   position: absolute;
   margin-left: 1rem;
   background: orange;
+  text-align:center;
+  line-height: 80px;
+
 }
+.contact_list li .personIcon::before{
+  content: "\f007";
+     font-family: 'FontAwesome';
+  font-size:4rem;
+
+  }
+
 .contact_list li {
   width: 20rem;
   margin: 1rem;
