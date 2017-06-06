@@ -38,3 +38,4 @@ function Contact(name,phone,email,address){
 	self.conName = ko.observable(name);
 	self.phone = ko.observable(phone);
 }
+)};
