@@ -1,32 +1,40 @@
-$(document).ready(function () {
+(function ContactManager(){
+	var self = this;
 
-  // data ophalen idk...
-  var Userscontact = function(){
-    var self = this;
+	self.templateName = 'contactTemplate';
 
-    self.personName = ko.observable('');
-    self.personNumber = ko.observable('');
+	self.conName = ko.observable();
+	self.phone = ko.observable();
+	self.email = ko.observable();
+	self.address = ko.observable();
 
-  };
+	self.contacts = ko.observableArray();
 
-  // model
-  ContactModel = function(){
-    var self = this;
+	self.addItem = function(){
+		self.contacts.push(new Contact(self.conName(), self.phone()));
+	};
 
-    self.users = ko.observable(new Userscontact());
-  }
+	self.removeItem = function(item){
+		self.contacts.remove(item);
+	};
 
-  //doorgeven???
-  var viewmodel = new contactModel();
-  ko.applyBindings(viewmodel);
-  viewmodel.Users().
+	self.load = function(){
+		// haven't tested, but probably won't work. I think you'd have to convert your JSON to observables
+		self.contacts = localStorage.getItem("stored_contacts");
+	};
 
+	self.save = function(){
+        console.log('saving');
+		self.addItem();
+		localStorage.setItem("stored_contacts", ko.toJSON(self.contacts()));
+	};
 
+	ko.applyBindings(self.templateName);
+})();
 
-//  var person = { name: "elleneke",
-//                  number: 034536326346
-//    };
+function Contact(name,phone,email,address){
+	var self = this;
 
-//    ko.applyBindings(person, document.getElementById("person"));
-
-});
+	self.conName = ko.observable(name);
+	self.phone = ko.observable(phone);
+}

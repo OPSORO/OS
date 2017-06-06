@@ -4,6 +4,7 @@
   apps:
   - namen
   - social_script
+  - namenTest
 
 - title: 2. Getting started
   apps:

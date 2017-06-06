@@ -13,14 +13,40 @@ blacklist
 <!-- git test-->
 
 
+
+<div id="contactTemplate" type="text/template">
+  <div class="contact-container">
+
+    <span class="name" data-bind="text: conName"></span>
+    <a class="removeItem" data-bind="click: removeItem" href="#">Del</a>
+    <a href="#">Edit</a>
+        <div class="address" data-bind="text: address"></div>
+
+    <div>
+      <dl>
+        <dt>Phone:</dt><dd data-bind="text: phone"></dd>
+        <dt>Email:</dt><dd><a data-bind="attr: { href: email }, text: email"></a></dd>
+      </dl>
+    </div>
+  </div>
+
+  <div class="cl_wrapper">
+    <div class="contacts" data-bind="template: {name: 'contactTemplate', foreach: contacts}"></div>
+  </div>
+</div>
+
 <div class="container">
 
   <form class="addContact">
-    Name:<br/><input data-bind="value: conName" name="name"/><br/>
+    Contact Name:<br/><input data-bind="value: conName" name="name"/><br/>
     Phone Number:<br/><input data-bind="value: phone" name="phone"/><br/>
+    Email:<br/><input data-bind="value: email" name="email"/><br/>
+    Address:<br/><input data-bind="value: address" name="address" /><br/>
     <a class="saveButton" data-bind="click: save">SAVE</a>
   </form>
 </div>
+
+
 
 
 <div class="main">
@@ -41,17 +67,23 @@ blacklist
 						<div id="contacts">
 							<ul class="contact_list">
 
-                <ul class="contacts" data-bind="template: {name: 'contactTemplate', foreach: contacts}"></ul>
+								<li class="contacts" data-bind="template: {name: 'contacts', foreach: persons}"></li>
 
-
-
+								<div class="contacts" visibility="hidden">
+									<span class="personIcon"></span>
+									<div class="contact_data">
+										<p>Name: <span data-bind="text: personName"></span></p>
+										<p>Number: <span data-bind="text: personNumber"></p>
+										<a class="removeItem" data-bind="click: removeItem" href="#">Del</a>
+									</div>
+								</div>
 
 								<li>
 									<div class="contact">
 										<span class="personIcon"></span>
 										<div class="contact_data">
-											<p>Name: <span></span></p>
-											<p>Number: <span></p>
+											<p>Name: <span data-bind="text: personName"></span></p>
+											<p>Number: <span data-bind="text: personNumber"></p>
 											<a href="#">Delete</a>
 										</div>
 									</div>
@@ -124,7 +156,7 @@ blacklist
 								<label for="number" class="text-right inline">Number</label>
 							</div>
 							<div class="small-8 medium-6 large-4 columns end">
-								<input type="number" id="number" name="number" value=""  required pattern="[0-9]*">
+								<input type="number" id="number" name="number" value="" data-bind="value: personNumber" required pattern="[0-9]*">
 								<small class="error">A valid number is required</small>
 							</div>
 						</div>
@@ -237,28 +269,7 @@ blacklist
 {% endblock %}
 {% block app_scripts %}
 
-<li>
-  <div class="contact">
-    <span class="personIcon"></span>
-    <div class="contact_data">
-      <p>Name: <span></span></p>
-      <p>Number: <span></p>
-      <a href="#">Delete</a>
-    </div>
-  </div>
-</li>
+	<script>
 
-<script id="contactTemplate" type="text/template">
-  <li class="contact-container">
-    <div class="contact">
-      <span class="personIcon"></span>
-      <div class="contact_data">
-        <p>Name:</p><span class="name" data-bind="text: conName"></span>
-        <p>Phone:</p><span data-bind="text: phone"></span>
-        <a class="removeItem" data-bind="click: removeItem" href="#">Delete</a>
-      </div>
-  </div>
-  </li>
-</script>
-
+		</script>
 {% endblock %}

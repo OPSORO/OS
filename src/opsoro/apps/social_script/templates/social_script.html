@@ -123,3 +123,38 @@
 			</div>
 
 		{% endblock %}
+
+
+
+
+		<div class="container">
+
+		  <form class="addContact">
+		    Contact Name:<br/><input data-bind="value: conName" name="name"/><br/>
+		    Phone Number:<br/><input data-bind="value: phone" name="phone"/><br/>
+		    Email:<br/><input data-bind="value: email" name="email"/><br/>
+		    Address:<br/><input data-bind="value: address" name="address" /><br/>
+		    <a class="saveButton" data-bind="click: save">SAVE</a>
+		  </form>
+
+		  <div class="cl_wrapper">
+		    <div class="contacts" data-bind="template: {name: 'contactTemplate', foreach: contacts}"></div>
+		  </div>
+		</div>
+
+		<div id="contactTemplate" type="text/template">
+		  <div class="contact-container">
+
+		    <span class="name" data-bind="text: conName"></span>
+		    <a class="removeItem" data-bind="click: removeItem" href="#">Del</a>
+		    <a href="#">Edit</a>
+		        <div class="address" data-bind="text: address"></div>
+
+		    <div>
+		      <dl>
+		        <dt>Phone:</dt><dd data-bind="text: phone"></dd>
+		        <dt>Email:</dt><dd><a data-bind="attr: { href: email }, text: email"></a></dd>
+		      </dl>
+		    </div>
+		  </div>
+		</div>

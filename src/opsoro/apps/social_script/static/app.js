@@ -215,7 +215,7 @@ $(document).ready(function(){
 					line.output.type = "tts";
 					line.output.data = "";
 				}
-				file_data.voice_lines.push(line);
+				-file_data.voice_lines.push(line);
 			});
 			//console.log(file_data);
 			self.fileIsModified(false);
@@ -248,6 +248,7 @@ $(document).ready(function(){
 	var model = new SocialScriptModel();
 	ko.applyBindings(model);
 	model.fileIsModified(false);
+	console.log('bla');
 
 	config_file_operations("", model.fileExtension(), model.saveFileData, model.loadFileData, model.newFileData);
 
