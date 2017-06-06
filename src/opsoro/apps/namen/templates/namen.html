@@ -13,15 +13,6 @@ blacklist
 <!-- git test-->
 
 
-<div class="container">
-
-  <form class="addContact">
-    Name:<br/><input data-bind="value: conName" name="name"/><br/>
-    Phone Number:<br/><input data-bind="value: phone" name="phone"/><br/>
-    <a class="saveButton" data-bind="click: save">SAVE</a>
-  </form>
-</div>
-
 
 <div class="main">
 	<ul class="accordion" data-responsive-accordion-tabs="tabs small-accordion medium-tabs large-tabs" id="contacts-tabs">
@@ -36,69 +27,13 @@ blacklist
 						overzicht
 					</legend>
 
-
 					<div class="contacts">
 						<div id="contacts">
-							<ul class="contact_list">
 
-                <ul class="contacts" data-bind="template: {name: 'contactTemplate', foreach: contacts}"></ul>
+              <ul class="contacts contact_list" data-bind="template: {name: 'contactTemplate', foreach: contacts}"></ul>
 
-
-
-
-								<li>
-									<div class="contact">
-										<span class="personIcon"></span>
-										<div class="contact_data">
-											<p>Name: <span></span></p>
-											<p>Number: <span></p>
-											<a href="#">Delete</a>
-										</div>
-									</div>
-								</li>
-
-								<li>
-									<div class="contact" id="person">
-										<span class="personIcon"></span>
-										<div class="contact_data">
-											<p>Name</p>
-											<p>Number</p>
-											<a href="#">Delete</a>
-										</div>
-									</div>
-								</li>
-								<li>
-									<div class="contact">
-										<span class="personIcon"></span>
-										<div class="contact_data">
-											<p>Name</p>
-											<p>Number</p>
-											<a href="#">Delete</a>
-										</div>
-									</div>
-								</li><li>
-									<div class="contact">
-										<span class="personIcon"></span>
-										<div class="contact_data">
-											<p>Name</p>
-											<p>Number</p>
-											<a href="#">Delete</a>
-										</div>
-									</div>
-								</li><li>
-									<div class="contact">
-										<span class="personIcon"></span>
-										<div class="contact_data">
-											<p>Name</p>
-											<p>Number</p>
-											<a href="#">Delete</a>
-										</div>
-									</div>
-								</li>
-							</ul>
 						</div>
 					</div>
-
 
 				</fieldset>
 
@@ -108,23 +43,24 @@ blacklist
 						toevoegen
 
 					</legend>
+
 					<form class="addContact">
 						<div class="row">
 							<div class="small-4 medium-4 large-4 columns">
-								<label for="personName" class="text-right inline">Name</label>
+								<label for="name" class="text-right inline">Name</label>
 							</div>
 							<div class="small-8 medium-6 large-4 columns end">
-								<input type="text" id="personName" name="personName" value="" data-bind="value: personName" required pattern="[a-zA-Z]+">
+								<input type="text" id="name" name="name" value="" data-bind="value: conName" required pattern="[a-zA-Z]+">
 								<small class="error">A valid name is required</small>
 							</div>
 						</div>
 
 						<div class="row">
 							<div class="small-4 medium-4 large-4 columns">
-								<label for="number" class="text-right inline">Number</label>
+								<label for="phone" class="text-right inline">Number</label>
 							</div>
 							<div class="small-8 medium-6 large-4 columns end">
-								<input type="number" id="number" name="number" value=""  required pattern="[0-9]*">
+								<input type="number" id="phone" name="phone" value="" data-bind="value: phone" required pattern="[0-9]*">
 								<small class="error">A valid number is required</small>
 							</div>
 						</div>
@@ -145,11 +81,6 @@ blacklist
 
 
 
-
-
-
-
-
 		<li class="accordion-item" data-accordion-item>
 			<a href="#blacklist">
 				<span class="fa fa-fw fa-cog"></span> blacklist
@@ -158,27 +89,17 @@ blacklist
 				<fieldset >
 					<legend>
 						<span class="fa fa-cog"></span>
-						General
+						blacklist
 					</legend>
 
-					<div class="row">
-						<div class="small-4 medium-4 large-4 columns">
-							<label for="robotName" class="text-right inline">Robot name</label>
-						</div>
-						<div class="small-8 medium-6 large-4 columns end">
-							<input type="text" id="robotName" name="robotName" value="" required pattern="[a-zA-Z]+">
-							<small class="error">A valid name is required</small>
+          <div class="contacts">
+						<div id="contacts">
+
+              <ul class="contacts contact_list" data-bind="template: {name: 'blacklistTemplate', foreach: contacts}"></ul>
+
 						</div>
 					</div>
 
-					<div class="row">
-						<div class="small-4 medium-4 large-4 columns">
-							<label for="startupApp" class="text-right inline">Startup app</label>
-						</div>
-						<div class="small-8 medium-6 large-4 columns end">
-							<select id="startupApp" name="startupApp" ></select>
-						</div>
-					</div>
 
 				</fieldset>
 
@@ -186,46 +107,29 @@ blacklist
 				<fieldset >
 					<legend>
 						<span class="fa fa-cloud-download"></span>
-						Update
+						Toevoegen
 					</legend>
-					<div class="row">
-						<div class="small-6 medium-6 large-6 columns">
-							<label for="updateBranch" class="text-right inline">Git branch</label>
+          <form class="addBan">
+
+						<div class="row">
+							<div class="small-4 medium-4 large-4 columns">
+								<label for="phoneBan" class="text-right inline">Number</label>
+							</div>
+							<div class="small-8 medium-6 large-4 columns end">
+								<input type="number" id="phone" name="phonebAN" value="" data-bind="value: phoneBan" required pattern="[0-9]*">
+								<small class="error">A valid number is required</small>
+							</div>
 						</div>
-						<div class="small-6 medium-6 large-6 columns end">
-							<label for="updateBranch" class="inline" > </label>
+
+						<div class="row">
+							<div class="text-center">
+								<!-- <a href="#" data-open="UpdateModal" class="action button" style="padding-left: 2rem; padding-right: 2rem;"> -->
+								<a class="action button" data-bind="click: saveBan" style="padding-left: 2rem; padding-right: 2rem;">
+									<span class="fa fa-save"></span>
+									 &nbsp;Save!</a>
+							</div>
 						</div>
-						<!-- <div class="small-8 medium-6 large-4 columns end">
-							<label for="updateBranch" class="text-right inline">Branch</label>
-							<label data-bind="text: branch"> </label>
-							<select id="updateBranch" name="updateBranch" data-bind="value: branch, foreach: branches">
-								<option data-bind="value: $data, text: $data"></option>
-							</select>
-						</div> -->
-					</div>
-					<div class="row">
-						<div class="small-6 medium-6 large-6 columns">
-							<label for="updateRevision" class="text-right inline">Git commit rev.</label>
-						</div>
-						<div class="small-6 medium-6 large-6 columns end">
-							<label for="updateRevision" class="inline" > </label>
-						</div>
-					</div>
-					<div class="row">
-						<div class="text-center" >
-							<span class="fa fa-cloud-download"></span> Update available!
-						</div>
-						<div class="text-center" >
-							<span class="fa fa-check-circle"></span> Up-to-date!
-						</div>
-					</div>
-					<div class="row">
-						<div class="text-center">
-							<a class="action button" style="padding-left: 2rem; padding-right: 2rem;">
-								<span class="fa fa-refresh"></span>
-								UPDATE!</a>
-						</div>
-					</div>
+					</form>
 
 				</fieldset>
 	    </div>
@@ -237,25 +141,26 @@ blacklist
 {% endblock %}
 {% block app_scripts %}
 
-<li>
-  <div class="contact">
-    <span class="personIcon"></span>
-    <div class="contact_data">
-      <p>Name: <span></span></p>
-      <p>Number: <span></p>
-      <a href="#">Delete</a>
-    </div>
-  </div>
-</li>
-
 <script id="contactTemplate" type="text/template">
   <li class="contact-container">
     <div class="contact">
       <span class="personIcon"></span>
       <div class="contact_data">
-        <p>Name:</p><span class="name" data-bind="text: conName"></span>
-        <p>Phone:</p><span data-bind="text: phone"></span>
+        <p>Name: <span class="name" data-bind="text: conName"></span></p>
+        <p>Phone: <span data-bind="text: phone"></span></p>
         <a class="removeItem" data-bind="click: removeItem" href="#">Delete</a>
+      </div>
+  </div>
+  </li>
+</script>
+person
+<script id="blacklistTemplate" type="text/template">
+  <li class="ban-container">
+    <div class="blacklist">
+      <span class="banIcon"></span>
+      <div class="ban_data">
+        <p>Phone: <span data-bind="text: phoneBan"></span></p>
+        <a class="removeItem" data-bind="click: removeBanItem" href="#">Delete</a>
       </div>
   </div>
   </li>
