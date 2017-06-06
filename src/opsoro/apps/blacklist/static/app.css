@@ -1,0 +1,46 @@
+
+/* ban: f05e */
+.ban_list{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+
+}
+.ban_list li .banIcon {
+  border-radius: 20%;
+  width: 3rem;
+  height: 3rem;
+  position: absolute;
+  margin-left: 1rem;
+  background: orange;
+  text-align:center;
+  line-height: 48px;
+
+}
+.ban_list li .banIcon::before{
+  content: "\f05e";
+  font-family: 'FontAwesome';
+  font-size:2rem;
+
+  }
+  .ban_data p{
+      padding-top: 0.8rem;
+      display: flex;
+      justify-content: space-between;
+  }
+
+.ban_data p span + .ban_data p a{
+  display: cell;
+
+}
+
+
+.ban_list li {
+  width: 100%;
+  margin: 0.5rem;
+  list-style: none;
+}
+.ban_data{
+  margin-left: 6rem;
+}

@@ -15,12 +15,6 @@ blacklist
 
 
 <div class="main">
-	<ul class="accordion" data-responsive-accordion-tabs="tabs small-accordion medium-tabs large-tabs" id="contacts-tabs">
-	  <li class="accordion-item is-active" data-accordion-item>
-			<a href="#overzicht">
-				<span class="fa fa-fw fa-cog"></span> overzicht
-			</a>
-			<div class="accordion-content" data-tab-content>
 				<fieldset>
 					<legend>
 						<span class="fa fa-cog"></span>
@@ -76,66 +70,6 @@ blacklist
 					</form>
 
 				</fieldset>
-	    </div>
-		</li>
-
-
-
-		<li class="accordion-item" data-accordion-item>
-			<a href="#blacklist">
-				<span class="fa fa-fw fa-cog"></span> blacklist
-			</a>
-			<div class="accordion-content" data-tab-content>
-				<fieldset >
-					<legend>
-						<span class="fa fa-cog"></span>
-						blacklist
-					</legend>
-
-          <div class="contacts">
-						<div id="contacts">
-
-              <ul class="contacts contact_list" data-bind="template: {name: 'blacklistTemplate', foreach: contacts}"></ul>
-
-						</div>
-					</div>
-
-
-				</fieldset>
-
-
-				<fieldset >
-					<legend>
-						<span class="fa fa-cloud-download"></span>
-						Toevoegen
-					</legend>
-          <form class="addBan">
-
-						<div class="row">
-							<div class="small-4 medium-4 large-4 columns">
-								<label for="phoneBan" class="text-right inline">Number</label>
-							</div>
-							<div class="small-8 medium-6 large-4 columns end">
-								<input type="number" id="phone" name="phonebAN" value="" data-bind="value: phoneBan" required pattern="[0-9]*">
-								<small class="error">A valid number is required</small>
-							</div>
-						</div>
-
-						<div class="row">
-							<div class="text-center">
-								<!-- <a href="#" data-open="UpdateModal" class="action button" style="padding-left: 2rem; padding-right: 2rem;"> -->
-								<a class="action button" data-bind="click: saveBan" style="padding-left: 2rem; padding-right: 2rem;">
-									<span class="fa fa-save"></span>
-									 &nbsp;Save!</a>
-							</div>
-						</div>
-					</form>
-
-				</fieldset>
-	    </div>
-		</li>
-
-	</ul>
 </div>
 
 {% endblock %}
@@ -153,17 +87,6 @@ blacklist
   </div>
   </li>
 </script>
-person
-<script id="blacklistTemplate" type="text/template">
-  <li class="ban-container">
-    <div class="blacklist">
-      <span class="banIcon"></span>
-      <div class="ban_data">
-        <p>Phone: <span data-bind="text: phoneBan"></span></p>
-        <a class="removeItem" data-bind="click: removeBanItem" href="#">Delete</a>
-      </div>
-  </div>
-  </li>
-</script>
+
 
 {% endblock %}

@@ -3,6 +3,7 @@
 - title: 1. telegram apps
   apps:
   - namen
+  - blacklist
   - social_script
   - namenTest
 

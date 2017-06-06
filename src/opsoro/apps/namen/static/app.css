@@ -33,39 +33,3 @@
 .contact_data{
   margin-left: 8rem;
 }
-
-
-/* ban: f05e */
-.ban_list{
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: center;
-
-}
-.ban_list li .banIcon {
-  border-radius: 15%;
-  width: 5rem;
-  height: 5rem;
-  position: absolute;
-  margin-left: 1rem;
-  background: orange;
-  text-align:center;
-  line-height: 80px;
-
-}
-.ban_list li .banIcon::before{
-  content: "\f05e";
-  font-family: 'FontAwesome';
-  font-size:4rem;
-
-  }
-
-.ban_list li {
-  width: 20rem;
-  margin: 1rem;
-  list-style: none;
-}
-.ban_data{
-  margin-left: 8rem;
-}
