@@ -1,149 +1,120 @@
-<section id='header_play' class='nav'>
-
-    <div class=''>
+<section id="header_play" class="nav">
+  <div class="row">
+    <div class="small-8 medium-6 columns">
+      <div id="activity">
+        <span id="statusicon">
+          {% block status_icon %}
+            {% if app.active %}
+              <span class="icon fa fa-cog fa-spin"></span>
+            {% else %}
+              <span class="icon fa fa-check-circle"></span>
+            {% endif %}
+          {% endblock %}
+        </span>
+          <p>
+            <span id="status" class="{% if online %}online{% else %}offline{% endif %}">
+              {% block status_text %}
+                {% if app.active %}
+                  {{ _(opsoro.robot_name + ' running') }}:
+                {% else %}
+                  {{ _(opsoro.robot_name + ' ready') }}
+                {% endif %}
+              {% endblock %}
+            </span>
+            <br/>
+            <span id="comment">
+              {% block status_text_comment %}
+                  <span class="online_users hide-for-small-only"></span>
+                  <span class="active_apps">
+                {% if app.active %}
+                  <span class="fa {{ app.icon }}"></span>
+                  {{ app.name }}
+                  {% if isuser %}
+                    <a href="/app/close/{{ app.formatted_name }}" class="closebutton"><span class="fa fa-close"></span></a>
+                  {% endif %}
+                {% else %}
+                  
+                {% endif %}
+                  </span>
+              {% endblock %}
+            </span>
+          </p>
+      </div>
+    </div>
+    <div class="hide-for-small-only medium-3 columns">
+      {% if isuser %}
+        {% if index %}
+          <input id="search" type="text" placeholder="{{ _('Search') }}" />
+        {% endif %}
+      {% endif %}
+    </div>
+    <div class="small-4 medium-3 columns">
+      <ul class="">
         {% if isuser %}
-            <div id="activity">
-                <span id="statusicon">
-                    {% block status_icon %}
-                        {% if app.active %}
-                            <i class="fa fa-cog fa-spin"></i>
-                        {% else %}
-                            <i class="fa fa-check-circle"></i>
-                        {% endif %}
-                    {% endblock %}
-                </span>
-                <p>
-                    <span id="status">
-                        {% block status_text %}
-                            {% if app.active %}
-                                {{ _( opsoro.robot_name + ' running') }}:
-                            {% else %}
-                                {{ _(opsoro.robot_name + ' ready') }}
-                            {% endif %}
-                        {% endblock %}
-                    </span>
-                    <br/>
-                    <span id="comment">
-                        {% block status_text_comment %}
-                            {% if app.active %}
-                                <i class="fa {{ app.icon }}"></i>
-                                {{ app.name }}
-                                <a href="/closeapp/" class="closebutton"><span class="fa fa-close"></span></a>
-                            {% else %}
-                                {{ _('No active apps') }}
-                            {% endif %}
-
-                        {% endblock %}
-                    </span>
-                </p>
-            </div>
+          {% if not index %}
+          <li>
+            <a href="/" class="action" title="{{ _('Home') }}">
+              <span class="icon fa fa-home"></span>
+            </a>
+          </li>
+          {% endif %}
+          <li>
+            <a href="/robot/" class="action" title="{{ _('Virtual model') }}" onClick="return popupWindow(this, '{{ _('Virtual model') }}');">
+              <span class="icon fa fa-smile-o"></span>
+            </a>
+          </li>
+          <li>
+            <a href="#" data-open="ShutdownModal" class="action" title="{{ _('Shut down') }}">
+              <span class="icon fa fa-power-off"></span>
+            </a>
+          </li>
+        {% else %}
         {% endif %}
+      </ul>
     </div>
-    <div class='text_center hide-for-small'>
-        {% if not isuser %}
-            <p class=''>Please login.</p>
-        {% endif %}
-    </div>
-    <div class='side_right'>
-        <ul class="">
-            <li>
-                <a href="/" class="action" title="{{ _('Home') }}">
-                    <i class="fa fa-home"></i>
-                </a>
-            </li>
-            {% if isuser %}
-                <li>
-                    <a href="/robot/" class="action" title="{{ _('Virtual model') }}" onClick="return popupWindow(this, '{{ _('Virtual model') }}');">
-                        <i class="fa fa-smile-o"></i>
-                    </a>
-                </li>
-                <li>
-                    <a href="/openapp/preferences/" class="action" title="{{ _('Preferences') }}">
-                        <i class="fa fa-cog"></i>
-                    </a>
-                </li>
-                <li>
-                    <a href="/logout/" class="action" title="{{ _('Log out') }}">
-                        <i class="fa fa-sign-out"></i>
-                    </a>
-                </li>
-                <li>
-                    <a href="#" data-reveal-id="ShutdownModal" class="action" title="{{ _('Shut down') }}">
-                        <i class="fa fa-power-off"></i>
-                    </a>
-                </li>
-            {% else %}
-                <li>
-                    <a href="/login/" class="action" title="{{ _('Sign in') }}">
-                        <i class="fa fa-sign-in"></i>
-                    </a>
-                </li>
-            {% endif %}
-        </ul>
-    </div>
-    <!-- <div class='side_right'>
-        <ul class="">
-            <li>
-                <a href="/" class="action has-tip" data-tooltip aria-haspopup="true" data-options="disable_for_touch:true" title="{{ _('Home') }}">
-                    <i class="fa fa-home"></i>
-                </a>
-            </li>
-            {% if isuser %}
-                <li>
-                    <a href="/robot/" class="action has-tip" data-tooltip aria-haspopup="true" data-options="disable_for_touch:true" title="{{ _('Virtual model') }}" onClick="return popupWindow(this, '{{ _('Virtual model') }}');">
-                        <i class="fa fa-smile-o"></i>
-                    </a>
-                </li>
-                <li>
-                    <a href="/openapp/preferences/" class="action has-tip" data-tooltip aria-haspopup="true" data-options="disable_for_touch:true" title="{{ _('Preferences') }}">
-                        <i class="fa fa-cog"></i>
-                    </a>
-                </li>
-                <li>
-                    <a href="/logout/" class="action has-tip" data-tooltip aria-haspopup="true" data-options="disable_for_touch:true" title="{{ _('Log out') }}">
-                        <i class="fa fa-sign-out"></i>
-                    </a>
-                </li>
-                <li>
-                    <a href="#" data-reveal-id="ShutdownModal" class="action has-tip" data-tooltip aria-haspopup="true" data-options="disable_for_touch:true" title="{{ _('Shut down') }}">
-                        <i class="fa fa-power-off"></i>
-                    </a>
-                </li>
-            {% else %}
-                <li>
-                    <a href="/login/" class="action has-tip" data-tooltip aria-haspopup="true" data-options="disable_for_touch:true" title="{{ _('Sign in') }}">
-                        <i class="fa fa-sign-in"></i>
-                    </a>
-                </li>
-            {% endif %}
-        </ul>
-    </div> -->
-
+  </div>
 </section>
 
 {% block extra_modals %}
-<div id="ShutdownModal" class="reveal-modal tiny" data-reveal>
-    <div class="titlebar red">
-        <a class="close-reveal-modal">
-            <span class="fa fa-close"></span>
-        </a>
-        <span class="fa fa-power-off"></span>
-        {{ _('Shut down') }}
-    </div>
-    <div class="content">
-        <p>
-            {{ _('Are you sure you wish to shut down ' + opsoro.robot_name + '?') }}
-            <br/>
-            <span class="note">
-                <strong>{{ _('Note') }}:</strong>
-                {{ _('Never power off ' + opsoro.robot_name + ' without completely shutting down first! Cutting power without properly shutting down the operating system can result in a corrupt file system.') }}
-            </span>
-        </p>
-        <div class="text-center">
-            <a href="#" class="button" id="btnShutdown">
-                <span class="fa fa-power-off"></span>
-                {{ _('Yes, shut down ' + opsoro.robot_name) }}</a>
+<div id="ShutdownModal" class="reveal" data-reveal data-animation-in="fade-in" data-animation-out="fade-out">
+  <div class="titlebar red">
+    <button class="close-button" data-close aria-label="Close" type="button">
+        <span class="fa fa-close"></span>
+    </button>
+    <span class="fa fa-power-off"></span>
+  </div>
+
+  <div class="content">
+    <p>
+        {{ _('Shut Down, Restart or Log Out ' + opsoro.robot_name + '?') }}
+        <br/>
+        <span class="note">
+            <strong>{{ _('Note') }}:</strong>
+            {{ _('Never power off ' + opsoro.robot_name + ' without completely shutting down first! Cutting power without properly shutting down the operating system can result in a corrupt file system.') }}
+        </span>
+        <br/><br/>
+    </p>
+    <div class="row small-up-3">
+      <div class="text-center column column-block">
+        <div class="button big-button" id="btnShutdown">
+  				<div class="icon fa fa-power-off"></div>
+  				<div class="text">{{ _('Shut Down') }}</div>
         </div>
+      </div>
+      <div class="text-center column column-block">
+        <div class="button big-button" id="btnRestart">
+  				<div class="icon fa fa-repeat"></div>
+  				<div class="text">{{ _('Restart') }}</div>
+        </div>
+      </div>
+      <div class="text-center column column-block">
+        <div class="button big-button" id="btnLogout">
+  				<div class="icon fa fa-sign-out"></div>
+  				<div class="text">{{ _('Log Out') }}</div>
+  			</div>
+			</div>
     </div>
+
+  </div>
 </div>
 {% endblock %}

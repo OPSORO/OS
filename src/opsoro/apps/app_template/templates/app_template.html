@@ -5,12 +5,11 @@
 
 {% endblock %}
 {% block app_toolbar %}
-	<p style="color: white">This is the toolbar, you can add/remove options.<br/>To remove the toolbar completely, just remove the blocks: "block app_toolbar" and "endblock".</p>
+	<p>This is the toolbar, you can add/remove options.<br/>To remove the toolbar completely, just remove the blocks: "block app_toolbar" and "endblock".</p>
 	<!--
-{% include "toolbar/_file_operations.html" %}
-{% include "toolbar/_script_operations.html" %}
-{% include "toolbar/_lock_unlock.html" %}
--->
+		{% include "toolbar/_file_operations.html" %}
+		{% include "toolbar/_lock_unlock.html" %}
+	-->
 {% endblock %}
 
 <!-- These sidebars can be removed by removing the block tags -->
@@ -55,9 +54,9 @@
 {% endblock %}
 {% block app_modals %}
 
-<div id="popup_window" class="reveal-modal" data-reveal>
+<div id="popup_window" class="reveal" data-reveal data-animation-in="fade-in" data-animation-out="fade-out">
 	<div class="titlebar">
-		<a class="close-reveal-modal"><span class="fa fa-close"></span></a>
+		<button class="close-button" data-close aria-label="Close" type="button"><span class="fa fa-close"></span></button>
 		<span class="fa fa-cogs"></span> Popup window!
 	</div>
 	<div class="content">

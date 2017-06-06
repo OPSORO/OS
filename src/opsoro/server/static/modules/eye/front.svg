@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg version="1.1" class="object eye" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 70 48" style="enable-background:new 0 0 70 48;" xml:space="preserve">
+	<style type="text/css">
+		.eye .st0{fill:url(#eye_SVGID_1_);}
+		.eye .st1{fill:#313334;}
+		.eye .st2{fill:#F2F2F2;}
+		.eye .st3{fill:#2c2e30;}
+	</style>
+	<g class="group">
+		<g> <!-- eye shell -->
+			<radialGradient id="eye_SVGID_1_" cx="35" cy="24" r="20" gradientUnits="userSpaceOnUse">
+				<stop  offset="0" style="stop-color:#FFFFFF"/>
+				<stop  offset="0.5901" style="stop-color:#FDFDFD"/>
+				<stop  offset="0.8542" style="stop-color:#F6F6F6"/>
+				<stop  offset="1" style="stop-color:#EDEDED"/>
+			</radialGradient>
+			<circle class="st0" cx="35" cy="24" r="22"/>
+		</g>
+		<g>
+			<circle class="st3 pupil" cx="35" cy="24" r="7"/>
+		</g>
+		<g>
+			<!-- screw heads -->
+			<rect class="st1" x="0" 		y="22" width="2.5" 	height="4" 	rx="0.5" />
+			<rect class="st1" x="67.5" 	y="22" width="2.5" 	height="4" 	rx="0.5" />
+
+			<!-- plastic sides -->
+			<rect class="st1" x="9.5" 	y="6.5" width="3" 	height="35" rx="0.5" />
+			<rect class="st1" x="57.5" 	y="6.5" width="3" 	height="35" rx="0.5" />
+
+			<!-- lid sides -->
+			<!-- lid handles -->
+			<rect class="st2" x="2.5" 	y="23" width="2" 		height="10" rx="0.5" />
+			<rect class="st2" x="6.5" 	y="15" width="2" 		height="10" rx="0.5" />
+			<!-- lid mounts -->
+			<rect class="st2" x="2.5" 	y="20" width="10" 	height="10" rx="0.5" />
+			<rect class="st2" x="6" 		y="18" width="6.5" 	height="12" rx="0.5" />
+
+			<!-- lid handles -->
+			<rect class="st2" x="61.5" 	y="23" width="2" 		height="10" rx="0.5" />
+			<rect class="st2" x="65.5" 	y="15" width="2" 		height="10" rx="0.5" />
+			<!-- lid mounts -->
+			<rect class="st2" x="57.5" 	y="18" width="10" 	height="10" rx="0.5" />
+			<rect class="st2" x="57.5" 	y="18" width="6.5" 	height="12" rx="0.5" />
+
+			<!-- plastic mounts -->
+			<rect class="st1" x="9.5" 	y="21" width="3" 		height="6" 	rx="0.5" />
+			<rect class="st1" x="57.5" 	y="21" width="3" 		height="6" 	rx="0.5" />
+		</g>
+		<g>
+			<!-- lids -->
+			<path class="st2 lid_1" 		d="M9,24 C14,-8,56,-8,61,24 C56,10,14,10,9,24"/>
+			<path class="st2 lid_2" 		d="M9,24 C14,56,56,56,61,24 C56,38,14,38,9,24"/>
+		</g>
+	</g>
+</svg>

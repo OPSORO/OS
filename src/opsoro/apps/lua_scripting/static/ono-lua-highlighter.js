@@ -13,14 +13,14 @@ var OnoLuaHighlightRules = function() {
 		"init|add_button|add_key|is_button_pressed|is_key_pressed|"+
 
 		// Hardware class methods
-		"ping|reset|led_on|led_off|i2c_detect|i2c_read8|i2c_write8|i2c_read16|"+
-		"i2C_write16|servo_init|servo_enable|servo_disable|servo_neutral|"+
-		"servo_set|servo_set_all|cap_init|cap_set_threshold|"+
-		"cap_get_filtered_data|cap_get_baseline_data|cap_get_touched|"+
-		"cap_set_gpio_pinmode|cap_read_gpio|cap_write_gpio|neo_init|neo_enable|"+
-		"neo_disable|neo_set_brightness|neo_show|neo_set_pixel|neo_set_range|"+
-		"neo_set_all|neo_set_pixel_hsv|neo_set_range_hsv|neo_set_all_hsv|"+
-		"ana_read_channel|ana_read_all_channels|"+
+		"ping|reset|led_on|led_off|I2C:detect|I2C:read8|I2C:write8|I2C:read16|"+
+		"I2C:write16|Servo:init|Servo:enable|Servo:disable|Servo:neutral|"+
+		"Servo:set|Servo:set_all|Capacitive:init|Capacitive:set_threshold|"+
+		"Capacitive:get_filtered_data|Capacitive:get_baseline_data|Capacitive:get_touched|"+
+		"Capacitive:set_gpio_pinmode|Capacitive:read_gpio|Capacitive:write_gpio|Neopixel:init|Neopixel:enable|"+
+		"Neopixel:disable|Neopixel:set_brightness|Neopixel:show|Neopixel:set_pixel|Neopixel:set_range|"+
+		"Neopixel:set_all|Neopixel:set_pixel_hsv|Neopixel:set_range_hsv|Neopixel:set_all_hsv|"+
+		"Analog:read_channel|Analog:read_all_channels|"+
 
 		// Sound class methods
 		"say_tts|play_file|"+

@@ -3,76 +3,45 @@
 {% block head %}
 
 <style>
-.legend table {
-	margin: 0;
-}
-.legend table tr th, .legend table tr td {
-	padding: 0.1rem;
-}
-.legend td.legendLabel {
-	padding-right: 1rem;
-}
+	.legend table {
+		margin: 0;
+	}
+	.legend table tr th, .legend table tr td {
+		padding: 0.1rem;
+	}
+	.legend td.legendLabel {
+		padding-right: 1rem;
+	}
 </style>
 {% endblock %}
 
 {% block app_content %}
-<div class="actionbar">
-	<div style="width: 12rem; margin-right: 1rem;" class="left">
-		<form>
-			<select id="lstElectrodes" style="margin: 0.25rem 0 0 0;">
-				<option value="1">1 electrode (E0)</option>
-				<option value="2">2 electrodes (E0 - E1)</option>
-				<option value="3">3 electrodes (E0 - E2)</option>
-				<option value="4">4 electrodes (E0 - E3)</option>
-				<option value="5">5 electrodes (E0 - E4)</option>
-				<option value="6">6 electrodes (E0 - E5)</option>
-				<option value="7">7 electrodes (E0 - E6)</option>
-				<option value="8">8 electrodes (E0 - E7)</option>
-				<option value="9">9 electrodes (E0 - E8)</option>
-				<option value="10">10 electrodes (E0 - E9)</option>
-				<option value="11">11 electrodes (E0 - E10)</option>
-				<option value="12">12 electrodes (E0 - E11)</option>
-			</select>
-		</form>
+	<div class="actionbar">
+		<div style="width: 12rem; margin-right: 1rem;" class="left">
+			<form>
+				<select id="lstElectrodes" style="margin: 0.25rem 0 0 0;">
+					<option value="1">1 electrode (E0)</option>
+					<option value="2">2 electrodes (E0 - E1)</option>
+					<option value="3">3 electrodes (E0 - E2)</option>
+					<option value="4">4 electrodes (E0 - E3)</option>
+					<option value="5">5 electrodes (E0 - E4)</option>
+					<option value="6">6 electrodes (E0 - E5)</option>
+					<option value="7">7 electrodes (E0 - E6)</option>
+					<option value="8">8 electrodes (E0 - E7)</option>
+					<option value="9">9 electrodes (E0 - E8)</option>
+					<option value="10">10 electrodes (E0 - E9)</option>
+					<option value="11">11 electrodes (E0 - E10)</option>
+					<option value="12">12 electrodes (E0 - E11)</option>
+				</select>
+			</form>
+		</div>
+		<a href="#" id="btnStartStop" class="action">
+			<span class="fa fa-play"></span><br/>
+			<span class="text">Start</span>
+		</a>
 	</div>
-	<a href="#" id="btnStartStop" class="action">
-		<span class="fa fa-play"></span><br/>
-		<span class="text">Start</span>
-	</a>
-</div>
-<!-- <div id="errors">
-	{% with messages = get_flashed_messages(category_filter=["message"]) %}
-		{% if messages %}
-			{% for message in messages %}
-				<div data-alert class="alert-box secondary radius">
-					{{ message }}
-					<a href="#" class="close">&times;</a>
-				</div>
-			{% endfor %}
-		{% endif %}
-	{% endwith %}
-	{% with messages = get_flashed_messages(category_filter=["error"]) %}
-		{% if messages %}
-			{% for message in messages %}
-				<div data-alert class="alert-box alert radius">
-					{{ message }}
-					<a href="#" class="close">&times;</a>
-				</div>
-			{% endfor %}
-		{% endif %}
-	{% endwith %}
-	{% with messages = get_flashed_messages(category_filter=["success"]) %}
-		{% if messages %}
-			{% for message in messages %}
-				<div data-alert class="alert-box success radius">
-					{{ message }}
-					<a href="#" class="close">&times;</a>
-				</div>
-			{% endfor %}
-		{% endif %}
-	{% endwith %}
-</div> -->
-<div id="chart" style="width: 100%; height: calc(100vh - 20rem);"></div>
+
+	<div id="chart" style="width: 100%; height: calc(100vh - 20rem);"></div>
 
 {% endblock %}
 
@@ -122,27 +91,9 @@
 		var plot;
 		var runningStatus = false;
 
-		var conn = null;
-		var connReady = false;
-		conn = new SockJS("http://" + window.location.host + "/sockjs");
-
-		conn.onopen = function(){
-			console.log("SockJS connected.");
-			$.ajax({
-				url: "/sockjstoken",
-				cache: false
-			})
-			.done(function(data) {
-				conn.send(JSON.stringify({action: "authenticate", token: data}));
-				connReady = true;
-				console.log("SockJS authenticated.");
-			});
-		};
-
-		conn.onmessage = function(e){
-			var msg = $.parseJSON(e.data);
-
-			if(msg.action == "updateelectrodes"){
+		app_socket_handler = function(data) {
+      switch (data.action) {
+			case "updateelectrodes":
 				$.each(msg.electrodedata, function(idx, val){
 					if(idx >= 0 && idx < 12){
 						electrodeData[idx].push(val);
@@ -154,12 +105,8 @@
 
 
 				updateChart();
+				break;
 			}
-		};
-		conn.onclose = function(){
-			console.log("SockJS disconnected.");
-			conn = null;
-			connReady = false;
 		};
 
 		function formatData(){

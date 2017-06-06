@@ -1,10 +1,13 @@
-from opsoro.module import Module
-from opsoro.console_msg import *
-from opsoro.preferences import Preferences
-
-from noise import pnoise1
 import time
 from random import randint
+
+from noise import pnoise1
+
+from opsoro.console_msg import *
+from opsoro.module import Module
+from opsoro.preferences import Preferences
+
+
 # import math
 
 
@@ -63,13 +66,13 @@ class Eye(Module):
 
         # self.last_look_position = Robot.look_at_position
 
-        self.dofs['pupil_horizontal'].set_overlay_value(0.0 + self.last_look_position[0], -1)
+        self.dofs['horizontal'].set_overlay_value(0.0 + self.last_look_position[0], -1)
         #            float(self.look_speed) / 1000.0)
 
         # pupil_vertical
         # oldDOFvalVER = float(self.dofs['pupil_vertical'].value) + 0.01
 
-        self.dofs['pupil_vertical'].set_overlay_value(0.0 + self.last_look_position[1], -1)
+        self.dofs['vertical'].set_overlay_value(0.0 + self.last_look_position[1], -1)
         #            float(self.look_speed) / 1000.0)
 
         # self.look_delay = randint(self.look_delay_default*0.5, self.look_delay_default*1.5)
@@ -88,9 +91,9 @@ class Eye(Module):
         currentTime = int(round(time.time() * 1000))
         if self.blink_return:
             # print_info(currentTime - self.last_blink_time)
-            if (currentTime - self.dofs['eyelid_closure'].last_set_time) > (self.blink_delay + (anim_time * 500)):
+            if (currentTime - self.dofs['lid'].last_set_time) > (self.blink_delay + (anim_time * 500)):
                 # print_info('alive: blink open: ' + str(self.last_blink_time))
-                self.dofs['eyelid_closure'].reset_overlay(float(anim_time) / 2.0)
+                self.dofs['lid'].reset_overlay(float(anim_time) / 2.0)
                 # self.dofs['eyelid_closure'].set_overlay_value(
                 #     0.5, float(anim_time) / 2.0)
                 self.blink_return = False
@@ -99,8 +102,8 @@ class Eye(Module):
                 return True
         else:
             # print_info('alive: blink close: ' + str(self.last_blink_time))
-            self.dofs['eyelid_closure'].last_set_time = currentTime - self.blink_delay
-            self.dofs['eyelid_closure'].set_overlay_value(-1.0, float(anim_time) / 2.0, False)
+            self.dofs['lid'].last_set_time = currentTime - self.blink_delay
+            self.dofs['lid'].set_overlay_value(-1.0, float(anim_time) / 2.0, False)
             self.blink_return = True
             return True
         return False
@@ -116,12 +119,12 @@ class Eye(Module):
         """
         currentTime = int(round(time.time() * 1000))
         updated = False
-        if Preferences.get('alive', 'blink', False):
-            if (currentTime - self.dofs['eyelid_closure'].last_set_time) > self.blink_delay:
+        if Preferences.get('behaviour', 'blink', False):
+            if (currentTime - self.dofs['lid'].last_set_time) > self.blink_delay:
                 updated = self.blink(self.blink_speed / 1000.0)
 
-        if Preferences.get('alive', 'gaze', False):
-            if (currentTime - self.dofs['pupil_horizontal'].last_set_time) > self.look_delay:
+        if Preferences.get('behaviour', 'gaze', False):
+            if (currentTime - self.dofs['horizontal'].last_set_time) > self.look_delay:
                 # Update random looking position
                 # if Robot.look_at_position == self.last_look_position:
                 for i in range(len(self.last_look_position)):

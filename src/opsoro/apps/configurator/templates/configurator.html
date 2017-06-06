@@ -7,141 +7,102 @@
 
 {% block head %}
 
-	<script src="/static/js/svg/svg.min.js"></script>
-	<script src="/static/js/svg/svg.draggable.min.js"></script>
-	<script src="/static/js/robot/modules.js"></script>
 {% endblock %}
 
 {% block app_content %}
-
-
-	<div id="model_screen" class='large-6 medium-6 small-12 columns'></div>
-	<div class="config_settings large-6 medium-6 small-12 columns" data-bind="visible: !isSelectedModule()">
-		<form>
-			<span class="setting">
-				<span>Robot:
-				</span>
-				<input type="text" name="robot_name" data-bind="event: { input: function() { fileIsModified(true) }}, value: name, valueUpdate: 'input'">
-			</span>
-			<span class="setting">
-				<span>Grid size:
-				</span>
-				<input type="number" min="1" max="100" step="1" name="mid" data-bind="value: gridSize, valueUpdate: 'input'">
-				<a href="#" class="button secondary" data-bind="click: function() { fileIsModified(true); redraw(); }">
-					<span class="fa fa-check"></span>
-				</a>
-			</span>
-			<span class="setting">
-				<span>Skin:
-				</span>
-				<select data-bind="event: { input: function() { fileIsModified(true); redraw(); }}, click: function() { fileIsModified(true); redraw(); }, value: skin, foreach: allSkins">
-					<option data-bind="text: $data, value: $data"></option>
-				</select>
-			</span>
-
-			<span class="setting">
-				<span>Modules:
-				</span>
-				<div id="modules_screen"></div>
-			</span>
-		</form>
-	</div>
-	<div class="config_settings large-6 medium-6 small-12 columns" data-bind="visible: isSelectedModule()">
-		<form>
-			<span class="setting">
-				<span>Module:
-				</span>
-				<span data-bind="text: selectedModule().module"></span>
-				<a href="#" class="button alert" data-bind="click: selectedModule_Remove">
-					<span class="fa fa-trash"></span>
-				</a>
-			</span>
-			<span class="setting">
-				<span>Name:
-				</span><input type="text" name="name" data-bind="value: selectedModule().name, valueUpdate: 'input'"></span>
-			<span class="setting">
-				<span>Width:</span>
-				<input type="number" min="1" max="2000" step="1" name="mid" data-bind="event: { input: updateDofVisualisation(-1, false) }, value: selectedModule().width, valueUpdate: 'input'">
-			</span>
-			<span class="setting">
-				<span>Height:</span>
-				<input type="number" min="1" max="2000" step="1" name="mid" data-bind="event: { input: updateDofVisualisation(-1, false) }, value: selectedModule().height, valueUpdate: 'input'">
-			</span>
-			<!-- <span class="setting">
-				<span>Rotate:
-				</span>
-				<a href="#" class="button" data-bind="click: selectedModule_RotateRight">
-					<span class="fa fa-rotate-right"></span>
-				</a>
-				<a href="#" class="button" data-bind="click: selectedModule_RotateLeft">
-					<span class="fa fa-rotate-left"></span>
-				</a>
-			</span> -->
-			<span class="setting">
-				<span>Dofs:
-				</span>
-				<select data-bind="click: mappingGraph.updateGraph, value: selectedModule_SelectedDof, foreach: selectedModule().dofs">
-					<option data-bind="text: name, value: $data"></option>
-				</select>
-				<!-- <a href="#" class="button secondary" data-bind="click: selectedModule_AddDof"><span class="fa fa-plus"></span></a> -->
-			</span>
-
-			<div id="dofs">
-				<span class="setting">
-					<span>Name:
-					</span><input type="text" name="dof_name" data-bind="value: selectedModule_SelectedDof().name, valueUpdate: 'input'">
-					<!-- <a href="#" class="button alert" data-bind="click: selectedModule_RemoveDof"><span class="fa fa-trash"></span></a> -->
-				</span>
-
-				<span class="setting">
-					<span>Servo:
-					</span><input type="checkbox" name="servo" class="checkbox" data-bind="checked: selectedModule_SelectedDof().isServo"/></span>
-				<div id="servo" data-bind="visible: selectedModule_SelectedDof().isServo()">
-					<span class="setting">
-						<span>Pin:
-						</span>
-						<input type="number" min="0" max="15" step="1" name="pin" data-bind="event: { input: updateServoPin }, value: selectedModule_SelectedDof().servo().pin, valueUpdate: 'input'">
-					</span>
-					<span class="setting">
-						<span>Mid:
-						</span><input type="number" min="500" max="2500" step="5" name="mid" data-bind="event: { input: updateServoMid }, value: selectedModule_SelectedDof().servo().mid, valueUpdate: 'input'"></span>
-					<span class="setting">
-						<span>Min:
-						</span><input type="number" min="-2000" max="2000" step="5" name="min" data-bind="event: { input: updateServoMin }, value: selectedModule_SelectedDof().servo().min, valueUpdate: 'input'"></span>
-					<span class="setting">
-						<span>Max:
-						</span><input type="number" min="-2000" max="2000" step="5" name="max" data-bind="event: { input: updateServoMax }, value: selectedModule_SelectedDof().servo().max, valueUpdate: 'input'"></span>
-				</div>
-
-				<span class="setting">
-					<span>Mapping:
-					</span><input type="checkbox" name="mapping" class="checkbox" data-bind="checked: selectedModule_SelectedDof().isMap"/></span>
-				<div id="mapping" data-bind="visible: selectedModule_SelectedDof().isMap()">
-					<span class="setting">
-						<span>Neutral:
-						</span><input type="number" min="-1" max="1" step="0.05" name="neutral" data-bind="event: { input: updateDofVisualisation(-1, true) }, value: selectedModule_SelectedDof().map().neutral, valueUpdate: 'input'"></span>
-
-					<div id="poly_screen"></div>
-				</div>
+	<div class="row" data-equalizer>
+		<div class="model small-12 medium-7 large-5 columns" data-equalizer-watch>
+			<div class="edit" id="model_screen" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+		</div>
+		<div class="config-settings small-12 medium-5 large-7 columns" data-equalizer-watch>
+			<div class="modules row hide-for-small-only medium-up-4 large-up-6" data-equalizer="modules">
+				{% for module in modules %}
+					<div class="module column column-block" data-equalizer-watch="modules">
+						<img class="draggable" id="{{ module }}" src="/static/modules/{{ module }}/front.svg" title="{{ module }}" draggable="true" ondragstart="drag(event)" ></img>
+					</div>
+				{% endfor %}
 			</div>
-		</form>
+			<div class="config-settings" data-bind="with: selected_module">
+				<fieldset>
+					<legend>
+						<strong class="clickedit" data-bind="click: name.edit">
+							<span data-bind="visible: !name.editing(), html: name.displayValue">&nbsp;</span>
+				     <input name="name" style="width: 100%" data-bind="visible: name.editing, value: name.value, hasFocus: name.editing" />
+				     <span data-bind="visible: !name.editing()" class="fa fa-pencil"></span>
+						</strong>
+					</legend>
+					<div class="row module-settings">
+						<div class="setting small-4 large-3 columns">
+							<svg data-bind="html: code" height="100" width="100%"></svg>
+							<div class="row">
+								<div class="text-left small-6 columns">
+									<button href="" class="button rotate" data-bind="click: rotate">
+										<span class="fa fa-rotate-right"></span>
+									</button>
+								</div>
+								<div class="text-right small-6 columns">
+									<button href="" class="button alert" data-bind="click: remove">
+										<span class="fa fa-trash"></span>
+									</button>
+								</div>
+							</div>
+						</div>
+						<div class="small-8 large-9 columns">
+							<div class="dofs" data-bind="foreach: dofs">
+								<div class="row dof-settings">
+									<div class="setting small-12 large-5 columns">
+										<div class="settings-item small-7 large-6 columns">
+											<span data-bind="text: name"></span>
+										</div>
+										<div class="settings-item small-5 large-6 columns">
+											<select data-bind="value: servo().pin, valueUpdate: 'input', foreach: $root.available_servos">
+												<option data-bind="text: 'Pin ' + $data, value: $data"></option>
+											</select>
+										</div>
+									</div>
+									<div class="setting small-12 large-7 columns">
+										<div class="settings-item small-9 columns">
+											<div class="slider" data-slider data-start="500" data-end="2500" data-step="1" data-bind="slider: servo().mid">
+												<span class="slider-handle" data-slider-handle role="slider" tabindex="1" data-bind="attr: { 'aria-controls': name_formatted }"></span>
+											  <span class="slider-fill" data-slider-fill></span>
+											</div>
+										</div>
+										<div class="settings-item small-3 columns">
+										  <input type="number" data-bind="attr: { 'id': name_formatted }">
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</fieldset>
+			</div>
+		</div>
 	</div>
-<!-- <svg id="mysvg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="800" height="600">
-<image x="0" y="0" width="200" height="200" xlink:href="static/images/eye.svg" />
-
-</svg> -->
-
 {% endblock %}
 
 {% block app_scripts %}
 
+	<script>
+		action_data 		= {{ actions|tojson|safe }};
+		// var data 		= {{ data|tojson|safe }};
+		module_names 		= {{ modules|tojson|safe }};
+		skin_names 			= {{ skins|tojson|safe }};
+		specs 					= {{ specs|tojson|safe }};
+		svg_codes 			= {{ svg_codes|tojson|safe }};
+		configs 				= {{ configs|tojson|safe }};
+		expression_data = undefined;
+		icon_data 			= undefined;
+	</script>
 
-<script>
-	action_data = {{ actions|tojson|safe }};
-	// var data = {{ data|tojson|safe }};
-	modules_name = {{ modules|tojson|safe }};
-	skins_name = {{ skins|tojson|safe }};
-</script>
+
+	<script src="/static/js/svg/svg.min.js?ver={{ version }}"></script>
+	<script src="/static/js/svg/svg.draggable.min.js?ver={{ version }}"></script>
+	<script src="/static/js/robot/model.js?ver={{ version }}"></script>
+	{% for module in modules %}
+		<script src="/static/modules/{{ module }}/{{ module }}.js?ver={{ version }}"></script>
+
+	{% endfor %}
 
 {% endblock %}
 

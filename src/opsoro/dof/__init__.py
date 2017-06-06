@@ -1,14 +1,14 @@
 # from opsoro.hardware import Hardware
-from opsoro.console_msg import *
+import math
+import time
 
 from scipy import interpolate
 
 from opsoro.animate import Animate
+from opsoro.console_msg import *
 
-import math
-import time
 
-constrain = lambda n, minn, maxn: max(min(maxn, n), minn)
+def constrain(n, minn, maxn): return max(min(maxn, n), minn)
 
 
 class DOF(object):
@@ -22,7 +22,9 @@ class DOF(object):
         """
 
         self.name = name
+        self.tags = []
         self.value = neutral
+        self.to_value = neutral
 
         # Dict to store any extra data from YAML files
         self.data = {}
@@ -49,7 +51,7 @@ class DOF(object):
 
     def __repr__(self):
         return "DOF(name=%s, neutral=%.2f, poly={...})" \
-         % (self.name, self._neutral)
+            % (self.name, self._neutral)
 
     def set_control_polygon(self, neutral=0.0, poly=None):
         """
@@ -82,8 +84,7 @@ class DOF(object):
             sorted_dofs = map(dofs.__getitem__, indexes)
 
             # Create interpolation instance
-            self._interp_poly = interpolate.interp1d(
-                phis, sorted_dofs, kind="linear")
+            self._interp_poly = interpolate.interp1d(phis, sorted_dofs, kind="linear")
 
     def calc(self, r, phi, anim_time=-1):
         """
@@ -104,9 +105,7 @@ class DOF(object):
         dof_at_max_r = float(self._interp_poly(phi))
 
         # Interpolate between neutral DOF pos and max intensity DOF pos
-        self.set_value(
-            float(self._neutral) + (r * (dof_at_max_r - float(self._neutral))),
-            anim_time)
+        self.set_value(float(self._neutral) + (r * (dof_at_max_r - float(self._neutral))), anim_time)
 
         # # Execute overlays
         # for overlay_fn in self.overlays:
@@ -116,11 +115,7 @@ class DOF(object):
         #         # Not a callable object, or function does not take 2 args
         #         pass
 
-    def set_value(self,
-                  dof_value=0,
-                  anim_time=-1,
-                  is_overlay=False,
-                  update_last_set_time=True):
+    def set_value(self, dof_value=0, anim_time=-1, is_overlay=False, update_last_set_time=True):
         """
         Sets the dof value.
 
@@ -132,6 +127,8 @@ class DOF(object):
         # print_info('Set value: %d, time: %i' % (dof_value, anim_time))
 
         dof_value = float(constrain(float(dof_value), -1.0, 1.0))
+        self.to_value = dof_value
+
         # Apply transition animation
         if anim_time < 0:
             anim_time = float(abs(dof_value - float(self.value))) / 1.0
@@ -144,10 +141,7 @@ class DOF(object):
         if update_last_set_time:
             self.last_set_time = int(round(time.time() * 1000))
 
-    def set_overlay_value(self,
-                          dof_value=0,
-                          anim_time=-1,
-                          update_last_set_time=True):
+    def set_overlay_value(self, dof_value=0, anim_time=-1, update_last_set_time=True):
         """
         Sets the overlay value and overwrites the dof position.
 

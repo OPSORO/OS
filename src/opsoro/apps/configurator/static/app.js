@@ -494,12 +494,12 @@
 //
 
 
-$(document).ready(function() {
-    virtualModel = new VirtualModel();
-    ko.applyBindings(virtualModel);
-    virtualModel.fileIsModified(false);
-
-    // Configurate toolbar handlers
-    config_file_operations("/", virtualModel.fileExtension(), virtualModel.saveFileData, virtualModel.loadFileData, virtualModel.init);
-		$(window).resize(virtualModel.redraw);
-});
+// $(document).ready(function() {
+//     virtualModel = new VirtualModel();
+//     ko.applyBindings(virtualModel);
+//     virtualModel.fileIsModified(false);
+//
+//     // Configurate toolbar handlers
+//     config_file_operations("/", virtualModel.fileExtension(), virtualModel.saveFileData, virtualModel.loadFileData, virtualModel.init);
+// 		$(window).resize(virtualModel.redraw);
+// });

@@ -1,3 +1,5 @@
+Groep Arno Vande Cappelle, Thibaud Vander Syppe
+
 # OnoSW
 OnoSW is the software framework for [OPSORO](http://www.opsoro.be/), to be used in conjunction with [Ono2](https://github.com/cesarvandevelde/Ono2) and [OnoHAT](https://github.com/cesarvandevelde/OnoHAT).
 
@@ -20,7 +22,7 @@ OnoSW is the software framework for [OPSORO](http://www.opsoro.be/), to be used 
 5. Install Python development files, Avahi daemon, LuaJIT
 
     ```
-    sudo apt-get install python2.7-dev avahi-daemon libluajit-5.1-dev
+    sudo apt-get install python2.7-dev avahi-daemon libluajit-5.1-dev git
     ```
 
 6. Install PIP
@@ -41,7 +43,7 @@ OnoSW is the software framework for [OPSORO](http://www.opsoro.be/), to be used 
 8. Install Python packages (flask, flask-login, pyyaml, pluginbase, sockjs-tornado, simplejson, lupa, numpy, scipy, spidev)
 
     ```
-    sudo pip install flask flask-login pyyaml pluginbase sockjs-tornado simplejson lupa numpy spidev
+    sudo pip install flask flask-login pyyaml pluginbase sockjs-tornado simplejson lupa numpy spidev gitpython flask-babel noise pyserial enum enum34 requests tweepy
     sudo apt-get install -y python-smbus i2c-tools
     sudo apt-get install -y python-scipy
     ```

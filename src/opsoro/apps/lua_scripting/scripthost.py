@@ -1,25 +1,27 @@
 from __future__ import division
 
-import time
 import sys
+import time
 import traceback
+
 import lupa
 
-from opsoro.hardware import Hardware
-from opsoro.expression import Expression
 from opsoro.animate import Animate, AnimatePeriodic
+from opsoro.expression import Expression
+from opsoro.hardware import Hardware
+from opsoro.robot import Robot
 from opsoro.sound import Sound
 from opsoro.stoppable_thread import StoppableThread
 
 
 def callback(fn):
     """
-	Helper function to support callbacks in classes. Returns the first parameter
-	if it is callable, returns a dummy function otherwise.
+    Helper function to support callbacks in classes. Returns the first parameter
+    if it is callable, returns a dummy function otherwise.
 
-	Usage:
-	callback(self.on_my_callback)()
-	"""
+    Usage:
+    callback(self.on_my_callback)()
+    """
 
     def do_nothing(*args, **kwargs):
         pass
@@ -56,9 +58,9 @@ class ScriptHost(object):
 
     def setup_runtime(self):
         """
-		Creates a new lua runtime and initializes all globals. Used by
-		start_script(), should not be called directly.
-		"""
+        Creates a new lua runtime and initializes all globals. Used by
+        start_script(), should not be called directly.
+        """
         # Create new lua instance
         self.runtime = lupa.LuaRuntime(unpack_returned_tuples=True)
 
@@ -75,6 +77,7 @@ class ScriptHost(object):
 
         g["Sound"] = Sound
         g["Expression"] = Expression
+        g["Robot"] = Robot
         g["Hardware"] = LuaHardware(self.runtime)
         g["Animate"] = LuaAnimate
         g["AnimatePeriodic"] = LuaAnimatePeriodic
@@ -98,10 +101,10 @@ class ScriptHost(object):
 
     def start_script(self, script):
         """
-		Start a new script. This method will create a new runtime, pass the
-		script to the runtime, and start a thread to continuously call the
-		script's loop function. Can only be used if no other script is running.
-		"""
+        Start a new script. This method will create a new runtime, pass the
+        script to the runtime, and start a thread to continuously call the
+        script's loop function. Can only be used if no other script is running.
+        """
         # Check if running
         if self.is_running:
             raise RuntimeError("A script is already running!")
@@ -119,31 +122,31 @@ class ScriptHost(object):
 
     def stop_script(self):
         """
-		Attempts to stop the current script. Returns immediately if no script is
-		running. If a script is running, this method will send a stop signal to
-		to the script thread, and then block until the thread is stopped. Note
-		that the thread's stopped condition is only checked during sleep() and
-		at the end of loop() calls, this function will not stop infinite loops.
-		"""
+        Attempts to stop the current script. Returns immediately if no script is
+        running. If a script is running, this method will send a stop signal to
+        to the script thread, and then block until the thread is stopped. Note
+        that the thread's stopped condition is only checked during sleep() and
+        at the end of loop() calls, this function will not stop infinite loops.
+        """
         if self.is_running and self.runtime_thread is not None:
             self.runtime_thread.stop()
             self.runtime_thread.join()
 
     def generate_lua_error(self, message):
         """
-		If a script is running, this method will generate an error inside the
-		script. Useful to signal script errors (e.g. bad parameter) to the user.
-		"""
+        If a script is running, this method will generate an error inside the
+        script. Useful to signal script errors (e.g. bad parameter) to the user.
+        """
         if self.is_running and self.runtime is not None:
             g = self.runtime.globals()
             g["error"](message)
 
     def _report_error(self, e):
         """
-		Helper function that prefixes the type of error to the exception, and
-		then sends the error message to the application through the on_error
-		callback.
-		"""
+        Helper function that prefixes the type of error to the exception, and
+        then sends the error message to the application through the on_error
+        callback.
+        """
         if type(e) == lupa.LuaSyntaxError:
             callback(self.on_error)("Syntax error: %s" % str(e))
         elif type(e) == lupa.LuaError:
@@ -157,28 +160,28 @@ class ScriptHost(object):
 
     def _sleep(self, time):
         """
-		Lua API
-		Sleep function that pauses the thread for a number of seconds. This
-		sleep function will return immediately if the thread's stop flag is set.
-		This means that loop function should come to an end instantaneously,
-		after which the thread is ended.
-		"""
+        Lua API
+        Sleep function that pauses the thread for a number of seconds. This
+        sleep function will return immediately if the thread's stop flag is set.
+        This means that loop function should come to an end instantaneously,
+        after which the thread is ended.
+        """
         if self.runtime_thread is not None:
             self.runtime_thread.sleep(time)
 
     def _rising_edge(self, identifier, status):
         """
-		Lua API
-		Helper function to detect a rising edge of a signal (e.g. button, key,
-		capacitive touch pad, etc). Identifier is an arbitrary string that is
-		used to distinguish between different signals. Internally, it's used as
-		a key for the dictionary that keeps track of different signals.
+        Lua API
+        Helper function to detect a rising edge of a signal (e.g. button, key,
+        capacitive touch pad, etc). Identifier is an arbitrary string that is
+        used to distinguish between different signals. Internally, it's used as
+        a key for the dictionary that keeps track of different signals.
 
-		Usage:
-		if rising_edge("mybutton", UI:is_key_pressed("up")) then
-			-- Do something
-		end
-		"""
+        Usage:
+        if rising_edge("mybutton", UI:is_key_pressed("up")) then
+                -- Do something
+        end
+        """
         last_status = False
         if identifier in self._rising_dict:
             last_status = self._rising_dict[identifier]
@@ -188,17 +191,17 @@ class ScriptHost(object):
 
     def _falling_edge(self, identifier, status):
         """
-		Lua API
-		Helper function to detect a falling edge of a signal (e.g. button, key,
-		capacitive touch pad, etc). Identifier is an arbitrary string that is
-		used to distinguish between different signals. Internally, it's used as
-		a key for the dictionary that keeps track of different signals.
+        Lua API
+        Helper function to detect a falling edge of a signal (e.g. button, key,
+        capacitive touch pad, etc). Identifier is an arbitrary string that is
+        used to distinguish between different signals. Internally, it's used as
+        a key for the dictionary that keeps track of different signals.
 
-		Usage:
-		if falling_edge("mybutton", UI:is_key_pressed("up")) then
-			-- Do something
-		end
-		"""
+        Usage:
+        if falling_edge("mybutton", UI:is_key_pressed("up")) then
+                -- Do something
+        end
+        """
         last_status = False
         if identifier in self._falling_dict:
             last_status = self._falling_dict[identifier]
@@ -216,13 +219,13 @@ class ScriptHost(object):
 
     def _run(self):
         """
-		Called by the worker thread when the script is run. First attempts to
-		call the script's setup function, then continuously calls the loop
-		function. When the thread's stop flag is set, the loop breaks and the
-		thread attempts to run the quit function. At any time, if the runtime
-		encounters an error, the script is stopped, and the on_error and on_stop
-		callbacks are triggered.
-		"""
+        Called by the worker thread when the script is run. First attempts to
+        call the script's setup function, then continuously calls the loop
+        function. When the thread's stop flag is set, the loop breaks and the
+        thread attempts to run the quit function. At any time, if the runtime
+        encounters an error, the script is stopped, and the on_error and on_stop
+        callbacks are triggered.
+        """
 
         time.sleep(0.05)  # delay
 
@@ -276,60 +279,60 @@ class ScriptUI(object):
 
     def init(self):
         """
-		Lua API
-		Requests the application to initialize the UI through the on_init
-		callback. The request is typically passed on to the client via websocket.
-		"""
+        Lua API
+        Requests the application to initialize the UI through the on_init
+        callback. The request is typically passed on to the client via websocket.
+        """
         callback(self.on_init)()
 
     def add_button(self, name, caption, icon, toggle=False):
         """
-		Lua API
-		Adds a button to the client's UI. Request to client is sent through the
-		on_add_button callback.
-		"""
+        Lua API
+        Adds a button to the client's UI. Request to client is sent through the
+        on_add_button callback.
+        """
         callback(self.on_add_button)(name, caption, icon, toggle)
 
     def add_key(self, key):
         """
-		Lua API
-		Adds a key listener to the client's UI.
-		Request to client is sent through the on_add_key callback.
-		"""
+        Lua API
+        Adds a key listener to the client's UI.
+        Request to client is sent through the on_add_key callback.
+        """
         callback(self.on_add_key)(key)
 
     def set_key_status(self, key, status):
         """
-		Used by the app to set the status of a key. Typically, key events are
-		captured on the clientside using javascript and are transfered to the
-		application using a websocket. The application is responsible for
-		updating the key status in the ScriptUI class.
-		"""
+        Used by the app to set the status of a key. Typically, key events are
+        captured on the clientside using javascript and are transfered to the
+        application using a websocket. The application is responsible for
+        updating the key status in the ScriptUI class.
+        """
         self._keys[key] = status
 
     def set_button_status(self, button, status):
         """
-		Used by the app to set the status of a button. Typically, button events
-		are captured on the clientside using javascript and are transfered to
-		the application using a websocket. The application is responsible for
-		updating the button status in the ScriptUI class.
-		"""
+        Used by the app to set the status of a button. Typically, button events
+        are captured on the clientside using javascript and are transfered to
+        the application using a websocket. The application is responsible for
+        updating the button status in the ScriptUI class.
+        """
         self._buttons[button] = status
 
     def is_button_pressed(self, name):
         """
-		Lua API
-		Returns True if a button is pressed, False otherwise.
-		"""
+        Lua API
+        Returns True if a button is pressed, False otherwise.
+        """
         if name in self._buttons:
             return self._buttons[name]
         return False
 
     def is_key_pressed(self, key):
         """
-		Lua API
-		Returns True if a key is pressed, False otherwise.
-		"""
+        Lua API
+        Returns True if a key is pressed, False otherwise.
+        """
         if key in self._keys:
             return self._keys[key]
         return False
@@ -355,23 +358,23 @@ class LuaHardware(object):
             return attr
 
     def cap_get_filtered_data(self):
-        return self.runtime.table_from(Hardware.cap_get_filtered_data())
+        return self.runtime.table_from(Hardware.Capacitive.get_filtered_data())
 
     def cap_get_baseline_data(self):
-        return self.runtime.table_from(Hardware.cap_get_baseline_data())
+        return self.runtime.table_from(Hardware.Capacitive.get_baseline_data())
 
     def ana_read_all_channels(self):
-        return self.runtime.table_from(Hardware.cap_get_baseline_data())
+        return self.runtime.table_from(Hardware.Capacitive.get_baseline_data())
 
     def spi_command(self, cmd, params=None, returned=0, delay=0):
         if params is not None:
             params = list(params.values())
         return self.runtime.table_from(
-            Hardware.spi_command(cmd, params, returned, delay))
+            Hardware.SPI.command(cmd, params, returned, delay))
 
     def servo_set_all(self, pos_list):
         pos_list = list(pos_list.values())
-        Hardware.servo_set_all(post_list)
+        Hardware.Servo.set_all(post_list)
 
 
 class LuaAnimate(object):
@@ -402,8 +405,8 @@ class LuaAnimatePeriodic(object):
     def __call__(self):
         return self._a()
 
-### NEW NEW NEW and untested
-### install pyserial
+# NEW NEW NEW and untested
+# install pyserial
 # TODO: add to scripthost
 # import serial
 # import serial.tools.list_ports

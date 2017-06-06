@@ -65,17 +65,17 @@ updateData = function() {
             // $("#virtualModelCanvas").drawLayers();
         }
     });
-    setTimeout(updateData, 50);
+    // setTimeout(updateData, 50);
 }
 
 // // Setup websocket connection.
 // var conn = null;
 // var connReady = false;
-// conn = new SockJS("http://" + window.location.host + "/sockjs");
+// conn = new SockJS("http://" + window.location.host + "/appsockjs");
 //
 // self.conn.onopen = function(){
 // 	$.ajax({
-// 		url: "/sockjstoken",
+// 		url: "/appsockjstoken",
 // 		cache: false
 // 	})
 // 	.done(function(data) {

@@ -15,22 +15,18 @@
 
 	<body class="{% block body_class %}{% endblock %}" id="{% block body_id %}{% endblock %}" {% block body_extra_attributes %} {% endblock %}>
 		<div class="{% block wrapper_class %}{% endblock %}">
-			{% block topbar_base %}{% endblock %}
-			{% block body_base %}
-				<section id="content_body">
-					<div class="container content">
-						{% block body %}{% endblock %}
-					</div>
-				</section>
-			{% endblock %}
-
+			<div class="wrapper">
+				{% block topbar_base %}{% endblock %}
+				{% block body_base %}
+					<section id="content_body">
+						<div class="container content">
+							{% block body %}{% endblock %}
+						</div>
+					</section>
+				{% endblock %}
+			</div>
 			{% block footer_base %}
-				<hr/>
-				<footer>
-					<div class="container">
-						{% block footer %}{% endblock %}
-					</div>
-				</footer>
+				{% block footer %}{% endblock %}
 			{% endblock %}
 		</div>
 
@@ -38,5 +34,6 @@
 		{% block extra_body_base %}
 			{% block extra_body %}{% endblock %}
 		{% endblock %}
+		<script>$(document).foundation();</script>
 	</body>
 </html>

@@ -1,35 +1,33 @@
+<span class="icon fa {{ app.icon }}"></span>
 <div class="filebox">
     <span data-bind="text: file_name" class="filename"></span>
     <span data-bind="visible: fileIsModified()" class="fa fa-asterisk"></span><br>
     <span class="fa" data-bind="css: { 'fa-lock': fileIsLocked(), 'fa-pencil': !fileIsLocked() && !isRunning(), 'fa-circle-o-notch fa-spin': isRunning() }" style="font-size: 0.75rem;"></span>
     <span class="status" data-bind="text: isRunning() ? '{{ _('Running') }}' : fileIsLocked() ? '{{ _('Locked') }}' : '{{ _('Editing') }}'"></span>
 </div>
-<div class="spacer"></div>
-
+<a href="#" class="action" data-bind="click: saveAsFile">
+    <span class="fa fa-save"></span><br/>
+    <span class="text">{{ _('Save As...') }}</span>
+</a>
+<a href="#" class="action" data-bind="click: saveFile">
+    <span class="fa fa-save"></span><br/>
+    <span class="text">{{ _('Save') }}</span>
+</a>
+<a href="#" class="action" data-bind="click: openFile">
+    <span class="fa fa-folder"></span><br/>
+    <span class="text">{{ _('Open') }}</span>
+</a>
 <a href="#" class="action" data-bind="click: newFile">
     <span class="fa fa-file"></span><br/>
     <span class="text">{{ _('New') }}</span>
 </a>
 
-<a href="#" class="action" data-bind="click: openFile">
-    <span class="fa fa-folder"></span><br/>
-    <span class="text">{{ _('Open') }}</span>
-</a>
-
-<a href="#" class="action" data-bind="click: saveFile">
-    <span class="fa fa-save"></span><br/>
-    <span class="text">{{ _('Save') }}</span>
-</a>
-<a href="#" class="action" data-bind="click: saveAsFile">
-    <span class="fa fa-save"></span><br/>
-    <span class="text">{{ _('Save As...') }}</span>
-</a>
-
 <div class="spacer"></div>
 
 <script>
-
-    file_name = "{{ _('Untitled') }}";
+    file_name_default = "{{ _('Default') }}";
+    file_name_untitled = "{{ _('Untitled') }}";
+    file_name = file_name_untitled;
     fileIsModified = function () {
         if ($(".filebox .fa-asterisk").css("display") == "none") {
             return false
@@ -65,15 +63,17 @@
     var _SaveFileView = 0;
 
     var saveFile = function () {
-        if ($(".filebox .filename").text() == "{{ _('Untitled') }}") {
-            showFiles(folderpath, 0, 1);
+        if ($(".filebox .filename").text() == file_name_untitled) {
+            saveItem('', 1, 0);
+            // showFiles(folderpath, 0, 1);
         } else {
             saveItem($(".filebox .filename").text(), 1, 1);
         }
         return;
     };
     var saveAsFile = function () {
-        showFiles(folderpath, 0, 1);
+        saveItem('', 1, 0);
+        // showFiles(folderpath, 0, 1);
         return;
     };
     var openFile = function () {
@@ -92,6 +92,7 @@
     };
     var newFile = function () {
         var yesHandler = function () {
+            file_name = file_name_untitled;
             $(".filebox .filename").text(file_name);
             window.history.pushState("", "New", "?");
             newFileHandler();
@@ -117,8 +118,8 @@
         _CurrentPath = currentpath;
         _OnlyFolders = onlyFolders;
         _SaveFileView = saveFileView;
-        showPopup("fa-folder-open", "{{ app.full_name }}/" + currentpath, "filebrowser", "");
-        $("#popup .content").load("/docs/list/?" + $.param({a: "{{ app.formatted_name }}", p: currentpath, e: extension, f: onlyFolders, s: saveFileView}), function () {
+        showPopup("fa-folder-open", "{{ app.full_name }}", "filebrowser", "");
+        $("#popup .content").load("/docs/list/?" + $.param({a: "{{ app.formatted_name }}", e: extension, s: saveFileView}), function () {
             // Delete and Open button events need to be rebound here because filelist is loaded via AJAX
             $("#popup .btnDeleteFile").off("click");
             $("#popup .btnDeleteFile").on("click", function () {
@@ -164,7 +165,7 @@
                 type: "POST",
                 url: "/docs/delete/{{ app.formatted_name }}/",
                 data: {
-                    file_name_ext: filename
+                    filename: filename
                 },
                 success: function (data) {
                     if (!data.success) {
@@ -280,9 +281,8 @@
             $.ajax({
                 dataType: "json",
                 data: {
-                    file_name: filename,
-                    file_data: json_data,
-                    file_extension: extension
+                    filename: filename + extension,
+                    data: json_data
                 },
                 type: "POST",
                 url: "/docs/save/{{ app.formatted_name }}/",
@@ -320,7 +320,15 @@
                 f: filename
             },
             success: function (data) {
-                // if (!data.success) {   showMainError(data.message);   return; }
+                var jdata = {};
+                try {
+                  jdata = JSON.parse(data);
+                } catch (e) {}
+
+                if (jdata.success != undefined && !jdata.success) {
+                  showMainError(jdata.message);
+                  data = undefined;
+                }
                 loaded_data = data;
                 // Load script
                 loadDataHandler(data)

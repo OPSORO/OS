@@ -35,6 +35,7 @@ $(document).ready(function(){
 		var self = this;
 
 		self.emotion = ko.observable(emotion || emotions_data[0]);
+		console.log(self.emotion());
 
 		self.output = ko.observable(output || "tts");
 		self.tts = ko.observable(tts || "");
@@ -55,8 +56,8 @@ $(document).ready(function(){
 			}
 		});
 
-		self.avatar = ko.pureComputed(function(){
-			return self.emotion().image;
+		self.emoji = ko.pureComputed(function(){
+			return self.emotion().filename;
 		});
 
 		self.modified = function(){
@@ -75,11 +76,6 @@ $(document).ready(function(){
 		self.pressPlay = function(){
 			if(self.isPlaying()){
 				robotSendStop();
-				// $.ajax({
-				// 	dataType: "json",
-				// 	type: "GET",
-				// 	url: "stopsound"
-				// });
 			 	self.isPlaying(false);
 			 	self.hasPlayed(true);
 			}else{
@@ -87,64 +83,16 @@ $(document).ready(function(){
 					model.selectedVoiceLine().isPlaying(false);
 				}
 				model.selectedVoiceLine(self);
-				if (self.emotion().emotion){
-					// $.ajax({
-					// 	dataType: "json",
-					// 	data: {"phi": self.emotion().emotion.phi, "r": self.emotion().emotion.r},
-					// 	type: "POST",
-					// 	url: "setemotion",
-					// 	success: function(data){
-					// 		if(data.status == "error"){
-					// 			addError(data.message);
-					// 		}
-					// 	}
-					// });
-					robotSendEmotionRPhi(self.emotion().emotion.r, self.emotion().emotion.phi, -1);
+				if (self.emotion().poly){
+					robotSendEmotionRPhi(1.0, self.emotion().poly * 18, -1);
 				}
-				if (self.emotion().custom){
-					dofdata = {};
-					$.each(self.emotion().custom, function(idx, customControl){
-						dofdata[customControl.dofname] = customControl.pos;
-					});
-					var json_data = ko.toJSON(dofdata, null, 2);
-
-					robotSendAllDOF(json_data);
-					// $.ajax({
-					// 	dataType: "json",
-					// 	data: { dofdata: json_data },
-					// 	type: "POST",
-					// 	url: "setDofData",
-					// 	success: function(data){
-					// 		if(data.status == "error"){
-					// 			addError(data.message);
-					// 		}
-					// 	}
-					// });
+				if (self.emotion().dofs){
+					robotSendReceiveAllDOF(self.emotion().dofs);
 				}
 				if(this.output() == "tts"){
 					robotSendTTS(self.tts());
-					// $.ajax({
-					// 	dataType: "json",
-					// 	type: "GET",
-					// 	url: "saytts",
-					// 	data: {text: self.tts()},
-					// 	success: function(data){
-					//
-					// 	}
-					// });
 				}else{
 					robotSendSound(self.wav());
-					// $.ajax({
-					// 	dataType: "json",
-					// 	type: "GET",
-					// 	url: "play/" + self.wav(),
-					// 	success: function(data){
-					// 		if(data.status == "error"){
-					// 			addError(data.message);
-					// 		}
-					//
-					// 	}
-					// });
 				}
 				self.isPlaying(true);
 			}
@@ -156,7 +104,7 @@ $(document).ready(function(){
 			}
 
 			model.selectedVoiceLine(self);
-			$("#PickEmotionModal").foundation("reveal", "open");
+			$("#PickEmotionModal").foundation("open");
 		};
 	};
 
@@ -183,8 +131,7 @@ $(document).ready(function(){
 		});
 		self.fixedVoiceLine = new VoiceLine(self.emotions[0], "tts", "", "");
 
-		self.init = function(){
-			// self.fileName("Untitled");
+		self.newFileData = function(){
 			self.voiceLines.removeAll();
 			self.voiceLines.push(new VoiceLine(self.emotions[0], "tts", "", ""));
 			self.unlockFile();
@@ -231,7 +178,7 @@ $(document).ready(function(){
 			$.each(dataobj.voice_lines, function(idx, line){
 				var emo = self.emotions[0];
 				$.each(self.emotions, function(idx, emot){
-					if(emot.name == line.emotion){
+					if(emot.name.toLowerCase() == line.emotion.toLowerCase()){
 						emo = emot;
 					}
 				});
@@ -251,49 +198,6 @@ $(document).ready(function(){
 			self.lockFile();
 			return true;
 		};
-		// self.loadFileData = function(filename){
-		// 	if (filename == "") {
-		// 		return;
-		// 	}
-		// 	$.ajax({
-		// 		dataType: "text",
-		// 		type: "POST",
-		// 		url: "files/get",
-		// 		cache: false,
-		// 		data: {path: filename, extension: self.fileExtension()},
-		// 		success: function(data){
-		// 			// Load script
-		// 			self.voiceLines.removeAll();
-		//
-		// 			var dataobj = JSON.parse(data);
-		//
-		// 			$.each(dataobj.voice_lines, function(idx, line){
-		// 				var emo = self.emotions[0];
-		// 				$.each(self.emotions, function(idx, emot){
-		// 					if(emot.name == line.emotion){
-		// 						emo = emot;
-		// 					}
-		// 				});
-		// 				if(line.output.type == "tts"){
-		// 					self.voiceLines.push(new VoiceLine(emo, line.output.type, line.output.data, ""));
-		// 				}else{
-		// 					self.voiceLines.push(new VoiceLine(emo, line.output.type, "", line.output.data));
-		// 				}
-		// 			});
-		// 			// Update filename and asterisk
-		// 			var filename_no_ext = filename;
-		// 			if(filename_no_ext.toLowerCase().slice(-4) == self.fileExtension()){
-		// 				filename_no_ext = filename_no_ext.slice(0, -4);
-		// 			}
-		// 			self.fileName(filename_no_ext);
-		// 			self.fileIsModified(false);
-		// 			self.lockFile();
-		// 		},
-		// 		error: function(){
-		// 			window.location.href = "?";
-		// 		}
-		// 	});
-		// };
 
 		self.saveFileData = function(){
 			var file_data = {voice_lines: []};
@@ -321,33 +225,16 @@ $(document).ready(function(){
 		self.changeEmotion = function(emotion){
 			self.fileIsModified(true);
 			self.selectedVoiceLine().emotion(emotion);
-			$("#PickEmotionModal").foundation("reveal", "close");
+			$("#PickEmotionModal").foundation("close");
 		};
-
 
 		self.changeFixedEmotion = function(emotion){
 			self.fixedVoiceLine.emotion(emotion);
 		};
 
 		// Setup websocket connection.
-		self.conn = null;
-		self.connReady = false;
-		self.conn = new SockJS("http://" + window.location.host + "/sockjs");
-
-		self.conn.onopen = function(){
-			$.ajax({
-				url: "/sockjstoken",
-				cache: false
-			})
-			.done(function(data) {
-				self.conn.send(JSON.stringify({action: "authenticate", token: data}));
-				self.connReady = true;
-			});
-		};
-
-		self.conn.onmessage = function(e){
-			var msg = $.parseJSON(e.data);
-			switch(msg.action){
+		app_socket_handler = function(data) {
+      switch (data.action) {
 				case "soundStopped":
 					if (self.selectedVoiceLine() != undefined) {
 						self.selectedVoiceLine().isPlaying(false);
@@ -356,24 +243,12 @@ $(document).ready(function(){
 					break;
 			}
 		};
-
-		self.conn.onclose = function(){
-			self.conn = null;
-			self.connReady = false;
-		};
-
-
-		// if (action_data.openfile) {
-		// 	self.loadFileData(loadFileHandler(action_data.openfile || ""));
-		// } else {
-		// 	self.init();
-		// }
 	};
 	// This makes Knockout get to work
 	var model = new SocialScriptModel();
 	ko.applyBindings(model);
 	model.fileIsModified(false);
 
-	config_file_operations("scripts", model.fileExtension(), model.saveFileData, model.loadFileData, model.init);
+	config_file_operations("", model.fileExtension(), model.saveFileData, model.loadFileData, model.newFileData);
 
 });

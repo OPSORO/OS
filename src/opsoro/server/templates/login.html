@@ -4,37 +4,43 @@
 		<div class="large-8 medium-10 small-12 columns box_center">
 			<div class="titlebar">
 				<span class="fa fa-lock"></span>
-				Login
+				Portal
 			</div>
 			<div class="content">
 				<div class="" style="text-align: justify;">
 					{% with messages = get_flashed_messages() %}
 					{% if messages %}
 						{% for message in messages %}
-							<div data-alert class="alert-box secondary radius">
+							<div class="callout secondary radius" data-closable>
 								{{ message }}
 							</div>
 						{% endfor %}
 					{% endif %}
 					{% endwith %}
 					{% if error %}
-						<div data-alert class="alert-box secondary radius">
+						<div class="callout secondary radius" data-closable>
 							{{ error }}
 						</div>
 					{% endif %}
+
+					{% if isbusy %}
 					<p>
-						Enter the password to access the OPSORO web interface.
+						Another user is currently connected to the robot.
 						<br/>
-						<span class="note">
-							<strong>Note:</strong>
-							Only one user can be logged in at a time. If another user is active, they will be logged out.</span>
+						<!-- <span class="note"><strong>Note:</strong>Only one user can be logged in at a time. If another user is active, they will be logged out.</span> -->
+					</p>
+					{% endif %}
+					<p>
+						<!-- Enter the password to access the OPSORO web interface. -->
+						<!-- <br/> -->
+						<span class="note"><strong>Note: </strong> Only one user can be logged in at a time. If another user is active, they will be logged out.</span>
 					</p>
 					<form id="login_form" method="post">
 						<div class="small-10 columns">
 							<input type="password" name="password" autofocus>
 						</div>
 						<div class="small-2 columns">
-							<button type="send" class="btn" style="width: 100%;">
+							<button type="send" class="btn button" style="width: 100%;">
 								<span class="fa fa-arrow-right"></span>
 							</button>
 						</div>

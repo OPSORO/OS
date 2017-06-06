@@ -1,66 +1,33 @@
 {% extends "app_base.html" %}
 
-{% block head %}
+{% block app_head %}
 
 {% endblock %}
 
 {% block app_content %}
-<!-- <div id="errors">
-	{% with messages = get_flashed_messages(category_filter=["message"]) %}
-		{% if messages %}
-			{% for message in messages %}
-				<div data-alert class="alert-box secondary radius">
-					{{ message }}
-					<a href="#" class="close">&times;</a>
-				</div>
-			{% endfor %}
-		{% endif %}
-	{% endwith %}
-	{% with messages = get_flashed_messages(category_filter=["error"]) %}
-		{% if messages %}
-			{% for message in messages %}
-				<div data-alert class="alert-box alert radius">
-					{{ message }}
-					<a href="#" class="close">&times;</a>
-				</div>
-			{% endfor %}
-		{% endif %}
-	{% endwith %}
-	{% with messages = get_flashed_messages(category_filter=["success"]) %}
-		{% if messages %}
-			{% for message in messages %}
-				<div data-alert class="alert-box success radius">
-					{{ message }}
-					<a href="#" class="close">&times;</a>
-				</div>
-			{% endfor %}
-		{% endif %}
-	{% endwith %}
-</div> -->
-
 {% if config %}
-	{% for module in config.modules %}
+	{% for module in config %}
 		{% for dof in module.dofs %}
-			{% if dof.servo %}
+			{% if dof.servo and dof.servo.pin >= 0 %}
 				<div class="sliderrow row">
-					<div class="small-12 columns hide-for-medium-up"><strong>{{ dof.name|upper }}</strong></div>
-					<div class="medium-3 large-2 show-for-medium-up columns">
+					<!-- <div class="small-12 columns hide-for-medium-up"><strong>{{ dof.name|upper }}</strong></div> -->
+					<div class="medium-5 large-3 columns">
 						<strong>{{ module.name|upper + ': ' + dof.name|upper }}</strong><br>
-						<span class="note" style="padding: 0;">
-							<strong>Pin:</strong> {{ dof.servo.pin|int }}<br>
-							<strong>DOF:</strong> <span data-dof>0</span><br>
-							<strong>Servo:</strong> <span data-us>0</span> &micro;s<br>
+						<span class="note row">
+							<div class="small-3 medium-12 large-12 columns"><strong>Pin:</strong> {{ dof.servo.pin|int }}</div>
+							<div class="small-4 medium-12 large-12 columns"><strong>DOF:</strong> <span data-dof>0</span></div>
+							<div class="small-5 medium-12 large-12 columns"><strong>Servo:</strong> <span data-us>0</span> &micro;s</div>
 						</span>
 					</div>
-					<div class="small-12 medium-9 large-10 columns">
+					<div class="medium-7 large-9 columns">
 						<div class="row numberstop">
 							<div class="small-3 text-left columns">-1.0</div>
 							<div class="small-6 text-center columns">0.0</div>
 							<div class="small-3 text-right columns">+1.0</div>
 						</div>
-						<div class="range-slider" data-slider="0" data-options="start: -100; end: 100;" data-modulename="{{ module.name }}" data-dofname="{{ dof.name }}" data-dofmin="{{ dof.servo.min|int }}" data-dofmid="{{ dof.servo.mid|int }}" data-dofmax="{{ dof.servo.max|int }}">
-							<span class="range-slider-handle" role="slider" tabindex="0"></span>
-							<span class="range-slider-active-segment"></span>
+						<div class="slider" data-slider data-initial-start="0" data-start="-1.01" data-end="1" data-step="0.01" data-modulename="{{ module.name }}"	data-dofname="{{ dof.name }}"	data-dofmin="{{ dof.servo.min|int }}"	data-dofmid="{{ dof.servo.mid|int }}"	data-dofmax="{{ dof.servo.max|int }}">
+							<span class="slider-handle" data-slider-handle role="slider" tabindex="0"></span>
+						  <span class="slider-fill" data-slider-fill></span>
 							<input type="hidden">
 						</div>
 						<div class="row numbersbottom">
@@ -78,86 +45,51 @@
 {% endblock %}
 
 {% block app_scripts %}
-
-
 <script src="/static/js/sockjs.min.js"></script>
 <script src="/static/js/numeral.min.js"></script>
 <script>
-
-	function addError(msg){
-		$("#errors").append("<div data-alert class=\"alert-box alert\">" + msg + "<a href=\"#\" class=\"close\">&times;</a></div>");
-		$(document).foundation("alert", "reflow");
-	}
-
-	function addMessage(msg){
-		$("#errors").append("<div data-alert class=\"alert-box success\">" + msg + "<a href=\"#\" class=\"close\">&times;</a></div>");
-		$(document).foundation("alert", "reflow");
-	}
-
 	$(document).ready(function(){
 		// Setup websocket connection.
-		var conn = null;
-		var connReady = false;
-		conn = new SockJS("http://" + window.location.host + "/sockjs");
-
-		conn.onopen = function(){
-			console.log("SockJS connected.");
-			$.ajax({
-				url: "/sockjstoken",
-				cache: false
-			})
-			.done(function(data) {
-				conn.send(JSON.stringify({action: "authenticate", token: data}));
-				connReady = true;
-				console.log("SockJS authenticated.");
-			});
-		};
-
-		conn.onmessage = function(e){
-			var msg = $.parseJSON(e.data);
-
-			switch(msg.action){
+		app_socket_handler = function(data) {
+      switch (data.action) {
 				case "error":
-					addError(msg.message);
+					showMainError(data.message);
 					break;
 			}
 		};
 
-		conn.onclose = function(){
-			console.log("SockJS disconnected.");
-			conn = null;
-			connReady = false;
-		};
+		let _slider_changed = function(){
+			let dofpos = $(this).find(".slider-handle").attr("aria-valuenow");
+			if( dofpos != $(this).data("lastpos") ){
+				let dofmin = $(this).data("dofmin");
+				let dofmid = $(this).data("dofmid");
+				let dofmax = $(this).data("dofmax");
+				let dofus = dofmid;
 
-		$("[data-slider]").on("change.fndtn.slider", function(){
-			if( $(this).attr("data-slider") != $(this).data("lastpos") ){
-				var dofpos = $(this).attr("data-slider");
-				var dofmin = $(this).data("dofmin");
-				var dofmid = $(this).data("dofmid");
-				var dofmax = $(this).data("dofmax");
-				var dofus = dofmid;
-
-				$(this).closest(".sliderrow").find("[data-dof]").html(numeral(dofpos/100).format("+0.00"));
+				$(this).closest(".sliderrow").find("[data-dof]").html(numeral(dofpos).format("+0.00"));
 
 				if(dofpos < 0){
-					dofus += (-dofpos / 100) * dofmin
+					dofus += (-dofpos) * dofmin
 				}else if(dofpos > 0){
-					dofus += (dofpos / 100) * dofmax
+					dofus += (dofpos) * dofmax
 				}
 				$(this).closest(".sliderrow").find("[data-us]").html(numeral(dofus).format("0"));
 				if(connReady){
-					console.log("SET " + $(this).data("dofname") + " TO POS " + $(this).attr("data-slider")/100);
+					console.log("SET " + $(this).data("dofname") + " TO POS " + dofpos);
 					conn.send(JSON.stringify({
 						action: "setDofPos",
 						dof_name: $(this).data("dofname"),
 						module_name: $(this).data("modulename"),
-						pos: $(this).attr("data-slider") / 100
+						pos: dofpos
 					}));
 				}
 
 				$(this).data("lastpos", dofpos);
 			}
-		});
+		};
+
+		$(".slider").on("moved.zf.slider", _slider_changed);
+		$(".slider").on("changed.zf.slider", _slider_changed);
 
 	});
 </script>

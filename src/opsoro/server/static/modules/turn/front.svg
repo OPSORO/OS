@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg version="1.1" class="object turn" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 57 19" style="enable-background:new 0 0 57 19;" xml:space="preserve">
+	<style type="text/css">
+		.turn .st0{fill:#313334;}
+		.turn .st1{fill:#888888;}
+		.turn .st2{fill:#F4F4F4;}
+		.turn .st3{fill:#555555;}
+		.turn .st4{fill:#666666;}
+		.turn .st5{fill:#E6E6E6;}
+		.turn .st6{stroke:#666666;}
+		.turn .st7{fill:#111;stroke:#111;}
+	</style>
+	<g class="group">
+		<!-- clips -->
+		<rect class="st0" x="0" 		y="3" 		width="10" 		height="13" rx="2"/>
+		<rect class="st0" x="47" 		y="3"			width="10" 		height="13" rx="2"/>
+		<!-- front plate -->
+		<rect class="st0" x="6.1" 	y="0" 		width="44.8" 	height="19" rx="0.5"/>
+		<!-- horizontal sides -->
+		<rect class="st0" x="3" 		y="0" 		width="3" 		height="19" rx="0.5"/>
+		<rect class="st0" x="51" 		y="0"			width="3" 		height="19" rx="0.5"/>
+		<!-- servo -->
+		<rect class="st3" x="10.5" 	y="3.25" 	width="32" 		height="12.5" rx="0.5"/>
+		<rect class="st1" x="15" 		y="3.25"	width="23" 		height="12.5" rx="0.5"/>
+
+		<circle class="st3" cx="26" 	cy="9.5" r="2.5"/>
+		<circle class="st4" cx="20.5" cy="9.5" r="5.5"/>
+		<circle class="st5" cx="20.5" cy="9.5" r="2.5"/>
+		<!-- screws -->
+		<circle class="st2" cx="12.5" cy="9.5" r="2"/>
+		<circle class="st2" cx="40.5" cy="9.5" r="2"/>
+		<!-- left cross -->
+		<line class="st6" x1="11.5" y1="8.5" 	x2="13.5" y2="10.5" stroke-width="0.5" />
+		<line class="st6" x1="11.5" y1="10.5" x2="13.5" y2="8.5" 	stroke-width="0.5" />
+		<!-- right cross -->
+		<line class="st6" x1="39.5" y1="10.5" x2="41.5" y2="8.5" 	stroke-width="0.5" />
+		<line class="st6" x1="39.5" y1="8.5" 	x2="41.5" y2="10.5" stroke-width="0.5" />
+
+
+	</g>
+</svg>

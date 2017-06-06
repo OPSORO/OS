@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg version="1.1" class="object speaker" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 57 47" style="enable-background:new 0 0 57 47;" xml:space="preserve">
+	<style type="text/css">
+		.speaker .st0{fill:#313334;}
+		.speaker .st1{fill:#666666;stroke:#666666;stroke-width:5;}
+		.speaker .st2{fill:#2c2e30;}
+	</style>
+	<g class="group">
+		<!-- clips -->
+		<rect class="st2" x="19.5" 	y="3" 		width="18" 	height="10" rx="2"/>
+		<rect class="st2" x="19.5" 	y="34"		width="18" 	height="10" rx="2"/>
+		<!-- side clips -->
+		<rect class="st0" x="3" 		y="19.5" 	width="10" 	height="8" 	rx="2"/>
+		<rect class="st0" x="44" 		y="19.5"	width="10" 	height="8" 	rx="2"/>
+		<!-- front plate -->
+		<rect class="st0" x="6.1" 	y="9.1" 	width="44.8" 	height="28.8" rx="0.5"/>
+		<!-- horizontal sides -->
+		<rect class="st0" x="0" 		y="6" 		width="57" 	height="3" rx="0.5"/>
+		<rect class="st0" x="0" 		y="38"		width="57" 	height="3" rx="0.5"/>
+		<!-- vertical sides -->
+		<rect class="st0" x="3" 		y="0" 		width="3" 	height="47" rx="0.5"/>
+		<rect class="st0" x="51" 		y="0" 		width="3" 	height="47" rx="0.5"/>
+		<!-- symbol -->
+		<svg class="speaker_symbol"	preserveAspectRatio="none" width="25" height="25" x="16" y="11" viewBox="0 0 75 75">
+			<g>
+				<polygon class="st1 speaker_symbol_cone" points="39.389,13.769 22.235,28.606 6,28.606 6,47.699 21.989,47.699 39.389,62.75 39.389,13.769"
+					style="stroke-linejoin:round;"/>
+				<path class="st1 speaker_symbol_1" d="M 48.128,49.03 C 50.057,45.934 51.19,42.291 51.19,38.377 C 51.19,34.399 50.026,30.703 48.043,27.577"
+					style="fill:none;stroke-linecap:round"/>
+				<path class="st1 speaker_symbol_2" d="M 55.082,20.537 C 58.777,25.523 60.966,31.694 60.966,38.377 C 60.966,44.998 58.815,51.115 55.178,56.076"
+					style="fill:none;stroke-linecap:round"/>
+				<path class="st1 speaker_symbol_3" d="M 61.71,62.611 C 66.977,55.945 70.128,47.531 70.128,38.378 C 70.128,29.161 66.936,20.696 61.609,14.01"
+					style="fill:none;stroke-linecap:round"/>
+			</g>
+		</svg>
+	</g>
+</svg>

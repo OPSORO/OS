@@ -9,7 +9,7 @@
 	width: 2.7rem;
 	height: 17rem;
 }
-.sliderdiv .range-slider{
+.sliderdiv .slider{
 	text-align: left;
 	margin: 0;
 	margin-top: .5rem;
@@ -21,7 +21,7 @@
 
 <fieldset>
 	<legend><span class="fa fa-sliders"></span> Servo's:</legend>
-	<div class="alert-box alert">
+	<div class="callout alert">
 	  <strong>Attention!</strong> These sliders directly control the servo's of the robot and can possibly go to far! <br><strong>Please use with caution!</strong>
 	</div>
 {% for i in range(16) %}
@@ -33,9 +33,9 @@
 			</span>
 		</div>
 		<div>
-			<div class="range-slider vertical-range" data-slider="1500" data-options="start: 600; end: 2400; vertical: true;" data-pinnumber="{{ i }}" >
-				<span class="range-slider-handle" role="slider" tabindex="0"></span>
-				<span class="range-slider-active-segment"></span>
+			<div class="slider vertical" data-initial-start="1500" data-start="600" data-end="2400" data-vertical="true" data-pinnumber="{{ i }}" >
+				<span class="slider-handle" data-slider-handle role="slider" tabindex="0"></span>
+				<span class="slider-fill" data-slider-fill></span>
 				<input type="hidden">
 			</div>
 		</div>
@@ -47,50 +47,26 @@
 <script>
 $(document).ready(function(){
 	// Setup websocket connection.
-	var conn = null;
-	var connReady = false;
-	conn = new SockJS("http://" + window.location.host + "/sockjs");
-
-	conn.onopen = function(){
-		console.log("SockJS connected.");
-		$.ajax({
-			url: "/sockjstoken",
-			cache: false
-		})
-		.done(function(data) {
-			conn.send(JSON.stringify({action: "authenticate", token: data}));
-			connReady = true;
-			console.log("SockJS authenticated.");
-		});
-	};
-
-	conn.onmessage = function(e){
-		var msg = $.parseJSON(e.data);
-		switch(msg.action){
+	app_socket_handler = function(data) {
+		switch (data.action) {
 			case "error":
-				// addError(msg.message);
+				showMainError(data.message);
 				break;
 		}
 	};
 
-	conn.onclose = function(){
-		console.log("SockJS disconnected.");
-		conn = null;
-		connReady = false;
-	};
-
-	$("[data-slider]").on("change.fndtn.slider", function(){
-		if( $(this).attr("data-slider") != $(this).data("lastpos") ){
-			var pos = $(this).attr("data-slider");
+	$(".slider").on("moved.zf.slider", function(){
+		let pos = $(this).find(".slider-handle").attr("aria-valuenow");
+		if( pos != $(this).data("lastpos") ){
 
 			$(this).closest(".sliderdiv").find("[data-us]").html(numeral(pos).format("0"));
 
 			if(connReady){
-				// console.log("SET SERVO " + $(this).data("pinnumber") + " TO POS " + $(this).attr("data-slider"));
+				console.log("SET SERVO " + $(this).data("pinnumber") + " TO POS " + pos);
 				conn.send(JSON.stringify({
 					action: "setServoPos",
 					pin_number: $(this).data("pinnumber"),
-					value: $(this).attr("data-slider")
+					value: pos
 				}));
 			}
 

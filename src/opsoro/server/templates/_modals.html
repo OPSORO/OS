@@ -1,9 +1,9 @@
 
-<div id="CloseAppModal" class="reveal-modal small" data-reveal>
+<div id="CloseAppModal" class="reveal small" data-reveal data-animation-in="fade-in" data-animation-out="fade-out">
     <div class="titlebar">
-        <a class="close-reveal-modal">
+        <button class="close-button" data-close aria-label="Close" type="button">
             <span class="fa fa-close"></span>
-        </a>
+        </button>
         <span class="fa fa-power-off"></span>
         {{ _('Confirm') }}
     </div>
@@ -12,18 +12,18 @@
             {{ _('Are you sure you wish to close this app?') }}
         </p>
         <div class="text-center">
-            <a href="/closeapp/" class="button">
+            <a href="/app/close/*" class="button">
                 <span class="fa fa-close"></span>
                 {{ _('Yes, close app.') }}</a>
         </div>
     </div>
 </div>
 
-<div id="popup" class="reveal-modal" data-reveal>
+<div id="popup" class="reveal small" data-reveal>
     <div class="titlebar">
-        <a class="btnClose">
+        <button class="close-button btnClose" data-close aria-label="Close" type="button">
             <span class="fa fa-close"></span>
-        </a>
+        </button>
         <span class="titleicon">
             <span class="fa"></span>
         </span>
@@ -36,11 +36,11 @@
     </div>
 </div>
 
-<div id="message_popup" class="reveal-modal small" data-reveal>
+<div id="message_popup" class="reveal" data-reveal data-animation-in="fade-in" data-animation-out="fade-out">
     <div class="titlebar">
-        <a class="btnClose">
+        <button class="close-button btnClose" data-close aria-label="Close" type="button">
             <span class="fa fa-close"></span>
-        </a>
+        </button>
         <span class="titleicon">
             <span class="fa"></span>
         </span>

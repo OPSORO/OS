@@ -709,17 +709,17 @@ fieldset legend
     margin: 0;
     padding: 0;
 }
-#errors .alert-box
+#errors .callout
 {
     margin: 0 2rem .5rem 2rem;
 
     border-radius: .25rem;
 }
-#errors .alert-box .close
+#errors .callout .close
 {
     opacity: .8;
 }*/
-#errors .alert-box
+#errors .callout
 {
     margin-bottom: 0;
 }

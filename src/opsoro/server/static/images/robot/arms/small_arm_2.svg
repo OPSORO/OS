@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg version="1.1" preserveAspectRatio="none" class="object arm" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 32 7" style="enable-background:new 0 0 32 7;" xml:space="preserve">
+	<style type="text/css">
+		.arm .st0{fill:#F4F4F4;}
+		.arm .st1{stroke:#666666;}
+		.arm .st2{fill:#111;stroke:#111;}
+	</style><!-- arm -->
+  <g>
+    <polygon class="st2" points="2,3.5 16,2 30,3.5 16,5" stroke-width="4" stroke-linejoin="round"/>
+    <!-- holes left -->
+    <circle class="st0" cx="2.2" cy="3.5" r="0.5"/>
+    <circle class="st0" cx="4.4" cy="3.5" r="0.75"/>
+    <circle class="st0" cx="6.6" cy="3.5" r="0.5"/>
+    <circle class="st0" cx="8.8" cy="3.5" r="0.5"/>
+    <circle class="st0" cx="11" cy="3.5" r="0.5"/>
+    <!-- holes right -->
+    <circle class="st0" cx="21" cy="3.5" r="0.5"/>
+    <circle class="st0" cx="23.2" cy="3.5" r="0.5"/>
+    <circle class="st0" cx="25.4" cy="3.5" r="0.5"/>
+    <circle class="st0" cx="27.6" cy="3.5" r="0.75"/>
+    <circle class="st0" cx="29.8" cy="3.5" r="0.5"/>
+
+    <circle fill="000" cx="16" cy="3.5" r="3.5"/>
+    <!-- screw -->
+    <circle class="st0" cx="16" cy="3.5" r="1.5"/>
+    <line class="st1" x1="15.25" y1="2.75" x2="16.75" y2="4.25" 	stroke-width="0.5" />
+    <line class="st1" x1="15.25" y1="4.25" x2="16.75" y2="2.75" stroke-width="0.5" />
+  </g>
+</svg>

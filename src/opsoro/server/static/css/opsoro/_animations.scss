@@ -1,0 +1,28 @@
+
+$speed: (
+  fastest : .1s,
+  faster  : .2s,
+  fast    : .5s,
+  slow    : 1s,
+  slower  : 1.5s,
+);
+
+
+@mixin heartbeat($speed) {
+  animation: beat $speed infinite alternate;
+	transform-origin: center;
+}
+
+/* Heart beat animation */
+@keyframes beat {
+	to { transform: scale(.8); }
+}
+
+@function speed($key) {
+  @if map-has-key($speed, $key) {
+    @return map-get($speed, $key);
+  }
+
+  @warn "Unknown `#{$key}` in $speed.";
+  @return .5s;
+}
