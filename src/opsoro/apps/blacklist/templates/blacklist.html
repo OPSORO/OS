@@ -12,69 +12,52 @@ blacklist
  -->
 <!-- git test-->
 
-
-<div class="container">
-
-  <form class="addContact">
-    Contact Name:<br/><input data-bind="value: conName" name="name"/><br/>
-    Phone Number:<br/><input data-bind="value: phone" name="phone"/><br/>
-    Email:<br/><input data-bind="value: email" name="email"/><br/>
-    Address:<br/><input data-bind="value: address" name="address" /><br/>
-    <a class="saveButton" data-bind="click: save">SAVE</a>
-  </form>
-
-  <div class="cl_wrapper">
-    <div class="contacts" data-bind="template: {name: 'contactTemplate', foreach: contacts}"></div>
-  </div>
-</div>
-
-<script id="contactTemplate" type="text/template">
-  <div class="contact-container">
-
-    <span class="name" data-bind="text: conName"></span>
-    <a class="removeItem" data-bind="click: removeItem" href="#">Del</a>
-    <a href="#">Edit</a>
-        <div class="address" data-bind="text: address"></div>
-
-    <div>
-      <dl>
-        <dt>Phone:</dt><dd data-bind="text: phone"></dd>
-        <dt>Email:</dt><dd><a data-bind="attr: { href: email }, text: email"></a></dd>
-      </dl>
-    </div>
-  </div>
-
-
 <div class="main">
 
-				<fieldset >
-					<legend>
-						<span class="fa fa-cloud-download"></span>
-						Toevoegen
-					</legend>
-          <form class="addBan">
+	<fieldset>
+		<legend>
+			<span class="fa fa-cog"></span>
+			overzichtcontacts
+		</legend>
 
-						<div class="row">
-							<div class="small-4 medium-4 large-4 columns">
-								<label for="phoneBan" class="text-right inline">Number</label>
-							</div>
-							<div class="small-8 medium-6 large-4 columns end">
-								<input type="number" id="phoneBan" name="phoneBan" value="" data-bind="value: phoneBan" required pattern="[0-9]*">
-								<small class="error">A valid number is required</small>
-							</div>
-						</div>
+		<div class="bans">
+			<div id="bans">
 
-						<div class="row">
-							<div class="text-center">
-								<!-- <a href="#" data-open="UpdateModal" class="action button" style="padding-left: 2rem; padding-right: 2rem;"> -->
-								<a class="action button" data-bind="click: $root.saveBan" style="padding-left: 2rem; padding-right: 2rem;">
-									<span class="fa fa-save"></span>
-									 &nbsp;Save!</a>
-							</div>
-						</div>
-					</form>
+				<ul class="bans ban_list" data-bind="template: {name: 'blacklistTemplate', foreach: bans}"></ul>
 
-				</fieldset>
+			</div>
+		</div>
+
+	</fieldset>
+
+	<fieldset>
+		<legend>
+			<span class="fa fa-cloud-download"></span>
+			Toevoegen
+		</legend>
+		<form class="addBan">
+
+			<div class="row">
+				<div class="small-4 medium-4 large-4 columns">
+					<label for="phoneBan" class="text-right inline">Number</label>
+				</div>
+				<div class="small-8 medium-6 large-4 columns end">
+					<input type="number" id="phoneBan" name="phoneBan" value="" data-bind="value: phoneBan" required pattern="[0-9]*">
+					<small class="error">A valid number is required</small>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="text-center">
+					<!-- <a href="#" data-open="UpdateModal" class="action button" style="padding-left: 2rem; padding-right: 2rem;"> -->
+					<a class="action button" data-bind="click: saveBan" style="padding-left: 2rem; padding-right: 2rem;">
+						<span class="fa fa-save"></span>
+						 &nbsp;Save!</a>
+				</div>
+			</div>
+		</form>
+
+	</fieldset>
 </div>
 
 {% endblock %}

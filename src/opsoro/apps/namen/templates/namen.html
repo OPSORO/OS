@@ -15,61 +15,61 @@ blacklist
 
 
 <div class="main">
-				<fieldset>
-					<legend>
-						<span class="fa fa-cog"></span>
-						overzicht
-					</legend>
+	<fieldset>
+		<legend>
+			<span class="fa fa-cog"></span>
+			overzicht
+		</legend>
 
-					<div class="contacts">
-						<div id="contacts">
+		<div class="contacts">
+			<div id="contacts">
 
-              <ul class="contacts contact_list" data-bind="template: {name: 'contactTemplate', foreach: contacts}"></ul>
+				<ul class="contacts contact_list" data-bind="template: {name: 'contactTemplate', foreach: contacts}"></ul>
 
-						</div>
-					</div>
+			</div>
+		</div>
 
-				</fieldset>
+	</fieldset>
 
-				<fieldset >
-					<legend>
-						<span class="fa fa-cloud-download"></span>
-						toevoegen
+	<fieldset >
+		<legend>
+			<span class="fa fa-cloud-download"></span>
+			toevoegen
 
-					</legend>
+		</legend>
 
-					<form class="addContact">
-						<div class="row">
-							<div class="small-4 medium-4 large-4 columns">
-								<label for="name" class="text-right inline">Name</label>
-							</div>
-							<div class="small-8 medium-6 large-4 columns end">
-								<input type="text" id="name" name="name" value="" data-bind="value: conName" required pattern="[a-zA-Z]+">
-								<small class="error">A valid name is required</small>
-							</div>
-						</div>
+		<form class="addContact">
+			<div class="row">
+				<div class="small-4 medium-4 large-4 columns">
+					<label for="name" class="text-right inline">Name</label>
+				</div>
+				<div class="small-8 medium-6 large-4 columns end">
+					<input type="text" id="name" name="name" value="" data-bind="value: conName" required pattern="[a-zA-Z]+">
+					<small class="error">A valid name is required</small>
+				</div>
+			</div>
 
-						<div class="row">
-							<div class="small-4 medium-4 large-4 columns">
-								<label for="phone" class="text-right inline">Number</label>
-							</div>
-							<div class="small-8 medium-6 large-4 columns end">
-								<input type="number" id="phone" name="phone" value="" data-bind="value: phone" required pattern="[0-9]*">
-								<small class="error">A valid number is required</small>
-							</div>
-						</div>
+			<div class="row">
+				<div class="small-4 medium-4 large-4 columns">
+					<label for="phone" class="text-right inline">Number</label>
+				</div>
+				<div class="small-8 medium-6 large-4 columns end">
+					<input type="number" id="phone" name="phone" value="" data-bind="value: phone" required pattern="[0-9]*">
+					<small class="error">A valid number is required</small>
+				</div>
+			</div>
 
-						<div class="row">
-							<div class="text-center">
-								<!-- <a href="#" data-open="UpdateModal" class="action button" style="padding-left: 2rem; padding-right: 2rem;"> -->
-								<a class="action button" data-bind="click: save" style="padding-left: 2rem; padding-right: 2rem;">
-									<span class="fa fa-save"></span>
-									 &nbsp;Save!</a>
-							</div>
-						</div>
-					</form>
+			<div class="row">
+				<div class="text-center">
+					<!-- <a href="#" data-open="UpdateModal" class="action button" style="padding-left: 2rem; padding-right: 2rem;"> -->
+					<a class="action button" data-bind="click: save" style="padding-left: 2rem; padding-right: 2rem;">
+						<span class="fa fa-save"></span>
+						 &nbsp;Save!</a>
+				</div>
+			</div>
+		</form>
 
-				</fieldset>
+	</fieldset>
 </div>
 
 {% endblock %}

@@ -36,7 +36,7 @@ config = {
     'full_name':            'blacklist',
     'author':               'howest',
     'icon':                 'fa-commenting-o',
-    'color':                'orange',
+    'color':                'red',
     'difficulty':           4,
     'tags':                 [''],
     'allowed_background':   False,

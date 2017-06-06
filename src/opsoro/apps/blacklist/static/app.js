@@ -23,7 +23,7 @@
 		self.saveBan = function(){
 	    console.log('savingBan');
 			self.addBanItem();
-			localStorage.setItem("stored_bans", ko.toJSON(self.contacts()));
+			localStorage.setItem("stored_bans", ko.toJSON(self.bans()));
 			// na python
 		};
 

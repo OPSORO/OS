@@ -19,6 +19,7 @@
 
 }
 .contact_list li .personIcon::before{
+  color: white;
   content: "\f007";
   font-family: 'FontAwesome';
   font-size:4rem;

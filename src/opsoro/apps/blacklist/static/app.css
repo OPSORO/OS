@@ -13,12 +13,13 @@
   height: 3rem;
   position: absolute;
   margin-left: 1rem;
-  background: orange;
+  background: #FF517E;
   text-align:center;
   line-height: 48px;
 
 }
 .ban_list li .banIcon::before{
+  color: white;
   content: "\f05e";
   font-family: 'FontAwesome';
   font-size:2rem;
