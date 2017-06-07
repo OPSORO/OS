@@ -73,7 +73,8 @@ blacklist
 </div>
 
 {% endblock %}
-{% block app_scripts %}
+
+{% block app_modals %}
 
 <script id="contactTemplate" type="text/template">
   <li class="contact-container">
@@ -88,5 +89,17 @@ blacklist
   </li>
 </script>
 
+{% endblock %}
 
+{% block app_scripts %}
+<script>
+	//var action_data = {{ actions|tojson|safe }};
+
+	$(window).bind("load", function() {
+
+	self.load();
+
+});
+
+</script>
 {% endblock %}

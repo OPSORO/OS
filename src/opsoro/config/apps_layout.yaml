@@ -4,8 +4,7 @@
   apps:
   - namen
   - blacklist
-  - social_script
-  - namenTest
+  - banned_contacts
 
 - title: 2. Getting started
   apps:

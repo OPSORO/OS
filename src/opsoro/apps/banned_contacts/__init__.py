@@ -33,10 +33,10 @@ def constrain(n, minn, maxn): return max(min(maxn, n), minn)
 
 
 config = {
-    'full_name':            'namen',
+    'full_name':            'Banned Contacts',
     'author':               'howest',
-    'icon':                 'fa-commenting-o',
-    'color':                'orange',
+    'icon':                 'fa-ban',
+    'color':                'red',
     'difficulty':           4,
     'tags':                 [''],
     'allowed_background':   False,
@@ -65,21 +65,28 @@ socialscript_t = None
 
 
 def setup_pages(opsoroapp):
-    contacts_bp = Blueprint(config['formatted_name'], __name__, template_folder='templates', static_folder='static')
+    socialscript_bp = Blueprint(config['formatted_name'], __name__, template_folder='templates', static_folder='static')
 
-    @contacts_bp.route('/',methods=['GET', 'POST'])
-
+    @socialscript_bp.route('/', methods=['GET'])
     @opsoroapp.app_view
     def index():
-        data = {'contacts': {}}
+        data = {'actions': {}, 'emotions': [], 'sounds': []}
 
         action = request.args.get('action', None)
         if action != None:
             data['actions'][action] = request.args.get('param', None)
 
+        data['emotions'] = Expression.expressions
+
+        filenames = glob.glob(get_path('../../data/sounds/*.wav'))
+
+        for filename in filenames:
+            data['sounds'].append(os.path.split(filename)[1])
+        data['sounds'].sort()
+
         return opsoroapp.render_template(config['formatted_name'] + '.html', **data)
 
-    opsoroapp.register_app_blueprint(contacts_bp)
+    opsoroapp.register_app_blueprint(socialscript_bp)
 
 
 def setup(opsoroapp):

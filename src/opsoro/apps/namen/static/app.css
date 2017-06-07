@@ -5,7 +5,6 @@
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: center;
-
 }
 .contact_list li .personIcon {
   border-radius: 15%;
@@ -23,9 +22,7 @@
   content: "\f007";
   font-family: 'FontAwesome';
   font-size:4rem;
-
-  }
-
+}
 .contact_list li {
   width: 20rem;
   margin: 1rem;

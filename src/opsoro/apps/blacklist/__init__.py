@@ -35,7 +35,7 @@ def constrain(n, minn, maxn): return max(min(maxn, n), minn)
 config = {
     'full_name':            'blacklist',
     'author':               'howest',
-    'icon':                 'fa-commenting-o',
+    'icon':                 'fa-ban',
     'color':                'red',
     'difficulty':           4,
     'tags':                 [''],
