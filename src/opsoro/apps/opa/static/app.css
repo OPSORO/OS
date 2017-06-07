@@ -87,3 +87,29 @@
     display: block;
 }
 
+.activity {
+    width:400px;
+    margin-bottom: 2em
+}
+
+.activities {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.activity_content {
+    background-color:#2e294e;
+    height: 100px;
+    border-radius: 15px;
+    padding: 2em;
+    color:#ffffff;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.activity_header {
+    display: flex;
+    flex-direction: row;
+}
+

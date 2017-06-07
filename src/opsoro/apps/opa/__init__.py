@@ -1,7 +1,8 @@
 from __future__ import with_statement
 
 import paho.mqtt.client as mqtt
-import json
+import json,datetime
+
 from flask import Blueprint, render_template, request, redirect, url_for, flash, send_from_directory, jsonify
 
 from opsoro.console_msg import *
@@ -42,6 +43,7 @@ def setup_pages(server):
         data = {
             'actions': {},
             'data': [],
+            'activity': [],
         }
 
         action = request.args.get('action', None)
@@ -51,26 +53,43 @@ def setup_pages(server):
         filename = os.path.join(app_bp.static_folder, 'Applets.json')
         with open(filename) as blog_file:
             json_data = json.load(blog_file)
+        filename = os.path.join(app_bp.static_folder, 'Activity.json')
+        with open(filename) as activity_file:
+            activity_data = json.load(activity_file)
         data['data'] = json_data
+        data['activity'] = activity_data
+        print_info(data['activity'])
         return server.render_template(config['formatted_name'] + '.html', **data)
-    
-    @app_bp.route('/activity')
-    @server.app_view
-    def activity():
-        return redirect("/apps/opa/")
 
     @app_bp.route('/action', methods=['POST'])
     def action():
         json_dict = request.data
         data = json.loads(json_dict)
-        speak(data)
         print_info(data)
-        activity(data)
+        speak(data)
+        save_activity(data)
         return jsonify(data)
         
     @app_bp.route('/name', methods=['POST'])
     def change_name():
-        return redirect('/apps/opa')
+        data = {}
+        if request.method == 'POST':
+            Preferences.set('general', 'robot_name', request.form.get('robotName', type=str, default=None))
+        return redirect('/apps/opa/')
+
+
+
+    def save_activity(data):
+        data['date'] = str(datetime.date.today())
+        data['time'] = str(datetime.datetime.now().strftime("%H:%M:%S"))
+        print_info(data)
+        filename = os.path.join(app_bp.static_folder, 'Activity.json')
+        with open(filename, 'r') as blog_file:
+            json_data = json.load(blog_file)
+            json_data['Activity'].append(data)
+            print_info(json_data)    
+        with open(filename, 'w') as write_file:
+            write_file.write(json.dumps(json_data))     
 
     server.register_app_blueprint(app_bp)
 
@@ -81,7 +100,6 @@ def speak(data):
             play_data = data['play']
             Sound.play_file("smb_1-up.wav")
             Sound.wait_for_sound()
-            play(play_data)
         else: print_info('No need to play')
     else:
         print_info("Alarm")
@@ -96,20 +114,16 @@ def play(play_data):
     Sound.say_tts(play_data['play2'])
     Sound.wait_for_sound()
     Sound.say_tts(play_data['play3'])
-    
+
 
 def alarm():
     onetoten = range(0,3)
     for i in onetoten:
         Sound.play_file("1_kamelenrace.wav")
+        Sound.wait_for_sound()
     print_info("Alarm stopped...")
     return
 
-def activity(data):
-    filename = os.path.join(app_bp.static_folder, 'Activity.json')
-    with open(filename, 'w') as blog_file:
-        json.dump(" { Activity:[{ 'service':" + data['service']  + "}]}", blog_file)
-    return
 
 def demo():
     # publicly accessible function
