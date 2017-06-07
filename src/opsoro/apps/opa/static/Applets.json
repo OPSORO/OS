@@ -1,0 +1,69 @@
+{ "Applets":[
+	{
+	"Applet_name":"Weather Applet",
+	"Applet_url":"https://ifttt.com/applets/DbSc6XqZ/embed?redirect_uri=http://opa.eu.ngrok.io/apps/opa/",
+	"Applet_color":"#1d9a59",
+	"Applet_logo":"https://applets.imgix.net/https%3A%2F%2Fassets.ifttt.com%2Fimages%2Fchannels%2F7%2Ficons%2Fon_color_large.png%3Fversion%3D0?ixlib=rails-2.1.3&w=100&h=100&auto=compress&s=a779437e46041cd85963c1e169aea000"
+  },
+  {
+	"Applet_name":"Alarm",
+	"Applet_url":"https://ifttt.com/applets/yxcUavkK/embed?redirect_uri=http://opa.eu.ngrok.io/apps/opa/",
+	"Applet_color":"#333333",
+	"Applet_logo":"https://applets.imgix.net/https%3A%2F%2Fassets.ifttt.com%2Fimages%2Fchannels%2F3%2Ficons%2Fon_color_large.png%3Fversion%3D0?ixlib=rails-2.1.3&w=100&h=100&auto=compress&s=3e9ab3d7d45a360b93f96f7131ae7169"
+  },
+  {
+	"Applet_name":"Coming home",
+	"Applet_url":"https://ifttt.com/applets/UcdTPWAV/embed?redirect_uri=http://opa.eu.ngrok.io/apps/opa/",
+	"Applet_color":"#0099ff",
+	"Applet_logo":"https://applets.imgix.net/https%3A%2F%2Fassets.ifttt.com%2Fimages%2Fchannels%2F941030000%2Ficons%2Fon_color_large.png%3Fversion%3D0?ixlib=rails-2.1.3&w=100&h=100&auto=compress&s=c1e46d4cb4a148c6a7fd55ccf2c5a21b"
+  },
+	{
+	"Applet_name":"Event",
+	"Applet_url":"https://ifttt.com/applets/wjLHMbBx/embed?redirect_uri=http://opa.eu.ngrok.io/apps/opa/",
+	"Applet_color":"#2c6efc",
+	"Applet_logo":"https://applets.imgix.net/https%3A%2F%2Fassets.ifttt.com%2Fimages%2Fchannels%2F36%2Ficons%2Fon_color_large.png%3Fversion%3D0?ixlib=rails-2.1.3&w=100&h=100&auto=compress&s=f21aba281510145b7032da7abaa0ef74"
+  },
+	{
+	"Applet_name":"ISS",
+	"Applet_url":"https://ifttt.com/applets/Ld8aRTUD/embed?redirect_uri=http://opa.eu.ngrok.io/apps/opa/",
+	"Applet_color":"#2e294e",
+	"Applet_logo":"https://applets.imgix.net/https%3A%2F%2Fassets.ifttt.com%2Fimages%2Fchannels%2F1829340444%2Ficons%2Fon_color_large.png%3Fversion%3D0?ixlib=rails-2.1.3&w=100&h=100&auto=compress&s=e631efb18ee2b3e9c757c0a1f96c27c0"
+  },
+	{
+	"Applet_name":"Leaving work",
+	"Applet_url":"https://ifttt.com/applets/Wcw42HM5/embed?redirect_uri=http://opa.eu.ngrok.io/apps/opa/",
+	"Applet_color":"#0099ff",
+	"Applet_logo":"https://applets.imgix.net/https%3A%2F%2Fassets.ifttt.com%2Fimages%2Fchannels%2F941030000%2Ficons%2Fon_color_large.png%3Fversion%3D0?ixlib=rails-2.1.3&w=100&h=100&auto=compress&s=c1e46d4cb4a148c6a7fd55ccf2c5a21b"
+  },
+	{
+	"Applet_name":"Youtube",
+	"Applet_url":"https://ifttt.com/applets/CTjyYCQV/embed?redirect_uri=http://opa.eu.ngrok.io/apps/opa/",
+	"Applet_color":"#e52d27",
+	"Applet_logo":"https://applets.imgix.net/https%3A%2F%2Fassets.ifttt.com%2Fimages%2Fchannels%2F32%2Ficons%2Fon_color_large.png%3Fversion%3D0?ixlib=rails-2.1.3&w=100&h=100&auto=compress&s=25656b78c56a17d5f6056231bcd54a88"
+  },
+	{
+	"Applet_name":"The New York Times",
+	"Applet_url":"https://ifttt.com/applets/LtNGA4Xm/embed?redirect_uri=http://opa.eu.ngrok.io/apps/opa/",
+	"Applet_color":"#333333",
+	"Applet_logo":"https://applets.imgix.net/https%3A%2F%2Fassets.ifttt.com%2Fimages%2Fchannels%2F89%2Ficons%2Fon_color_large.png%3Fversion%3D0?ixlib=rails-2.1.3&w=100&h=100&auto=compress&s=2a64565a7e995c4437385c0fd1cd2449"
+  },
+	{
+	"Applet_name":"SMS",
+	"Applet_url":"https://ifttt.com/applets/vsKwNSpG/embed?redirect_uri=http://opa.eu.ngrok.io/apps/opa/",
+	"Applet_color":"#1d9a59",
+	"Applet_logo":"https://applets.imgix.net/https%3A%2F%2Fassets.ifttt.com%2Fimages%2Fchannels%2F1322033008%2Ficons%2Fon_color_large.png%3Fversion%3D0?ixlib=rails-2.1.3&w=100&h=100&auto=compress&s=60ac0ffb1b7842577b10ee4ba99a4d0d"
+  },
+	{
+	"Applet_name":"Christmas",
+	"Applet_url":"https://ifttt.com/applets/VVktLwKe/embed?redirect_uri=http://opa.eu.ngrok.io/apps/opa/",
+	"Applet_color":"#e52d27",
+	"Applet_logo":"https://applets.imgix.net/https%3A%2F%2Fassets.ifttt.com%2Fimages%2Fchannels%2F696562578%2Ficons%2Fon_color_large.png%3Fversion%3D0?ixlib=rails-2.1.3&w=100&h=100&auto=compress&s=71cb85615aa8ebb9c9f1096e02b02e33"
+  },
+	{
+	"Applet_name":"Facebook status",
+	"Applet_url":"https://ifttt.com/applets/VVktLwKe/embed?redirect_uri=http://opa.eu.ngrok.io/apps/opa/",
+	"Applet_color":"#3b579d",
+	"Applet_logo":"https://applets.imgix.net/https%3A%2F%2Fassets.ifttt.com%2Fimages%2Fchannels%2F10%2Ficons%2Fon_color_large.png%3Fversion%3D0?ixlib=rails-2.1.3&w=100&h=100&auto=compress&s=198287ecad0ec524d2d392508ca7ccd9"
+  }
+]
+}

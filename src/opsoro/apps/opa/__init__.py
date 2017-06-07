@@ -2,7 +2,7 @@ from __future__ import with_statement
 
 import paho.mqtt.client as mqtt
 import json
-from flask import Blueprint, render_template, request, redirect, url_for, flash, send_from_directory
+from flask import Blueprint, render_template, request, redirect, url_for, flash, send_from_directory, jsonify
 
 from opsoro.console_msg import *
 from opsoro.hardware import Hardware
@@ -10,8 +10,9 @@ from opsoro.robot import Robot
 from opsoro.expression import Expression
 # from opsoro.stoppable_thread import StoppableThread
 from opsoro.sound import Sound
-
+from opsoro.preferences import Preferences
 from functools import partial
+
 import os
 
 constrain = lambda n, minn, maxn: max(min(maxn, n), minn)
@@ -42,49 +43,73 @@ def setup_pages(server):
             'actions': {},
             'data': [],
         }
+
         action = request.args.get('action', None)
         if action != None:
             data['actions'][action] = request.args.get('param', None)
-
+       
+        filename = os.path.join(app_bp.static_folder, 'Applets.json')
+        with open(filename) as blog_file:
+            json_data = json.load(blog_file)
+        data['data'] = json_data
         return server.render_template(config['formatted_name'] + '.html', **data)
+    
+    @app_bp.route('/activity')
+    @server.app_view
+    def activity():
+        return redirect("/apps/opa/")
 
-    @app_bp.route('/facebook', methods=['POST'])
-    def tweet():
+    @app_bp.route('/action', methods=['POST'])
+    def action():
         json_dict = request.data
         data = json.loads(json_dict)
-        print_info("New post from: " + data['From'])
-        print_info("Status: " + data['Message'])
-        Sound.play_file("smb_1-up.wav")
-        Sound.say_tts(data['From'] + "posted a new status on facebook ")
-        Sound.wait_for_sound()
-        Sound.say_tts(data['Message'])
-        return redirect('/apps/opa/')
-
-    @app_bp.route('/space', methods=['GET'])
-    def space():
-        Sound.play_file("Ahhh-surprise.wav")
-        Sound.wait_for_sound()
-        Sound.say_tts("Hallo Ruben, ik heb een nieuwe melding")
-        Sound.wait_for_sound()
-        Sound.say_tts("International space station is juist boven u gepasseerd")
+        speak(data)
+        print_info(data)
+        activity(data)
+        return jsonify(data)
+        
+    @app_bp.route('/name', methods=['POST'])
+    def change_name():
         return redirect('/apps/opa')
 
-    @app_bp.route('/event', methods=['POST'])
-    def event():
-        json_dict = request.data
-        data = json.loads(json_dict)
-        print_info(data['Title'])
-        print_info(data['Location'])
-        Sound.play_file("Burp.wav")
-        Sound.wait_for_sound()
-        Sound.say_tts("Je hebt een evenement in vijftien minuten")
-        Sound.wait_for_sound()
-        Sound.say_tts("Titel evenement" + data['Title'])
-        Sound.wait_for_sound()
-        Sound.say_tts("Locatie" + data['Location'])
-        return redirect('/apps/opa')
     server.register_app_blueprint(app_bp)
 
+
+def speak(data):
+    if data['service'] != "Alarm":
+        if data['say'] == "True":
+            play_data = data['play']
+            Sound.play_file("smb_1-up.wav")
+            Sound.wait_for_sound()
+            play(play_data)
+        else: print_info('No need to play')
+    else:
+        print_info("Alarm")
+        alarm()
+    print_info("Exit speak action..")
+    return
+
+
+def play(play_data):
+    Sound.say_tts(play_data['play1'])
+    Sound.wait_for_sound()
+    Sound.say_tts(play_data['play2'])
+    Sound.wait_for_sound()
+    Sound.say_tts(play_data['play3'])
+    
+
+def alarm():
+    onetoten = range(0,3)
+    for i in onetoten:
+        Sound.play_file("1_kamelenrace.wav")
+    print_info("Alarm stopped...")
+    return
+
+def activity(data):
+    filename = os.path.join(app_bp.static_folder, 'Activity.json')
+    with open(filename, 'w') as blog_file:
+        json.dump(" { Activity:[{ 'service':" + data['service']  + "}]}", blog_file)
+    return
 
 def demo():
     # publicly accessible function

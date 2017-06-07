@@ -2,15 +2,9 @@
 {% block app_head %}
 
 	<!-- <script src="/site_media/static/js/....js"></script> -->
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
 
-{% endblock %}
-{% block app_toolbar %}
-	<p style="color: white">This is the toolbar, you can add/remove options.<br/>To remove the toolbar completely, just remove the blocks: "block app_toolbar" and "endblock".</p>
-	<!--
-{% include "toolbar/_file_operations.html" %}
-{% include "toolbar/_script_operations.html" %}
-{% include "toolbar/_lock_unlock.html" %}
--->
 {% endblock %}
 
 <!-- These sidebars can be removed by removing the block tags -->
@@ -18,28 +12,108 @@
 {% block sidebar_right %}{% endblock %}
 
 {% block app_content %}
-	<fieldset>
-		<legend>
-			<span class="fa fa-commenting"></span>
-			{{ _('Popup demo') }}</legend>
-		<div class="row">
-			<div class="content">
-				<span class="" data-bind="text: popupTextInput"></span>
-			</div>
-		</div>
-		<div class="row">
-			<div class="content">
-				<a href="#" class="button" data-bind="click: showPopup">
-					<span class="fa fa-cog" style="font-size: 1.5rem"></span>
-					{{ _('Change text popup') }}
-				</a>
-			</div>
-		</div>
-	</fieldset>
+	<div class="">
+	<ul class="accordion" data-responsive-accordion-tabs="tabs small-accordion medium-tabs large-tabs" id="settings-tabs">
+	  <li class="accordion-item is-active" data-accordion-item>
+			<a href="#my_applets">
+				<span class="fa fa-th"></span> My Applets
+			</a>
+			<div class="accordion-content" data-tab-content>
+				<fieldset id="filters">
+					<legend>
+						<span class="fa fa-filter"></span>
+						Filters
+						<span class="fa fa-caret-down"></span>
+					</legend>
 
-	{% if not online %}
-		<!-- Content in this section is not displayed online, only on the robot. For example: it is a perfect place to put controls that access hardware stuff, which is not available online. -->
-	{% endif %}
+					<div class="row">
+						<div class="flex-container">
+							<!-- Filters hier -->
+							
+						</div>
+					</div>
+
+				</fieldset>
+				<fieldset>
+					<legend>
+						<span class="fa fa-th-large"></span>
+						My Applets
+					</legend>
+
+					<div class="row">
+						<div class="flex-container">
+							{% for applet in data['Applets']  %}
+							<div class="applet" style="background-color:{{applet.Applet_color }}">
+								<a href="{{ applet.Applet_url }}">
+									<div class="applet-content">
+										<img src="{{ applet.Applet_logo }}" alt="" class="logo">
+										<h3>{{applet.Applet_name}}</h3>
+										<p class="text-muted">
+										</p>
+										<p>
+											<span class="text-muted">By</span> Opsoro
+										</p>
+									</div>
+									<div class="applet-footer" style="background-color:black">
+										Uses Maker Webhook
+									</div>
+								</a>
+							</div>
+							{% endfor  %}
+						</div>
+						
+					</div>
+
+				</fieldset>
+	    	</div>
+		</li>
+	  <li class="accordion-item" data-accordion-item>
+			<a href="#commands" class="accordion-title">
+				<span class="fa fa-terminal"></span> Commands
+			</a>
+			<div class="accordion-content" data-tab-content>
+				<fieldset>
+					<legend>
+						Command Queue
+					</legend>
+
+					<div class="row">
+						<div id="cmdqueue" class="flex-container connected-sortable">
+							<div id="cmdqueue-placeholder" class="disabled">
+								<p><span class="fa fa-plus"></span> Move Commands here</p>
+							</div>
+							
+						</div>
+					</div>
+				</fieldset>
+				<fieldset>
+					<legend>
+						<span class="fa fa-terminal"></span>
+						Commands
+					</legend>
+
+					<div class="row">
+						<div id="cmdgrid" class="flex-container connected-sortable">
+							<div class="command draggable" style="background-color:blue;">
+								<a href="">
+									<div class="command-content">
+										<p class="text-muted">
+											Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+										</p>
+									</div>
+									<div class="command-footer" style="background-color:black">
+										Uses Maker Webhook
+									</div>
+								</a>
+							</div>
+						</div>
+					</div>
+
+				</fieldset>
+	    	</div>
+		</li>	  
+	</ul>
+</div>
 
 {% endblock %}
 {% block app_scripts %}

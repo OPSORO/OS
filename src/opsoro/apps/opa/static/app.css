@@ -1,0 +1,89 @@
+.flex-container{
+    display: flex;
+    flex-wrap: wrap;
+}
+#cmdqueue{
+    position: relative;
+    min-width: 170px;
+    min-height: 170px;
+}
+.applet{
+    margin: 10px;
+    border-radius: 15px;
+    overflow: hidden;
+}
+.applet-content{
+    color: white;
+    display: flex;
+    flex-wrap: wrap;
+    width: 250px;
+    margin: 15px;
+    flex-direction: column;
+}
+.applet-content .logo{
+    width: 36px;
+    height: 36px;
+    margin: 0;
+    position: absolute;
+}
+.applet-content h3{
+    margin-left: 50px;
+}
+.applet-footer{
+    text-align: center;
+    height: 30px;
+    line-height: 30px;
+    font-size: 12px;
+    color: white;
+}
+
+.command{
+    display: flex;
+    flex-wrap: wrap;
+    z-index: 2;
+    margin: 10px;
+    width: 230px;
+    border-radius: 15px;
+    background-color: blue;
+    overflow: hidden;
+}
+.command-content{
+    margin: 15px;
+    max-width: 200px;
+    color: white;
+}
+.command-footer{
+    text-align: center;
+    font-size: 12px;
+    color: white;
+    height: 30px;
+    line-height: 30px;
+}
+
+.flex-container > .highlight{
+    background-color: green;
+    opacity: 0.5;
+}
+
+#cmdqueue-placeholder{
+    position: absolute;
+    border: 4px dashed #f8f8f8;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 15px;
+    width: calc(100% - 20px);
+    height: calc(100% - 20px);
+    margin: 10px;
+}
+.text-muted{
+    opacity: 0.5;
+}
+.hidden{
+    display: none !important;
+}
+.visible{
+    display: block;
+}
+

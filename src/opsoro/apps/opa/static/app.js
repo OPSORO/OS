@@ -1,4 +1,35 @@
 $(document).ready(function() {
+
+    var socket = io.connect('http://' + document.domain + ':' + location.port);
+    socket.on('connect', function() {
+        socket.emit('my event', {data: 'I\'m connected!'});
+    });
+
+
+    $('#cmdqueue').sortable({
+        revert: true,
+        placeholder: "highlight command",
+        cancel: ".disabled"
+    });
+    $('#sortable').disableSelection();
+    $('.draggable').draggable({
+            connectToSortable: "#cmdqueue",
+            helper: "clone",
+            revert: "invalid"
+    });
+    $('#cmdqueue').droppable({
+      drop: function( event, ui ) {
+        $('#cmdqueue-placeholder').find('p').addClass("hidden");
+      }
+    });
+    $('#filters').accordion({
+      collapsible: true
+    });
+    $('#cmdqueue').on('click', '.command', function() {
+        this.parentNode.removeChild(this);
+    });
+
+
     var Model = function() {
         var self = this;
 
@@ -30,7 +61,10 @@ $(document).ready(function() {
             self.fileStatus("Editing")
         };
 
+        
+
         // Popup window
+        /*
         self.popupTextInput = ko.observable("Hi! This text can be changed. Click on the button to change me!");
         self.showPopup = function() {
           $("#popup_window").foundation('open');
@@ -71,6 +105,7 @@ $(document).ready(function() {
             self.fileIsModified(false);
             return data;
         };
+        */
     };
     // This makes Knockout get to work
     var model = new Model();

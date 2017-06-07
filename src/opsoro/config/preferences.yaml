@@ -1,6 +1,6 @@
 audio:
   master_volume: 100
-  tts_engine: espeak
+  tts_engine: pico
   tts_gender: m
   tts_language: nl
 behaviour:

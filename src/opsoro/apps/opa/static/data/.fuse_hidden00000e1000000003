@@ -1,0 +1,47 @@
+{ "Applets":[
+	{
+	"Applet_name":"Weather Applet",
+	"Applet_url":"https://ifttt.com/applets/DbSc6XqZ/embed?redirect_uri=http://opa.eu.ngrok.io/apps/opa/"
+  },
+  {
+	"Applet_name":"Alarm",
+	"Applet_url":"https://ifttt.com/applets/yxcUavkK/embed?redirect_uri=http://opa.eu.ngrok.io/apps/opa/"
+  },
+  {
+	"Applet_name":"Coming home",
+	"Applet_url":"https://ifttt.com/applets/UcdTPWAV/embed?redirect_uri=http://opa.eu.ngrok.io/apps/opa/"
+  },
+	{
+	"Applet_name":"Event",
+	"Applet_url":"https://ifttt.com/applets/wjLHMbBx/embed?redirect_uri=http://opa.eu.ngrok.io/apps/opa/"
+  },
+	{
+	"Applet_name":"ISS",
+	"Applet_url":"https://ifttt.com/applets/Ld8aRTUD/embed?redirect_uri=http://opa.eu.ngrok.io/apps/opa/"
+  },
+	{
+	"Applet_name":"Leaving work",
+	"Applet_url":"https://ifttt.com/applets/Wcw42HM5/embed?redirect_uri=http://opa.eu.ngrok.io/apps/opa/"
+  },
+	{
+	"Applet_name":"Youtube",
+	"Applet_url":"https://ifttt.com/applets/CTjyYCQV/embed?redirect_uri=http://opa.eu.ngrok.io/apps/opa/"
+  },
+	{
+	"Applet_name":"The New York Times",
+	"Applet_url":"https://ifttt.com/applets/LtNGA4Xm/embed?redirect_uri=http://opa.eu.ngrok.io/apps/opa/"
+  },
+	{
+	"Applet_name":"SMS",
+	"Applet_url":"https://ifttt.com/applets/vsKwNSpG/embed?redirect_uri=http://opa.eu.ngrok.io/apps/opa/"
+  },
+	{
+	"Applet_name":"Christmas",
+	"Applet_url":"https://ifttt.com/applets/VVktLwKe/embed?redirect_uri=http://opa.eu.ngrok.io/apps/opa/"
+  },
+	{
+	"Applet_name":"Facebook status",
+	"Applet_url":"https://ifttt.com/applets/VVktLwKe/embed?redirect_uri=http://opa.eu.ngrok.io/apps/opa/"
+  }
+]
+}
