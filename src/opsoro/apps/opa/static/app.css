@@ -35,6 +35,7 @@
     line-height: 30px;
     font-size: 12px;
     color: white;
+    margin-top: auto;
 }
 
 .command{
@@ -58,6 +59,8 @@
     color: white;
     height: 30px;
     line-height: 30px;
+    width: 100%;
+    margin-top: auto;
 }
 
 .flex-container > .highlight{
@@ -78,7 +81,7 @@
     margin: 10px;
 }
 .text-muted{
-    opacity: 0.5;
+    opacity: 0.8;
 }
 .hidden{
     display: none !important;
@@ -87,3 +90,28 @@
     display: block;
 }
 
+.activity {
+    width:400px;
+    margin-bottom: 2em
+}
+
+.activities {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.activity_content {
+    background-color:#2e294e;
+    height: 100px;
+    border-radius: 15px;
+    padding: 2em;
+    color:#ffffff;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.activity_header {
+    display: flex;
+    flex-direction: row;
+}

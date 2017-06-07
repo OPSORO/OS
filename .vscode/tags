@@ -220,19 +220,24 @@ stop	../src/opsoro/apps/preferences/__init__.py	/^def stop(opsoroapp):$/;"	kind:
 __init__.py	../src/opsoro/apps/opa/__init__.py	1;"	kind:file	line:1
 constrain	../src/opsoro/apps/opa/__init__.py	/^constrain = lambda n, minn, maxn: max(min(maxn, n), minn)$/;"	kind:variable	line:18
 get_path	../src/opsoro/apps/opa/__init__.py	/^get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))$/;"	kind:variable	line:19
-config	../src/opsoro/apps/opa/__init__.py	/^config = {$/;"	kind:variable	line:21
-setup_pages	../src/opsoro/apps/opa/__init__.py	/^def setup_pages(server):$/;"	kind:function	line:33
-index	../src/opsoro/apps/opa/__init__.py	/^    def index():$/;"	kind:function	line:41
-activity	../src/opsoro/apps/opa/__init__.py	/^    def activity():$/;"	kind:function	line:59
-action	../src/opsoro/apps/opa/__init__.py	/^    def action():$/;"	kind:function	line:63
-change_name	../src/opsoro/apps/opa/__init__.py	/^    def change_name():$/;"	kind:function	line:71
-speak	../src/opsoro/apps/opa/__init__.py	/^def speak(data):$/;"	kind:function	line:77
-play	../src/opsoro/apps/opa/__init__.py	/^def play(play_data):$/;"	kind:function	line:92
-alarm	../src/opsoro/apps/opa/__init__.py	/^def alarm():$/;"	kind:function	line:100
-demo	../src/opsoro/apps/opa/__init__.py	/^def demo():$/;"	kind:function	line:108
-setup	../src/opsoro/apps/opa/__init__.py	/^def setup(server):$/;"	kind:function	line:116
-start	../src/opsoro/apps/opa/__init__.py	/^def start(server):$/;"	kind:function	line:119
-stop	../src/opsoro/apps/opa/__init__.py	/^def stop(server):$/;"	kind:function	line:122
+clientconn	../src/opsoro/apps/opa/__init__.py	/^clientconn = None$/;"	kind:variable	line:21
+config	../src/opsoro/apps/opa/__init__.py	/^config = {$/;"	kind:variable	line:23
+setup_pages	../src/opsoro/apps/opa/__init__.py	/^def setup_pages(server):$/;"	kind:function	line:35
+index	../src/opsoro/apps/opa/__init__.py	/^    def index():$/;"	kind:function	line:43
+activity	../src/opsoro/apps/opa/__init__.py	/^    def activity():$/;"	kind:function	line:69
+action	../src/opsoro/apps/opa/__init__.py	/^    def action():$/;"	kind:function	line:73
+change_name	../src/opsoro/apps/opa/__init__.py	/^    def change_name():$/;"	kind:function	line:82
+s_key_up	../src/opsoro/apps/opa/__init__.py	/^    def s_key_up(conn, data):$/;"	kind:function	line:89
+socket_connected	../src/opsoro/apps/opa/__init__.py	/^    def socket_connected(conn):$/;"	kind:function	line:98
+socket_connected	../src/opsoro/apps/opa/__init__.py	/^    def socket_connected(conn):$/;"	kind:function	line:102
+speak	../src/opsoro/apps/opa/__init__.py	/^def speak(data):$/;"	kind:function	line:108
+play	../src/opsoro/apps/opa/__init__.py	/^def play(play_data):$/;"	kind:function	line:123
+alarm	../src/opsoro/apps/opa/__init__.py	/^def alarm():$/;"	kind:function	line:131
+activity	../src/opsoro/apps/opa/__init__.py	/^def activity(data):$/;"	kind:function	line:138
+demo	../src/opsoro/apps/opa/__init__.py	/^def demo():$/;"	kind:function	line:144
+setup	../src/opsoro/apps/opa/__init__.py	/^def setup(server):$/;"	kind:function	line:152
+start	../src/opsoro/apps/opa/__init__.py	/^def start(server):$/;"	kind:function	line:155
+stop	../src/opsoro/apps/opa/__init__.py	/^def stop(server):$/;"	kind:function	line:158
 __init__.py	../src/opsoro/apps/sounds/__init__.py	1;"	kind:file	line:1
 config	../src/opsoro/apps/sounds/__init__.py	/^config = {$/;"	kind:variable	line:12
 get_path	../src/opsoro/apps/sounds/__init__.py	/^get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))$/;"	kind:variable	line:25

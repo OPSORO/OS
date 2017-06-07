@@ -61,9 +61,15 @@
   },
 	{
 	"Applet_name":"Facebook status",
-	"Applet_url":"https://ifttt.com/applets/VVktLwKe/embed?redirect_uri=http://opa.eu.ngrok.io/apps/opa/",
+	"Applet_url":"https://ifttt.com/applets/DvEUeRmd/embed?redirect_uri=http://opa.eu.ngrok.io/apps/opa/",
 	"Applet_color":"#3b579d",
 	"Applet_logo":"https://applets.imgix.net/https%3A%2F%2Fassets.ifttt.com%2Fimages%2Fchannels%2F10%2Ficons%2Fon_color_large.png%3Fversion%3D0?ixlib=rails-2.1.3&w=100&h=100&auto=compress&s=198287ecad0ec524d2d392508ca7ccd9"
+  },
+	{
+	"Applet_name":"New follower Twitter",
+	"Applet_url":"https://ifttt.com/applets/UKvHk432/embed?redirect_uri=http://opa.eu.ngrok.io/apps/opa/",
+	"Applet_color":"#00abec",
+	"Applet_logo":"https://applets.imgix.net/https%3A%2F%2Fassets.ifttt.com%2Fimages%2Fchannels%2F2%2Ficons%2Fon_color_large.png%3Fversion%3D0?ixlib=rails-2.1.3&w=100&h=100&auto=compress&s=7053b15a8babcda62c7252482714819a"
   }
 ]
 }

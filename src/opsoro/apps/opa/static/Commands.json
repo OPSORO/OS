@@ -1,0 +1,22 @@
+{ "Commands":[
+    {
+        "Command_id": "1",
+	    "Command_name":"Status",
+	    "Command_color":"#3b579d",
+        "Command_description": "Status update:",
+        "Command_uses": "Facebook",
+        "Command_type": "ifttt",
+        "Command_eventname": "test",
+        "Command_customizeable": true
+    },
+    {
+        "Command_id": "2",
+	    "Command_name":"Robot Command",
+	    "Command_color":"#fff222",
+        "Command_description": "Robot command: do this",
+        "Command_uses": "Opsoro",
+        "Command_type": "robot",
+        "Command_eventname": "",
+        "Command_customizeable": false
+    }
+]}

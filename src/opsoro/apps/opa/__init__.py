@@ -1,7 +1,7 @@
 from __future__ import with_statement
 
 import paho.mqtt.client as mqtt
-import json
+import json, datetime
 from flask import Blueprint, render_template, request, redirect, url_for, flash, send_from_directory, jsonify
 
 from opsoro.console_msg import *
@@ -17,6 +17,8 @@ import os
 
 constrain = lambda n, minn, maxn: max(min(maxn, n), minn)
 get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
+
+clientconn = None
 
 config = {
     'full_name':            'opsoro personal assistant',
@@ -42,6 +44,7 @@ def setup_pages(server):
         data = {
             'actions': {},
             'data': [],
+            'activity': [],
         }
 
         action = request.args.get('action', None)
@@ -51,13 +54,20 @@ def setup_pages(server):
         filename = os.path.join(app_bp.static_folder, 'Applets.json')
         with open(filename) as blog_file:
             json_data = json.load(blog_file)
+
+        filename = os.path.join(app_bp.static_folder, 'Commands.json')
+        with open(filename) as blog_file:
+            json_commands = json.load(blog_file)
+
+        filename = os.path.join(app_bp.static_folder, 'Activity.json')
+        with open(filename) as activity_file:
+            activity_data = json.load(activity_file)
+
         data['data'] = json_data
+        data['commands'] = json_commands
+        data['activity'] = activity_data
         return server.render_template(config['formatted_name'] + '.html', **data)
     
-    @app_bp.route('/activity')
-    @server.app_view
-    def activity():
-        return redirect("/apps/opa/")
 
     @app_bp.route('/action', methods=['POST'])
     def action():
@@ -65,12 +75,45 @@ def setup_pages(server):
         data = json.loads(json_dict)
         speak(data)
         print_info(data)
-        activity(data)
+        save_activity(data)
         return jsonify(data)
         
     @app_bp.route('/name', methods=['POST'])
     def change_name():
-        return redirect('/apps/opa')
+        data = {}
+        if request.method == 'POST':
+            Preferences.set('general', 'robot_name', request.form.get('robotName', type=str, default=None))
+        return redirect('/apps/opa/')
+    
+    @server.app_socket_message('Message')
+    def s_key_up(conn, data):
+        print_info("Message received")
+        print_info(str(data))
+        data = {
+            'data': "Hello back"
+        }
+        conn.send_data("Message",data)
+
+    @server.app_socket_connected
+    def socket_connected(conn):
+        print_info("Connected")
+    
+    @server.app_socket_disconnected
+    def socket_connected(conn):
+        print_info("Disconnected")
+
+    def save_activity(data):
+        data['date'] = str(datetime.date.today())
+        data['time'] = str(datetime.datetime.now().strftime("%H:%M:%S"))
+        print_info(data)
+        filename = os.path.join(app_bp.static_folder, 'Activity.json')
+        with open(filename, 'r') as blog_file:
+            json_data = json.load(blog_file)
+            json_data['Activity'].append(data)
+            print_info(json_data)    
+        with open(filename, 'w') as write_file:
+            write_file.write(json.dumps(json_data))     
+
 
     server.register_app_blueprint(app_bp)
 
@@ -91,25 +134,22 @@ def speak(data):
 
 
 def play(play_data):
-    Sound.say_tts(play_data['play1'])
+    Sound.say_tts(play_data['1'])
     Sound.wait_for_sound()
-    Sound.say_tts(play_data['play2'])
+    Sound.say_tts(play_data['2'])
     Sound.wait_for_sound()
-    Sound.say_tts(play_data['play3'])
+    Sound.say_tts(play_data['3'])
     
 
 def alarm():
     onetoten = range(0,3)
     for i in onetoten:
         Sound.play_file("1_kamelenrace.wav")
+        Sound.wait_for_sound()
     print_info("Alarm stopped...")
     return
 
-def activity(data):
-    filename = os.path.join(app_bp.static_folder, 'Activity.json')
-    with open(filename, 'w') as blog_file:
-        json.dump(" { Activity:[{ 'service':" + data['service']  + "}]}", blog_file)
-    return
+
 
 def demo():
     # publicly accessible function

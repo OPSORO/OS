@@ -67,7 +67,7 @@
 				</fieldset>
 	    	</div>
 		</li>
-	  <li class="accordion-item" data-accordion-item>
+	 <li class="accordion-item" data-accordion-item>
 			<a href="#commands" class="accordion-title">
 				<span class="fa fa-terminal"></span> Commands
 			</a>
@@ -94,24 +94,113 @@
 
 					<div class="row">
 						<div id="cmdgrid" class="flex-container connected-sortable">
-							<div class="command draggable" style="background-color:blue;">
-								<a href="">
+							{% for command in commands['Commands']  %}
+							<div class="command draggable" style="background-color:{{command.Command_color}};">
+									<div class="command-id">{{command.Command_id}}</div>
 									<div class="command-content">
-										<p class="text-muted">
-											Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+										<p>
+											{{command.Command_description}}
 										</p>
+										{% if command.Command_customizeable %}
+											<input class="message" type="text" placeholder="Type your message here.">
+										{% endif %}
+										<div class="type hidden">{{command.Command_type}}</div>
+										<div class="eventname hidden">{{command.Command_eventname}}</div>
 									</div>
 									<div class="command-footer" style="background-color:black">
-										Uses Maker Webhook
+										Uses {{command.Command_uses}}
 									</div>
-								</a>
 							</div>
+							{% endfor  %}
 						</div>
 					</div>
 
 				</fieldset>
 	    	</div>
 		</li>	  
+		 <li class="accordion-item" data-accordion-item>
+			<a href="#Activity" class="accordion-title">
+				<span class="fa fa-bar-chart"></span> Activity
+			</a>
+			<div class="accordion-content" data-tab-content>
+				<fieldset>
+					<legend>
+						Activity
+					</legend>
+
+					<div class="row activities">
+					{% for activity in activity['Activity']  %}
+							<div class="activity" >
+								<div class="activity_headers">
+							<img class="icon" src="//web-assets.ifttt.com/assets/web/activity/icons-v2/check-3fdd5e5a0e88fac1838037e4ca46d02b6571fed09ab00497d94c7bfd6586cdc8.svg" alt="Check">	<h4>Applet ran</h4>
+							<p class=".text-muted">{{activity.date}} - {{activity.time}}</p>
+							</div>
+								<div class="activity_content" style="background-color:{{activity.color}}">
+									<h5>{{ activity.service}}</h5>
+									<p><span class="text-muted">by</span> Opsoro</p>
+								</div>
+							</div>
+					{% endfor %}	
+					</div>
+				</fieldset>
+	    	</div>
+		</li>	    
+			<li class="accordion-item" data-accordion-item>
+		<a href="#personal-assistant">
+			<span class="fa fa-android"></span> Personal Assistant
+		</a>
+		<div class="accordion-content" data-tab-content>
+			<fieldset>
+				<legend>
+					<span class="fa fa-android"></span>
+					Set your Personal Assistant's name</legend>
+				<div class="row">
+					<form action="name" method="POST">
+						<div class="small-4 medium-4 large-4 columns">
+							<label for="robotName" class="text-right inline">Personal Assistant's name</label>
+						</div>
+						<div class="small-8 medium-6 large-4 columns end">
+							<input type="text" id="robotName" name="robotName" value="" data-bind="value: robotName" required pattern="[a-zA-Z]+">
+							<button type="submit" class="button" style="margin-right:30%">Save</button>
+						</div>
+					</form>
+				</div>
+			</fieldset>
+		</div>
+	</li>
+	<li class="accordion-item" data-accordion-item>
+		<a href="#ifttt-account">
+			<span class="fa fa-fw fa-user"></span> IFTTT Account
+		</a>
+		<div class="accordion-content" data-tab-content>
+			<fieldset>
+				<legend>
+					<span class="fa fa-user"></span>
+					Create an IFTTT account
+				</legend>
+				<div class="row">
+					<div class="content">
+							<p>With a free IFTTT account you can manage your account information, manage your own applets and connect with services like Amazon, Facebook, Instagram, Skype, .... Click on the button below to create an IFTTT account.</p></br>
+							<a href="https://ifttt.com/join" target="blank"><button type="submit" class="button" style="margin-right:30%">Create IFTTT account</button></a>
+					</div>
+				</div>
+			</fieldset>
+			<fieldset>
+				<legend>
+					<span class="fa fa-mobile"></span>
+					Connect your phone with the IFTTT app
+				</legend>
+				<div class="row">
+					<div class="content">
+						<p>By using the IFTTT app, you can manage your account information, manage your own applets and connect with services like Amazon, Facebook, Instagram, Skype, .... Click on one of the buttons below to download and install the IFTTT app for Android or iOS</p></br>
+						<a href="https://play.google.com/store/apps/details?id=com.ifttt.ifttt" target="blank"><button type="submit" class="button" style="margin-right:30%" >Download Android app</button></a>
+						<a href="https://itunes.apple.com/nl/app/ifttt/id660944635" target="blank"><button type="submit" class="button" style="margin-right:30%" >Download iOS app</button></a>
+					</div>
+				</div>
+			</fieldset>
+		</div>
+	</li>
+	
 	</ul>
 </div>
 

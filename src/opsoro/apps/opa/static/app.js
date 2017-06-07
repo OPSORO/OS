@@ -1,10 +1,33 @@
 $(document).ready(function() {
 
-    var socket = io.connect('http://' + document.domain + ':' + location.port);
-    socket.on('connect', function() {
-        socket.emit('my event', {data: 'I\'m connected!'});
-    });
+    conn = null;
+    connReady = false;
+    conn = new SockJS('http://' + window.location.host + '/appsockjs');
 
+    conn.onopen = function() {
+            console.log("SockJS connected.");
+            $.ajax({
+                url: "/appsockjstoken",
+                cache: false
+            }).done(function(data) {
+                conn.send(JSON.stringify({
+                    action: "authenticate",
+                    token: data
+                }));
+                
+                connReady = true;
+                console.log("SockJS authenticated.");
+            });
+    };
+    conn.onmessage = function(e) {
+        console.log(e.data);
+    };   
+
+    conn.onclose = function() {
+            console.log("SockJS disconnected.");
+            conn = null;
+            connReady = false;
+    };
 
     $('#cmdqueue').sortable({
         revert: true,
@@ -22,13 +45,15 @@ $(document).ready(function() {
         $('#cmdqueue-placeholder').find('p').addClass("hidden");
       }
     });
+
     $('#filters').accordion({
       collapsible: true
     });
-    $('#cmdqueue').on('click', '.command', function() {
+    $('#cmdqueue').on('click', '.command', function() {      
         this.parentNode.removeChild(this);
     });
 
+    
 
     var Model = function() {
         var self = this;
@@ -111,7 +136,7 @@ $(document).ready(function() {
     var model = new Model();
     ko.applyBindings(model);
     model.fileIsModified(false);
-
+    
     // Configurate toolbar handlers
     //config_file_operations("", model.fileExtension(), model.saveFileData, model.loadFileData, model.init);
 });
