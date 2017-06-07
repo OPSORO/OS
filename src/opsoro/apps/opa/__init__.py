@@ -2,6 +2,7 @@ from __future__ import with_statement
 
 import paho.mqtt.client as mqtt
 import json, datetime
+import json,datetime
 from flask import Blueprint, render_template, request, redirect, url_for, flash, send_from_directory, jsonify
 
 from opsoro.console_msg import *
@@ -67,14 +68,22 @@ def setup_pages(server):
         data['commands'] = json_commands
         data['activity'] = activity_data
         return server.render_template(config['formatted_name'] + '.html', **data)
-    
+
+        filename = os.path.join(app_bp.static_folder, 'Activity.json')
+        with open(filename) as activity_file:
+            activity_data = json.load(activity_file)
+        data['data'] = json_data
+        data['activity'] = activity_data
+        print_info(data['activity'])
+        return server.render_template(config['formatted_name'] + '.html', **data)
 
     @app_bp.route('/action', methods=['POST'])
     def action():
         json_dict = request.data
         data = json.loads(json_dict)
-        speak(data)
         print_info(data)
+
+        speak(data)
         save_activity(data)
         return jsonify(data)
         
@@ -84,6 +93,7 @@ def setup_pages(server):
         if request.method == 'POST':
             Preferences.set('general', 'robot_name', request.form.get('robotName', type=str, default=None))
         return redirect('/apps/opa/')
+
     
     @server.app_socket_message('Message')
     def s_key_up(conn, data):
@@ -101,6 +111,8 @@ def setup_pages(server):
     @server.app_socket_disconnected
     def socket_connected(conn):
         print_info("Disconnected")
+
+
 
     def save_activity(data):
         data['date'] = str(datetime.date.today())
@@ -124,7 +136,6 @@ def speak(data):
             play_data = data['play']
             Sound.play_file("smb_1-up.wav")
             Sound.wait_for_sound()
-            play(play_data)
         else: print_info('No need to play')
     else:
         print_info("Alarm")
@@ -138,8 +149,11 @@ def play(play_data):
     Sound.wait_for_sound()
     Sound.say_tts(play_data['2'])
     Sound.wait_for_sound()
+
     Sound.say_tts(play_data['3'])
-    
+
+    Sound.say_tts(play_data['play3'])
+
 
 def alarm():
     onetoten = range(0,3)
@@ -148,7 +162,6 @@ def alarm():
         Sound.wait_for_sound()
     print_info("Alarm stopped...")
     return
-
 
 
 def demo():
