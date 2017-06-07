@@ -3,16 +3,16 @@
 
 	var dummy = JSON.stringify({"contacts": [
       {
-        "name": "ikke",
-        "phone": "363464"
+        "name": "Siel",
+        "phone": "0456745678"
       },
       {
-        "name": "Jij",
-        "phone": "456475"
+        "name": "Ellen",
+        "phone": "0476446578"
       },
       {
-        "name": "Wij",
-        "phone": "457457"
+        "name": "Poema",
+        "phone": "0456873467"
       }
     ]});
 		//console.log(dummy);

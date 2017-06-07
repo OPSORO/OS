@@ -1,5 +1,8 @@
 
 /* ban: f05e */
+li {
+  list-style: none;
+}
 .ban_list{
   display: flex;
   flex-direction: row;
@@ -12,7 +15,7 @@
   height: 3rem;
   position: absolute;
   margin-left: 1rem;
-  background: #FF517E;
+  background: #313334;
   text-align:center;
   line-height: 48px;
 }
@@ -37,4 +40,12 @@
 }
 .ban_data{
   margin-left: 6rem;
+}
+.safeword{
+  max-width: 20rem;
+}
+.removeBanItem, .bannedword{
+  margin-left: 2rem;
+  margin-top: 0.5rem;
+  margin: 0.5rem 2rem 0 2rem;
 }
