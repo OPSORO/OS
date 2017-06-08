@@ -12,7 +12,7 @@ $(document).ready(function(){
 	var searchField = "";
 
 	// Here's my data model
-	var VoiceLine = function(emotion, output, tts, wav, picture){
+	var VoiceLine = function(emotion, output, tts, wav, picture, url, lang){
 		var self = this;
 
 		self.emotion = ko.observable(emotion || emotions_data[0]);
@@ -24,6 +24,9 @@ $(document).ready(function(){
 
 		self.isPlaying = ko.observable(false);
 		self.hasPlayed = ko.observable(false);
+
+		self.url = ko.observable(url || "")
+		self.lang = ko.observable(lang || "");
 
 		self.contentPreview = ko.pureComputed(function(){
 			if(self.output() == "tts"){
@@ -43,15 +46,6 @@ $(document).ready(function(){
 			model.fileIsModified(true);
 		}
 
-		self.toggleOutput = function(){
-			model.fileIsModified(true);
-			if(this.output() == "tts"){
-				this.output("wav");
-			}else{
-				this.output("tts");
-			}
-		};
-
 		self.pressPlay = function(){
 			if(self.isPlaying()){
 				robotSendStop();
@@ -69,7 +63,7 @@ $(document).ready(function(){
 					robotSendReceiveAllDOF(self.emotion().dofs);
 				}
 				if(this.output() == "tts"){
-					robotSendTTS(self.tts());
+					robotSendTTSLang(self.tts, self.lang);
 				}else{
 					robotSendSound(self.wav());
 				}
@@ -211,10 +205,11 @@ $(document).ready(function(){
 		// Observables
 		self.socialID = ko.observable("");
 		self.isStreaming = ko.observable(false);
+		self.index_voiceLine = ko.observable(0) // made observable to toggle button layout
 
-		self.addTweetLine = function(data, picture){
+		self.addTweetLine = function(data, picture, url, lang){
 			self.fileIsModified(true);
-			self.voiceLines.unshift( new VoiceLine(self.emotions[0], "tts", data, "", picture) ); // unshift to push to first index of arr
+			self.voiceLines.unshift( new VoiceLine(self.emotions[0], "tts", data, "", picture, url, lang) ); // unshift to push to first index of arr
 		}
 
 		self.toggleTweepy = function() {
@@ -231,7 +226,7 @@ $(document).ready(function(){
 					self.voiceLines.removeAll();
 				}
 
-				$.post('/apps/sociono/', { social_id: socialID.value }, function(resp) {
+				$.post('/apps/sociono/', { action: 'startTweepy', data: socialID.value }, function(resp) {
 					console.log("post done");
 				});
 			}
@@ -240,50 +235,103 @@ $(document).ready(function(){
 		}
 
 		self.stopTweepy = function() {
-			$.post('/apps/sociono/', {}, function(resp) {
-				console.log("post to stop tweepy")
-			})
+			$.post('/apps/sociono/', { action: 'stopTweepy' }, function(resp) { // message ... success functions?
+				console.log("Stopping Tweepy Stream!")
+			});
 		}
 
-		self.autoLoopTweepy = function() {
-			var l = self.voiceLines()[0]
-
-			l.pressPlay();
-			
-			console.log(l.isPlaying());
-			console.log(l.hasPlayed());
+		self.toggleAutoLoopTweepy = function() {
+			if (self.index_voiceLine() > 0) {
+				self.autoLoopTweepyStop();
+			} else {
+				self.autoLoopTweepyStart();
+			}
 		}
 
-		// Enter
-		$(document).keyup(function (e) {
-		    if ($(".socialID:focus") && (e.keyCode === 13)) {
-				self.setSocialID();
-		    }
-		});
+		self.autoLoopTweepyStart = function() {
+			self.index_voiceLine(1); // set on null on initialize (reset)
+			self.autoLoopTweepyNext();
+		}
+
+		self.autoLoopTweepyStop = function() {
+			// post to stop sound
+			console.log("Stop Auto Loop!");
+			console.log(self.index_voiceLine());
+		 	//self.selectedVoiceLine().isPlaying(false);
+		 	//self.selectedVoiceLine().hasPlayed(true);
+		 	$.post('/apps/sociono/', { action: 'autoLoopTweepyStop' }, function(resp) {
+				console.log("Stopping Robot?");
+				self.index_voiceLine(0) // set to null to reset
+			});
+		}
+
+		self.autoLoopTweepyNext = function() {
+			self.selectedVoiceLine(self.voiceLines()[self.index_voiceLine() - 1]); // starting at 1 so -1
+			self.selectedVoiceLine().pressPlay();
+
+			$.post('/apps/sociono/', { action: 'autoLoopTweepyNext' }, function(resp) {
+				console.log("Playing Next Sound");
+			});	
+		}
+
+		self.autoLoopTweepyRun = function() {
+			console.log("Finished playing: " + self.index_voiceLine() + " / " + self.voiceLines().length);
+
+			self.index_voiceLine(self.index_voiceLine() + 1); // increment observable
+
+			if (self.index_voiceLine() <= self.voiceLines().length) {
+				self.autoLoopTweepyNext();
+				console.log("Running Loop: Next");
+			}
+		}
 
 		// Setup websocket connection.
 		app_socket_handler = function(data) {
       		switch (data.action) {
-				case "soundStopped":
+				case "autoLoopTweepyStop":
 					if (self.selectedVoiceLine() != undefined) {
 						self.selectedVoiceLine().isPlaying(false);
 					 	self.selectedVoiceLine().hasPlayed(true);
 					}
+					robotSendStop();
 					break;
-				case "tweepy":
+				case "autoLoopTweepyNext":
+					if (self.selectedVoiceLine() != undefined) {
+						self.selectedVoiceLine().isPlaying(false);
+					 	self.selectedVoiceLine().hasPlayed(true);
 
-					self.addTweetLine(data["text"]["filtered"], data["user"]["profile_picture"]);
+					 	self.autoLoopTweepyRun()
+					}
+					break;					 	
+				case "dataFromTweepy":
+					self.addTweetLine(data["text"]["filtered"], data["user"]["profile_picture"], "https://twitter.com/" + data['user']['username'], data['text']['lang']);
 					break;
+				case "test":
+					console.log(data)
 			}
 		};
 
+		// Enter functionaliteit
+		$(document).keyup(function (e) {
+		    if ($(".socialID:focus") && (e.keyCode === 13)) {
+				self.toggleTweepy();
+		    }
+		});
+
 
 	};
+
+	function robotSendTTSLang(text, lang){
+		$.post('/apps/sociono/', { 'action': 'playTweet', 'text': text, 'lang': lang}, function(resp) {
+			console.log("sound post done");
+		});
+	}
+
 	// This makes Knockout get to work
 	var model = new SocialScriptModel();
 	ko.applyBindings(model);
 	model.fileIsModified(false);
 
-	config_file_operations("", model.fileExtension(), model.saveFileData, model.loadFileData, model.newFileData);
+	//config_file_operations("", model.fileExtension(), model.saveFileData, model.loadFileData, model.newFileData);
 
 });

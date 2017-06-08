@@ -5,13 +5,13 @@
 		<div id="fixedvoiceline" data-bind="sortable: { data: fixedVoiceLine, options: {handle: '.gripper', axis: 'y', opacity: 0.75} }">
 			<div class="voiceline locked">
 				<input type="text" placeholder="Enter a social page ID, ex: 512433" id="socialID" data-bind="value: $root.socialID">
-				<button class="button round info" data-bind="click: $root.toggleTweepy()">
+				<button class="button round info" data-bind="click: $root.toggleTweepy">
 					<span class="fa " data-bind="css: { 'fa-play': !$root.isStreaming(), 'fa-close': $root.isStreaming() }"></span>
-					<span class="text" data-bind="text: !$root.isStreaming() ? '{{ _('Start') }}' : '{{ _('Stop') }}' "></span>
+					<span class="text" data-bind="text: !$root.isStreaming() ? '{{ _('Start Streaming') }}' : '{{ _('Stop Streaming') }}' "></span>
 				</button>
-				<button class="button round info" data-bind="click: $root.autoLoopTweepy">
-					<span class="fa fa-refresh"></span>
-					<span class="text"> Auto Loop</span>
+				<button class="button round info" data-bind="click: $root.toggleAutoLoopTweepy">
+					<span class="fa " data-bind="css: { 'fa-close': $root.index_voiceLine() > 0, 'fa-refresh': $root.index_voiceLine() == 0 }"></span>
+					<span class="text" data-bind="text: $root.index_voiceLine() > 0 ? '{{ _('Stop Autoloop') }}' : '{{ _('Start Autoloop') }}' "></span>
 				</button>
 			</div>
 		</div>
@@ -24,7 +24,9 @@
 			<div id="voicelines" data-bind="sortable: { data: voiceLines, options: {handle: '.gripper', axis: 'y', opacity: 0.75} }">
 				<div class="voiceline" data-bind="css: { locked: $root.fileIsLocked(), unlocked: !$root.fileIsLocked()}">
 					<div class="avatar">
-						<img data-bind="attr: { src: picture }"/>
+						<a data-bind="attr: { href: url}" target="_blank">
+							<img data-bind="attr: { src: picture }"/>
+						</a>
 					</div>
 					<div class="content">
 						<span class="bubble" data-bind="html: contentPreview"></span>

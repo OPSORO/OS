@@ -19,6 +19,8 @@ from opsoro.expression import Expression
 from opsoro.hardware import Hardware
 from opsoro.robot import Robot
 from opsoro.sound import Sound
+from opsoro.sound.tts import TTS
+
 from opsoro.stoppable_thread import StoppableThread
 
 from opsoro.users import Users
@@ -56,16 +58,15 @@ get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 dof_positions = {}
 
 
-def send_stopped():
-    Users.send_app_data(config['formatted_name'], 'soundStopped', {})
+def send_action(action):
+    Users.send_app_data(config['formatted_name'], action, {})
 
 def send_data(action, data):
     #def send_app_data(self, appname, action, data={}): from Opsoro.Users
     Users.send_app_data(config['formatted_name'], action, data)
 
-def SocialScriptRun():
+def wait_for_sound():
     Sound.wait_for_sound()
-    send_stopped()
 
 
 sociono_t = None
@@ -74,7 +75,7 @@ sociono_t = None
 def setup_pages(opsoroapp):
     sociono_bp = Blueprint(config['formatted_name'], __name__, template_folder='templates', static_folder='static')
 
-    @sociono_bp.route('/', methods=['GET', 'POST'])
+    @sociono_bp.route('/', methods=['GET'])
     @opsoroapp.app_view
     def index():
         data = {'actions': {}, 'emotions': [], 'sounds': []}
@@ -91,14 +92,36 @@ def setup_pages(opsoroapp):
             data['sounds'].append(os.path.split(filename)[1])
         data['sounds'].sort()
 
-        # Auguste code
-        if request.method == "POST":
-            #print_info(request)
+
+        return opsoroapp.render_template(config['formatted_name'] + '.html', **data)
+
+    @sociono_bp.route('/', methods=['POST'])
+    @opsoroapp.app_view
+    def post():
+
+        data = {'actions': {}, 'emotions': [], 'sounds': []} # Overbodig ...
+
+        # Auguste code --- Te verbeteren a.d.h.v. post actions
+        
+        if request.form['action'] == 'startTweepy':
             stopTwitter()
-            if request.form['social_id']:
+            if request.form['data']:
                 social_id = []
-                social_id.append(request.form['social_id'])
+                social_id.append(request.form['data'])
                 startTwitter(social_id)
+
+        if request.form['action'] == 'stopTweepy':
+            stopTwitter()
+
+        if request.form['action'] == 'autoLoopTweepyNext':
+            stopTwitter()
+            wait_for_sound()
+            send_action(request.form['action'])
+        if request.form['action'] == 'autoLoopTweepyStop':
+            send_action(request.form['action'])
+
+        if(request.form['action'] == 'playTweet'):
+            playTweetInLanguage(request.form['text'], request.form['lang'])
 
 
         return opsoroapp.render_template(config['formatted_name'] + '.html', **data)
@@ -121,7 +144,8 @@ class MyStreamListener(tweepy.StreamListener):
     def on_status(self, status):
         dataToSend = processJson(status)
         print_info(dataToSend)
-        send_data('tweepy', dataToSend)
+        if dataToSend['text']['filtered'] != None:
+            send_data('dataFromTweepy', dataToSend)
 
 api = tweepy.API(auth)
 myStreamListener = MyStreamListener()
@@ -164,7 +188,8 @@ def processJson(status):
         }, 
         "text": { 
             "original": status.text, 
-            "filtered": filterTweet(status)
+            "filtered": filterTweet(status),
+            "lang": status.lang
         }
     }
 
@@ -174,7 +199,7 @@ def filterTweet(status):
     #alles in nieuw object aanmaken en steken
     encodedstattext = status.text.encode('utf-8')
     strTweet = str(encodedstattext)
-    strTweet = strTweet.replace("RT","ReTweet", 1)
+    strTweet = strTweet.replace("RT","Retweet", 1)
     strTweet = strTweet.decode('unicode_escape').encode('ascii','ignore')
     strTweet = re.sub(r'\w+:\/{2}[\d\w-]+(\.[\d\w-]+)*(?:(?:\/[^\s/]*))*', '', strTweet, flags=re.MULTILINE) # re -> import re (regular expression)
     strTweet = languageCheck(strTweet, status)
@@ -193,4 +218,19 @@ def languageCheck(strTweet,status):
 def sayTweetInLanguage(status):
     file_path = str(os.path.expanduser('~/sociono'))
     TTS.create_espeak(status.text, file_path, status.lang, "m", 10, 100)
+
+def playTweetInLanguage(text, lang):
+
+    if not os.path.exists("/tmp/OpsoroTTS/"):
+        os.makedirs("/tmp/OpsoroTTS/")
+
+    full_path = os.path.join(
+        get_path("/tmp/OpsoroTTS/"), "Tweet.wav")
+
+    if os.path.isfile(full_path):
+        os.remove(full_path)
+
+    TTS.create_espeak(text, full_path, lang, "f", "5", "150")
+
+    Sound.play_file(full_path)
 
