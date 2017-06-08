@@ -311,7 +311,7 @@ class Server(object):
         tornado_app.listen(80)
 
         # Wake up robot
-        Robot.wake();
+        Robot.wake()
 
         # Start default app
         startup_app = Preferences.get('general', 'startup_app', None)
@@ -330,6 +330,7 @@ class Server(object):
             IOLoop.instance().start()
         except KeyboardInterrupt:
             print_info('Keyboard interupt')
+            self.at_exit()
 
     def stop_current_app(self):
         Robot.stop()
