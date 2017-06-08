@@ -79,7 +79,7 @@
 
 					<div class="row">
 						<div id="cmdqueue" class="flex-container connected-sortable">
-							<div id="cmdqueue-placeholder" class="disabled">
+							<div command-id="placeholder" id="cmdqueue-placeholder" class="disabled">
 								<p><span class="fa fa-plus"></span> Move Commands here</p>
 							</div>
 							
@@ -95,8 +95,8 @@
 					<div class="row">
 						<div id="cmdgrid" class="flex-container connected-sortable">
 							{% for command in commands['Commands']  %}
-							<div class="command draggable" style="background-color:{{command.Command_color}};">
-									<div class="command-id">{{command.Command_id}}</div>
+							<div command-id="{{command.Command_id}}" class="command draggable" style="background-color:{{command.Command_color}};">
+								<a>
 									<div class="command-content">
 										<p>
 											{{command.Command_description}}
@@ -110,6 +110,7 @@
 									<div class="command-footer" style="background-color:black">
 										Uses {{command.Command_uses}}
 									</div>
+								</a>
 							</div>
 							{% endfor  %}
 						</div>

@@ -1,5 +1,7 @@
 $(document).ready(function() {
 
+    //var newDropped = false;
+
     conn = null;
     connReady = false;
     conn = new SockJS('http://' + window.location.host + '/appsockjs');
@@ -20,7 +22,10 @@ $(document).ready(function() {
             });
     };
     conn.onmessage = function(e) {
-        console.log(e.data);
+        var data = JSON.parse(e.data)
+        if(data['data'] == "Remove"){
+            $('#cmdqueue').find('.command:first').remove();
+        }
     };   
 
     conn.onclose = function() {
@@ -32,7 +37,14 @@ $(document).ready(function() {
     $('#cmdqueue').sortable({
         revert: true,
         placeholder: "highlight command",
-        cancel: ".disabled"
+        cancel: ".disabled",
+        stop: function ( event, ui){
+            var data = $(this).sortable('toArray', { attribute: 'command-id' });
+            conn.send(JSON.stringify({
+                action: "command",
+                data: data
+            }));
+        }
     });
     $('#sortable').disableSelection();
     $('.draggable').draggable({

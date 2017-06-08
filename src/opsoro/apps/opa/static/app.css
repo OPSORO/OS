@@ -39,14 +39,18 @@
 }
 
 .command{
-    display: flex;
-    flex-wrap: wrap;
     z-index: 2;
     margin: 10px;
     width: 230px;
     border-radius: 15px;
     background-color: blue;
     overflow: hidden;
+}
+.command a{
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    height: 100%;
 }
 .command-content{
     margin: 15px;

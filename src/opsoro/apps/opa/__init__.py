@@ -3,13 +3,17 @@ from __future__ import with_statement
 import paho.mqtt.client as mqtt
 import json, datetime
 import json,datetime
+
+import time
+from threading import Thread, current_thread
+
 from flask import Blueprint, render_template, request, redirect, url_for, flash, send_from_directory, jsonify
 
 from opsoro.console_msg import *
 from opsoro.hardware import Hardware
 from opsoro.robot import Robot
 from opsoro.expression import Expression
-# from opsoro.stoppable_thread import StoppableThread
+from opsoro.stoppable_thread import StoppableThread
 from opsoro.sound import Sound
 from opsoro.preferences import Preferences
 from functools import partial
@@ -74,7 +78,6 @@ def setup_pages(server):
             activity_data = json.load(activity_file)
         data['data'] = json_data
         data['activity'] = activity_data
-        print_info(data['activity'])
         return server.render_template(config['formatted_name'] + '.html', **data)
 
     @app_bp.route('/action', methods=['POST'])
@@ -82,7 +85,7 @@ def setup_pages(server):
         json_dict = request.data
         data = json.loads(json_dict)
         print_info(data)
-
+        
         speak(data)
         save_activity(data)
         return jsonify(data)
@@ -95,21 +98,30 @@ def setup_pages(server):
         return redirect('/apps/opa/')
 
     
-    @server.app_socket_message('Message')
-    def s_key_up(conn, data):
+
+    @server.app_socket_message('command')
+    def socket_message(conn, data):
+        print_info(data)
+        #global command_queue
         print_info("Message received")
-        print_info(str(data))
-        data = {
-            'data': "Hello back"
+        #command_queue = data['data']
+        #command_queue.remove('placeholder')
+        #print_info(command_queue)
+        response = {
+            'data': "Message received"
         }
-        conn.send_data("Message",data)
+        conn.send_data("Message",response)
 
     @server.app_socket_connected
     def socket_connected(conn):
+        global clientconn
+        clientconn = conn
         print_info("Connected")
     
     @server.app_socket_disconnected
     def socket_connected(conn):
+        global clientconn
+        clientconn = None
         print_info("Disconnected")
 
 
@@ -121,8 +133,7 @@ def setup_pages(server):
         filename = os.path.join(app_bp.static_folder, 'Activity.json')
         with open(filename, 'r') as blog_file:
             json_data = json.load(blog_file)
-            json_data['Activity'].append(data)
-            print_info(json_data)    
+            json_data['Activity'].append(data)   
         with open(filename, 'w') as write_file:
             write_file.write(json.dumps(json_data))     
 
@@ -136,6 +147,7 @@ def speak(data):
             play_data = data['play']
             Sound.play_file("smb_1-up.wav")
             Sound.wait_for_sound()
+            play(play_data)
         else: print_info('No need to play')
     else:
         print_info("Alarm")
@@ -149,20 +161,30 @@ def play(play_data):
     Sound.wait_for_sound()
     Sound.say_tts(play_data['2'])
     Sound.wait_for_sound()
-
     Sound.say_tts(play_data['3'])
-
-    Sound.say_tts(play_data['play3'])
 
 
 def alarm():
     onetoten = range(0,3)
     for i in onetoten:
         Sound.play_file("1_kamelenrace.wav")
-        Sound.wait_for_sound()
+        Sound.wait_for_sound(print_info)
     print_info("Alarm stopped...")
     return
 
+def CommandLoop():
+    print_info('Start Command loop')
+    global command_queue
+    time.sleep(1)
+    while not command_webservice.stopped():
+        if len(command_queue) > 0:
+            print_info(command_queue.pop(0))
+            #do something
+            response = {
+                'data': "Remove"
+            }
+            clientconn.send_data("Message",response)
+        command_webservice.sleep(5)
 
 def demo():
     # publicly accessible function
@@ -173,10 +195,14 @@ def demo():
 
 # Default functions for setting up, starting and stopping an app
 def setup(server):
-    pass
+    global command_queue
+    command_queue = []
 
 def start(server):
-    pass
+    global command_webservice
+    command_webservice = StoppableThread(target=CommandLoop)
 
 def stop(server):
-    pass
+    print_info('Stop Command loop')
+    global command_webservice
+    command_webservice.stop()
