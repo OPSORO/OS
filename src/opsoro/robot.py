@@ -63,14 +63,15 @@ class _Robot(object):
         self._alive_count_seed = 1.0
         self._add_seed = 0.2
 
-    def start(self):
+    def start(self, alive=True):
         print_info('Start Robot loop')
         with Hardware.lock:
             Hardware.Servo.init()
         self.start_update_loop()
 
-        if Preferences.get('behaviour', 'enabled', False):
-            self.start_alive_loop()
+        if alive:
+            if Preferences.get('behaviour', 'enabled', False):
+                self.start_alive_loop()
 
     def start_update_loop(self):
         Users.broadcast_robot({'dofs': self.get_dof_values(False)}, True)

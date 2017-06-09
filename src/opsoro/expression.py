@@ -119,10 +119,10 @@ class _Expression(object):
 
         index = 0
         for exp in self.expressions:
-            index += 1
             if 'name' in exp:
                 if exp['name'] == name:
                     self.set_emotion_index(index, anim_time)
+            index += 1
 
     def set_emotion_icon(self, icon, anim_time=-1):
         """
@@ -136,10 +136,10 @@ class _Expression(object):
 
         index = 0
         for exp in self.expressions:
-            index += 1
             if 'icon' in exp:
                 if exp['icon'] == icon:
                     self.set_emotion_index(index, anim_time)
+            index += 1
 
     def set_emotion_index(self, index, anim_time=-1):
         """

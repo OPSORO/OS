@@ -3,7 +3,7 @@ var Turn = function(svg_code, specs, config) {
     self.base = Module;
 
     self.arm_offset         = 0;
-    self.arm_range          = 90;
+    self.arm_range          = 45;
     self.arm_anchor_offset  = [0, 0];
     self.arm_width          = 32;
     self.arm_height         = 7;

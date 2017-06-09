@@ -137,7 +137,8 @@ class Module(object):
                 else:
                     dof = DOF(dof_name, neutral, poly)
 
-                # Add name as tags
+                # Add type and name as tags
+                dof.tags.extend(data['type'].split(' '))
                 dof.tags.extend(self.name.split(' '))
                 dof.tags.extend(dof_name.split(' '))
 

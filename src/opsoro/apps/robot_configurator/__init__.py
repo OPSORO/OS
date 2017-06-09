@@ -30,7 +30,7 @@ config = {
     'allowed_background':   False,
     'multi_user':           False,
     'connection':           Robot.Connection.OFFLINE,
-    'activation':           Robot.Activation.MANUAL
+    'activation':           Robot.Activation.AUTO_NOT_ALIVE,
 }
 config['formatted_name'] = config['full_name'].lower().replace(' ', '_')
 
