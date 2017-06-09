@@ -1,4 +1,9 @@
-Groep Arno Vande Cappelle, Thibaud Vander Syppe
+# Groep 3: 
+## Arno Vande Cappelle 
+## Auguste Van Nieuwenhuyzen 
+## Thibaud Vander Syppe
+
+## Link naar eigen repo: https://github.com/Feestig/ONORobot.git
 
 # OnoSW
 OnoSW is the software framework for [OPSORO](http://www.opsoro.be/), to be used in conjunction with [Ono2](https://github.com/cesarvandevelde/Ono2) and [OnoHAT](https://github.com/cesarvandevelde/OnoHAT).
