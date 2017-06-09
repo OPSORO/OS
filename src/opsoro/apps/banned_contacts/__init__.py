@@ -5,12 +5,13 @@ import math
 import os
 import shutil
 import time
+import json
 from exceptions import RuntimeError
 from functools import partial
 
 import yaml
 from flask import (Blueprint, flash, redirect, render_template, request,
-                   send_from_directory, url_for)
+                   send_from_directory, url_for, jsonify)
 from werkzeug import secure_filename
 
 import cmath
@@ -65,9 +66,9 @@ socialscript_t = None
 
 
 def setup_pages(opsoroapp):
-    socialscript_bp = Blueprint(config['formatted_name'], __name__, template_folder='templates', static_folder='static')
+    bans_bp = Blueprint(config['formatted_name'], __name__, template_folder='templates', static_folder='static')
 
-    @socialscript_bp.route('/', methods=['GET'])
+    @bans_bp.route('/', methods=['GET'])
     @opsoroapp.app_view
     def index():
         data = {'actions': {}, 'emotions': [], 'sounds': []}
@@ -84,9 +85,38 @@ def setup_pages(opsoroapp):
             data['sounds'].append(os.path.split(filename)[1])
         data['sounds'].sort()
 
+        #getbans()
+
         return opsoroapp.render_template(config['formatted_name'] + '.html', **data)
 
-    opsoroapp.register_app_blueprint(socialscript_bp)
+    @bans_bp.route('/signbans', methods=['POST'])
+    def signbans():
+        data = {'bans': {}}
+
+        bans = request.form['bans']
+        data['bans'] = bans
+        json_data = json.dumps(data)
+
+        # print_info(json_data)
+
+        filename = os.path.join(bans_bp.static_folder, 'banlist.json')
+        with open(filename, 'w') as bans_file:
+                bans_file.write(json.dumps(json_data))
+
+        getcontacts()
+
+        return opsoroapp.render_template(config['formatted_name'] + '.html', **data)
+        # return redirect("/")
+
+    @bans_bp.route('/getbans', methods=['GET'])
+    def getbans():
+
+        filename = os.path.join(bans_bp.static_folder, 'banlist.json')
+        with open(filename, 'r') as bans_file:
+                json_data = json.load(bans_file)
+        return jsonify(json_data)
+
+    opsoroapp.register_app_blueprint(bans_bp)
 
 
 def setup(opsoroapp):

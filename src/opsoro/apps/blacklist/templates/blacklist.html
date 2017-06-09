@@ -6,11 +6,6 @@
 {% endblock %}
 
 {% block app_content %}
-<!--
-overzicht
-blacklist
- -->
-<!-- git test-->
 
 <div class="main">
 
@@ -24,6 +19,7 @@ blacklist
 			<div id="bans">
 				<form class="banlist">
 
+				<!-- de header van de blacklsit words -->
 				<ul class="bans ban_list">
 					<li class="ban-container">
 				    <div class="blacklist">
@@ -39,6 +35,8 @@ blacklist
 				  	</div>
 				  </li>
 				</ul>
+
+				<!-- inladen van onze objecten via de json  -->
 				<ul class="bans ban_list" data-bind="template: {name: 'blacklistTemplate', foreach: bans}"></ul>
 
 			</form>
@@ -82,6 +80,7 @@ blacklist
 {% endblock %}
 {% block app_modals %}
 
+<!-- het app model voor de toegevoegde objecten -->
 <script id="blacklistTemplate" type="text/template">
   <li class="ban-container">
     <div class="blacklist">
@@ -100,6 +99,7 @@ blacklist
 {% endblock %}
 {% block app_scripts %}
 
+<!-- het load script voor de opgeslane json in te laden hier gedaan anders bestaan de objecten niet omdat de js eerst geladen word en dan pas de html kent hij de tempalte nog niet! -->
 <script>
 	//var action_data = {{ actions|tojson|safe }};
 	$(window).bind("load", function() {

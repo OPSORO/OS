@@ -2,7 +2,7 @@
 # Always use '#. ' before the actual title, for sorting purposes
 - title: 1. telegram apps
   apps:
-  - namen
+  - contactlijst
   - blacklist
   - banned_contacts
 

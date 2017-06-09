@@ -6,12 +6,6 @@
 {% endblock %}
 
 {% block app_content %}
-<!--
-overzicht
-blacklist
- -->
-<!-- git test-->
-
 
 
 <div class="main">
@@ -24,6 +18,7 @@ blacklist
 		<div class="contacts">
 			<div id="contacts">
 
+				<!-- de objecten (lijst) hier inladen -->
 				<ul class="contacts contact_list" data-bind="template: {name: 'contactTemplate', foreach: contacts}"></ul>
 
 			</div>
@@ -75,6 +70,7 @@ blacklist
 {% endblock %}
 {% block app_modals %}
 
+<!-- het app model voor de toegevoegde objecten -->
 <script id="contactTemplate" type="text/template">
   <li class="contact-container">
     <div class="contact">
@@ -91,6 +87,7 @@ blacklist
 {% endblock %}
 {% block app_scripts %}
 
+<!-- het load script voor de opgeslane json in te laden -->
 <script>
 	//var action_data = {{ actions|tojson|safe }};
 	$(window).bind("load", function() {

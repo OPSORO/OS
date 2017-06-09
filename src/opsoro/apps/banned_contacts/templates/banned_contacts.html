@@ -6,11 +6,6 @@
 {% endblock %}
 
 {% block app_content %}
-<!--
-overzicht
-blacklist
- -->
-<!-- git test-->
 
 <div class="main">
 
@@ -23,6 +18,7 @@ blacklist
 		<div class="bans">
 			<div id="bans">
 
+				<!-- inladen van onze objecten via de json  -->
 				<ul class="bans ban_list" data-bind="template: {name: 'blacklistTemplate', foreach: bans}"></ul>
 
 			</div>
@@ -61,8 +57,9 @@ blacklist
 </div>
 
 {% endblock %}
-{% block app_scripts %}
+{% block app_modals %}
 
+<!-- het app model voor de toegevoegde objecten -->
 <script id="blacklistTemplate" type="text/template">
   <li class="ban-container">
     <div class="blacklist">
@@ -76,6 +73,18 @@ blacklist
       </div>
   </div>
   </li>
+</script>
+
+{% endblock %}
+<!-- json objecten inladen mog nog gedaan worden -->
+{% block app_scripts %}
+
+<!-- het load script voor de opgeslane json in te laden -->
+<script>
+	//var action_data = {{ actions|tojson|safe }};
+	$(window).bind("load", function() {
+		self.loadbans();
+	});
 </script>
 
 {% endblock %}

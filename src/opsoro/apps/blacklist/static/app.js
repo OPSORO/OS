@@ -1,17 +1,7 @@
 (function BanManager(){
 		var self = this;
-
-		var dummy = JSON.stringify({"bannedwords": [
-				{
-					"wordBan": "shit",
-					"replacedWord": "pudding"
-				},
-				{
-					"wordBan": "fuck",
-					"replacedWord": "puddle"
-				}
-			]});
-
+		var GlobalDataJSON = "";
+		
 		self.templateBan = 'blacklistTemplate';
 
 		self.wordBan = ko.observable();
@@ -27,6 +17,7 @@
 			self.bans.remove(item);
 		};
 
+		// de bestaande objecten inladen en i nde html steken
 		self.load = function(){
 
 			var dataobj = JSON.parse(dummy);
@@ -37,6 +28,7 @@
 		};
 
 
+		// als er op de save knop geduwdt word et object opstlaan
 		self.saveBan = function(){
 	    console.log('savingBan');
 			self.addBanItem();
@@ -54,6 +46,7 @@
 			console.log('savig all');
 		}
 
+		// bedoeling op te slaan in de python
 		self.saveJson = function(data_line){
 
 			// get data first
@@ -80,6 +73,7 @@
 
 })();
 
+// data binden met de objecten
 function Ban(wodBan, replacedWord){
 	var self = this;
 

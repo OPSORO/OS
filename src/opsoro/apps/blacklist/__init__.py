@@ -5,12 +5,13 @@ import math
 import os
 import shutil
 import time
+import json
 from exceptions import RuntimeError
 from functools import partial
 
 import yaml
 from flask import (Blueprint, flash, redirect, render_template, request,
-                   send_from_directory, url_for)
+                   send_from_directory, url_for, jsonify)
 from werkzeug import secure_filename
 
 import cmath
@@ -33,7 +34,7 @@ def constrain(n, minn, maxn): return max(min(maxn, n), minn)
 
 
 config = {
-    'full_name':            'blacklist',
+    'full_name':            'Blacklist',
     'author':               'howest',
     'icon':                 'fa-ban',
     'color':                'gray_dark',
@@ -65,29 +66,48 @@ socialscript_t = None
 
 
 def setup_pages(opsoroapp):
-    socialscript_bp = Blueprint(config['formatted_name'], __name__, template_folder='templates', static_folder='static')
+    Blacklist_bp = Blueprint(config['formatted_name'], __name__, template_folder='templates', static_folder='static')
 
-    @socialscript_bp.route('/', methods=['GET'])
+    @Blacklist_bp.route('/', methods=['GET'])
     @opsoroapp.app_view
     def index():
-        data = {'actions': {}, 'emotions': [], 'sounds': []}
+        data = {'actions': {}}
 
         action = request.args.get('action', None)
         if action != None:
             data['actions'][action] = request.args.get('param', None)
 
-        data['emotions'] = Expression.expressions
-
-        filenames = glob.glob(get_path('../../data/sounds/*.wav'))
-
-        for filename in filenames:
-            data['sounds'].append(os.path.split(filename)[1])
-        data['sounds'].sort()
+        getbans();
 
         return opsoroapp.render_template(config['formatted_name'] + '.html', **data)
 
-    opsoroapp.register_app_blueprint(socialscript_bp)
+    @Blacklist_bp.route('/signblacklist', methods=['POST'])
+    def signblacklist():
+        data = {'actions': {}}
 
+        contacts = request.form['bans']
+        data['bans'] = contacts
+        json_data = json.dumps(data)
+
+
+        filename = os.path.join(contacts_bp.static_folder, 'banlist.json')
+        with open(filename, 'w') as contact_file:
+                contact_file.write(json.dumps(json_data))
+
+        getcontacts()
+
+        return opsoroapp.render_template(config['formatted_name'] + '.html', **data)
+        #return redirect("/")
+
+    @Blacklist_bp.route('/getblacklist', methods=['GET'])
+    def getblacklist():
+
+        filename = os.path.join(contacts_bp.static_folder, 'banlist.json')
+        with open(filename, 'r') as contact_file:
+                json_data = json.load(contact_file)
+        return jsonify(json_data)
+
+    opsoroapp.register_app_blueprint(Blacklist_bp)
 
 def setup(opsoroapp):
     pass
