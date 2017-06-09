@@ -72,31 +72,13 @@ def get_page_data(page_id, fields, access_token):
         elif hasattr(e, 'reason'):
             return e.reason
 
-page_id = 'opsoro'  # username or id
-field = 'fan_count'
-token = 'EAAaBZCzjU8H8BAFV7KudJn0K1V12CDBHqTIxYu6pVh7cpZAbt1WbZCyZBeSZC472fpPd0ZAkWC1tMrfAY26XnQJUR2rNrMQncQ9OGJlie3dUeQVvabZCwNmGaLL4FGHjZBVTajid16FL5niGWytlwZCiFDgj6yjIsZAAAZD' # Access Token
-
-loop_T = None
-
-def loop():
-    time.sleep(0.05)  # delay
-    while not loop_T.stopped():
-
-        data = get_page_data(page_id, field, token)
-        print_info(data)
-        loop_T.sleep(5)
-
-
 
 # Default functions for setting up, starting and stopping an app
 def setup(server):
     pass
 
 def start(server):
-    global loop_T
-    loop_T = StoppableThread(target=loop)
     pass
 
 def stop(server):
-    loop_T.Stop();
     pass

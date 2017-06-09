@@ -24,3 +24,9 @@ Temporary Items
 *.pyc
 
 _build
+
+src/opsoro/apps/test_inlezen/static/app.css
+src/opsoro/apps/test_inlezen/static/app.js
+src/opsoro/apps/test_inlezen/static/tweepy.json
+src/opsoro/apps/test_inlezen/__init__.py
+src/opsoro/apps/test_inlezen/templates/test_inlezen.html

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from __future__ import with_statement
 
 import glob
@@ -33,6 +34,8 @@ except ImportError:
 
 import tweepy
 import re
+import json
+import time
 
 def constrain(n, minn, maxn): return max(min(maxn, n), minn)
 
@@ -66,11 +69,23 @@ def send_data(action, data):
     Users.send_app_data(config['formatted_name'], action, data)
 
 def wait_for_sound():
-    Sound.wait_for_sound()
+    time.sleep(0.05)  # delay
+
+    global loop_T
+    while not loop_T.stopped():
+        Sound.wait_for_sound()
+        global autolooping
+        if autolooping == 1:
+            send_action("autoLoopTweepyNext")
+        loop_T.stop()
+    pass
 
 
 sociono_t = None
-
+autoRead = None # globals -> can be decalerd in called methodes
+loop_T = None # loop var for Stoppable Thread
+loop_E = None # loop var for Emoticons
+Emoticons = []
 
 def setup_pages(opsoroapp):
     sociono_bp = Blueprint(config['formatted_name'], __name__, template_folder='templates', static_folder='static')
@@ -106,22 +121,46 @@ def setup_pages(opsoroapp):
         if request.form['action'] == 'startTweepy':
             stopTwitter()
             if request.form['data']:
+                # HashTag input
+                json_data = json.loads(request.form['data']) # Decoding strigified JSON
                 social_id = []
-                social_id.append(request.form['data'])
+                social_id.append(json_data['socialID'])
+                print_info(social_id)
+
+                # Auto Read
+                global autoRead
+                autoRead = json_data['autoRead']
+                print_info(autoRead)
+
+                # Start Tweepy stream
                 startTwitter(social_id)
 
         if request.form['action'] == 'stopTweepy':
-            stopTwitter()
+            stopTwitter()    
 
         if request.form['action'] == 'autoLoopTweepyNext':
+            global loop_T
+            
+            autolooping = 1
             stopTwitter()
-            wait_for_sound()
-            send_action(request.form['action'])
+            loop_T = StoppableThread(target=wait_for_sound)
+            #send_action(request.form['action'])
+            
         if request.form['action'] == 'autoLoopTweepyStop':
+            global autolooping
+            autolooping = 0
             send_action(request.form['action'])
 
-        if(request.form['action'] == 'playTweet'):
-            playTweetInLanguage(request.form['text'], request.form['lang'])
+        if request.form['action'] == 'playTweet':
+            if request.form['data']:
+                global loop_E
+                global Emoticons
+                tweepyObj = json.loads(request.form['data'])
+                Emoticons = tweepyObj['text']['emoticon']
+
+                loop_E = StoppableThread(target=asyncEmotion)
+
+                playTweetInLanguage(tweepyObj)
 
 
         return opsoroapp.render_template(config['formatted_name'] + '.html', **data)
@@ -143,9 +182,15 @@ class MyStreamListener(tweepy.StreamListener):
 
     def on_status(self, status):
         dataToSend = processJson(status)
-        print_info(dataToSend)
+        #print_info(dataToSend)
         if dataToSend['text']['filtered'] != None:
             send_data('dataFromTweepy', dataToSend)
+
+            #print_info(autoRead)
+            if autoRead == True:
+                playTweetInLanguage(dataToSend) # if auto read = true -> read tweets when they come in
+
+
 
 api = tweepy.API(auth)
 myStreamListener = MyStreamListener()
@@ -189,7 +234,8 @@ def processJson(status):
         "text": { 
             "original": status.text, 
             "filtered": filterTweet(status),
-            "lang": status.lang
+            "lang": status.lang,
+            "emoticon": checkForEmoji(status)
         }
     }
 
@@ -199,8 +245,10 @@ def filterTweet(status):
     #alles in nieuw object aanmaken en steken
     encodedstattext = status.text.encode('utf-8')
     strTweet = str(encodedstattext)
-    strTweet = strTweet.replace("RT","Retweet", 1)
-    strTweet = strTweet.decode('unicode_escape').encode('ascii','ignore')
+    strTweet = strTweet.replace("RT", "Retweet", 1)
+    strTweet = strTweet.replace("#", "")
+    #voor emoticons te verwijderen
+    strTweet = strTweet.decode('unicode_escape').encode('ascii', 'ignore')
     strTweet = re.sub(r'\w+:\/{2}[\d\w-]+(\.[\d\w-]+)*(?:(?:\/[^\s/]*))*', '', strTweet, flags=re.MULTILINE) # re -> import re (regular expression)
     strTweet = languageCheck(strTweet, status)
     return strTweet
@@ -215,11 +263,10 @@ def languageCheck(strTweet,status):
     elif status.lang == "fr":
         return strTweet.replace("@","de ", 1)
 
-def sayTweetInLanguage(status):
-    file_path = str(os.path.expanduser('~/sociono'))
-    TTS.create_espeak(status.text, file_path, status.lang, "m", 10, 100)
 
-def playTweetInLanguage(text, lang):
+def playTweetInLanguage(tweepyObj):
+
+    print_info(tweepyObj)
 
     if not os.path.exists("/tmp/OpsoroTTS/"):
         os.makedirs("/tmp/OpsoroTTS/")
@@ -230,7 +277,78 @@ def playTweetInLanguage(text, lang):
     if os.path.isfile(full_path):
         os.remove(full_path)
 
-    TTS.create_espeak(text, full_path, lang, "f", "5", "150")
+    TTS.create_espeak(tweepyObj['text']['filtered'], full_path, tweepyObj['text']['lang'], "f", "5", "150")
 
     Sound.play_file(full_path)
+
+
+# Emoticon functions
+
+def asyncEmotion():
+    time.sleep(0.05)
+
+    global loop_E
+    global Emoticons
+    currentAnimationArrayLength = len(Emoticons)
+    playedAnimations = 0
+    print_info(Emoticons)
+    #print_info("hier komt hij")
+    while not loop_E.stopped():
+        # if running:
+        print_info(Emoticons)
+        if currentAnimationArrayLength > playedAnimations:
+            Expression.set_emotion_name(Emoticons[playedAnimations], -1)
+            playedAnimations = playedAnimations+1
+            time.sleep(2)
+        if currentAnimationArrayLength == playedAnimations:
+            loop_E.stop()
+            pass
+
+
+#check if the post has an standard emoticon
+def checkForEmoji(status):
+    emotions = []
+    emoticonStr = status.text
+
+    winking = len(re.findall(u"[\U0001F609]", emoticonStr))
+    angry = len(re.findall(u"[\U0001F620]", emoticonStr))
+    happy_a = len(re.findall(u"[\U0000263A]", emoticonStr))
+    happy_b = len(re.findall(u"[\U0000263b]", emoticonStr))
+    happy_c = len(re.findall(u"[\U0001f642]", emoticonStr))
+    thinking = len(re.findall(u"[\U0001F914]", emoticonStr))
+    frowning = len(re.findall(u"[\U00002639]", emoticonStr))
+    nauseated = len(re.findall(u"[\U0001F922]", emoticonStr))
+    astonished = len(re.findall(u"[\U0001F632]", emoticonStr))
+    neutral = len(re.findall(u"[\U0001F610]", emoticonStr))
+    fearful = len(re.findall(u"[\U0001F628]", emoticonStr))
+    laughing = len(re.findall(u"[\U0001F603]", emoticonStr))
+    tired = len(re.findall(u"[\U0001F62B]", emoticonStr))
+    sad = len(re.findall(u"[\U0001f641]", emoticonStr))
+
+    if winking > 0:
+        emotions.append("tong")
+    if angry > 0:
+        emotions.append("angry")
+    if happy_a > 0 or happy_b > 0 or happy_c > 0:
+        emotions.append("happy")
+    if frowning > 0:
+        emotions.append("tired")
+    if nauseated > 0:
+        emotions.append("disgusted")
+    if astonished > 0:
+        emotions.append("surprised")
+    if neutral > 0:
+        emotions.append("neutral")
+    if fearful > 0:
+        emotions.append("afraid")
+    if laughing > 0:
+        emotions.append("laughing")
+    if tired > 0:
+        emotions.append("sleep")
+    if sad > 0:
+        emotions.append("sad")
+    #if no emotions are selected returns none
+    if not emotions:
+        emotions.append("none")
+    return emotions
 

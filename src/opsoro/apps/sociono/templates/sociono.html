@@ -4,22 +4,21 @@
 	<div class="left-column" data-bind="visible: $root.fileIsLocked()">
 		<div id="fixedvoiceline" data-bind="sortable: { data: fixedVoiceLine, options: {handle: '.gripper', axis: 'y', opacity: 0.75} }">
 			<div class="voiceline locked">
-				<input type="text" placeholder="Enter a social page ID, ex: 512433" id="socialID" data-bind="value: $root.socialID">
+				<input type="text" placeholder="Enter a search term" id="socialID" data-bind="value: $root.socialID">
 				<button class="button round info" data-bind="click: $root.toggleTweepy">
 					<span class="fa " data-bind="css: { 'fa-play': !$root.isStreaming(), 'fa-close': $root.isStreaming() }"></span>
 					<span class="text" data-bind="text: !$root.isStreaming() ? '{{ _('Start Streaming') }}' : '{{ _('Stop Streaming') }}' "></span>
 				</button>
-				<button class="button round info" data-bind="click: $root.toggleAutoLoopTweepy">
+				<button class="button round info" data-bind="click: $root.toggleAutoLoopTweepy, enable: !$root.autoRead()">
 					<span class="fa " data-bind="css: { 'fa-close': $root.index_voiceLine() > 0, 'fa-refresh': $root.index_voiceLine() == 0 }"></span>
 					<span class="text" data-bind="text: $root.index_voiceLine() > 0 ? '{{ _('Stop Autoloop') }}' : '{{ _('Start Autoloop') }}' "></span>
 				</button>
+				<label><input type="checkbox" data-bind="checked: $root.autoRead"/> Toggle Auto Read</label>
 			</div>
 		</div>
 	</div>
 
-	<!-- VoiceLine Container -->
 	<div data-bind="css: { 'right-column': $root.fileIsLocked() }">
-			<!-- VoiceLine Container -->
 
 			<div id="voicelines" data-bind="sortable: { data: voiceLines, options: {handle: '.gripper', axis: 'y', opacity: 0.75} }">
 				<div class="voiceline" data-bind="css: { locked: $root.fileIsLocked(), unlocked: !$root.fileIsLocked()}">
@@ -39,6 +38,7 @@
 					</div>
 				</div>
 			</div>
+		</div>
 	</div>
 {% endblock %}
 
