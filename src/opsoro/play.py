@@ -1,11 +1,12 @@
 import urllib
-import requests
 
+import requests
 
 from opsoro.console_msg import *
 
 # PLAY_URL = 'https://robot.opsoro.be/'
-PLAY_URL = 'https://opsoro.a2hosted.com/'
+PLAY_URL = 'https://opsoro.be/'
+
 
 class _Play(object):
     def __init__(self):
@@ -16,13 +17,13 @@ class _Play(object):
         pass
 
     def is_online(self):
-        try :
+        try:
             data = urllib.urlopen(PLAY_URL)
             return True
         except Exception as e:
             return False
 
-    def login(self, username = None, password = None):
+    def login(self, username=None, password=None):
         if username is not None:
             self.username = username
         if password is not None:
@@ -32,7 +33,7 @@ class _Play(object):
             return False
 
         url_login = PLAY_URL + 'accounts/login/'
-        url_run   = PLAY_URL + 'robot/token/'
+        url_run = PLAY_URL + 'robot/token/'
 
         # # Use 'with' to ensure the session context is closed after use.
         with requests.Session() as s:
@@ -41,7 +42,7 @@ class _Play(object):
             payload = {
                 'username': self.username,
                 'password': self.password,
-                'csrfmiddlewaretoken':csrftoken,
+                'csrfmiddlewaretoken': csrftoken,
                 'next': url_run
             }
             p = s.post(url_login, data=payload, headers=dict(Referer=url_login))
@@ -53,5 +54,6 @@ class _Play(object):
             else:
                 print_error('Unable to parse play.opsoro uuid and token')
                 return False
+
 
 Play = _Play()

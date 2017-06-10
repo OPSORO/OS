@@ -1,0 +1,46 @@
+{
+  "voice_lines": [
+    {
+      "emotion": "happy",
+      "output": {
+        "type": "tts",
+        "data": "Hallo BoevaSkwat"
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": "Hoe gaat het met jou ?"
+      }
+    },
+    {
+      "emotion": "laughing",
+      "output": {
+        "type": "tts",
+        "data": "Hallo William"
+      }
+    },
+    {
+      "emotion": "surprised",
+      "output": {
+        "type": "wav",
+        "data": "Woohoo.wav"
+      }
+    },
+    {
+      "emotion": "happy",
+      "output": {
+        "type": "tts",
+        "data": "Mijn naam is Ono ik ben een robot die iedereen zelf kan bouwen"
+      }
+    },
+    {
+      "emotion": "surprised",
+      "output": {
+        "type": "wav",
+        "data": "Burp.wav"
+      }
+    }
+  ]
+}

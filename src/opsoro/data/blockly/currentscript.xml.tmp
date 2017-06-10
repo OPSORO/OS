@@ -1,0 +1,1 @@
+<xml xmlns="http://www.w3.org/1999/xhtml"><block type="general_onsetup" id="fjA/PBkk:w|0-_%_fmei" x="110" y="110"><statement name="BODY"><block type="dof_set" id="y;fZZyOM+nsOu1P`Yq*T"><field name="DOF">eye left horizontal</field><value name="VALUE"><block type="math_number" id="Lgx}:0f=ju1ya;JyV;kn"><field name="NUM">1</field></block></value></block></statement></block></xml>

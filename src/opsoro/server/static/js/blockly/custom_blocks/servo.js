@@ -55,7 +55,7 @@ Blockly.Blocks['servo_set'] = {
     this.setInputsInline(true);
     this.setPreviousStatement(true);
     this.setNextStatement(true);
-    this.setColour(345);
+    this.setColour(334);
     this.setTooltip('Sets the position of one servo. Position should be between 500 and 2500.');
   }
 };
@@ -63,5 +63,28 @@ Blockly.Lua['servo_set'] = function(block) {
   var dropdown_channel = block.getFieldValue('CHANNEL');
   var value_pos = Blockly.Lua.valueToCode(block, 'POS', Blockly.Lua.ORDER_ATOMIC);
   var code = 'Hardware.Servo:set(' + dropdown_channel + ', ' + value_pos + ')\n';
+  return code;
+};
+
+Blockly.Blocks['dof_set'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField(new Blockly.FieldImage("/static/images/fontawesome/white/svg/gears.svg", 16, 18, ""))
+        .appendField("Set dof ")
+        .appendField(new Blockly.FieldDropdown(doflist), "DOF");
+    this.appendValueInput("VALUE")
+        .setCheck("Number")
+        .appendField("to value");
+    this.setInputsInline(true);
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setColour(205);
+    this.setTooltip('Sets the value of one DOF. Value should be between -1.0 and 1.0.');
+  }
+};
+Blockly.Lua['dof_set'] = function(block) {
+  var dropdown_channel = block.getFieldValue('DOF');
+  var value_pos = Blockly.Lua.valueToCode(block, 'VALUE', Blockly.Lua.ORDER_ATOMIC);
+  var code = 'Robot:set_dof("' + dropdown_channel + '", ' + value_pos + ')\n';
   return code;
 };

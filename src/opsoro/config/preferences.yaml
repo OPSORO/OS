@@ -1,12 +1,12 @@
 audio:
-  master_volume: 100
+  master_volume: 50
   tts_engine: pico
-  tts_gender: m
-  tts_language: nl
+  tts_gender: f
+  tts_language: en
 behaviour:
-  blink: false
+  blink: true
   caffeine: 0
-  enabled: false
+  enabled: true
   gaze: true
 general:
   robot_name: robot
@@ -16,4 +16,4 @@ security:
 wireless:
   channel: 6
   password: RobotOpsoro
-  ssid: OPSORO-bot
+  ssid: OPSORO-NMCT

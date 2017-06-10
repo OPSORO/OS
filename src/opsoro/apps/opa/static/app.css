@@ -1,8 +1,11 @@
 .flex-container{
     display: flex;
     flex-wrap: wrap;
+    justify-content: center;
 }
 #cmdqueue{
+    display: flex;
+    flex-wrap: wrap;
     position: relative;
     min-width: 170px;
     min-height: 170px;
@@ -118,4 +121,16 @@
 .activity_header {
     display: flex;
     flex-direction: row;
+}
+
+#protocolcontrol>ul>li {
+    list-style-type: none;
+    display: inline-block;
+}
+#protocolcontrol {
+    display: flex;
+    justify-content: center;
+}
+.no-margin {
+    margin: 0;
 }

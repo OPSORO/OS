@@ -21,7 +21,7 @@ class _TTS(object):
         """
         TTS class, used to convert text to speech.
         """
-        self.engine = "picotts"  # "espeak"
+        self.engine = "espeak"  # "espeak"
         self.language = "nl"
         self.gender = "f"  # "m"
         self.delay = "5"

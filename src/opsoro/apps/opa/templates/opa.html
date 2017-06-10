@@ -3,7 +3,8 @@
 
 	<!-- <script src="/site_media/static/js/....js"></script> -->
 	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-	<script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
+	<script src="http://knockoutjs.com/downloads/knockout-3.4.2.js"></script>	
+	<link rel="stylesheet" type="text/css" href="/apps/opa/static/css/animate.min.css">
 
 {% endblock %}
 
@@ -29,7 +30,14 @@
 					<div class="row">
 						<div class="flex-container">
 							<!-- Filters hier -->
-							
+							<div id="protocolcontrol">
+								<ul data-bind="foreach: protocol" class="no-margin">
+									<li class="protocolcontrol">
+									<input type="checkbox"  data-bind="checked:selected, attr: {id: 'checkBox' + id}">
+									<label data-bind="text: name, attr:{for: 'checkBox'+id}"></label>
+									</li>
+								</ul>
+						</div>
 						</div>
 					</div>
 
@@ -41,15 +49,12 @@
 					</legend>
 
 					<div class="row">
-						<div class="flex-container">
-							{% for applet in data['Applets']  %}
-							<div class="applet" style="background-color:{{applet.Applet_color }}">
-								<a href="{{ applet.Applet_url }}">
-									<div class="applet-content">
-										<img src="{{ applet.Applet_logo }}" alt="" class="logo">
-										<h3>{{applet.Applet_name}}</h3>
-										<p class="text-muted">
-										</p>
+						<div class="flex-container"  data-bind="foreach: filteredProtocols">
+							<div  class="applet hidden animated bounceIn" data-bind="style: { 'background-color': Applet_color}">
+								<a   data-bind="attr: { href: Applet_url }">
+									<div  class="applet-content">
+										<img data-bind="attr: { src: Applet_logo }" alt="" class="logo"/>
+										<h3 data-bind="text: Applet_name"></h3>
 										<p>
 											<span class="text-muted">By</span> Opsoro
 										</p>
@@ -59,7 +64,6 @@
 									</div>
 								</a>
 							</div>
-							{% endfor  %}
 						</div>
 						
 					</div>
@@ -78,7 +82,7 @@
 					</legend>
 
 					<div class="row">
-						<div id="cmdqueue" class="flex-container connected-sortable">
+						<div id="cmdqueue" class="connected-sortable">
 							<div command-id="placeholder" id="cmdqueue-placeholder" class="disabled">
 								<p><span class="fa fa-plus"></span> Move Commands here</p>
 							</div>
@@ -95,7 +99,7 @@
 					<div class="row">
 						<div id="cmdgrid" class="flex-container connected-sortable">
 							{% for command in commands['Commands']  %}
-							<div command-id="{{command.Command_id}}" class="command draggable" style="background-color:{{command.Command_color}};">
+							<div command-id="{{command.Command_id}}" class="command draggable animated bounceIn" style="background-color:{{command.Command_color}};">
 								<a>
 									<div class="command-content">
 										<p>
@@ -130,12 +134,12 @@
 					</legend>
 
 					<div class="row activities">
-					{% for activity in activity['Activity']  %}
-							<div class="activity" >
+					{% for activity in activity  %}
+							<div class="activity animated bounceIn " >
 								<div class="activity_headers">
-							<img class="icon" src="//web-assets.ifttt.com/assets/web/activity/icons-v2/check-3fdd5e5a0e88fac1838037e4ca46d02b6571fed09ab00497d94c7bfd6586cdc8.svg" alt="Check">	<h4>Applet ran</h4>
-							<p class=".text-muted">{{activity.date}} - {{activity.time}}</p>
-							</div>
+									<img class="icon" src="//web-assets.ifttt.com/assets/web/activity/icons-v2/check-3fdd5e5a0e88fac1838037e4ca46d02b6571fed09ab00497d94c7bfd6586cdc8.svg" alt="Check">	<h4>Applet ran</h4>
+									<p class=".text-muted">{{activity.date}} - {{activity.time}}</p>
+								</div>
 								<div class="activity_content" style="background-color:{{activity.color}}">
 									<h5>{{ activity.service}}</h5>
 									<p><span class="text-muted">by</span> Opsoro</p>
@@ -161,7 +165,7 @@
 							<label for="robotName" class="text-right inline">Personal Assistant's name</label>
 						</div>
 						<div class="small-8 medium-6 large-4 columns end">
-							<input type="text" id="robotName" name="robotName" value="" data-bind="value: robotName" required pattern="[a-zA-Z]+">
+							<input type="text" id="robotName" name="robotName" value=""  required pattern="[a-zA-Z]+">
 							<button type="submit" class="button" style="margin-right:30%">Save</button>
 						</div>
 					</form>

@@ -1,6 +1,5 @@
 from __future__ import with_statement
 
-import paho.mqtt.client as mqtt
 import json, datetime
 import json,datetime
 
@@ -15,6 +14,7 @@ from opsoro.robot import Robot
 from opsoro.expression import Expression
 from opsoro.stoppable_thread import StoppableThread
 from opsoro.sound import Sound
+from opsoro.module.eye import Eye
 from opsoro.preferences import Preferences
 from functools import partial
 
@@ -55,41 +55,36 @@ def setup_pages(server):
         action = request.args.get('action', None)
         if action != None:
             data['actions'][action] = request.args.get('param', None)
-       
-        filename = os.path.join(app_bp.static_folder, 'Applets.json')
-        with open(filename) as blog_file:
-            json_data = json.load(blog_file)
-
-        filename = os.path.join(app_bp.static_folder, 'Commands.json')
-        with open(filename) as blog_file:
-            json_commands = json.load(blog_file)
-
-        filename = os.path.join(app_bp.static_folder, 'Activity.json')
-        with open(filename) as activity_file:
-            activity_data = json.load(activity_file)
-
-        data['data'] = json_data
+        Robot.sleep()
+        Robot.blink(1)
+        
+       #json data ophalen uit json-files 
+        json_commands = read_json_file('Commands.json')
+        activity_data = read_json_file('Activity.json')
+        
+        #json data doorsturen naar template
         data['commands'] = json_commands
-        data['activity'] = activity_data
+        data['activity'] = activity_data['Activity'][-10:]
+
         return server.render_template(config['formatted_name'] + '.html', **data)
 
-        filename = os.path.join(app_bp.static_folder, 'Activity.json')
-        with open(filename) as activity_file:
-            activity_data = json.load(activity_file)
-        data['data'] = json_data
-        data['activity'] = activity_data
-        return server.render_template(config['formatted_name'] + '.html', **data)
-
+    #IFTTT Maker Webhook web request opvangen
     @app_bp.route('/action', methods=['POST'])
     def action():
+        Robot.wake()
         json_dict = request.data
         data = json.loads(json_dict)
         print_info(data)
         
+        #De data die verkregen is via de webhook laten uitspreken
         speak(data)
+
+        #Opslaan van de activity
         save_activity(data)
+        Robot.sleep()
         return jsonify(data)
         
+    #Naam veranderen van persoon die de robot gebruikt WIP
     @app_bp.route('/name', methods=['POST'])
     def change_name():
         data = {}
@@ -97,6 +92,18 @@ def setup_pages(server):
             Preferences.set('general', 'robot_name', request.form.get('robotName', type=str, default=None))
         return redirect('/apps/opa/')
 
+    #ophalen applets via GET
+    @app_bp.route('/getapplets',methods=['GET'])
+    def getapplets():
+        json_data = read_json_file('Applets.json')
+        return jsonify(json_data)
+
+    #ophalen commands via GET
+    @app_bp.route('/getcommands',methods=['GET'])
+    def getcommands():
+        json_data = read_json_file('Commands.json')
+        return jsonify(json_data)
+        
     
 
     @server.app_socket_message('command')
@@ -125,22 +132,33 @@ def setup_pages(server):
         print_info("Disconnected")
 
 
-
+    #Activity opslaan in de json file
     def save_activity(data):
         data['date'] = str(datetime.date.today())
         data['time'] = str(datetime.datetime.now().strftime("%H:%M:%S"))
         print_info(data)
-        filename = os.path.join(app_bp.static_folder, 'Activity.json')
+        filename = os.path.join(app_bp.static_folder+'/json/', 'Activity.json')
         with open(filename, 'r') as blog_file:
             json_data = json.load(blog_file)
             json_data['Activity'].append(data)   
         with open(filename, 'w') as write_file:
-            write_file.write(json.dumps(json_data))     
+            write_file.write(json.dumps(json_data))
+
+    #Data lezen van json file
+    def read_json_file(filename):
+        try:
+            filename = os.path.join(app_bp.static_folder+'/json/',filename)
+            with open(filename) as json_file:
+                json_read = json.load(json_file)
+                return json_read
+        except:
+            print_error('Failed to read json file')
+            return null  
 
 
     server.register_app_blueprint(app_bp)
 
-
+#Uitvoeren van spraak
 def speak(data):
     if data['service'] != "Alarm":
         if data['say'] == "True":
@@ -163,7 +181,7 @@ def play(play_data):
     Sound.wait_for_sound()
     Sound.say_tts(play_data['3'])
 
-
+#Alarm laten afspelen WIP
 def alarm():
     onetoten = range(0,3)
     for i in onetoten:
@@ -199,6 +217,7 @@ def setup(server):
     command_queue = []
 
 def start(server):
+    Sound.say_tts("Hello, my name is " + Preferences.get('general','robot_name','Robot'))
     global command_webservice
     command_webservice = StoppableThread(target=CommandLoop)
 

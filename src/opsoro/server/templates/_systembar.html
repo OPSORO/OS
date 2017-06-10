@@ -1,6 +1,6 @@
 <section id="header_play" class="nav">
   <div class="row">
-    <div class="small-6 columns">
+    <div class="small-8 medium-6 columns">
       <div id="activity">
         <span id="statusicon">
           {% block status_icon %}
@@ -15,7 +15,7 @@
             <span id="status" class="{% if online %}online{% else %}offline{% endif %}">
               {% block status_text %}
                 {% if app.active %}
-                  {{ _( opsoro.robot_name + ' running') }}:
+                  {{ _(opsoro.robot_name + ' running') }}:
                 {% else %}
                   {{ _(opsoro.robot_name + ' ready') }}
                 {% endif %}
@@ -24,28 +24,31 @@
             <br/>
             <span id="comment">
               {% block status_text_comment %}
+                  <span class="online_users hide-for-small-only"></span>
+                  <span class="active_apps">
                 {% if app.active %}
                   <span class="fa {{ app.icon }}"></span>
                   {{ app.name }}
                   {% if isuser %}
-                    <a href="/closeapp/" class="closebutton"><span class="fa fa-close"></span></a>
+                    <a href="/app/close/{{ app.formatted_name }}" class="closebutton"><span class="fa fa-close"></span></a>
                   {% endif %}
                 {% else %}
-                  {{ _('No active apps') }}
+                  
                 {% endif %}
+                  </span>
               {% endblock %}
             </span>
           </p>
       </div>
     </div>
-    <div class="small-3 columns">
+    <div class="hide-for-small-only medium-3 columns">
       {% if isuser %}
         {% if index %}
           <input id="search" type="text" placeholder="{{ _('Search') }}" />
         {% endif %}
       {% endif %}
     </div>
-    <div class="small-3 columns">
+    <div class="small-4 medium-3 columns">
       <ul class="">
         {% if isuser %}
           {% if not index %}
@@ -73,7 +76,7 @@
 </section>
 
 {% block extra_modals %}
-<div id="ShutdownModal" class="reveal tiny" data-reveal data-animation-in="fade-in" data-animation-out="fade-out">
+<div id="ShutdownModal" class="reveal" data-reveal data-animation-in="fade-in" data-animation-out="fade-out">
   <div class="titlebar red">
     <button class="close-button" data-close aria-label="Close" type="button">
         <span class="fa fa-close"></span>
@@ -89,6 +92,7 @@
             <strong>{{ _('Note') }}:</strong>
             {{ _('Never power off ' + opsoro.robot_name + ' without completely shutting down first! Cutting power without properly shutting down the operating system can result in a corrupt file system.') }}
         </span>
+        <br/><br/>
     </p>
     <div class="row small-up-3">
       <div class="text-center column column-block">

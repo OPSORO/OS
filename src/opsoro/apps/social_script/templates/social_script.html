@@ -1,8 +1,8 @@
 {% extends "app_base.html" %}
 
 {% block app_toolbar %}
-	{% include "toolbar/_file_operations.html" %}
 	{% include "toolbar/_lock_unlock.html" %}
+	{% include "toolbar/_file_operations.html" %}
 {% endblock %}
 
 {% block app_content %}
@@ -12,8 +12,9 @@
 				<div class="column column-block">
 					<div class="voiceline locked">
 						<div class="avatar" data-bind="click: $root.changeFixedEmotion, css: { 'selected': name == $root.fixedVoiceLine.emotion().name }">
-							<div data-bind="avatar: image"></div>
+							<span class="emoji" data-bind="html: '&#x' + filename + ';'"></span>
 						</div>
+						<!-- <div class="row text-center avatarcaption" data-bind="text: name"></div> -->
 					</div>
 				</div>
 			</div>
@@ -30,65 +31,65 @@
 						</div>
 						<select data-bind="visible: output() != 'tts', options: $root.sounds, value: wav, click: modified">
 							<input type="text" name="tts" placeholder="{{ _('Enter text to be spoken...') }}" data-bind="value: tts, visible: output() == 'tts', click: modified()" autofocus></input>
-						</div>
+					</div>
 
-						<div class="playbutton" data-bind="css: { active: isPlaying }">
-							<div class="bg"></div>
-							<a href="#" class="button" data-bind="click: pressPlay">
-								<span class="fa" data-bind="css: { 'fa-play': !isPlaying(), 'fa-stop': isPlaying() }"></span>
-							</a>
-						</div>
-					</form>
-				</div>
+					<div class="playbutton" data-bind="css: { active: isPlaying }">
+						<div class="bg"></div>
+						<a href="#" class="button" data-bind="click: pressPlay">
+							<span class="fa" data-bind="css: { 'fa-play': !isPlaying(), 'fa-stop': isPlaying() }"></span>
+						</a>
+					</div>
+				</form>
 			</div>
 		</div>
-		<div data-bind="css: { 'right-column': $root.fileIsLocked() }">
-			<div id="voicelines" data-bind="sortable: { data: voiceLines, options: {handle: '.gripper', axis: 'y', opacity: 0.75} }">
-				<div class="voiceline" data-bind="css: { locked: $root.fileIsLocked(), unlocked: !$root.fileIsLocked()}">
-					<div class="gripper"></div>
-					<div class="avatar">
-						<div data-bind="avatar: avatar, click: pickEmotion"></div>
-					</div>
-					<div class="content">
-						<span class="bubble" data-bind="html: contentPreview"></span>
-					</div>
-					<form>
-						<select data-bind="visible: output() != 'tts', options: $root.sounds, value: wav, click: modified">
-							<input type="text" name="tts" placeholder="{{ _('Enter text to be spoken...') }}" data-bind="value: tts, visible: output() == 'tts', click: modified()"></input>
-							<div class="leftcontrols">
-								<div class="switch round tts-switch">
-									<input class="switch-input" type="checkbox" data-bind="outputswitch: output, attr: {id: switchID} ">
-									<label class="switch-paddle" data-bind="attr: {for: switchID}"></label>
-									<span class="switch-tts fa fa-comment"></span>
-									<span class="switch-wav fa fa-music"></span>
-								</div>
-							</div>
-							<div class="rightcontrols">
-								<a href="#" class="button round alert" data-bind="click: $root.removeLine">
-									<span class="fa fa-trash"></span>
-								</a>
-								<a href="#" class="button round secondary" data-bind="click: pressPlay">
-									<span class="fa" data-bind="css: {'fa-play': !isPlaying(), 'fa-stop': isPlaying()}" style="margin-right: 0.5rem;"></span>
-									{{ _('test') }}</a>
-							</div>
-						</form>
-						<div class="playbutton" data-bind="css: {active: isPlaying, used: hasPlayed}">
-							<div class="bg"></div>
-							<a href="#" class="button" data-bind="click: pressPlay">
-								<span class="fa fa-fw" data-bind="css: {'fa-play': !isPlaying(), 'fa-stop': isPlaying()}"></span>
-							</a>
+	</div>
+	<div data-bind="css: { 'right-column': $root.fileIsLocked() }">
+		<div id="voicelines" data-bind="sortable: { data: voiceLines, options: {handle: '.gripper', axis: 'y', opacity: 0.75} }">
+			<div class="voiceline" data-bind="css: { locked: $root.fileIsLocked(), unlocked: !$root.fileIsLocked()}">
+				<div class="gripper"></div>
+				<div class="avatar">
+					<span class="emoji" data-bind="html: '&#x' + emotion().filename + ';', click: pickEmotion"></span>
+				</div>
+				<div class="content">
+					<span class="bubble" data-bind="html: contentPreview"></span>
+				</div>
+				<form>
+					<select data-bind="visible: output() != 'tts', options: $root.sounds, value: wav, click: modified">
+					<input type="text" name="tts" placeholder="{{ _('Enter text to be spoken...') }}" data-bind="value: tts, visible: output() == 'tts', click: modified()"></input>
+					<div class="leftcontrols">
+						<div class="switch round tts-switch">
+							<input class="switch-input" type="checkbox" data-bind="outputswitch: output, attr: {id: switchID} ">
+							<label class="switch-paddle" data-bind="attr: {for: switchID}"></label>
+							<span class="switch-tts fa fa-comment"></span>
+							<span class="switch-wav fa fa-music"></span>
 						</div>
 					</div>
-				</div>
-				<div class="rightcontrols" data-bind="visible: !$root.fileIsLocked()">
-					<a href="#" id="btnAdd" class="button round info" data-bind="click: $root.addLine">
-						<span class="fa fa-plus"></span>
-						<span class="text">
-							{{ _('Add Line') }}</span>
+					<div class="rightcontrols">
+						<a href="#" class="button round alert" data-bind="click: $root.removeLine">
+							<span class="fa fa-trash"></span>
+						</a>
+						<a href="#" class="button round secondary" data-bind="click: pressPlay">
+							<span class="fa" data-bind="css: {'fa-play': !isPlaying(), 'fa-stop': isPlaying()}" style="margin-right: 0.5rem;"></span>
+							{{ _('test') }}</a>
+					</div>
+				</form>
+				<div class="playbutton" data-bind="css: {active: isPlaying, used: hasPlayed}">
+					<div class="bg"></div>
+					<a href="#" class="button" data-bind="click: pressPlay">
+						<span class="fa fa-fw" data-bind="css: {'fa-play': !isPlaying(), 'fa-stop': isPlaying()}"></span>
 					</a>
 				</div>
 			</div>
-		{% endblock %}
+		</div>
+		<div class="rightcontrols" data-bind="visible: !$root.fileIsLocked()">
+			<a href="#" id="btnAdd" class="button round info" data-bind="click: $root.addLine">
+				<span class="fa fa-plus"></span>
+				<span class="text">
+					{{ _('Add Line') }}</span>
+			</a>
+		</div>
+	</div>
+{% endblock %}
 
 		{% block app_scripts %}
 
@@ -99,6 +100,7 @@
 				var action_data = {{ actions|tojson|safe }};
 				var emotions_data = {{ emotions|tojson|safe }};
 				var sounds_data = {{ sounds|tojson|safe }};
+				console.log(emotions_data);
 			</script>
 			<script src="/static/js/sockjs.min.js"></script>
 			<script src="/static/js/vendor/jquery-ui-touch/jquery.ui.touch-punch.min.js"></script>
@@ -112,7 +114,7 @@
 					<div class="row small-up-5" data-bind="foreach: emotions">
 					  <div class="column column-block">
 							<div class="avatar" data-bind="click: $root.changeEmotion">
-								<div data-bind="avatar: image"></div>
+								<span class="emoji" data-bind="html: '&#x' + filename + ';'"></span>
 							</div>
 							<div class="row text-center avatarcaption" data-bind="text: name"></div>
 					  </div>

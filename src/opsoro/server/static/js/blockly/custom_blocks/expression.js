@@ -21,7 +21,7 @@ Blockly.Blocks['expression_setekman'] = {
     this.appendDummyInput()
         .appendField(new Blockly.FieldImage("/static/images/fontawesome/white/svg/smile-o.svg", 16, 18, ""))
         .appendField("set emotion to")
-        .appendField(new Blockly.FieldDropdown([["neutral", "NEUTRAL"], ["happy", "HAPPY"], ["sad", "SAD"], ["angry", "ANGRY"], ["surprise", "SURPRISE"], ["fear", "FEAR"], ["disgust", "DISGUST"]]), "EMOTION");
+        .appendField(new Blockly.FieldDropdown(expressionlist), "EMOTION");
     this.setPreviousStatement(true);
     this.setNextStatement(true);
     this.setColour(105);
@@ -30,16 +30,7 @@ Blockly.Blocks['expression_setekman'] = {
 };
 Blockly.Lua['expression_setekman'] = function(block) {
   var dropdown_emotion = block.getFieldValue('EMOTION');
-  var va_map = {
-    HAPPY:    {phi: 18 * Math.PI/180.0,  r: 1.0},
-    SAD:      {phi: 200 * Math.PI/180.0, r: 1.0},
-    ANGRY:    {phi: 153 * Math.PI/180.0, r: 1.0},
-    SURPRISE: {phi: 90 * Math.PI/180.0,  r: 1.0},
-    FEAR:     {phi: 125 * Math.PI/180.0, r: 1.0},
-    DISGUST:  {phi: 172 * Math.PI/180.0, r: 1.0},
-    NEUTRAL:  {phi: 0, r: 0.0}
-  };
-  var code = 'Expression:set_emotion_r_phi(' + va_map[dropdown_emotion].r.toFixed(1) + ', ' + va_map[dropdown_emotion].phi.toFixed(2) +')\n';
+  var code = 'Expression:set_emotion_name("' + dropdown_emotion + '")\n';
   return code;
 };
 
@@ -58,7 +49,7 @@ Blockly.Blocks['expression_setva'] = {
         .appendField("Arousal");
     this.setPreviousStatement(true);
     this.setNextStatement(true);
-    this.setColour(105);
+    this.setColour(62);
     this.setTooltip('Set the current facial expression using Valence and Arousal. Parameters range from -1.0 to +1.0.');
   }
 };

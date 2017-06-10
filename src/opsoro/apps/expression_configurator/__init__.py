@@ -1,50 +1,44 @@
 from __future__ import with_statement
 
-from flask import Blueprint, render_template, request, redirect, url_for, flash, send_from_directory
-from werkzeug import secure_filename
+import glob
+import os
+from functools import partial
+
+import yaml
+from flask import Blueprint, render_template, request
 
 from opsoro.console_msg import *
-from opsoro.hardware import Hardware
+from opsoro.expression import Expression
 from opsoro.robot import Robot
-
-from functools import partial
-from exceptions import RuntimeError
-import os
-import glob
-import shutil
-import time
-import yaml
 
 try:
     from yaml import CLoader as Loader
 except ImportError:
     from yaml import Loader
 
-from flask import Blueprint, render_template, request, send_from_directory
 
-constrain = lambda n, minn, maxn: max(min(maxn, n), minn)
+def constrain(n, minn, maxn): return max(min(maxn, n), minn)
+
 
 config = {
     'full_name':            'Expression Configurator',
+    'author':               'OPSORO',
     'icon':                 'fa-smile-o',
     'color':                'red',
     'difficulty':           3,
     'tags':                 ['design', 'setup', 'expression', 'configuration'],
     'allowed_background':   False,
+    'multi_user':           True,
     'connection':           Robot.Connection.OFFLINE,
-    'activation':           Robot.Activation.MANUAL
+    'activation':           Robot.Activation.AUTO_NOT_ALIVE,
 }
-config['formatted_name'] =  config['full_name'].lower().replace(' ', '_')
+config['formatted_name'] = config['full_name'].lower().replace(' ', '_')
 
 get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 
 
 def setup_pages(opsoroapp):
-    app_bp = Blueprint(
-        config['formatted_name'],
-        __name__,
-        template_folder='templates',
-        static_folder='static')
+    app_bp = Blueprint(config['formatted_name'], __name__, template_folder='templates', static_folder='static')
 
     @app_bp.route('/', methods=['GET'])
     @opsoroapp.app_view
@@ -65,13 +59,9 @@ def setup_pages(opsoroapp):
         # if action != None:
         data['actions']['openfile'] = request.args.get('f', None)
 
-        # with open(get_path('../../config/modules_configs/ono.yaml')) as f:
-        # 	data['config'] = yaml.load(f, Loader=Loader)
-        #
         modules_folder = '../../modules/'
         modules_static_folder = '../../server/static/modules/'
         icons_static_folder = '../../server/static/images/emojione/'
-        config_folder = '../../config/'
 
         # get modules
         filenames = []
@@ -85,10 +75,8 @@ def setup_pages(opsoroapp):
             with open(get_path(modules_static_folder + module_name + '/front.svg')) as f:
                 data['svg_codes'][module_name] = f.read()
 
-        with open(get_path(config_folder + 'new_grid.yaml')) as f:
-            data['configs'] = yaml.load(f, Loader=Loader)['modules']
-        with open(get_path(config_folder + 'default_expressions.yaml')) as f:
-            data['expressions'] = yaml.load(f, Loader=Loader)['expressions']
+        data['configs'] = Robot.config
+        data['expressions'] = Expression.expressions
 
         filenames = []
         filenames.extend(glob.glob(get_path(icons_static_folder + '*.svg')))
@@ -101,6 +89,19 @@ def setup_pages(opsoroapp):
         #     data['skins'].append(os.path.splitext(os.path.split(filename)[1])[0])
 
         return opsoroapp.render_template(config['formatted_name'] + '.html', **data)
+
+    @opsoroapp.app_socket_message('setDofs')
+    def s_setDofs(conn, data):
+        dof_values = data.pop('dofs', None)
+
+        if dof_values is None:
+            conn.send_data('error', {'message': 'No valid pin or value given.'})
+            return
+
+        if type(dof_values) is dict:
+            Robot.set_dof_values(dof_values)
+        elif type(dof_values) is list:
+            Robot.set_dof_list(dof_values)
 
     opsoroapp.register_app_blueprint(app_bp)
 

@@ -6,52 +6,20 @@
 	<section class="apps">
 		<div class="">
 			{% if apps %}
-				<div id="search-apps">
-				</div>
-				<div class="apps_available">
+				<div class="apps-available">
 					{% for category in apps|sort %}
-						<div id="{{ category[3:] }}" class="app-category row small-up-3 medium-up-5 large-up-8">
+						<div id="{{ category[3:] }}" class="app-category">
 							<h3>{{ category[3:] }}</h3>
-							{% for app in apps[category] %}
-								<div class="app_container float-left column column-block {{ app.formatted_name }}">
-									{% if not app.active and activeapp %}
-									<a href="#" onclick="showSwitchAppModal('{{ app.icon }}', '{{ app.full_name }}', '/openapp/{{ app.formatted_name }}')">
-									{% else %}
-									<a href="/openapp/{{ app.formatted_name }}">
-									{% endif %}
-										<div class="app_button background_{{ app.color }}">
-											<div class="app_icon {{ app.icon }}"></div>
-											<div class="app_banner background_{{ app.color }}"></div>
-										</div>
-										<div class="app_label">{{ app.full_name }}</div>
-										{% for tag in app.tags %}
-											<div class="hide app-tag">{{ tag }}</div>
-										{% endfor %}
-									</a>
-								</div>
+							{% for app in apps[category]|sort(attribute='category_index') %}
+								{{ app_macro(app) }}
 							{% endfor %}
 						</div>
 					{% endfor %}
-					<div class="app-category row small-up-3 medium-up-5 large-up-8">
+					<div class="app-category">
 						{% if other_apps %}
 							<h3>Other apps</h3>
 							{% for app in other_apps %}
-								<div class="app_container float-left column column-block {{ app.formatted_name }}">
-									{% if not app.active and activeapp %}
-									<a href="#" onclick="showSwitchAppModal('{{ app.icon }}', '{{ app.full_name }}', '/openapp/{{ app.formatted_name }}')">
-									{% else %}
-									<a href="/openapp/{{ app.formatted_name }}">
-									{% endif %}
-										<div class="app_button background_{{ app.color }}">
-											<div class="app_icon {{ app.icon }}"></div>
-											<div class="app_banner background_{{ app.color }}"></div>
-										</div>
-										<div class="app_label">{{ app.full_name }}</div>
-										{% for tag in app.tags %}
-											<div class="hide app-tag">{{ tag }}</div>
-										{% endfor %}
-									</a>
-								</div>
+								{{ app_macro(app) }}
 							{% endfor %}
 						{% endif %}
 					</div>
@@ -69,48 +37,11 @@
 {% block sidebar_left %}{% endblock %}
 {% block sidebar_right %}{% endblock %}
 
-{% block app_modals %}
-	{% if activeapp %}
-		<div id="SwitchAppModal" class="reveal small" data-reveal data-animation-in="fade-in" data-animation-out="fade-out">
-			<div class="titlebar">
-				<button class="close-button" data-close aria-label="Close" type="button">
-					<span class="fa fa-close"></span>
-				</button>
-				<span class="fa fa-power-off"></span>
-				{{ _('Confirm') }}
-			</div>
-			<div class="content">
-				<p>
-					{{ _('Are you sure you wish to open') }}
-					<span class="" id="SwitchAppIcon"></span>
-					<span id="SwitchAppName"></span>?
-					<br/>
-					{{ _('Doing so will close the current app,') }}
-					<span class="fa {{ activeapp.icon }}"></span>
-					{{ activeapp.full_name }}.
-				</p>
-				<div class="text-center">
-					<a href="#" class="button" id="SwitchAppLink">
-						<span class="fa fa-check"></span>
-						{{ _('Yes, switch app.') }}</a>
-				</div>
-			</div>
-		</div>
-	{% endif %}
-{% endblock %}
+{% block app_modals %}{% endblock %}
+
 {% block app_scripts %}
-	{% if activeapp %}
-		<script>
-			function showSwitchAppModal(icon, name, link) {
-				$("#SwitchAppIcon").attr("class", "fa " + icon);
-				$("#SwitchAppName").html(name);
-				$("#SwitchAppLink").attr("href", link);
-				$("#SwitchAppModal").foundation("open");
-			}
-		</script>
-	{% endif %}
 	<script>
-		var $apps = $('.app_container');
+		var $apps = $('.app-container');
 		var $categories = $('.app-category');
 
 		$('#search').keyup(function() {
@@ -120,11 +51,47 @@
 				return !~text.indexOf(val);
 			}).hide();
 			$categories.show().filter(function() {
-				var all_apps = $(this).find(".app_container").length;
-				var invis_apps = $(this).find(".app_container[style='display: none;']").length;
+				var all_apps = $(this).find(".app-container").length;
+				var invis_apps = $(this).find(".app-container[style='display: none;']").length;
 				var vis_apps = all_apps - invis_apps
 				return vis_apps < 1;
 			}).hide();
 		});
 	</script>
 {% endblock %}
+
+
+{% macro app_macro(app) -%}
+	{% set app_enabled = ((online and app.connection == 2) or app.connection < 2) %}
+	{% set app_background = app.color if app_enabled else 'dark_gray' %}
+	{% set app_href = '/app/open/' + app.formatted_name if app_enabled else '#' %}
+	{% set app_class = app.formatted_name + ('' if app_enabled else ' disabled') %}
+	{% set opsoro_author = (app.author == 'OPSORO') %}
+
+	<div class="app-container {{ app_class }}">
+		<a href="{{ app_href }}">
+			<div class="app-button background_{{ app_background }}">
+				<span class="app-icon {{ app.icon }}"></span>
+
+				<span class="app-label">{{ app.full_name }}</span>
+				<div class="app-banner">
+					{% if opsoro_author %}
+						<img class="app-opsoro" src="/static/images/logo/opsoro_icon_light.png">
+					{% else %}
+						<span class="app-by">by</span> <span class="app-author">{{ app.author }}</span>
+					{% endif %}
+
+					<div class="app-status">
+						<span class="fa-cog fa-spin app-active" style="display: none;"></span>
+						<span class="fa-lock app-locked" style="display: none;"></span>
+						{% if not online and app.connection == 2 %}<span class="app-beat fa-wifi"></span>{% endif %}
+					</div>
+				</div>
+			</div>
+			{% for tag in app.tags %}
+				<span class="app-tag hide">{{ tag }}</span>
+			{% endfor %}
+		</a>
+	</div>
+	{{enabled}}
+{%- endmacro %}

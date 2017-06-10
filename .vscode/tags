@@ -41,12 +41,12 @@ DEPENDENCY_LINKS	../setup.py	/^DEPENDENCY_LINKS = []$/;"	kind:variable	line:78
 package_data_dirs	../setup.py	/^def package_data_dirs(source, sub_folders):$/;"	kind:function	line:84
 params	../setup.py	/^def params():$/;"	kind:function	line:101
 play.py	../src/opsoro/play.py	1;"	kind:file	line:1
-PLAY_URL	../src/opsoro/play.py	/^PLAY_URL = 'https:\/\/opsoro.a2hosted.com\/'$/;"	kind:variable	line:8
-_Play	../src/opsoro/play.py	/^class _Play(object):$/;"	kind:class	line:10
-__init__	../src/opsoro/play.py	/^    def __init__(self):$/;"	kind:member	line:11
-is_online	../src/opsoro/play.py	/^    def is_online(self):$/;"	kind:member	line:18
-login	../src/opsoro/play.py	/^    def login(self, username = None, password = None):$/;"	kind:member	line:25
-Play	../src/opsoro/play.py	/^Play = _Play()$/;"	kind:variable	line:57
+PLAY_URL	../src/opsoro/play.py	/^PLAY_URL = 'https:\/\/opsoro.be\/'$/;"	kind:variable	line:8
+_Play	../src/opsoro/play.py	/^class _Play(object):$/;"	kind:class	line:11
+__init__	../src/opsoro/play.py	/^    def __init__(self):$/;"	kind:member	line:12
+is_online	../src/opsoro/play.py	/^    def is_online(self):$/;"	kind:member	line:19
+login	../src/opsoro/play.py	/^    def login(self, username=None, password=None):$/;"	kind:member	line:26
+Play	../src/opsoro/play.py	/^Play = _Play()$/;"	kind:variable	line:59
 stoppable_thread.py	../src/opsoro/stoppable_thread.py	1;"	kind:file	line:1
 StoppableThread	../src/opsoro/stoppable_thread.py	/^class StoppableThread(threading.Thread):$/;"	kind:class	line:5
 __init__	../src/opsoro/stoppable_thread.py	/^    def __init__(self, *args, **kwargs):$/;"	kind:member	line:11
@@ -61,39 +61,89 @@ has_ended	../src/opsoro/animate.py	/^    def has_ended(self):$/;"	kind:member	li
 AnimatePeriodic	../src/opsoro/animate.py	/^class AnimatePeriodic(object):$/;"	kind:class	line:54
 __init__	../src/opsoro/animate.py	/^    def __init__(self, times, values):$/;"	kind:member	line:55
 __call__	../src/opsoro/animate.py	/^    def __call__(self):$/;"	kind:member	line:76
+usertypes.py	../src/opsoro/users/usertypes.py	1;"	kind:file	line:1
+_User	../src/opsoro/users/usertypes.py	/^class _User(object):$/;"	kind:class	line:8
+__init__	../src/opsoro/users/usertypes.py	/^    def __init__(self):$/;"	kind:member	line:9
+is_authenticated	../src/opsoro/users/usertypes.py	/^    def is_authenticated(self):$/;"	kind:member	line:22
+is_active	../src/opsoro/users/usertypes.py	/^    def is_active(self):$/;"	kind:member	line:26
+is_anonymous	../src/opsoro/users/usertypes.py	/^    def is_anonymous(self):$/;"	kind:member	line:30
+get_id	../src/opsoro/users/usertypes.py	/^    def get_id(self):$/;"	kind:member	line:33
+is_admin	../src/opsoro/users/usertypes.py	/^    def is_admin(self):$/;"	kind:member	line:37
+Admin	../src/opsoro/users/usertypes.py	/^class Admin(_User):$/;"	kind:class	line:41
+__init__	../src/opsoro/users/usertypes.py	/^    def __init__(self):$/;"	kind:member	line:42
+Play	../src/opsoro/users/usertypes.py	/^class Play(_User):$/;"	kind:class	line:48
+__init__	../src/opsoro/users/usertypes.py	/^    def __init__(self):$/;"	kind:member	line:49
+Guest	../src/opsoro/users/usertypes.py	/^class Guest(_User):$/;"	kind:class	line:55
+__init__	../src/opsoro/users/usertypes.py	/^    def __init__(self):$/;"	kind:member	line:56
+__init__.py	../src/opsoro/users/__init__.py	1;"	kind:file	line:1
+constrain	../src/opsoro/users/__init__.py	/^def constrain(n, minn, maxn): return max(min(maxn, n), minn)$/;"	kind:function	line:29
+get_path	../src/opsoro/users/__init__.py	/^get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))$/;"	kind:variable	line:32
+_Users	../src/opsoro/users/__init__.py	/^class _Users(object):$/;"	kind:class	line:35
+__init__	../src/opsoro/users/__init__.py	/^    def __init__(self):$/;"	kind:member	line:36
+setup	../src/opsoro/users/__init__.py	/^    def setup(self, flaskapp):$/;"	kind:member	line:47
+login_guest	../src/opsoro/users/__init__.py	/^    def login_guest(self):$/;"	kind:member	line:55
+login_admin	../src/opsoro/users/__init__.py	/^    def login_admin(self):$/;"	kind:member	line:60
+login_play	../src/opsoro/users/__init__.py	/^    def login_play(self):$/;"	kind:member	line:65
+logout	../src/opsoro/users/__init__.py	/^    def logout(self):$/;"	kind:member	line:70
+logout_others	../src/opsoro/users/__init__.py	/^    def logout_others(self):$/;"	kind:member	line:80
+send_app_data	../src/opsoro/users/__init__.py	/^    def send_app_data(self, appname, action, data={}):$/;"	kind:member	line:95
+broadcast_data	../src/opsoro/users/__init__.py	/^    def broadcast_data(self, action, data={}, sockets=None):$/;"	kind:member	line:102
+broadcast_robot	../src/opsoro/users/__init__.py	/^    def broadcast_robot(self, data={}, save_last=False):$/;"	kind:member	line:113
+broadcast_message	../src/opsoro/users/__init__.py	/^    def broadcast_message(self, message='', sockets=None):$/;"	kind:member	line:118
+setup_loaders	../src/opsoro/users/__init__.py	/^    def setup_loaders(self):$/;"	kind:member	line:121
+load_user	../src/opsoro/users/__init__.py	/^        def load_user(token):$/;"	kind:function	line:123
+unauthorized_handler	../src/opsoro/users/__init__.py	/^        def unauthorized_handler():$/;"	kind:function	line:129
+Users	../src/opsoro/users/__init__.py	/^Users = _Users()$/;"	kind:variable	line:134
+SocketConnection	../src/opsoro/users/__init__.py	/^class SocketConnection(SockJSConnection):$/;"	kind:class	line:137
+sockets	../src/opsoro/users/__init__.py	/^    sockets = set()$/;"	kind:variable	line:140
+__init__	../src/opsoro/users/__init__.py	/^    def __init__(self, *args, **kwargs):$/;"	kind:member	line:142
+on_message	../src/opsoro/users/__init__.py	/^    def on_message(self, msg):$/;"	kind:member	line:149
+on_open	../src/opsoro/users/__init__.py	/^    def on_open(self, info):$/;"	kind:member	line:191
+on_close	../src/opsoro/users/__init__.py	/^    def on_close(self):$/;"	kind:member	line:196
+send_error	../src/opsoro/users/__init__.py	/^    def send_error(self, message):$/;"	kind:member	line:208
+send_data	../src/opsoro/users/__init__.py	/^    def send_data(self, action, data):$/;"	kind:member	line:211
+broadcast_data	../src/opsoro/users/__init__.py	/^    def broadcast_data(self, action, data, socks=None):$/;"	kind:member	line:217
+update_users	../src/opsoro/users/__init__.py	/^    def update_users(self):$/;"	kind:member	line:224
 servo.py	../src/opsoro/dof/servo.py	1;"	kind:file	line:1
-constrain	../src/opsoro/dof/servo.py	/^constrain = lambda n, minn, maxn: max(min(maxn, n), minn)$/;"	kind:variable	line:5
-Servo	../src/opsoro/dof/servo.py	/^class Servo(DOF):$/;"	kind:class	line:7
-config	../src/opsoro/dof/servo.py	/^    def config(self, pin=None, min_range=0, mid_pos=1500, max_range=0):$/;"	kind:member	line:8
-__repr__	../src/opsoro/dof/servo.py	/^    def __repr__(self):$/;"	kind:member	line:36
-to_us	../src/opsoro/dof/servo.py	/^    def to_us(self, dof_value = None):$/;"	kind:member	line:40
-update	../src/opsoro/dof/servo.py	/^    def update(self):$/;"	kind:member	line:68
+constrain	../src/opsoro/dof/servo.py	/^def constrain(n, minn, maxn): return max(min(maxn, n), minn)$/;"	kind:function	line:6
+Servo	../src/opsoro/dof/servo.py	/^class Servo(DOF):$/;"	kind:class	line:9
+config	../src/opsoro/dof/servo.py	/^    def config(self, pin=None, min_range=0, mid_pos=1500, max_range=0):$/;"	kind:member	line:10
+__repr__	../src/opsoro/dof/servo.py	/^    def __repr__(self):$/;"	kind:member	line:32
+to_us	../src/opsoro/dof/servo.py	/^    def to_us(self, dof_value=None):$/;"	kind:member	line:35
+update	../src/opsoro/dof/servo.py	/^    def update(self):$/;"	kind:member	line:63
 __init__.py	../src/opsoro/dof/__init__.py	1;"	kind:file	line:1
-constrain	../src/opsoro/dof/__init__.py	/^constrain = lambda n, minn, maxn: max(min(maxn, n), minn)$/;"	kind:variable	line:11
+constrain	../src/opsoro/dof/__init__.py	/^def constrain(n, minn, maxn): return max(min(maxn, n), minn)$/;"	kind:function	line:11
 DOF	../src/opsoro/dof/__init__.py	/^class DOF(object):$/;"	kind:class	line:14
 __init__	../src/opsoro/dof/__init__.py	/^    def __init__(self, name, neutral=0.0, poly=None):$/;"	kind:member	line:15
-config	../src/opsoro/dof/__init__.py	/^    def config(self, **args):$/;"	kind:member	line:47
-__repr__	../src/opsoro/dof/__init__.py	/^    def __repr__(self):$/;"	kind:member	line:50
-set_control_polygon	../src/opsoro/dof/__init__.py	/^    def set_control_polygon(self, neutral=0.0, poly=None):$/;"	kind:member	line:54
-calc	../src/opsoro/dof/__init__.py	/^    def calc(self, r, phi, anim_time=-1):$/;"	kind:member	line:87
-set_value	../src/opsoro/dof/__init__.py	/^    def set_value(self,$/;"	kind:member	line:116
-set_overlay_value	../src/opsoro/dof/__init__.py	/^    def set_overlay_value(self,$/;"	kind:member	line:144
-reset_overlay	../src/opsoro/dof/__init__.py	/^    def reset_overlay(self, anim_time=-1):$/;"	kind:member	line:157
-update	../src/opsoro/dof/__init__.py	/^    def update(self):$/;"	kind:member	line:166
+config	../src/opsoro/dof/__init__.py	/^    def config(self, **args):$/;"	kind:member	line:49
+__repr__	../src/opsoro/dof/__init__.py	/^    def __repr__(self):$/;"	kind:member	line:52
+set_control_polygon	../src/opsoro/dof/__init__.py	/^    def set_control_polygon(self, neutral=0.0, poly=None):$/;"	kind:member	line:56
+calc	../src/opsoro/dof/__init__.py	/^    def calc(self, r, phi, anim_time=-1):$/;"	kind:member	line:89
+set_value	../src/opsoro/dof/__init__.py	/^    def set_value(self, dof_value=0, anim_time=-1, is_overlay=False, update_last_set_time=True):$/;"	kind:member	line:118
+set_overlay_value	../src/opsoro/dof/__init__.py	/^    def set_overlay_value(self, dof_value=0, anim_time=-1, update_last_set_time=True):$/;"	kind:member	line:144
+reset_overlay	../src/opsoro/dof/__init__.py	/^    def reset_overlay(self, anim_time=-1):$/;"	kind:member	line:154
+update	../src/opsoro/dof/__init__.py	/^    def update(self):$/;"	kind:member	line:163
 stt.py	../src/opsoro/stt.py	1;"	kind:file	line:1
 _STT	../src/opsoro/stt.py	/^class _STT(object):$/;"	kind:class	line:21
 __init__	../src/opsoro/stt.py	/^    def __init__(self):$/;"	kind:member	line:22
 STT	../src/opsoro/stt.py	/^STT = _STT()$/;"	kind:variable	line:29
 expression.py	../src/opsoro/expression.py	1;"	kind:file	line:1
-constrain	../src/opsoro/expression.py	/^constrain = lambda n, minn, maxn: max(min(maxn, n), minn)$/;"	kind:variable	line:19
-_Expression	../src/opsoro/expression.py	/^class _Expression(object):$/;"	kind:class	line:22
-__init__	../src/opsoro/expression.py	/^    def __init__(self):$/;"	kind:member	line:23
-set_emotion_e	../src/opsoro/expression.py	/^    def set_emotion_e(self, e=0 + 0j, anim_time=-1):$/;"	kind:member	line:27
-set_emotion_val_ar	../src/opsoro/expression.py	/^    def set_emotion_val_ar(self, valence, arousal, anim_time=-1):$/;"	kind:member	line:48
-set_emotion_r_phi	../src/opsoro/expression.py	/^    def set_emotion_r_phi(self, r, phi, degrees=False, anim_time=-1):$/;"	kind:member	line:67
-update	../src/opsoro/expression.py	/^    def update(self):$/;"	kind:member	line:90
-get_emotion_complex	../src/opsoro/expression.py	/^    def get_emotion_complex(self):$/;"	kind:member	line:95
-Expression	../src/opsoro/expression.py	/^Expression = _Expression()$/;"	kind:variable	line:102
+constrain	../src/opsoro/expression.py	/^def constrain(n, minn, maxn): return max(min(maxn, n), minn)$/;"	kind:function	line:26
+get_path	../src/opsoro/expression.py	/^get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))$/;"	kind:variable	line:29
+_Expression	../src/opsoro/expression.py	/^class _Expression(object):$/;"	kind:class	line:32
+__init__	../src/opsoro/expression.py	/^    def __init__(self):$/;"	kind:member	line:33
+set_emotion_e	../src/opsoro/expression.py	/^    def set_emotion_e(self, e=0 + 0j, anim_time=-1):$/;"	kind:member	line:41
+set_emotion_val_ar	../src/opsoro/expression.py	/^    def set_emotion_val_ar(self, valence, arousal, anim_time=-1):$/;"	kind:member	line:59
+set_emotion_r_phi	../src/opsoro/expression.py	/^    def set_emotion_r_phi(self, r, phi, degrees=False, anim_time=-1):$/;"	kind:member	line:78
+update	../src/opsoro/expression.py	/^    def update(self):$/;"	kind:member	line:99
+get_emotion_complex	../src/opsoro/expression.py	/^    def get_emotion_complex(self):$/;"	kind:member	line:104
+set_emotion_name	../src/opsoro/expression.py	/^    def set_emotion_name(self, name, anim_time=-1):$/;"	kind:member	line:110
+set_emotion_icon	../src/opsoro/expression.py	/^    def set_emotion_icon(self, icon, anim_time=-1):$/;"	kind:member	line:127
+set_emotion_index	../src/opsoro/expression.py	/^    def set_emotion_index(self, index, anim_time=-1):$/;"	kind:member	line:144
+set_config	../src/opsoro/expression.py	/^    def set_config(self, config=None):$/;"	kind:member	line:167
+load_config	../src/opsoro/expression.py	/^    def load_config(self, file_name='robot_expressions.conf'):$/;"	kind:member	line:178
+save_config	../src/opsoro/expression.py	/^    def save_config(self, file_name='robot_expressions.conf'):$/;"	kind:member	line:202
+Expression	../src/opsoro/expression.py	/^Expression = _Expression()$/;"	kind:variable	line:218
 updater.py	../src/opsoro/updater.py	1;"	kind:file	line:1
 _Updater	../src/opsoro/updater.py	/^class _Updater(object):$/;"	kind:class	line:26
 __init__	../src/opsoro/updater.py	/^    def __init__(self):$/;"	kind:member	line:27
@@ -104,11 +154,13 @@ is_update_available	../src/opsoro/updater.py	/^    def is_update_available(self)
 update	../src/opsoro/updater.py	/^    def update(self):$/;"	kind:member	line:118
 Updater	../src/opsoro/updater.py	/^Updater = _Updater()$/;"	kind:variable	line:182
 __init__.py	../src/opsoro/module/eye/__init__.py	1;"	kind:file	line:1
-Eye	../src/opsoro/module/eye/__init__.py	/^class Eye(Module):$/;"	kind:class	line:11
-__init__	../src/opsoro/module/eye/__init__.py	/^    def __init__(self, data=None):$/;"	kind:member	line:15
-look	../src/opsoro/module/eye/__init__.py	/^    def look(self, x=0, y=0, z=0):$/;"	kind:member	line:33
-blink	../src/opsoro/module/eye/__init__.py	/^    def blink(self, anim_time=0.4):$/;"	kind:member	line:78
-alive_trigger	../src/opsoro/module/eye/__init__.py	/^    def alive_trigger(self, count_seed):$/;"	kind:member	line:108
+Eye	../src/opsoro/module/eye/__init__.py	/^class Eye(Module):$/;"	kind:class	line:14
+__init__	../src/opsoro/module/eye/__init__.py	/^    def __init__(self, data=None):$/;"	kind:member	line:18
+look	../src/opsoro/module/eye/__init__.py	/^    def look(self, x=0, y=0, z=0):$/;"	kind:member	line:36
+blink	../src/opsoro/module/eye/__init__.py	/^    def blink(self, anim_time=0.4):$/;"	kind:member	line:81
+alive_trigger	../src/opsoro/module/eye/__init__.py	/^    def alive_trigger(self, count_seed):$/;"	kind:member	line:111
+__init__.py	../src/opsoro/module/turn/__init__.py	1;"	kind:file	line:1
+Turn	../src/opsoro/module/turn/__init__.py	/^class Turn(Module):$/;"	kind:class	line:4
 __init__.py	../src/opsoro/module/eyebrow/__init__.py	1;"	kind:file	line:1
 Eyebrow	../src/opsoro/module/eyebrow/__init__.py	/^class Eyebrow(Module):$/;"	kind:class	line:4
 __init__.py	../src/opsoro/module/rotation/__init__.py	1;"	kind:file	line:1
@@ -116,50 +168,62 @@ Rotation	../src/opsoro/module/rotation/__init__.py	/^class Rotation(Module):$/;"
 __init__.py	../src/opsoro/module/mouth/__init__.py	1;"	kind:file	line:1
 Mouth	../src/opsoro/module/mouth/__init__.py	/^class Mouth(Module):$/;"	kind:class	line:4
 __init__.py	../src/opsoro/module/__init__.py	1;"	kind:file	line:1
-constrain	../src/opsoro/module/__init__.py	/^constrain = lambda n, minn, maxn: max(min(maxn, n), minn)$/;"	kind:variable	line:7
-Module	../src/opsoro/module/__init__.py	/^class Module(object):$/;"	kind:class	line:10
-__init__	../src/opsoro/module/__init__.py	/^    def __init__(self, data=None):$/;"	kind:member	line:11
-__str__	../src/opsoro/module/__init__.py	/^    def __str__(self):$/;"	kind:member	line:26
-apply_poly	../src/opsoro/module/__init__.py	/^    def apply_poly(self, r, phi, anim_time=-1):$/;"	kind:member	line:29
-update	../src/opsoro/module/__init__.py	/^    def update(self):$/;"	kind:member	line:40
-set_dof_value	../src/opsoro/module/__init__.py	/^    def set_dof_value(self, dof_name, dof_value, anim_time=-1):$/;"	kind:member	line:55
-load_module	../src/opsoro/module/__init__.py	/^    def load_module(self, data):$/;"	kind:member	line:69
-alive_trigger	../src/opsoro/module/__init__.py	/^    def alive_trigger(self, count_seed=1):$/;"	kind:member	line:124
+constrain	../src/opsoro/module/__init__.py	/^def constrain(n, minn, maxn): return max(min(maxn, n), minn)$/;"	kind:function	line:8
+Module	../src/opsoro/module/__init__.py	/^class Module(object):$/;"	kind:class	line:11
+__init__	../src/opsoro/module/__init__.py	/^    def __init__(self, data=None):$/;"	kind:member	line:12
+__str__	../src/opsoro/module/__init__.py	/^    def __str__(self):$/;"	kind:member	line:27
+apply_poly	../src/opsoro/module/__init__.py	/^    def apply_poly(self, r, phi, anim_time=-1):$/;"	kind:member	line:30
+update	../src/opsoro/module/__init__.py	/^    def update(self):$/;"	kind:member	line:41
+set_dof_value	../src/opsoro/module/__init__.py	/^    def set_dof_value(self, dof_name, value, anim_time=-1):$/;"	kind:member	line:56
+set_dof	../src/opsoro/module/__init__.py	/^    def set_dof(self, tags=[], value=0, anim_time=-1):$/;"	kind:member	line:70
+load_module	../src/opsoro/module/__init__.py	/^    def load_module(self, data):$/;"	kind:member	line:94
+alive_trigger	../src/opsoro/module/__init__.py	/^    def alive_trigger(self, count_seed=1):$/;"	kind:member	line:147
 robot.py	../src/opsoro/robot.py	1;"	kind:file	line:1
-get_path	../src/opsoro/robot.py	/^get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))$/;"	kind:variable	line:26
-MODULES	../src/opsoro/robot.py	/^MODULES = {'eye': Eye, 'eyebrow': Eyebrow, 'mouth': Mouth}$/;"	kind:variable	line:34
-_Robot	../src/opsoro/robot.py	/^class _Robot(object):$/;"	kind:class	line:36
-Activation	../src/opsoro/robot.py	/^    class Activation(IntEnum):$/;"	kind:class	line:37
-MANUAL	../src/opsoro/robot.py	/^        MANUAL          = 0     # 0: Manual start\/stop$/;"	kind:variable	line:38
-AUTO	../src/opsoro/robot.py	/^        AUTO            = 1     # 1: Start robot automatically (alive feature according to preferences)$/;"	kind:variable	line:39
-AUTO_ALIVE	../src/opsoro/robot.py	/^        AUTO_ALIVE      = 2     # 2: Start robot automatically and enable alive feature$/;"	kind:variable	line:40
-AUTO_NOT_ALIVE	../src/opsoro/robot.py	/^        AUTO_NOT_ALIVE  = 3     # 3: Start robot automatically and disable alive feature$/;"	kind:variable	line:41
-Connection	../src/opsoro/robot.py	/^    class Connection(IntEnum):$/;"	kind:class	line:43
-OFFLINE	../src/opsoro/robot.py	/^        OFFLINE     = 0         # 0: No online capability$/;"	kind:variable	line:44
-PARTLY	../src/opsoro/robot.py	/^        PARTLY      = 1         # 1: Needs online for extras, but works without$/;"	kind:variable	line:45
-ONLINE	../src/opsoro/robot.py	/^        ONLINE      = 2         # 2: Requires to be online to work$/;"	kind:variable	line:46
-__init__	../src/opsoro/robot.py	/^    def __init__(self):$/;"	kind:member	line:48
-start	../src/opsoro/robot.py	/^    def start(self):$/;"	kind:member	line:62
-start_update_loop	../src/opsoro/robot.py	/^    def start_update_loop(self):$/;"	kind:member	line:71
-stop_update_loop	../src/opsoro/robot.py	/^    def stop_update_loop(self):$/;"	kind:member	line:80
-start_alive_loop	../src/opsoro/robot.py	/^    def start_alive_loop(self):$/;"	kind:member	line:88
-stop_alive_loop	../src/opsoro/robot.py	/^    def stop_alive_loop(self):$/;"	kind:member	line:93
-stop	../src/opsoro/robot.py	/^    def stop(self):$/;"	kind:member	line:97
-config	../src/opsoro/robot.py	/^    def config(self, config=None):$/;"	kind:member	line:106
-set_dof_value	../src/opsoro/robot.py	/^    def set_dof_value(self, module_name, dof_name, dof_value, anim_time=-1):$/;"	kind:member	line:127
-set_dof_values	../src/opsoro/robot.py	/^    def set_dof_values(self, dof_values, anim_time=-1):$/;"	kind:member	line:137
-set_dof_list	../src/opsoro/robot.py	/^    def set_dof_list(self, dof_values, anim_time=-1):$/;"	kind:member	line:145
-get_dof_values	../src/opsoro/robot.py	/^    def get_dof_values(self):$/;"	kind:member	line:154
-apply_poly	../src/opsoro/robot.py	/^    def apply_poly(self, r, phi, anim_time=-1):$/;"	kind:member	line:165
-dof_update_loop	../src/opsoro/robot.py	/^    def dof_update_loop(self):$/;"	kind:member	line:173
-alive_loop	../src/opsoro/robot.py	/^    def alive_loop(self):$/;"	kind:member	line:183
-update	../src/opsoro/robot.py	/^    def update(self):$/;"	kind:member	line:199
-load_config	../src/opsoro/robot.py	/^    def load_config(self, file_name='default.conf'):$/;"	kind:member	line:206
-save_config	../src/opsoro/robot.py	/^    def save_config(self, file_name='default.conf'):$/;"	kind:member	line:229
-blink	../src/opsoro/robot.py	/^    def blink(self, speed):$/;"	kind:member	line:243
-sleep	../src/opsoro/robot.py	/^    def sleep(self):$/;"	kind:member	line:248
-wake	../src/opsoro/robot.py	/^    def wake(self):$/;"	kind:member	line:252
-Robot	../src/opsoro/robot.py	/^Robot = _Robot()$/;"	kind:variable	line:257
+get_path	../src/opsoro/robot.py	/^get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))$/;"	kind:variable	line:34
+MODULES	../src/opsoro/robot.py	/^MODULES = {'eye': Eye, 'turn': Turn, 'mouth': Mouth}$/;"	kind:variable	line:37
+_Robot	../src/opsoro/robot.py	/^class _Robot(object):$/;"	kind:class	line:40
+Activation	../src/opsoro/robot.py	/^    class Activation(IntEnum):$/;"	kind:class	line:41
+MANUAL	../src/opsoro/robot.py	/^        MANUAL = 0     # 0: Manual start\/stop$/;"	kind:variable	line:42
+AUTO	../src/opsoro/robot.py	/^        AUTO = 1     # 1: Start robot automatically (alive feature according to preferences)$/;"	kind:variable	line:43
+AUTO_ALIVE	../src/opsoro/robot.py	/^        AUTO_ALIVE = 2     # 2: Start robot automatically and enable alive feature$/;"	kind:variable	line:44
+AUTO_NOT_ALIVE	../src/opsoro/robot.py	/^        AUTO_NOT_ALIVE = 3     # 3: Start robot automatically and disable alive feature$/;"	kind:variable	line:45
+Connection	../src/opsoro/robot.py	/^    class Connection(IntEnum):$/;"	kind:class	line:47
+OFFLINE	../src/opsoro/robot.py	/^        OFFLINE = 0         # 0: No online capability$/;"	kind:variable	line:48
+PARTLY	../src/opsoro/robot.py	/^        PARTLY = 1         # 1: Needs online for extras, but works without$/;"	kind:variable	line:49
+ONLINE	../src/opsoro/robot.py	/^        ONLINE = 2         # 2: Requires to be online to work$/;"	kind:variable	line:50
+__init__	../src/opsoro/robot.py	/^    def __init__(self):$/;"	kind:member	line:52
+start	../src/opsoro/robot.py	/^    def start(self, alive=True):$/;"	kind:member	line:66
+start_update_loop	../src/opsoro/robot.py	/^    def start_update_loop(self):$/;"	kind:member	line:76
+stop_update_loop	../src/opsoro/robot.py	/^    def stop_update_loop(self):$/;"	kind:member	line:87
+start_alive_loop	../src/opsoro/robot.py	/^    def start_alive_loop(self):$/;"	kind:member	line:95
+stop_alive_loop	../src/opsoro/robot.py	/^    def stop_alive_loop(self):$/;"	kind:member	line:100
+stop	../src/opsoro/robot.py	/^    def stop(self):$/;"	kind:member	line:104
+set_config	../src/opsoro/robot.py	/^    def set_config(self, config=None):$/;"	kind:member	line:113
+set_dof	../src/opsoro/robot.py	/^    def set_dof(self, tags=[], value=0, anim_time=-1):$/;"	kind:member	line:147
+set_dof_value	../src/opsoro/robot.py	/^    def set_dof_value(self, module_name, dof_name, dof_value, anim_time=-1):$/;"	kind:member	line:152
+set_dof_values	../src/opsoro/robot.py	/^    def set_dof_values(self, dof_values, anim_time=-1):$/;"	kind:member	line:161
+set_dof_list	../src/opsoro/robot.py	/^    def set_dof_list(self, dof_values, anim_time=-1):$/;"	kind:member	line:168
+get_dof_values	../src/opsoro/robot.py	/^    def get_dof_values(self, current=True):$/;"	kind:member	line:177
+apply_poly	../src/opsoro/robot.py	/^    def apply_poly(self, r, phi, anim_time=-1):$/;"	kind:member	line:192
+dof_update_loop	../src/opsoro/robot.py	/^    def dof_update_loop(self):$/;"	kind:member	line:198
+alive_loop	../src/opsoro/robot.py	/^    def alive_loop(self):$/;"	kind:member	line:208
+update	../src/opsoro/robot.py	/^    def update(self):$/;"	kind:member	line:224
+load_config	../src/opsoro/robot.py	/^    def load_config(self, file_name='robot_config.conf'):$/;"	kind:member	line:232
+save_config	../src/opsoro/robot.py	/^    def save_config(self, file_name='robot_config.conf'):$/;"	kind:member	line:256
+blink	../src/opsoro/robot.py	/^    def blink(self, speed):$/;"	kind:member	line:270
+sleep	../src/opsoro/robot.py	/^    def sleep(self):$/;"	kind:member	line:275
+wake	../src/opsoro/robot.py	/^    def wake(self):$/;"	kind:member	line:280
+Robot	../src/opsoro/robot.py	/^Robot = _Robot()$/;"	kind:variable	line:287
+__init__.py	../src/opsoro/data/__init__.py	1;"	kind:file	line:1
+get_path	../src/opsoro/data/__init__.py	/^get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))$/;"	kind:variable	line:17
+_Data	../src/opsoro/data/__init__.py	/^class _Data(object):$/;"	kind:class	line:20
+__init__	../src/opsoro/data/__init__.py	/^    def __init__(self):$/;"	kind:member	line:21
+filelist	../src/opsoro/data/__init__.py	/^    def filelist(self, appname, extension='.*', trim_ext=True):$/;"	kind:member	line:27
+read	../src/opsoro/data/__init__.py	/^    def read(self, appname, filename):$/;"	kind:member	line:52
+write	../src/opsoro/data/__init__.py	/^    def write(self, appname, filename, data):$/;"	kind:member	line:74
+delete	../src/opsoro/data/__init__.py	/^    def delete(self, appname, filename):$/;"	kind:member	line:97
+_valid_parameters	../src/opsoro/data/__init__.py	/^    def _valid_parameters(self, appname, filename='dummy.ext', file_required=False):$/;"	kind:member	line:118
+Data	../src/opsoro/data/__init__.py	/^Data = _Data()$/;"	kind:variable	line:155
 configuration.py	../src/opsoro/configuration.py	1;"	kind:file	line:1
 get_path	../src/opsoro/configuration.py	/^get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))$/;"	kind:variable	line:23
 _Configuration	../src/opsoro/configuration.py	/^class _Configuration(object):$/;"	kind:class	line:33
@@ -171,35 +235,32 @@ save_prefs	../src/opsoro/configuration.py	/^    def save_prefs(self):$/;"	kind:m
 save	../src/opsoro/configuration.py	/^    def save(self, filename):$/;"	kind:member	line:88
 Configuration	../src/opsoro/configuration.py	/^Configuration = _Configuration()$/;"	kind:variable	line:91
 __init__.py	../src/opsoro/__init__.py	1;"	kind:file	line:1
-sigterm_handler	../src/opsoro/__init__.py	/^def sigterm_handler(_signo, _stack_frame):$/;"	kind:function	line:19
-main	../src/opsoro/__init__.py	/^def main():$/;"	kind:function	line:45
+sigterm_handler	../src/opsoro/__init__.py	/^def sigterm_handler(_signo, _stack_frame):$/;"	kind:function	line:17
+main	../src/opsoro/__init__.py	/^def main():$/;"	kind:function	line:44
 __init__.py	../src/opsoro/apps/blockly/__init__.py	1;"	kind:file	line:1
-config	../src/opsoro/apps/blockly/__init__.py	/^config = {$/;"	kind:variable	line:12
-get_path	../src/opsoro/apps/blockly/__init__.py	/^get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))$/;"	kind:variable	line:24
-clientconn	../src/opsoro/apps/blockly/__init__.py	/^clientconn = None$/;"	kind:variable	line:26
-sh	../src/opsoro/apps/blockly/__init__.py	/^sh = None$/;"	kind:variable	line:27
-script	../src/opsoro/apps/blockly/__init__.py	/^script = ''$/;"	kind:variable	line:28
-script_name	../src/opsoro/apps/blockly/__init__.py	/^script_name = None$/;"	kind:variable	line:29
-script_modified	../src/opsoro/apps/blockly/__init__.py	/^script_modified = False$/;"	kind:variable	line:30
-add_console	../src/opsoro/apps/blockly/__init__.py	/^def add_console(message, color='#888888', icon=None):$/;"	kind:function	line:33
-send_started	../src/opsoro/apps/blockly/__init__.py	/^def send_started():$/;"	kind:function	line:41
-send_stopped	../src/opsoro/apps/blockly/__init__.py	/^def send_stopped():$/;"	kind:function	line:47
-init_ui	../src/opsoro/apps/blockly/__init__.py	/^def init_ui():$/;"	kind:function	line:53
-ui_add_button	../src/opsoro/apps/blockly/__init__.py	/^def ui_add_button(name, caption, icon, toggle=False):$/;"	kind:function	line:59
-ui_add_key	../src/opsoro/apps/blockly/__init__.py	/^def ui_add_key(key):$/;"	kind:function	line:68
-setup_pages	../src/opsoro/apps/blockly/__init__.py	/^def setup_pages(opsoroapp):$/;"	kind:function	line:80
-index	../src/opsoro/apps/blockly/__init__.py	/^    def index():$/;"	kind:function	line:89
-startscript	../src/opsoro/apps/blockly/__init__.py	/^    def startscript():$/;"	kind:function	line:190
-stopscript	../src/opsoro/apps/blockly/__init__.py	/^    def stopscript():$/;"	kind:function	line:214
-s_connected	../src/opsoro/apps/blockly/__init__.py	/^    def s_connected(conn):$/;"	kind:function	line:225
-s_disconnected	../src/opsoro/apps/blockly/__init__.py	/^    def s_disconnected(conn):$/;"	kind:function	line:230
-s_key_down	../src/opsoro/apps/blockly/__init__.py	/^    def s_key_down(conn, data):$/;"	kind:function	line:235
-s_key_up	../src/opsoro/apps/blockly/__init__.py	/^    def s_key_up(conn, data):$/;"	kind:function	line:242
-s_button_down	../src/opsoro/apps/blockly/__init__.py	/^    def s_button_down(conn, data):$/;"	kind:function	line:249
-s_button_up	../src/opsoro/apps/blockly/__init__.py	/^    def s_button_up(conn, data):$/;"	kind:function	line:256
-setup	../src/opsoro/apps/blockly/__init__.py	/^def setup(opsoroapp):$/;"	kind:function	line:265
-start	../src/opsoro/apps/blockly/__init__.py	/^def start(opsoroapp):$/;"	kind:function	line:269
-stop	../src/opsoro/apps/blockly/__init__.py	/^def stop(opsoroapp):$/;"	kind:function	line:291
+config	../src/opsoro/apps/blockly/__init__.py	/^config = {$/;"	kind:variable	line:16
+get_path	../src/opsoro/apps/blockly/__init__.py	/^get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))$/;"	kind:variable	line:30
+sh	../src/opsoro/apps/blockly/__init__.py	/^sh = None$/;"	kind:variable	line:32
+script	../src/opsoro/apps/blockly/__init__.py	/^script = ''$/;"	kind:variable	line:33
+script_name	../src/opsoro/apps/blockly/__init__.py	/^script_name = None$/;"	kind:variable	line:34
+script_modified	../src/opsoro/apps/blockly/__init__.py	/^script_modified = False$/;"	kind:variable	line:35
+add_console	../src/opsoro/apps/blockly/__init__.py	/^def add_console(message, color='#888888', icon=None):$/;"	kind:function	line:38
+send_started	../src/opsoro/apps/blockly/__init__.py	/^def send_started():$/;"	kind:function	line:42
+send_stopped	../src/opsoro/apps/blockly/__init__.py	/^def send_stopped():$/;"	kind:function	line:46
+init_ui	../src/opsoro/apps/blockly/__init__.py	/^def init_ui():$/;"	kind:function	line:50
+ui_add_button	../src/opsoro/apps/blockly/__init__.py	/^def ui_add_button(name, caption, icon, toggle=False):$/;"	kind:function	line:54
+ui_add_key	../src/opsoro/apps/blockly/__init__.py	/^def ui_add_key(key):$/;"	kind:function	line:58
+setup_pages	../src/opsoro/apps/blockly/__init__.py	/^def setup_pages(opsoroapp):$/;"	kind:function	line:69
+index	../src/opsoro/apps/blockly/__init__.py	/^    def index():$/;"	kind:function	line:74
+startscript	../src/opsoro/apps/blockly/__init__.py	/^    def startscript():$/;"	kind:function	line:101
+stopscript	../src/opsoro/apps/blockly/__init__.py	/^    def stopscript():$/;"	kind:function	line:124
+s_key_down	../src/opsoro/apps/blockly/__init__.py	/^    def s_key_down(conn, data):$/;"	kind:function	line:134
+s_key_up	../src/opsoro/apps/blockly/__init__.py	/^    def s_key_up(conn, data):$/;"	kind:function	line:141
+s_button_down	../src/opsoro/apps/blockly/__init__.py	/^    def s_button_down(conn, data):$/;"	kind:function	line:148
+s_button_up	../src/opsoro/apps/blockly/__init__.py	/^    def s_button_up(conn, data):$/;"	kind:function	line:155
+setup	../src/opsoro/apps/blockly/__init__.py	/^def setup(opsoroapp):$/;"	kind:function	line:164
+start	../src/opsoro/apps/blockly/__init__.py	/^def start(opsoroapp):$/;"	kind:function	line:168
+stop	../src/opsoro/apps/blockly/__init__.py	/^def stop(opsoroapp):$/;"	kind:function	line:190
 __init__.py	../src/opsoro/apps/configurator/__init__.py	1;"	kind:file	line:1
 constrain	../src/opsoro/apps/configurator/__init__.py	/^constrain = lambda n, minn, maxn: max(min(maxn, n), minn)$/;"	kind:variable	line:25
 config	../src/opsoro/apps/configurator/__init__.py	/^config = {$/;"	kind:variable	line:27
@@ -210,13 +271,13 @@ setup	../src/opsoro/apps/configurator/__init__.py	/^def setup(opsoroapp):$/;"	ki
 start	../src/opsoro/apps/configurator/__init__.py	/^def start(opsoroapp):$/;"	kind:function	line:103
 stop	../src/opsoro/apps/configurator/__init__.py	/^def stop(opsoroapp):$/;"	kind:function	line:107
 __init__.py	../src/opsoro/apps/preferences/__init__.py	1;"	kind:file	line:1
-config	../src/opsoro/apps/preferences/__init__.py	/^config = {$/;"	kind:variable	line:13
+config	../src/opsoro/apps/preferences/__init__.py	/^config = {$/;"	kind:variable	line:14
 setup_pages	../src/opsoro/apps/preferences/__init__.py	/^def setup_pages(opsoroapp):$/;"	kind:function	line:38
-index	../src/opsoro/apps/preferences/__init__.py	/^    def index():$/;"	kind:function	line:49
-update	../src/opsoro/apps/preferences/__init__.py	/^    def update():$/;"	kind:function	line:141
-setup	../src/opsoro/apps/preferences/__init__.py	/^def setup(opsoroapp):$/;"	kind:function	line:148
-start	../src/opsoro/apps/preferences/__init__.py	/^def start(opsoroapp):$/;"	kind:function	line:152
-stop	../src/opsoro/apps/preferences/__init__.py	/^def stop(opsoroapp):$/;"	kind:function	line:156
+index	../src/opsoro/apps/preferences/__init__.py	/^    def index():$/;"	kind:function	line:43
+update	../src/opsoro/apps/preferences/__init__.py	/^    def update():$/;"	kind:function	line:132
+setup	../src/opsoro/apps/preferences/__init__.py	/^def setup(opsoroapp):$/;"	kind:function	line:139
+start	../src/opsoro/apps/preferences/__init__.py	/^def start(opsoroapp):$/;"	kind:function	line:143
+stop	../src/opsoro/apps/preferences/__init__.py	/^def stop(opsoroapp):$/;"	kind:function	line:147
 __init__.py	../src/opsoro/apps/opa/__init__.py	1;"	kind:file	line:1
 constrain	../src/opsoro/apps/opa/__init__.py	/^constrain = lambda n, minn, maxn: max(min(maxn, n), minn)$/;"	kind:variable	line:23
 get_path	../src/opsoro/apps/opa/__init__.py	/^get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))$/;"	kind:variable	line:24
@@ -224,185 +285,238 @@ clientconn	../src/opsoro/apps/opa/__init__.py	/^clientconn = None$/;"	kind:varia
 config	../src/opsoro/apps/opa/__init__.py	/^config = {$/;"	kind:variable	line:28
 setup_pages	../src/opsoro/apps/opa/__init__.py	/^def setup_pages(server):$/;"	kind:function	line:40
 index	../src/opsoro/apps/opa/__init__.py	/^    def index():$/;"	kind:function	line:48
-action	../src/opsoro/apps/opa/__init__.py	/^    def action():$/;"	kind:function	line:85
-change_name	../src/opsoro/apps/opa/__init__.py	/^    def change_name():$/;"	kind:function	line:95
-socket_message	../src/opsoro/apps/opa/__init__.py	/^    def socket_message(conn, data):$/;"	kind:function	line:104
-socket_connected	../src/opsoro/apps/opa/__init__.py	/^    def socket_connected(conn):$/;"	kind:function	line:115
-socket_connected	../src/opsoro/apps/opa/__init__.py	/^    def socket_connected(conn):$/;"	kind:function	line:119
-save_activity	../src/opsoro/apps/opa/__init__.py	/^    def save_activity(data):$/;"	kind:function	line:124
-speak	../src/opsoro/apps/opa/__init__.py	/^def speak(data):$/;"	kind:function	line:140
-play	../src/opsoro/apps/opa/__init__.py	/^def play(play_data):$/;"	kind:function	line:154
-alarm	../src/opsoro/apps/opa/__init__.py	/^def alarm():$/;"	kind:function	line:165
-CommandLoop	../src/opsoro/apps/opa/__init__.py	/^def CommandLoop():$/;"	kind:function	line:173
-demo	../src/opsoro/apps/opa/__init__.py	/^def demo():$/;"	kind:function	line:181
-setup	../src/opsoro/apps/opa/__init__.py	/^def setup(server):$/;"	kind:function	line:189
-start	../src/opsoro/apps/opa/__init__.py	/^def start(server):$/;"	kind:function	line:193
-stop	../src/opsoro/apps/opa/__init__.py	/^def stop(server):$/;"	kind:function	line:197
+action	../src/opsoro/apps/opa/__init__.py	/^    def action():$/;"	kind:function	line:73
+change_name	../src/opsoro/apps/opa/__init__.py	/^    def change_name():$/;"	kind:function	line:89
+getapplets	../src/opsoro/apps/opa/__init__.py	/^    def getapplets():$/;"	kind:function	line:97
+getcommands	../src/opsoro/apps/opa/__init__.py	/^    def getcommands():$/;"	kind:function	line:103
+socket_message	../src/opsoro/apps/opa/__init__.py	/^    def socket_message(conn, data):$/;"	kind:function	line:110
+socket_connected	../src/opsoro/apps/opa/__init__.py	/^    def socket_connected(conn):$/;"	kind:function	line:123
+socket_connected	../src/opsoro/apps/opa/__init__.py	/^    def socket_connected(conn):$/;"	kind:function	line:129
+save_activity	../src/opsoro/apps/opa/__init__.py	/^    def save_activity(data):$/;"	kind:function	line:136
+read_json_file	../src/opsoro/apps/opa/__init__.py	/^    def read_json_file(filename):$/;"	kind:function	line:148
+speak	../src/opsoro/apps/opa/__init__.py	/^def speak(data):$/;"	kind:function	line:162
+play	../src/opsoro/apps/opa/__init__.py	/^def play(play_data):$/;"	kind:function	line:177
+alarm	../src/opsoro/apps/opa/__init__.py	/^def alarm():$/;"	kind:function	line:185
+CommandLoop	../src/opsoro/apps/opa/__init__.py	/^def CommandLoop():$/;"	kind:function	line:193
+demo	../src/opsoro/apps/opa/__init__.py	/^def demo():$/;"	kind:function	line:207
+setup	../src/opsoro/apps/opa/__init__.py	/^def setup(server):$/;"	kind:function	line:215
+start	../src/opsoro/apps/opa/__init__.py	/^def start(server):$/;"	kind:function	line:219
+stop	../src/opsoro/apps/opa/__init__.py	/^def stop(server):$/;"	kind:function	line:224
 __init__.py	../src/opsoro/apps/sounds/__init__.py	1;"	kind:file	line:1
-config	../src/opsoro/apps/sounds/__init__.py	/^config = {$/;"	kind:variable	line:12
-get_path	../src/opsoro/apps/sounds/__init__.py	/^get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))$/;"	kind:variable	line:25
-setup_pages	../src/opsoro/apps/sounds/__init__.py	/^def setup_pages(opsoroapp):$/;"	kind:function	line:28
-index	../src/opsoro/apps/sounds/__init__.py	/^    def index():$/;"	kind:function	line:37
-upload	../src/opsoro/apps/sounds/__init__.py	/^    def upload():$/;"	kind:function	line:53
-setup	../src/opsoro/apps/sounds/__init__.py	/^def setup(opsoroapp):$/;"	kind:function	line:72
-start	../src/opsoro/apps/sounds/__init__.py	/^def start(opsoroapp):$/;"	kind:function	line:76
-stop	../src/opsoro/apps/sounds/__init__.py	/^def stop(opsoroapp):$/;"	kind:function	line:80
+config	../src/opsoro/apps/sounds/__init__.py	/^config = {$/;"	kind:variable	line:13
+get_path	../src/opsoro/apps/sounds/__init__.py	/^get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))$/;"	kind:variable	line:28
+setup_pages	../src/opsoro/apps/sounds/__init__.py	/^def setup_pages(opsoroapp):$/;"	kind:function	line:31
+index	../src/opsoro/apps/sounds/__init__.py	/^  def index():$/;"	kind:function	line:36
+upload	../src/opsoro/apps/sounds/__init__.py	/^  def upload():$/;"	kind:function	line:52
+setup	../src/opsoro/apps/sounds/__init__.py	/^def setup(opsoroapp):$/;"	kind:function	line:71
+start	../src/opsoro/apps/sounds/__init__.py	/^def start(opsoroapp):$/;"	kind:function	line:75
+stop	../src/opsoro/apps/sounds/__init__.py	/^def stop(opsoroapp):$/;"	kind:function	line:79
 __init__.py	../src/opsoro/apps/app_template/__init__.py	1;"	kind:file	line:1
-constrain	../src/opsoro/apps/app_template/__init__.py	/^constrain = lambda n, minn, maxn: max(min(maxn, n), minn)$/;"	kind:variable	line:15
-get_path	../src/opsoro/apps/app_template/__init__.py	/^get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))$/;"	kind:variable	line:16
-config	../src/opsoro/apps/app_template/__init__.py	/^config = {$/;"	kind:variable	line:18
-setup_pages	../src/opsoro/apps/app_template/__init__.py	/^def setup_pages(server):$/;"	kind:function	line:30
-index	../src/opsoro/apps/app_template/__init__.py	/^    def index():$/;"	kind:function	line:38
-demo	../src/opsoro/apps/app_template/__init__.py	/^def demo():$/;"	kind:function	line:51
-setup	../src/opsoro/apps/app_template/__init__.py	/^def setup(server):$/;"	kind:function	line:59
-start	../src/opsoro/apps/app_template/__init__.py	/^def start(server):$/;"	kind:function	line:62
-stop	../src/opsoro/apps/app_template/__init__.py	/^def stop(server):$/;"	kind:function	line:65
+constrain	../src/opsoro/apps/app_template/__init__.py	/^def constrain(n, minn, maxn): return max(min(maxn, n), minn)$/;"	kind:function	line:17
+get_path	../src/opsoro/apps/app_template/__init__.py	/^get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))$/;"	kind:variable	line:20
+config	../src/opsoro/apps/app_template/__init__.py	/^config = {$/;"	kind:variable	line:22
+setup_pages	../src/opsoro/apps/app_template/__init__.py	/^def setup_pages(apps):$/;"	kind:function	line:37
+index	../src/opsoro/apps/app_template/__init__.py	/^    def index():$/;"	kind:function	line:44
+demo	../src/opsoro/apps/app_template/__init__.py	/^def demo():$/;"	kind:function	line:57
+setup	../src/opsoro/apps/app_template/__init__.py	/^def setup(server):$/;"	kind:function	line:67
+start	../src/opsoro/apps/app_template/__init__.py	/^def start(server):$/;"	kind:function	line:71
+stop	../src/opsoro/apps/app_template/__init__.py	/^def stop(server):$/;"	kind:function	line:75
 __init__.py	../src/opsoro/apps/touch_graph/__init__.py	1;"	kind:file	line:1
 config	../src/opsoro/apps/touch_graph/__init__.py	/^config = {$/;"	kind:variable	line:13
-touch_t	../src/opsoro/apps/touch_graph/__init__.py	/^touch_t = None$/;"	kind:variable	line:26
-clientconn	../src/opsoro/apps/touch_graph/__init__.py	/^clientconn = None$/;"	kind:variable	line:27
-running	../src/opsoro/apps/touch_graph/__init__.py	/^running = False$/;"	kind:variable	line:28
-numelectrodes	../src/opsoro/apps/touch_graph/__init__.py	/^numelectrodes = 0$/;"	kind:variable	line:29
-TouchLoop	../src/opsoro/apps/touch_graph/__init__.py	/^def TouchLoop():$/;"	kind:function	line:32
-startcap	../src/opsoro/apps/touch_graph/__init__.py	/^def startcap(electrodes):$/;"	kind:function	line:54
-stopcap	../src/opsoro/apps/touch_graph/__init__.py	/^def stopcap():$/;"	kind:function	line:64
-setup_pages	../src/opsoro/apps/touch_graph/__init__.py	/^def setup_pages(opsoroapp):$/;"	kind:function	line:69
-index	../src/opsoro/apps/touch_graph/__init__.py	/^    def index():$/;"	kind:function	line:78
-s_connected	../src/opsoro/apps/touch_graph/__init__.py	/^    def s_connected(conn):$/;"	kind:function	line:84
-s_disconnected	../src/opsoro/apps/touch_graph/__init__.py	/^    def s_disconnected(conn):$/;"	kind:function	line:89
-s_startcapture	../src/opsoro/apps/touch_graph/__init__.py	/^    def s_startcapture(conn, data):$/;"	kind:function	line:94
-s_stopcapture	../src/opsoro/apps/touch_graph/__init__.py	/^    def s_stopcapture(conn, data):$/;"	kind:function	line:99
-setup	../src/opsoro/apps/touch_graph/__init__.py	/^def setup(opsoroapp):$/;"	kind:function	line:105
-start	../src/opsoro/apps/touch_graph/__init__.py	/^def start(opsoroapp):$/;"	kind:function	line:109
-stop	../src/opsoro/apps/touch_graph/__init__.py	/^def stop(opsoroapp):$/;"	kind:function	line:116
+touch_t	../src/opsoro/apps/touch_graph/__init__.py	/^touch_t = None$/;"	kind:variable	line:28
+running	../src/opsoro/apps/touch_graph/__init__.py	/^running = False$/;"	kind:variable	line:29
+numelectrodes	../src/opsoro/apps/touch_graph/__init__.py	/^numelectrodes = 0$/;"	kind:variable	line:30
+TouchLoop	../src/opsoro/apps/touch_graph/__init__.py	/^def TouchLoop():$/;"	kind:function	line:33
+startcap	../src/opsoro/apps/touch_graph/__init__.py	/^def startcap(electrodes):$/;"	kind:function	line:53
+stopcap	../src/opsoro/apps/touch_graph/__init__.py	/^def stopcap():$/;"	kind:function	line:63
+setup_pages	../src/opsoro/apps/touch_graph/__init__.py	/^def setup_pages(opsoroapp):$/;"	kind:function	line:68
+index	../src/opsoro/apps/touch_graph/__init__.py	/^    def index():$/;"	kind:function	line:73
+s_startcapture	../src/opsoro/apps/touch_graph/__init__.py	/^    def s_startcapture(conn, data):$/;"	kind:function	line:79
+s_stopcapture	../src/opsoro/apps/touch_graph/__init__.py	/^    def s_stopcapture(conn, data):$/;"	kind:function	line:84
+setup	../src/opsoro/apps/touch_graph/__init__.py	/^def setup(opsoroapp):$/;"	kind:function	line:90
+start	../src/opsoro/apps/touch_graph/__init__.py	/^def start(opsoroapp):$/;"	kind:function	line:94
+stop	../src/opsoro/apps/touch_graph/__init__.py	/^def stop(opsoroapp):$/;"	kind:function	line:101
+__init__.py	../src/opsoro/apps/social_response/__init__.py	1;"	kind:file	line:1
+constrain	../src/opsoro/apps/social_response/__init__.py	/^def constrain(n, minn, maxn): return max(min(maxn, n), minn)$/;"	kind:function	line:28
+get_path	../src/opsoro/apps/social_response/__init__.py	/^get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))$/;"	kind:variable	line:31
+config	../src/opsoro/apps/social_response/__init__.py	/^config = {$/;"	kind:variable	line:33
+loop_t	../src/opsoro/apps/social_response/__init__.py	/^loop_t = None$/;"	kind:variable	line:47
+loop_button_t	../src/opsoro/apps/social_response/__init__.py	/^loop_button_t = None$/;"	kind:variable	line:48
+get_page_data	../src/opsoro/apps/social_response/__init__.py	/^def get_page_data(page_id, fields, access_token):$/;"	kind:function	line:52
+page_id	../src/opsoro/apps/social_response/__init__.py	/^page_id = 'opsoro'  # username or id$/;"	kind:variable	line:71
+field	../src/opsoro/apps/social_response/__init__.py	/^field = 'fan_count'$/;"	kind:variable	line:72
+token	../src/opsoro/apps/social_response/__init__.py	/^token = 'EAAaBZCzjU8H8BAFV7KudJn0K1V12CDBHqTIxYu6pVh7cpZAbt1WbZCyZBeSZC472fpPd0ZAkWC1tMrfAY26XnQJUR2rNrMQncQ9OGJlie3dUeQVvabZCwNmGaLL4FGHjZBVTajid16FL5niGWytlwZCiFDgj6yjIsZAAAZD'  # Access Token$/;"	kind:variable	line:73
+access_token	../src/opsoro/apps/social_response/__init__.py	/^access_token = '735437381696905216-BboISY7Qcqd1noMDY61zN75CdGT0OSc'$/;"	kind:variable	line:76
+access_token_secret	../src/opsoro/apps/social_response/__init__.py	/^access_token_secret = 'd3A8D1ttrCxYV76pBOB389YqoLB32LiE0RVyoFwuMKUMb'$/;"	kind:variable	line:77
+consumer_key	../src/opsoro/apps/social_response/__init__.py	/^consumer_key = 'AcdgqgujzF06JF6zWrfwFeUfF'$/;"	kind:variable	line:78
+consumer_secret	../src/opsoro/apps/social_response/__init__.py	/^consumer_secret = 'ss0wVcBTFAT6nR6hXrqyyOcFOhpa2sNW4cIap9JOoepcch93ky'$/;"	kind:variable	line:79
+twitterWords	../src/opsoro/apps/social_response/__init__.py	/^twitterWords = ['#opsoro']$/;"	kind:variable	line:81
+auth	../src/opsoro/apps/social_response/__init__.py	/^auth = tweepy.OAuthHandler(consumer_key, consumer_secret)$/;"	kind:variable	line:83
+MyStreamListener	../src/opsoro/apps/social_response/__init__.py	/^class MyStreamListener(tweepy.StreamListener):$/;"	kind:class	line:89
+on_status	../src/opsoro/apps/social_response/__init__.py	/^    def on_status(self, status):$/;"	kind:member	line:90
+api	../src/opsoro/apps/social_response/__init__.py	/^api = tweepy.API(auth)$/;"	kind:variable	line:99
+myStreamListener	../src/opsoro/apps/social_response/__init__.py	/^myStreamListener = MyStreamListener()$/;"	kind:variable	line:100
+myStream	../src/opsoro/apps/social_response/__init__.py	/^myStream = tweepy.Stream(auth=api.auth, listener=myStreamListener)$/;"	kind:variable	line:101
+sleep_time	../src/opsoro/apps/social_response/__init__.py	/^sleep_time = 5$/;"	kind:variable	line:106
+emotions_phis	../src/opsoro/apps/social_response/__init__.py	/^emotions_phis = [36.0, 18.0, 198.0, 153.0, 90.0, 125.0, 172.0, 270.0]$/;"	kind:variable	line:112
+sounds	../src/opsoro/apps/social_response/__init__.py	/^sounds = ['smb_1-up.wav', 'smb_coin.wav', 'smb_powerup.wav', 'Whistle.wav', 'Woohoo.wav', 'Small_Applause.wav']$/;"	kind:variable	line:113
+sound_int	../src/opsoro/apps/social_response/__init__.py	/^sound_int = -1$/;"	kind:variable	line:114
+emotion_int	../src/opsoro/apps/social_response/__init__.py	/^emotion_int = -1$/;"	kind:variable	line:115
+prev_emotion_int	../src/opsoro/apps/social_response/__init__.py	/^prev_emotion_int = emotion_int$/;"	kind:variable	line:116
+prev_sound_int	../src/opsoro/apps/social_response/__init__.py	/^prev_sound_int = sound_int$/;"	kind:variable	line:117
+Go_Crazy	../src/opsoro/apps/social_response/__init__.py	/^def Go_Crazy(text='', twitter=False, facebook=False):$/;"	kind:function	line:120
+LoopButton	../src/opsoro/apps/social_response/__init__.py	/^def LoopButton():$/;"	kind:function	line:156
+Loop	../src/opsoro/apps/social_response/__init__.py	/^def Loop():$/;"	kind:function	line:165
+setup_pages	../src/opsoro/apps/social_response/__init__.py	/^def setup_pages(opsoroapp):$/;"	kind:function	line:221
+index	../src/opsoro/apps/social_response/__init__.py	/^    def index():$/;"	kind:function	line:226
+setup	../src/opsoro/apps/social_response/__init__.py	/^def setup(opsoroapp):$/;"	kind:function	line:241
+start	../src/opsoro/apps/social_response/__init__.py	/^def start(opsoroapp):$/;"	kind:function	line:245
+stop	../src/opsoro/apps/social_response/__init__.py	/^def stop(opsoroapp):$/;"	kind:function	line:254
 __init__.py	../src/opsoro/apps/circumplex/__init__.py	1;"	kind:file	line:1
 config	../src/opsoro/apps/circumplex/__init__.py	/^config = {$/;"	kind:variable	line:5
-setup_pages	../src/opsoro/apps/circumplex/__init__.py	/^def setup_pages(opsoroapp):$/;"	kind:function	line:17
-index	../src/opsoro/apps/circumplex/__init__.py	/^    def index():$/;"	kind:function	line:26
-setup	../src/opsoro/apps/circumplex/__init__.py	/^def setup(opsoroapp):$/;"	kind:function	line:33
-start	../src/opsoro/apps/circumplex/__init__.py	/^def start(opsoroapp):$/;"	kind:function	line:37
-stop	../src/opsoro/apps/circumplex/__init__.py	/^def stop(opsoroapp):$/;"	kind:function	line:41
+setup_pages	../src/opsoro/apps/circumplex/__init__.py	/^def setup_pages(opsoroapp):$/;"	kind:function	line:20
+index	../src/opsoro/apps/circumplex/__init__.py	/^    def index():$/;"	kind:function	line:25
+setup	../src/opsoro/apps/circumplex/__init__.py	/^def setup(opsoroapp):$/;"	kind:function	line:32
+start	../src/opsoro/apps/circumplex/__init__.py	/^def start(opsoroapp):$/;"	kind:function	line:36
+stop	../src/opsoro/apps/circumplex/__init__.py	/^def stop(opsoroapp):$/;"	kind:function	line:40
 __init__.py	../src/opsoro/apps/sliders/__init__.py	1;"	kind:file	line:1
-constrain	../src/opsoro/apps/sliders/__init__.py	/^constrain = lambda n, minn, maxn: max(min(maxn, n), minn)$/;"	kind:variable	line:10
-config	../src/opsoro/apps/sliders/__init__.py	/^config = {$/;"	kind:variable	line:12
-clientconn	../src/opsoro/apps/sliders/__init__.py	/^clientconn = None$/;"	kind:variable	line:24
-get_path	../src/opsoro/apps/sliders/__init__.py	/^get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))$/;"	kind:variable	line:29
-setup_pages	../src/opsoro/apps/sliders/__init__.py	/^def setup_pages(opsoroapp):$/;"	kind:function	line:38
-index	../src/opsoro/apps/sliders/__init__.py	/^    def index():$/;"	kind:function	line:49
-s_connected	../src/opsoro/apps/sliders/__init__.py	/^    def s_connected(conn):$/;"	kind:function	line:74
-s_disconnected	../src/opsoro/apps/sliders/__init__.py	/^    def s_disconnected(conn):$/;"	kind:function	line:79
-s_setdofpos	../src/opsoro/apps/sliders/__init__.py	/^    def s_setdofpos(conn, data):$/;"	kind:function	line:84
-setup	../src/opsoro/apps/sliders/__init__.py	/^def setup(opsoroapp):$/;"	kind:function	line:115
-start	../src/opsoro/apps/sliders/__init__.py	/^def start(opsoroapp):$/;"	kind:function	line:119
-stop	../src/opsoro/apps/sliders/__init__.py	/^def stop(opsoroapp):$/;"	kind:function	line:123
+constrain	../src/opsoro/apps/sliders/__init__.py	/^def constrain(n, minn, maxn): return max(min(maxn, n), minn)$/;"	kind:function	line:15
+config	../src/opsoro/apps/sliders/__init__.py	/^config = {$/;"	kind:variable	line:18
+get_path	../src/opsoro/apps/sliders/__init__.py	/^get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))$/;"	kind:variable	line:34
+setup_pages	../src/opsoro/apps/sliders/__init__.py	/^def setup_pages(opsoroapp):$/;"	kind:function	line:42
+index	../src/opsoro/apps/sliders/__init__.py	/^    def index():$/;"	kind:function	line:47
+s_setdofpos	../src/opsoro/apps/sliders/__init__.py	/^    def s_setdofpos(conn, data):$/;"	kind:function	line:57
+setup	../src/opsoro/apps/sliders/__init__.py	/^def setup(opsoroapp):$/;"	kind:function	line:71
+start	../src/opsoro/apps/sliders/__init__.py	/^def start(opsoroapp):$/;"	kind:function	line:75
+stop	../src/opsoro/apps/sliders/__init__.py	/^def stop(opsoroapp):$/;"	kind:function	line:79
 __init__.py	../src/opsoro/apps/expression_configurator/__init__.py	1;"	kind:file	line:1
-constrain	../src/opsoro/apps/expression_configurator/__init__.py	/^constrain = lambda n, minn, maxn: max(min(maxn, n), minn)$/;"	kind:variable	line:25
-config	../src/opsoro/apps/expression_configurator/__init__.py	/^config = {$/;"	kind:variable	line:27
-get_path	../src/opsoro/apps/expression_configurator/__init__.py	/^get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))$/;"	kind:variable	line:39
-setup_pages	../src/opsoro/apps/expression_configurator/__init__.py	/^def setup_pages(opsoroapp):$/;"	kind:function	line:42
-index	../src/opsoro/apps/expression_configurator/__init__.py	/^    def index():$/;"	kind:function	line:51
-setup	../src/opsoro/apps/expression_configurator/__init__.py	/^def setup(opsoroapp):$/;"	kind:function	line:108
-start	../src/opsoro/apps/expression_configurator/__init__.py	/^def start(opsoroapp):$/;"	kind:function	line:112
-stop	../src/opsoro/apps/expression_configurator/__init__.py	/^def stop(opsoroapp):$/;"	kind:function	line:116
+constrain	../src/opsoro/apps/expression_configurator/__init__.py	/^def constrain(n, minn, maxn): return max(min(maxn, n), minn)$/;"	kind:function	line:20
+config	../src/opsoro/apps/expression_configurator/__init__.py	/^config = {$/;"	kind:variable	line:23
+get_path	../src/opsoro/apps/expression_configurator/__init__.py	/^get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))$/;"	kind:variable	line:37
+setup_pages	../src/opsoro/apps/expression_configurator/__init__.py	/^def setup_pages(opsoroapp):$/;"	kind:function	line:40
+index	../src/opsoro/apps/expression_configurator/__init__.py	/^    def index():$/;"	kind:function	line:45
+s_setDofs	../src/opsoro/apps/expression_configurator/__init__.py	/^    def s_setDofs(conn, data):$/;"	kind:function	line:94
+setup	../src/opsoro/apps/expression_configurator/__init__.py	/^def setup(opsoroapp):$/;"	kind:function	line:109
+start	../src/opsoro/apps/expression_configurator/__init__.py	/^def start(opsoroapp):$/;"	kind:function	line:113
+stop	../src/opsoro/apps/expression_configurator/__init__.py	/^def stop(opsoroapp):$/;"	kind:function	line:117
 __init__.py	../src/opsoro/apps/__init__.py	1;"	kind:file	line:1
+constrain	../src/opsoro/apps/__init__.py	/^def constrain(n, minn, maxn): return max(min(maxn, n), minn)$/;"	kind:function	line:18
+get_path	../src/opsoro/apps/__init__.py	/^get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))$/;"	kind:variable	line:21
+_Apps	../src/opsoro/apps/__init__.py	/^class _Apps(object):$/;"	kind:class	line:24
+__init__	../src/opsoro/apps/__init__.py	/^    def __init__(self):$/;"	kind:member	line:25
+start	../src/opsoro/apps/__init__.py	/^    def start(self, appname):$/;"	kind:member	line:49
+stop	../src/opsoro/apps/__init__.py	/^    def stop(self, appname):$/;"	kind:member	line:84
+refresh_active	../src/opsoro/apps/__init__.py	/^    def refresh_active(self):$/;"	kind:member	line:104
+stop_all	../src/opsoro/apps/__init__.py	/^    def stop_all(self):$/;"	kind:member	line:127
+register_app_blueprint	../src/opsoro/apps/__init__.py	/^    def register_app_blueprint(self, bp):$/;"	kind:member	line:140
+app_view	../src/opsoro/apps/__init__.py	/^    def app_view(self, f):$/;"	kind:member	line:146
+app_api	../src/opsoro/apps/__init__.py	/^    def app_api(self, f):$/;"	kind:member	line:149
+render_template	../src/opsoro/apps/__init__.py	/^    def render_template(self, template, **kwargs):$/;"	kind:member	line:152
+app_socket_connected	../src/opsoro/apps/__init__.py	/^    def app_socket_connected(self, f):$/;"	kind:member	line:155
+app_socket_disconnected	../src/opsoro/apps/__init__.py	/^    def app_socket_disconnected(self, f):$/;"	kind:member	line:160
+app_socket_message	../src/opsoro/apps/__init__.py	/^    def app_socket_message(self, action=""):$/;"	kind:member	line:165
+inner	../src/opsoro/apps/__init__.py	/^        def inner(f):$/;"	kind:function	line:166
+register_apps	../src/opsoro/apps/__init__.py	/^    def register_apps(self, server):$/;"	kind:member	line:175
+Apps	../src/opsoro/apps/__init__.py	/^Apps = _Apps()$/;"	kind:variable	line:230
 __init__.py	../src/opsoro/apps/social_script/__init__.py	1;"	kind:file	line:1
-constrain	../src/opsoro/apps/social_script/__init__.py	/^constrain = lambda n, minn, maxn: max(min(maxn, n), minn)$/;"	kind:variable	line:27
-config	../src/opsoro/apps/social_script/__init__.py	/^config = {$/;"	kind:variable	line:31
-get_path	../src/opsoro/apps/social_script/__init__.py	/^get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))$/;"	kind:variable	line:44
-dof_positions	../src/opsoro/apps/social_script/__init__.py	/^dof_positions = {}$/;"	kind:variable	line:46
-clientconn	../src/opsoro/apps/social_script/__init__.py	/^clientconn = None$/;"	kind:variable	line:48
-send_stopped	../src/opsoro/apps/social_script/__init__.py	/^def send_stopped():$/;"	kind:function	line:51
-SocialscriptRun	../src/opsoro/apps/social_script/__init__.py	/^def SocialscriptRun():$/;"	kind:function	line:57
-socialscript_t	../src/opsoro/apps/social_script/__init__.py	/^socialscript_t = None$/;"	kind:variable	line:62
-setup_pages	../src/opsoro/apps/social_script/__init__.py	/^def setup_pages(opsoroapp):$/;"	kind:function	line:65
-index	../src/opsoro/apps/social_script/__init__.py	/^    def index():$/;"	kind:function	line:74
-s_connected	../src/opsoro/apps/social_script/__init__.py	/^    def s_connected(conn):$/;"	kind:function	line:93
-s_disconnected	../src/opsoro/apps/social_script/__init__.py	/^    def s_disconnected(conn):$/;"	kind:function	line:98
-setup	../src/opsoro/apps/social_script/__init__.py	/^def setup(opsoroapp):$/;"	kind:function	line:105
-start	../src/opsoro/apps/social_script/__init__.py	/^def start(opsoroapp):$/;"	kind:function	line:109
-stop	../src/opsoro/apps/social_script/__init__.py	/^def stop(opsoroapp):$/;"	kind:function	line:113
+constrain	../src/opsoro/apps/social_script/__init__.py	/^def constrain(n, minn, maxn): return max(min(maxn, n), minn)$/;"	kind:function	line:30
+config	../src/opsoro/apps/social_script/__init__.py	/^config = {$/;"	kind:variable	line:35
+get_path	../src/opsoro/apps/social_script/__init__.py	/^get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))$/;"	kind:variable	line:50
+dof_positions	../src/opsoro/apps/social_script/__init__.py	/^dof_positions = {}$/;"	kind:variable	line:52
+send_stopped	../src/opsoro/apps/social_script/__init__.py	/^def send_stopped():$/;"	kind:function	line:55
+SocialscriptRun	../src/opsoro/apps/social_script/__init__.py	/^def SocialscriptRun():$/;"	kind:function	line:59
+socialscript_t	../src/opsoro/apps/social_script/__init__.py	/^socialscript_t = None$/;"	kind:variable	line:64
+setup_pages	../src/opsoro/apps/social_script/__init__.py	/^def setup_pages(opsoroapp):$/;"	kind:function	line:67
+index	../src/opsoro/apps/social_script/__init__.py	/^    def index():$/;"	kind:function	line:72
+setup	../src/opsoro/apps/social_script/__init__.py	/^def setup(opsoroapp):$/;"	kind:function	line:92
+start	../src/opsoro/apps/social_script/__init__.py	/^def start(opsoroapp):$/;"	kind:function	line:96
+stop	../src/opsoro/apps/social_script/__init__.py	/^def stop(opsoroapp):$/;"	kind:function	line:100
 __init__.py	../src/opsoro/apps/cockpit/__init__.py	1;"	kind:file	line:1
-constrain	../src/opsoro/apps/cockpit/__init__.py	/^constrain = lambda n, minn, maxn: max(min(maxn, n), minn)$/;"	kind:variable	line:9
-config	../src/opsoro/apps/cockpit/__init__.py	/^config = {$/;"	kind:variable	line:11
-clientconn	../src/opsoro/apps/cockpit/__init__.py	/^clientconn = None$/;"	kind:variable	line:23
-setup_pages	../src/opsoro/apps/cockpit/__init__.py	/^def setup_pages(opsoroapp):$/;"	kind:function	line:36
-index	../src/opsoro/apps/cockpit/__init__.py	/^    def index():$/;"	kind:function	line:47
-s_connected	../src/opsoro/apps/cockpit/__init__.py	/^    def s_connected(conn):$/;"	kind:function	line:72
-s_disconnected	../src/opsoro/apps/cockpit/__init__.py	/^    def s_disconnected(conn):$/;"	kind:function	line:77
-s_setservopos	../src/opsoro/apps/cockpit/__init__.py	/^    def s_setservopos(conn, data):$/;"	kind:function	line:82
-setup	../src/opsoro/apps/cockpit/__init__.py	/^def setup(opsoroapp):$/;"	kind:function	line:94
-start	../src/opsoro/apps/cockpit/__init__.py	/^def start(opsoroapp):$/;"	kind:function	line:98
-stop	../src/opsoro/apps/cockpit/__init__.py	/^def stop(opsoroapp):$/;"	kind:function	line:103
+constrain	../src/opsoro/apps/cockpit/__init__.py	/^def constrain(n, minn, maxn): return max(min(maxn, n), minn)$/;"	kind:function	line:10
+config	../src/opsoro/apps/cockpit/__init__.py	/^config = {$/;"	kind:variable	line:13
+setup_pages	../src/opsoro/apps/cockpit/__init__.py	/^def setup_pages(opsoroapp):$/;"	kind:function	line:28
+index	../src/opsoro/apps/cockpit/__init__.py	/^    def index():$/;"	kind:function	line:33
+s_setservopos	../src/opsoro/apps/cockpit/__init__.py	/^    def s_setservopos(conn, data):$/;"	kind:function	line:40
+setup	../src/opsoro/apps/cockpit/__init__.py	/^def setup(opsoroapp):$/;"	kind:function	line:52
+start	../src/opsoro/apps/cockpit/__init__.py	/^def start(opsoroapp):$/;"	kind:function	line:56
+stop	../src/opsoro/apps/cockpit/__init__.py	/^def stop(opsoroapp):$/;"	kind:function	line:61
+__init__.py	../src/opsoro/apps/robot_configurator/__init__.py	1;"	kind:file	line:1
+constrain	../src/opsoro/apps/robot_configurator/__init__.py	/^def constrain(n, minn, maxn): return max(min(maxn, n), minn)$/;"	kind:function	line:20
+config	../src/opsoro/apps/robot_configurator/__init__.py	/^config = {$/;"	kind:variable	line:23
+get_path	../src/opsoro/apps/robot_configurator/__init__.py	/^get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))$/;"	kind:variable	line:37
+setup_pages	../src/opsoro/apps/robot_configurator/__init__.py	/^def setup_pages(opsoroapp):$/;"	kind:function	line:40
+index	../src/opsoro/apps/robot_configurator/__init__.py	/^    def index():$/;"	kind:function	line:45
+s_setServoPos	../src/opsoro/apps/robot_configurator/__init__.py	/^    def s_setServoPos(conn, data):$/;"	kind:function	line:83
+setup	../src/opsoro/apps/robot_configurator/__init__.py	/^def setup(opsoroapp):$/;"	kind:function	line:96
+start	../src/opsoro/apps/robot_configurator/__init__.py	/^def start(opsoroapp):$/;"	kind:function	line:100
+stop	../src/opsoro/apps/robot_configurator/__init__.py	/^def stop(opsoroapp):$/;"	kind:function	line:104
 scripthost.py	../src/opsoro/apps/lua_scripting/scripthost.py	1;"	kind:file	line:1
-callback	../src/opsoro/apps/lua_scripting/scripthost.py	/^def callback(fn):$/;"	kind:function	line:15
-do_nothing	../src/opsoro/apps/lua_scripting/scripthost.py	/^    def do_nothing(*args, **kwargs):$/;"	kind:function	line:24
-ScriptHost	../src/opsoro/apps/lua_scripting/scripthost.py	/^class ScriptHost(object):$/;"	kind:class	line:33
-__init__	../src/opsoro/apps/lua_scripting/scripthost.py	/^    def __init__(self):$/;"	kind:member	line:34
-__del__	../src/opsoro/apps/lua_scripting/scripthost.py	/^    def __del__(self):$/;"	kind:member	line:53
-setup_runtime	../src/opsoro/apps/lua_scripting/scripthost.py	/^    def setup_runtime(self):$/;"	kind:member	line:57
-start_script	../src/opsoro/apps/lua_scripting/scripthost.py	/^    def start_script(self, script):$/;"	kind:member	line:99
-stop_script	../src/opsoro/apps/lua_scripting/scripthost.py	/^    def stop_script(self):$/;"	kind:member	line:120
-generate_lua_error	../src/opsoro/apps/lua_scripting/scripthost.py	/^    def generate_lua_error(self, message):$/;"	kind:member	line:132
-_report_error	../src/opsoro/apps/lua_scripting/scripthost.py	/^    def _report_error(self, e):$/;"	kind:member	line:141
-_sleep	../src/opsoro/apps/lua_scripting/scripthost.py	/^    def _sleep(self, time):$/;"	kind:member	line:158
-_rising_edge	../src/opsoro/apps/lua_scripting/scripthost.py	/^    def _rising_edge(self, identifier, status):$/;"	kind:member	line:169
-_falling_edge	../src/opsoro/apps/lua_scripting/scripthost.py	/^    def _falling_edge(self, identifier, status):$/;"	kind:member	line:189
-_remove_lua_overlays	../src/opsoro/apps/lua_scripting/scripthost.py	/^    def _remove_lua_overlays(self):$/;"	kind:member	line:209
-_run	../src/opsoro/apps/lua_scripting/scripthost.py	/^    def _run(self):$/;"	kind:member	line:217
-ScriptUI	../src/opsoro/apps/lua_scripting/scripthost.py	/^class ScriptUI(object):$/;"	kind:class	line:266
-__init__	../src/opsoro/apps/lua_scripting/scripthost.py	/^    def __init__(self):$/;"	kind:member	line:267
-init	../src/opsoro/apps/lua_scripting/scripthost.py	/^    def init(self):$/;"	kind:member	line:277
-add_button	../src/opsoro/apps/lua_scripting/scripthost.py	/^    def add_button(self, name, caption, icon, toggle=False):$/;"	kind:member	line:285
-add_key	../src/opsoro/apps/lua_scripting/scripthost.py	/^    def add_key(self, key):$/;"	kind:member	line:293
-set_key_status	../src/opsoro/apps/lua_scripting/scripthost.py	/^    def set_key_status(self, key, status):$/;"	kind:member	line:301
-set_button_status	../src/opsoro/apps/lua_scripting/scripthost.py	/^    def set_button_status(self, button, status):$/;"	kind:member	line:310
-is_button_pressed	../src/opsoro/apps/lua_scripting/scripthost.py	/^    def is_button_pressed(self, name):$/;"	kind:member	line:319
-is_key_pressed	../src/opsoro/apps/lua_scripting/scripthost.py	/^    def is_key_pressed(self, key):$/;"	kind:member	line:328
-LuaHardware	../src/opsoro/apps/lua_scripting/scripthost.py	/^class LuaHardware(object):$/;"	kind:class	line:338
-__init__	../src/opsoro/apps/lua_scripting/scripthost.py	/^    def __init__(self, runtime):$/;"	kind:member	line:339
-__getattr__	../src/opsoro/apps/lua_scripting/scripthost.py	/^    def __getattr__(self, k):$/;"	kind:member	line:343
-ignore_one	../src/opsoro/apps/lua_scripting/scripthost.py	/^        def ignore_one(ign, *args, **kwargs):$/;"	kind:function	line:349
-cap_get_filtered_data	../src/opsoro/apps/lua_scripting/scripthost.py	/^    def cap_get_filtered_data(self):$/;"	kind:member	line:357
-cap_get_baseline_data	../src/opsoro/apps/lua_scripting/scripthost.py	/^    def cap_get_baseline_data(self):$/;"	kind:member	line:360
-ana_read_all_channels	../src/opsoro/apps/lua_scripting/scripthost.py	/^    def ana_read_all_channels(self):$/;"	kind:member	line:363
-spi_command	../src/opsoro/apps/lua_scripting/scripthost.py	/^    def spi_command(self, cmd, params=None, returned=0, delay=0):$/;"	kind:member	line:366
-servo_set_all	../src/opsoro/apps/lua_scripting/scripthost.py	/^    def servo_set_all(self, pos_list):$/;"	kind:member	line:372
-LuaAnimate	../src/opsoro/apps/lua_scripting/scripthost.py	/^class LuaAnimate(object):$/;"	kind:class	line:377
-__init__	../src/opsoro/apps/lua_scripting/scripthost.py	/^    def __init__(self, times, values):$/;"	kind:member	line:378
-new	../src/opsoro/apps/lua_scripting/scripthost.py	/^    def new(cls, times, values):$/;"	kind:member	line:383
-__call__	../src/opsoro/apps/lua_scripting/scripthost.py	/^    def __call__(self):$/;"	kind:member	line:386
-has_ended	../src/opsoro/apps/lua_scripting/scripthost.py	/^    def has_ended(self):$/;"	kind:member	line:389
-LuaAnimatePeriodic	../src/opsoro/apps/lua_scripting/scripthost.py	/^class LuaAnimatePeriodic(object):$/;"	kind:class	line:393
-__init__	../src/opsoro/apps/lua_scripting/scripthost.py	/^    def __init__(self, times, values):$/;"	kind:member	line:394
-new	../src/opsoro/apps/lua_scripting/scripthost.py	/^    def new(cls, times, values):$/;"	kind:member	line:399
-__call__	../src/opsoro/apps/lua_scripting/scripthost.py	/^    def __call__(self):$/;"	kind:member	line:402
+callback	../src/opsoro/apps/lua_scripting/scripthost.py	/^def callback(fn):$/;"	kind:function	line:17
+do_nothing	../src/opsoro/apps/lua_scripting/scripthost.py	/^    def do_nothing(*args, **kwargs):$/;"	kind:function	line:26
+ScriptHost	../src/opsoro/apps/lua_scripting/scripthost.py	/^class ScriptHost(object):$/;"	kind:class	line:35
+__init__	../src/opsoro/apps/lua_scripting/scripthost.py	/^    def __init__(self):$/;"	kind:member	line:36
+__del__	../src/opsoro/apps/lua_scripting/scripthost.py	/^    def __del__(self):$/;"	kind:member	line:55
+setup_runtime	../src/opsoro/apps/lua_scripting/scripthost.py	/^    def setup_runtime(self):$/;"	kind:member	line:59
+start_script	../src/opsoro/apps/lua_scripting/scripthost.py	/^    def start_script(self, script):$/;"	kind:member	line:102
+stop_script	../src/opsoro/apps/lua_scripting/scripthost.py	/^    def stop_script(self):$/;"	kind:member	line:123
+generate_lua_error	../src/opsoro/apps/lua_scripting/scripthost.py	/^    def generate_lua_error(self, message):$/;"	kind:member	line:135
+_report_error	../src/opsoro/apps/lua_scripting/scripthost.py	/^    def _report_error(self, e):$/;"	kind:member	line:144
+_sleep	../src/opsoro/apps/lua_scripting/scripthost.py	/^    def _sleep(self, time):$/;"	kind:member	line:161
+_rising_edge	../src/opsoro/apps/lua_scripting/scripthost.py	/^    def _rising_edge(self, identifier, status):$/;"	kind:member	line:172
+_falling_edge	../src/opsoro/apps/lua_scripting/scripthost.py	/^    def _falling_edge(self, identifier, status):$/;"	kind:member	line:192
+_remove_lua_overlays	../src/opsoro/apps/lua_scripting/scripthost.py	/^    def _remove_lua_overlays(self):$/;"	kind:member	line:212
+_run	../src/opsoro/apps/lua_scripting/scripthost.py	/^    def _run(self):$/;"	kind:member	line:220
+ScriptUI	../src/opsoro/apps/lua_scripting/scripthost.py	/^class ScriptUI(object):$/;"	kind:class	line:269
+__init__	../src/opsoro/apps/lua_scripting/scripthost.py	/^    def __init__(self):$/;"	kind:member	line:270
+init	../src/opsoro/apps/lua_scripting/scripthost.py	/^    def init(self):$/;"	kind:member	line:280
+add_button	../src/opsoro/apps/lua_scripting/scripthost.py	/^    def add_button(self, name, caption, icon, toggle=False):$/;"	kind:member	line:288
+add_key	../src/opsoro/apps/lua_scripting/scripthost.py	/^    def add_key(self, key):$/;"	kind:member	line:296
+set_key_status	../src/opsoro/apps/lua_scripting/scripthost.py	/^    def set_key_status(self, key, status):$/;"	kind:member	line:304
+set_button_status	../src/opsoro/apps/lua_scripting/scripthost.py	/^    def set_button_status(self, button, status):$/;"	kind:member	line:313
+is_button_pressed	../src/opsoro/apps/lua_scripting/scripthost.py	/^    def is_button_pressed(self, name):$/;"	kind:member	line:322
+is_key_pressed	../src/opsoro/apps/lua_scripting/scripthost.py	/^    def is_key_pressed(self, key):$/;"	kind:member	line:331
+LuaHardware	../src/opsoro/apps/lua_scripting/scripthost.py	/^class LuaHardware(object):$/;"	kind:class	line:341
+__init__	../src/opsoro/apps/lua_scripting/scripthost.py	/^    def __init__(self, runtime):$/;"	kind:member	line:342
+__getattr__	../src/opsoro/apps/lua_scripting/scripthost.py	/^    def __getattr__(self, k):$/;"	kind:member	line:346
+ignore_one	../src/opsoro/apps/lua_scripting/scripthost.py	/^        def ignore_one(ign, *args, **kwargs):$/;"	kind:function	line:352
+cap_get_filtered_data	../src/opsoro/apps/lua_scripting/scripthost.py	/^    def cap_get_filtered_data(self):$/;"	kind:member	line:360
+cap_get_baseline_data	../src/opsoro/apps/lua_scripting/scripthost.py	/^    def cap_get_baseline_data(self):$/;"	kind:member	line:363
+ana_read_all_channels	../src/opsoro/apps/lua_scripting/scripthost.py	/^    def ana_read_all_channels(self):$/;"	kind:member	line:366
+spi_command	../src/opsoro/apps/lua_scripting/scripthost.py	/^    def spi_command(self, cmd, params=None, returned=0, delay=0):$/;"	kind:member	line:369
+servo_set_all	../src/opsoro/apps/lua_scripting/scripthost.py	/^    def servo_set_all(self, pos_list):$/;"	kind:member	line:375
+LuaAnimate	../src/opsoro/apps/lua_scripting/scripthost.py	/^class LuaAnimate(object):$/;"	kind:class	line:380
+__init__	../src/opsoro/apps/lua_scripting/scripthost.py	/^    def __init__(self, times, values):$/;"	kind:member	line:381
+new	../src/opsoro/apps/lua_scripting/scripthost.py	/^    def new(cls, times, values):$/;"	kind:member	line:386
+__call__	../src/opsoro/apps/lua_scripting/scripthost.py	/^    def __call__(self):$/;"	kind:member	line:389
+has_ended	../src/opsoro/apps/lua_scripting/scripthost.py	/^    def has_ended(self):$/;"	kind:member	line:392
+LuaAnimatePeriodic	../src/opsoro/apps/lua_scripting/scripthost.py	/^class LuaAnimatePeriodic(object):$/;"	kind:class	line:396
+__init__	../src/opsoro/apps/lua_scripting/scripthost.py	/^    def __init__(self, times, values):$/;"	kind:member	line:397
+new	../src/opsoro/apps/lua_scripting/scripthost.py	/^    def new(cls, times, values):$/;"	kind:member	line:402
+__call__	../src/opsoro/apps/lua_scripting/scripthost.py	/^    def __call__(self):$/;"	kind:member	line:405
 __init__.py	../src/opsoro/apps/lua_scripting/__init__.py	1;"	kind:file	line:1
-config	../src/opsoro/apps/lua_scripting/__init__.py	/^config = {$/;"	kind:variable	line:12
-clientconn	../src/opsoro/apps/lua_scripting/__init__.py	/^clientconn = None$/;"	kind:variable	line:24
-sh	../src/opsoro/apps/lua_scripting/__init__.py	/^sh = None$/;"	kind:variable	line:25
-script	../src/opsoro/apps/lua_scripting/__init__.py	/^script = ''$/;"	kind:variable	line:26
-script_name	../src/opsoro/apps/lua_scripting/__init__.py	/^script_name = None$/;"	kind:variable	line:27
-script_modified	../src/opsoro/apps/lua_scripting/__init__.py	/^script_modified = False$/;"	kind:variable	line:28
-get_path	../src/opsoro/apps/lua_scripting/__init__.py	/^get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))$/;"	kind:variable	line:30
-add_console	../src/opsoro/apps/lua_scripting/__init__.py	/^def add_console(message, color='#888888', icon=None):$/;"	kind:function	line:33
-send_started	../src/opsoro/apps/lua_scripting/__init__.py	/^def send_started():$/;"	kind:function	line:41
-send_stopped	../src/opsoro/apps/lua_scripting/__init__.py	/^def send_stopped():$/;"	kind:function	line:47
-init_ui	../src/opsoro/apps/lua_scripting/__init__.py	/^def init_ui():$/;"	kind:function	line:53
-ui_add_button	../src/opsoro/apps/lua_scripting/__init__.py	/^def ui_add_button(name, caption, icon, toggle=False):$/;"	kind:function	line:59
-ui_add_key	../src/opsoro/apps/lua_scripting/__init__.py	/^def ui_add_key(key):$/;"	kind:function	line:68
-setup_pages	../src/opsoro/apps/lua_scripting/__init__.py	/^def setup_pages(opsoroapp):$/;"	kind:function	line:80
-index	../src/opsoro/apps/lua_scripting/__init__.py	/^    def index():$/;"	kind:function	line:89
-startscript	../src/opsoro/apps/lua_scripting/__init__.py	/^    def startscript():$/;"	kind:function	line:122
-stopscript	../src/opsoro/apps/lua_scripting/__init__.py	/^    def stopscript():$/;"	kind:function	line:141
-s_connected	../src/opsoro/apps/lua_scripting/__init__.py	/^    def s_connected(conn):$/;"	kind:function	line:152
-s_disconnected	../src/opsoro/apps/lua_scripting/__init__.py	/^    def s_disconnected(conn):$/;"	kind:function	line:157
-s_key_down	../src/opsoro/apps/lua_scripting/__init__.py	/^    def s_key_down(conn, data):$/;"	kind:function	line:162
-s_key_up	../src/opsoro/apps/lua_scripting/__init__.py	/^    def s_key_up(conn, data):$/;"	kind:function	line:170
-s_button_down	../src/opsoro/apps/lua_scripting/__init__.py	/^    def s_button_down(conn, data):$/;"	kind:function	line:178
-s_button_up	../src/opsoro/apps/lua_scripting/__init__.py	/^    def s_button_up(conn, data):$/;"	kind:function	line:185
-setup	../src/opsoro/apps/lua_scripting/__init__.py	/^def setup(opsoroapp):$/;"	kind:function	line:194
-start	../src/opsoro/apps/lua_scripting/__init__.py	/^def start(opsoroapp):$/;"	kind:function	line:198
-stop	../src/opsoro/apps/lua_scripting/__init__.py	/^def stop(opsoroapp):$/;"	kind:function	line:220
+config	../src/opsoro/apps/lua_scripting/__init__.py	/^config = {$/;"	kind:variable	line:14
+sh	../src/opsoro/apps/lua_scripting/__init__.py	/^sh = None$/;"	kind:variable	line:28
+script	../src/opsoro/apps/lua_scripting/__init__.py	/^script = ''$/;"	kind:variable	line:29
+script_name	../src/opsoro/apps/lua_scripting/__init__.py	/^script_name = None$/;"	kind:variable	line:30
+script_modified	../src/opsoro/apps/lua_scripting/__init__.py	/^script_modified = False$/;"	kind:variable	line:31
+get_path	../src/opsoro/apps/lua_scripting/__init__.py	/^get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))$/;"	kind:variable	line:33
+add_console	../src/opsoro/apps/lua_scripting/__init__.py	/^def add_console(message, color='#888888', icon=None):$/;"	kind:function	line:36
+send_started	../src/opsoro/apps/lua_scripting/__init__.py	/^def send_started():$/;"	kind:function	line:40
+send_stopped	../src/opsoro/apps/lua_scripting/__init__.py	/^def send_stopped():$/;"	kind:function	line:44
+init_ui	../src/opsoro/apps/lua_scripting/__init__.py	/^def init_ui():$/;"	kind:function	line:48
+ui_add_button	../src/opsoro/apps/lua_scripting/__init__.py	/^def ui_add_button(name, caption, icon, toggle=False):$/;"	kind:function	line:52
+ui_add_key	../src/opsoro/apps/lua_scripting/__init__.py	/^def ui_add_key(key):$/;"	kind:function	line:56
+setup_pages	../src/opsoro/apps/lua_scripting/__init__.py	/^def setup_pages(opsoroapp):$/;"	kind:function	line:66
+index	../src/opsoro/apps/lua_scripting/__init__.py	/^    def index():$/;"	kind:function	line:71
+startscript	../src/opsoro/apps/lua_scripting/__init__.py	/^    def startscript():$/;"	kind:function	line:104
+stopscript	../src/opsoro/apps/lua_scripting/__init__.py	/^    def stopscript():$/;"	kind:function	line:123
+s_key_down	../src/opsoro/apps/lua_scripting/__init__.py	/^    def s_key_down(conn, data):$/;"	kind:function	line:134
+s_key_up	../src/opsoro/apps/lua_scripting/__init__.py	/^    def s_key_up(conn, data):$/;"	kind:function	line:142
+s_button_down	../src/opsoro/apps/lua_scripting/__init__.py	/^    def s_button_down(conn, data):$/;"	kind:function	line:150
+s_button_up	../src/opsoro/apps/lua_scripting/__init__.py	/^    def s_button_up(conn, data):$/;"	kind:function	line:157
+setup	../src/opsoro/apps/lua_scripting/__init__.py	/^def setup(opsoroapp):$/;"	kind:function	line:166
+start	../src/opsoro/apps/lua_scripting/__init__.py	/^def start(opsoroapp):$/;"	kind:function	line:170
+stop	../src/opsoro/apps/lua_scripting/__init__.py	/^def stop(opsoroapp):$/;"	kind:function	line:192
 console_msg.py	../src/opsoro/console_msg.py	1;"	kind:file	line:1
 print_info	../src/opsoro/console_msg.py	/^def print_info(msg):$/;"	kind:function	line:1
 print_warning	../src/opsoro/console_msg.py	/^def print_warning(msg):$/;"	kind:function	line:5
@@ -424,15 +538,16 @@ apply_prefs	../src/opsoro/preferences.py	/^    def apply_prefs(self,$/;"	kind:me
 change_conf_setting	../src/opsoro/preferences.py	/^        def change_conf_setting(txt, name, val):$/;"	kind:function	line:103
 Preferences	../src/opsoro/preferences.py	/^Preferences = _Preferences()$/;"	kind:variable	line:178
 __init__.py	../src/opsoro/sound/__init__.py	1;"	kind:file	line:1
-get_path	../src/opsoro/sound/__init__.py	/^get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))$/;"	kind:variable	line:16
-_Sound	../src/opsoro/sound/__init__.py	/^class _Sound(object):$/;"	kind:class	line:18
-__init__	../src/opsoro/sound/__init__.py	/^    def __init__(self):$/;"	kind:member	line:19
-_play	../src/opsoro/sound/__init__.py	/^    def _play(self, filename):$/;"	kind:member	line:30
-say_tts	../src/opsoro/sound/__init__.py	/^    def say_tts(self, text, generate_only=False):$/;"	kind:member	line:54
-play_file	../src/opsoro/sound/__init__.py	/^    def play_file(self, filename):$/;"	kind:member	line:69
-stop_sound	../src/opsoro/sound/__init__.py	/^    def stop_sound(self):$/;"	kind:member	line:87
-wait_for_sound	../src/opsoro/sound/__init__.py	/^    def wait_for_sound(self):$/;"	kind:member	line:97
-Sound	../src/opsoro/sound/__init__.py	/^Sound = _Sound()$/;"	kind:variable	line:108
+get_path	../src/opsoro/sound/__init__.py	/^get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))$/;"	kind:variable	line:20
+_Sound	../src/opsoro/sound/__init__.py	/^class _Sound(object):$/;"	kind:class	line:23
+__init__	../src/opsoro/sound/__init__.py	/^    def __init__(self):$/;"	kind:member	line:24
+_play	../src/opsoro/sound/__init__.py	/^    def _play(self, filename):$/;"	kind:member	line:35
+say_tts	../src/opsoro/sound/__init__.py	/^    def say_tts(self, text, generate_only=False):$/;"	kind:member	line:58
+play_file	../src/opsoro/sound/__init__.py	/^    def play_file(self, filename):$/;"	kind:member	line:79
+get_file	../src/opsoro/sound/__init__.py	/^    def get_file(self, filename, tts=False):$/;"	kind:member	line:110
+stop_sound	../src/opsoro/sound/__init__.py	/^    def stop_sound(self):$/;"	kind:member	line:147
+wait_for_sound	../src/opsoro/sound/__init__.py	/^    def wait_for_sound(self):$/;"	kind:member	line:157
+Sound	../src/opsoro/sound/__init__.py	/^Sound = _Sound()$/;"	kind:variable	line:169
 tts.py	../src/opsoro/sound/tts.py	1;"	kind:file	line:1
 get_path	../src/opsoro/sound/tts.py	/^get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))$/;"	kind:variable	line:16
 _TTS	../src/opsoro/sound/tts.py	/^class _TTS(object):$/;"	kind:class	line:19
@@ -460,20 +575,20 @@ __init__	../src/opsoro/hardware/dummy_spidev.py	/^    def __init__(self):$/;"	ki
 open	../src/opsoro/hardware/dummy_spidev.py	/^    def open(self,*args):$/;"	kind:member	line:9
 xfer2	../src/opsoro/hardware/dummy_spidev.py	/^    def xfer2(self,*args):$/;"	kind:member	line:13
 servo.py	../src/opsoro/hardware/servo.py	1;"	kind:file	line:1
-CMD_SERVO_INIT	../src/opsoro/hardware/servo.py	/^CMD_SERVO_INIT      = 40  # 0   0    Init PCA9685$/;"	kind:variable	line:5
-CMD_SERVO_ENABLE	../src/opsoro/hardware/servo.py	/^CMD_SERVO_ENABLE    = 41  # 0   0    Turn on MOSFET$/;"	kind:variable	line:6
-CMD_SERVO_DISABLE	../src/opsoro/hardware/servo.py	/^CMD_SERVO_DISABLE   = 42  # 0   0    Turn off MOSFET$/;"	kind:variable	line:7
-CMD_SERVO_NEUTRAL	../src/opsoro/hardware/servo.py	/^CMD_SERVO_NEUTRAL   = 43  # 0   0    Set all servos to 1500$/;"	kind:variable	line:8
-CMD_SERVO_SET	../src/opsoro/hardware/servo.py	/^CMD_SERVO_SET       = 44  # 3   0    Set 1 servo position$/;"	kind:variable	line:9
-CMD_SERVO_SETALL	../src/opsoro/hardware/servo.py	/^CMD_SERVO_SETALL    = 45  # 32  0    Set  position of all servos$/;"	kind:variable	line:10
-Servo	../src/opsoro/hardware/servo.py	/^class Servo(object):$/;"	kind:class	line:13
-init	../src/opsoro/hardware/servo.py	/^    def init(self):$/;"	kind:member	line:15
-enable	../src/opsoro/hardware/servo.py	/^    def enable(self):$/;"	kind:member	line:19
-disable	../src/opsoro/hardware/servo.py	/^    def disable(self):$/;"	kind:member	line:23
-neutral	../src/opsoro/hardware/servo.py	/^    def neutral(self):$/;"	kind:member	line:27
-set	../src/opsoro/hardware/servo.py	/^    def set(self, channel, pos):$/;"	kind:member	line:31
-set_all_us	../src/opsoro/hardware/servo.py	/^    def set_all_us(self, us):$/;"	kind:member	line:44
-set_all	../src/opsoro/hardware/servo.py	/^    def set_all(self, pos_list):$/;"	kind:member	line:56
+CMD_SERVO_INIT	../src/opsoro/hardware/servo.py	/^CMD_SERVO_INIT = 40  # 0   0    Init PCA9685$/;"	kind:variable	line:4
+CMD_SERVO_ENABLE	../src/opsoro/hardware/servo.py	/^CMD_SERVO_ENABLE = 41  # 0   0    Turn on MOSFET$/;"	kind:variable	line:5
+CMD_SERVO_DISABLE	../src/opsoro/hardware/servo.py	/^CMD_SERVO_DISABLE = 42  # 0   0    Turn off MOSFET$/;"	kind:variable	line:6
+CMD_SERVO_NEUTRAL	../src/opsoro/hardware/servo.py	/^CMD_SERVO_NEUTRAL = 43  # 0   0    Set all servos to 1500$/;"	kind:variable	line:7
+CMD_SERVO_SET	../src/opsoro/hardware/servo.py	/^CMD_SERVO_SET = 44  # 3   0    Set 1 servo position$/;"	kind:variable	line:8
+CMD_SERVO_SETALL	../src/opsoro/hardware/servo.py	/^CMD_SERVO_SETALL = 45  # 32  0    Set  position of all servos$/;"	kind:variable	line:9
+Servo	../src/opsoro/hardware/servo.py	/^class Servo(object):$/;"	kind:class	line:12
+init	../src/opsoro/hardware/servo.py	/^    def init(self):$/;"	kind:member	line:14
+enable	../src/opsoro/hardware/servo.py	/^    def enable(self):$/;"	kind:member	line:18
+disable	../src/opsoro/hardware/servo.py	/^    def disable(self):$/;"	kind:member	line:22
+neutral	../src/opsoro/hardware/servo.py	/^    def neutral(self):$/;"	kind:member	line:26
+set	../src/opsoro/hardware/servo.py	/^    def set(self, channel, pos):$/;"	kind:member	line:30
+set_all_us	../src/opsoro/hardware/servo.py	/^    def set_all_us(self, us):$/;"	kind:member	line:41
+set_all	../src/opsoro/hardware/servo.py	/^    def set_all(self, pos_list):$/;"	kind:member	line:53
 test_hardware.py	../src/opsoro/hardware/test_hardware.py	1;"	kind:file	line:1
 Dummy_Hardware	../src/opsoro/hardware/test_hardware.py	/^class Dummy_Hardware(object):$/;"	kind:class	line:1
 __init__	../src/opsoro/hardware/test_hardware.py	/^    def __init__(self):$/;"	kind:member	line:2
@@ -549,11 +664,11 @@ __init__	../src/opsoro/hardware/spi.py	/^    def __init__(self):$/;"	kind:member
 command	../src/opsoro/hardware/spi.py	/^    def command(self, cmd, params=None, returned=0, delay=0):$/;"	kind:member	line:33
 SPI	../src/opsoro/hardware/spi.py	/^SPI = _SPI()$/;"	kind:variable	line:65
 usb_serial.py	../src/opsoro/hardware/usb_serial.py	1;"	kind:file	line:1
-_Serial	../src/opsoro/hardware/usb_serial.py	/^class _Serial(object):$/;"	kind:class	line:6
-__init__	../src/opsoro/hardware/usb_serial.py	/^    def __init__(self):$/;"	kind:member	line:8
-scan	../src/opsoro/hardware/usb_serial.py	/^    def scan(self):$/;"	kind:member	line:14
-send	../src/opsoro/hardware/usb_serial.py	/^    def send(self, text, port_id=0, baudrate=9600):$/;"	kind:member	line:35
-Serial	../src/opsoro/hardware/usb_serial.py	/^Serial = _Serial()$/;"	kind:variable	line:43
+_Serial	../src/opsoro/hardware/usb_serial.py	/^class _Serial(object):$/;"	kind:class	line:8
+__init__	../src/opsoro/hardware/usb_serial.py	/^    def __init__(self):$/;"	kind:member	line:10
+scan	../src/opsoro/hardware/usb_serial.py	/^    def scan(self):$/;"	kind:member	line:18
+send	../src/opsoro/hardware/usb_serial.py	/^    def send(self, data, port_id=0, baudrate=9600):$/;"	kind:member	line:42
+Serial	../src/opsoro/hardware/usb_serial.py	/^Serial = _Serial()$/;"	kind:variable	line:58
 analog.py	../src/opsoro/hardware/analog.py	1;"	kind:file	line:1
 CMD_ANA_GET	../src/opsoro/hardware/analog.py	/^CMD_ANA_GET         = 100  # 1   2    Read an analog channel$/;"	kind:variable	line:5
 CMD_ANA_GETALL	../src/opsoro/hardware/analog.py	/^CMD_ANA_GETALL      = 101  # 0   8    Read all analog channels$/;"	kind:variable	line:6
@@ -602,50 +717,19 @@ set_gpio_pinmode	../src/opsoro/hardware/capacitive.py	/^    def set_gpio_pinmode
 read_gpio	../src/opsoro/hardware/capacitive.py	/^    def read_gpio(self):$/;"	kind:member	line:95
 write_gpio	../src/opsoro/hardware/capacitive.py	/^    def write_gpio(self, gpio, data):$/;"	kind:member	line:106
 __init__.py	../src/opsoro/server/__init__.py	1;"	kind:file	line:1
-dof_positions	../src/opsoro/server/__init__.py	/^dof_positions = {}$/;"	kind:variable	line:40
-get_path	../src/opsoro/server/__init__.py	/^get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))$/;"	kind:variable	line:42
-AdminUser	../src/opsoro/server/__init__.py	/^class AdminUser(object):$/;"	kind:class	line:46
-is_authenticated	../src/opsoro/server/__init__.py	/^    def is_authenticated(self):$/;"	kind:member	line:47
-is_active	../src/opsoro/server/__init__.py	/^    def is_active(self):$/;"	kind:member	line:50
-is_anonymous	../src/opsoro/server/__init__.py	/^    def is_anonymous(self):$/;"	kind:member	line:53
-get_id	../src/opsoro/server/__init__.py	/^    def get_id(self):$/;"	kind:member	line:56
-is_admin	../src/opsoro/server/__init__.py	/^    def is_admin(self):$/;"	kind:member	line:59
-Server	../src/opsoro/server/__init__.py	/^class Server(object):$/;"	kind:class	line:62
-__init__	../src/opsoro/server/__init__.py	/^    def __init__(self):$/;"	kind:member	line:63
-at_exit	../src/opsoro/server/__init__.py	/^    def at_exit(self):$/;"	kind:member	line:163
-setup_user_loader	../src/opsoro/server/__init__.py	/^    def setup_user_loader(self):$/;"	kind:member	line:180
-load_user	../src/opsoro/server/__init__.py	/^        def load_user(id):$/;"	kind:function	line:182
-register_app_blueprint	../src/opsoro/server/__init__.py	/^    def register_app_blueprint(self, bp):$/;"	kind:member	line:188
-render_template	../src/opsoro/server/__init__.py	/^    def render_template(self, template, **kwargs):$/;"	kind:member	line:194
-run	../src/opsoro/server/__init__.py	/^    def run(self):$/;"	kind:member	line:197
-AppSocketConnection	../src/opsoro/server/__init__.py	/^        class AppSocketConnection(SockJSConnection):$/;"	kind:class	line:199
-__init__	../src/opsoro/server/__init__.py	/^            def __init__(conn, *args, **kwargs):$/;"	kind:member	line:200
-on_message	../src/opsoro/server/__init__.py	/^            def on_message(conn, msg):$/;"	kind:member	line:205
-on_open	../src/opsoro/server/__init__.py	/^            def on_open(conn, info):$/;"	kind:member	line:240
-on_close	../src/opsoro/server/__init__.py	/^            def on_close(conn):$/;"	kind:member	line:244
-send_error	../src/opsoro/server/__init__.py	/^            def send_error(conn, message):$/;"	kind:member	line:249
-send_data	../src/opsoro/server/__init__.py	/^            def send_data(conn, action, data):$/;"	kind:member	line:255
-UserSocketConnection	../src/opsoro/server/__init__.py	/^        class UserSocketConnection(SockJSConnection):$/;"	kind:class	line:260
-__init__	../src/opsoro/server/__init__.py	/^            def __init__(conn, *args, **kwargs):$/;"	kind:member	line:263
-on_message	../src/opsoro/server/__init__.py	/^            def on_message(conn, msg):$/;"	kind:member	line:269
-on_open	../src/opsoro/server/__init__.py	/^            def on_open(conn, info):$/;"	kind:member	line:275
-on_close	../src/opsoro/server/__init__.py	/^            def on_close(conn):$/;"	kind:member	line:281
-send_error	../src/opsoro/server/__init__.py	/^            def send_error(conn, message):$/;"	kind:member	line:286
-send_data	../src/opsoro/server/__init__.py	/^            def send_data(conn, action, data):$/;"	kind:member	line:292
-broadcast_data	../src/opsoro/server/__init__.py	/^            def broadcast_data(conn, action, data):$/;"	kind:member	line:297
-update_users	../src/opsoro/server/__init__.py	/^            def update_users(conn):$/;"	kind:member	line:302
-stop_current_app	../src/opsoro/server/__init__.py	/^    def stop_current_app(self):$/;"	kind:member	line:335
-shutdown	../src/opsoro/server/__init__.py	/^    def shutdown(self):$/;"	kind:member	line:345
-protected_view	../src/opsoro/server/__init__.py	/^    def protected_view(self, f):$/;"	kind:member	line:350
-wrapper	../src/opsoro/server/__init__.py	/^        def wrapper(*args, **kwargs):$/;"	kind:function	line:352
-app_view	../src/opsoro/server/__init__.py	/^    def app_view(self, f):$/;"	kind:member	line:373
-wrapper	../src/opsoro/server/__init__.py	/^        def wrapper(*args, **kwargs):$/;"	kind:function	line:376
-app_api	../src/opsoro/server/__init__.py	/^    def app_api(self, f):$/;"	kind:member	line:421
-wrapper	../src/opsoro/server/__init__.py	/^        def wrapper(*args, **kwargs):$/;"	kind:function	line:425
-app_socket_connected	../src/opsoro/server/__init__.py	/^    def app_socket_connected(self, f):$/;"	kind:member	line:456
-app_socket_disconnected	../src/opsoro/server/__init__.py	/^    def app_socket_disconnected(self, f):$/;"	kind:member	line:463
-app_socket_message	../src/opsoro/server/__init__.py	/^    def app_socket_message(self, action=""):$/;"	kind:member	line:470
-inner	../src/opsoro/server/__init__.py	/^        def inner(f):$/;"	kind:function	line:471
+get_path	../src/opsoro/server/__init__.py	/^get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))$/;"	kind:variable	line:29
+Server	../src/opsoro/server/__init__.py	/^class Server(object):$/;"	kind:class	line:32
+__init__	../src/opsoro/server/__init__.py	/^  def __init__(self):$/;"	kind:member	line:33
+at_exit	../src/opsoro/server/__init__.py	/^  def at_exit(self):$/;"	kind:member	line:61
+render_template	../src/opsoro/server/__init__.py	/^  def render_template(self, template, **kwargs):$/;"	kind:member	line:78
+run	../src/opsoro/server/__init__.py	/^  def run(self):$/;"	kind:member	line:81
+shutdown	../src/opsoro/server/__init__.py	/^  def shutdown(self):$/;"	kind:member	line:113
+protected_view	../src/opsoro/server/__init__.py	/^  def protected_view(self, f):$/;"	kind:member	line:118
+wrapper	../src/opsoro/server/__init__.py	/^    def wrapper(*args, **kwargs):$/;"	kind:function	line:120
+app_view	../src/opsoro/server/__init__.py	/^  def app_view(self, f):$/;"	kind:member	line:134
+wrapper	../src/opsoro/server/__init__.py	/^    def wrapper(*args, **kwargs):$/;"	kind:function	line:138
+app_api	../src/opsoro/server/__init__.py	/^  def app_api(self, f):$/;"	kind:member	line:176
+wrapper	../src/opsoro/server/__init__.py	/^    def wrapper(*args, **kwargs):$/;"	kind:function	line:180
 tests.py	../src/opsoro/server/static/js/blockly/i18n/tests.py	1;"	kind:file	line:1
 TestSequenceFunctions	../src/opsoro/server/static/js/blockly/i18n/tests.py	/^class TestSequenceFunctions(unittest.TestCase):$/;"	kind:class	line:25
 test_insert_breaks	../src/opsoro/server/static/js/blockly/i18n/tests.py	/^  def test_insert_breaks(self):$/;"	kind:member	line:26
@@ -719,54 +803,41 @@ result	../src/opsoro/server/static/js/blockly/appengine/storage.py	/^    result 
 xml	../src/opsoro/server/static/js/blockly/appengine/storage.py	/^      xml = ""$/;"	kind:variable	line:79
 xml	../src/opsoro/server/static/js/blockly/appengine/storage.py	/^      xml = result.xml_content$/;"	kind:variable	line:81
 opsoro_data_requests.py	../src/opsoro/server/request_handlers/opsoro_data_requests.py	1;"	kind:file	line:1
-get_abs_path	../src/opsoro/server/request_handlers/opsoro_data_requests.py	/^get_abs_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))$/;"	kind:variable	line:15
-constrain	../src/opsoro/server/request_handlers/opsoro_data_requests.py	/^constrain = lambda n, minn, maxn: max(min(maxn, n), minn)$/;"	kind:variable	line:28
-docs_data_path	../src/opsoro/server/request_handlers/opsoro_data_requests.py	/^docs_data_path = '..\/..\/data\/'$/;"	kind:variable	line:34
-is_safe_path	../src/opsoro/server/request_handlers/opsoro_data_requests.py	/^def is_safe_path(path):$/;"	kind:function	line:37
-docs_file_data	../src/opsoro/server/request_handlers/opsoro_data_requests.py	/^def docs_file_data(app_name=None):$/;"	kind:function	line:46
-docs_file_save	../src/opsoro/server/request_handlers/opsoro_data_requests.py	/^def docs_file_save(app_name):$/;"	kind:function	line:69
-docs_file_delete	../src/opsoro/server/request_handlers/opsoro_data_requests.py	/^def docs_file_delete(app_name):$/;"	kind:function	line:96
-docs_file_list	../src/opsoro/server/request_handlers/opsoro_data_requests.py	/^def docs_file_list():$/;"	kind:function	line:126
-robot_config_data	../src/opsoro/server/request_handlers/opsoro_data_requests.py	/^def robot_config_data():$/;"	kind:function	line:190
-robot_emotion	../src/opsoro/server/request_handlers/opsoro_data_requests.py	/^def robot_emotion():$/;"	kind:function	line:202
-robot_dof_data	../src/opsoro/server/request_handlers/opsoro_data_requests.py	/^def robot_dof_data():$/;"	kind:function	line:213
-robot_dofs_data	../src/opsoro/server/request_handlers/opsoro_data_requests.py	/^def robot_dofs_data():$/;"	kind:function	line:225
-robot_tts	../src/opsoro/server/request_handlers/opsoro_data_requests.py	/^def robot_tts():$/;"	kind:function	line:238
-robot_sound	../src/opsoro/server/request_handlers/opsoro_data_requests.py	/^def robot_sound():$/;"	kind:function	line:246
-robot_servo	../src/opsoro/server/request_handlers/opsoro_data_requests.py	/^def robot_servo():$/;"	kind:function	line:268
-robot_servos	../src/opsoro/server/request_handlers/opsoro_data_requests.py	/^def robot_servos():$/;"	kind:function	line:284
-robot_stop	../src/opsoro/server/request_handlers/opsoro_data_requests.py	/^def robot_stop():$/;"	kind:function	line:302
+get_abs_path	../src/opsoro/server/request_handlers/opsoro_data_requests.py	/^get_abs_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))$/;"	kind:variable	line:17
+constrain	../src/opsoro/server/request_handlers/opsoro_data_requests.py	/^def constrain(n, minn, maxn): return max(min(maxn, n), minn)$/;"	kind:function	line:30
+docs_file_data	../src/opsoro/server/request_handlers/opsoro_data_requests.py	/^def docs_file_data(app_name=None):$/;"	kind:function	line:37
+docs_file_save	../src/opsoro/server/request_handlers/opsoro_data_requests.py	/^def docs_file_save(app_name):$/;"	kind:function	line:47
+docs_file_delete	../src/opsoro/server/request_handlers/opsoro_data_requests.py	/^def docs_file_delete(app_name):$/;"	kind:function	line:57
+docs_file_list	../src/opsoro/server/request_handlers/opsoro_data_requests.py	/^def docs_file_list():$/;"	kind:function	line:66
+config_robot_data	../src/opsoro/server/request_handlers/opsoro_data_requests.py	/^def config_robot_data():$/;"	kind:function	line:85
+config_expressions_data	../src/opsoro/server/request_handlers/opsoro_data_requests.py	/^def config_expressions_data():$/;"	kind:function	line:94
+robot_emotion	../src/opsoro/server/request_handlers/opsoro_data_requests.py	/^def robot_emotion():$/;"	kind:function	line:103
+robot_dof_data	../src/opsoro/server/request_handlers/opsoro_data_requests.py	/^def robot_dof_data():$/;"	kind:function	line:114
+robot_dofs_data	../src/opsoro/server/request_handlers/opsoro_data_requests.py	/^def robot_dofs_data():$/;"	kind:function	line:126
+robot_tts	../src/opsoro/server/request_handlers/opsoro_data_requests.py	/^def robot_tts():$/;"	kind:function	line:142
+robot_sound	../src/opsoro/server/request_handlers/opsoro_data_requests.py	/^def robot_sound():$/;"	kind:function	line:150
+robot_servo	../src/opsoro/server/request_handlers/opsoro_data_requests.py	/^def robot_servo():$/;"	kind:function	line:159
+robot_servos	../src/opsoro/server/request_handlers/opsoro_data_requests.py	/^def robot_servos():$/;"	kind:function	line:175
+robot_stop	../src/opsoro/server/request_handlers/opsoro_data_requests.py	/^def robot_stop():$/;"	kind:function	line:193
 __init__.py	../src/opsoro/server/request_handlers/__init__.py	1;"	kind:file	line:1
-dof_positions	../src/opsoro/server/request_handlers/__init__.py	/^dof_positions = {}$/;"	kind:variable	line:29
-get_path	../src/opsoro/server/request_handlers/__init__.py	/^get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))$/;"	kind:variable	line:31
-AdminUser	../src/opsoro/server/request_handlers/__init__.py	/^class AdminUser(object):$/;"	kind:class	line:35
-is_authenticated	../src/opsoro/server/request_handlers/__init__.py	/^    def is_authenticated(self):$/;"	kind:member	line:36
-is_active	../src/opsoro/server/request_handlers/__init__.py	/^    def is_active(self):$/;"	kind:member	line:39
-is_anonymous	../src/opsoro/server/request_handlers/__init__.py	/^    def is_anonymous(self):$/;"	kind:member	line:42
-get_id	../src/opsoro/server/request_handlers/__init__.py	/^    def get_id(self):$/;"	kind:member	line:45
-is_admin	../src/opsoro/server/request_handlers/__init__.py	/^    def is_admin(self):$/;"	kind:member	line:48
-OfflineUser	../src/opsoro/server/request_handlers/__init__.py	/^class OfflineUser(object):$/;"	kind:class	line:51
-is_authenticated	../src/opsoro/server/request_handlers/__init__.py	/^    def is_authenticated(self):$/;"	kind:member	line:52
-is_active	../src/opsoro/server/request_handlers/__init__.py	/^    def is_active(self):$/;"	kind:member	line:55
-is_anonymous	../src/opsoro/server/request_handlers/__init__.py	/^    def is_anonymous(self):$/;"	kind:member	line:58
-get_id	../src/opsoro/server/request_handlers/__init__.py	/^    def get_id(self):$/;"	kind:member	line:61
-is_admin	../src/opsoro/server/request_handlers/__init__.py	/^    def is_admin(self):$/;"	kind:member	line:64
-RHandler	../src/opsoro/server/request_handlers/__init__.py	/^class RHandler(object):$/;"	kind:class	line:68
-__init__	../src/opsoro/server/request_handlers/__init__.py	/^    def __init__(self, server):$/;"	kind:member	line:69
-set_urls	../src/opsoro/server/request_handlers/__init__.py	/^    def set_urls(self):$/;"	kind:member	line:76
-render_template	../src/opsoro/server/request_handlers/__init__.py	/^    def render_template(self, template, **kwargs):$/;"	kind:member	line:119
-page_index	../src/opsoro/server/request_handlers/__init__.py	/^    def page_index(self):$/;"	kind:member	line:151
-page_login	../src/opsoro/server/request_handlers/__init__.py	/^    def page_login(self):$/;"	kind:member	line:199
-page_logout	../src/opsoro/server/request_handlers/__init__.py	/^    def page_logout(self):$/;"	kind:member	line:238
-page_appsockjstoken	../src/opsoro/server/request_handlers/__init__.py	/^    def page_appsockjstoken(self):$/;"	kind:member	line:257
-page_shutdown	../src/opsoro/server/request_handlers/__init__.py	/^    def page_shutdown(self):$/;"	kind:member	line:279
-page_restart	../src/opsoro/server/request_handlers/__init__.py	/^    def page_restart(self):$/;"	kind:member	line:288
-page_closeapp	../src/opsoro/server/request_handlers/__init__.py	/^    def page_closeapp(self):$/;"	kind:member	line:297
-page_openapp	../src/opsoro/server/request_handlers/__init__.py	/^    def page_openapp(self, appname):$/;"	kind:member	line:301
-page_file_list	../src/opsoro/server/request_handlers/__init__.py	/^    def page_file_list(self):$/;"	kind:member	line:327
-page_virtual	../src/opsoro/server/request_handlers/__init__.py	/^    def page_virtual(self):$/;"	kind:member	line:332
-page_blockly	../src/opsoro/server/request_handlers/__init__.py	/^    def page_blockly(self):$/;"	kind:member	line:362
-show_errormessage	../src/opsoro/server/request_handlers/__init__.py	/^    def show_errormessage(self, error):$/;"	kind:member	line:385
-inject_opsoro_vars	../src/opsoro/server/request_handlers/__init__.py	/^    def inject_opsoro_vars(self):$/;"	kind:member	line:391
+get_path	../src/opsoro/server/request_handlers/__init__.py	/^get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))$/;"	kind:variable	line:32
+RHandler	../src/opsoro/server/request_handlers/__init__.py	/^class RHandler(object):$/;"	kind:class	line:35
+__init__	../src/opsoro/server/request_handlers/__init__.py	/^    def __init__(self, server):$/;"	kind:member	line:36
+set_urls	../src/opsoro/server/request_handlers/__init__.py	/^    def set_urls(self):$/;"	kind:member	line:43
+render_template	../src/opsoro/server/request_handlers/__init__.py	/^    def render_template(self, template, **kwargs):$/;"	kind:member	line:86
+page_index	../src/opsoro/server/request_handlers/__init__.py	/^    def page_index(self):$/;"	kind:member	line:120
+page_login	../src/opsoro/server/request_handlers/__init__.py	/^    def page_login(self):$/;"	kind:member	line:164
+page_logout	../src/opsoro/server/request_handlers/__init__.py	/^    def page_logout(self):$/;"	kind:member	line:195
+page_sockjstoken	../src/opsoro/server/request_handlers/__init__.py	/^    def page_sockjstoken(self):$/;"	kind:member	line:201
+page_shutdown	../src/opsoro/server/request_handlers/__init__.py	/^    def page_shutdown(self):$/;"	kind:member	line:204
+page_restart	../src/opsoro/server/request_handlers/__init__.py	/^    def page_restart(self):$/;"	kind:member	line:217
+page_closeapp	../src/opsoro/server/request_handlers/__init__.py	/^    def page_closeapp(self, appname):$/;"	kind:member	line:230
+page_openapp	../src/opsoro/server/request_handlers/__init__.py	/^    def page_openapp(self, appname):$/;"	kind:member	line:234
+page_file_list	../src/opsoro/server/request_handlers/__init__.py	/^    def page_file_list(self):$/;"	kind:member	line:240
+sound_data	../src/opsoro/server/request_handlers/__init__.py	/^    def sound_data(self):$/;"	kind:member	line:245
+page_virtual	../src/opsoro/server/request_handlers/__init__.py	/^    def page_virtual(self):$/;"	kind:member	line:257
+page_blockly	../src/opsoro/server/request_handlers/__init__.py	/^    def page_blockly(self):$/;"	kind:member	line:289
+show_errormessage	../src/opsoro/server/request_handlers/__init__.py	/^    def show_errormessage(self, error):$/;"	kind:member	line:313
+inject_opsoro_vars	../src/opsoro/server/request_handlers/__init__.py	/^    def inject_opsoro_vars(self):$/;"	kind:member	line:319
 run	../run	1;"	kind:file	line:1
-basedir	../run	/^basedir = os.path.dirname(os.path.realpath(__file__))$/;"	kind:variable	line:13
+basedir	../run	/^basedir = os.path.dirname(os.path.realpath(__file__))$/;"	kind:variable	line:6

@@ -7,9 +7,9 @@ size:
 dofs:
   - name: rotation left
     servo:
-      min: -250
-      max: 250
+      min: 250
+      max: -250
   - name: rotation right
     servo:
-      min: -250
-      max: 250
+      min: 250
+      max: -250

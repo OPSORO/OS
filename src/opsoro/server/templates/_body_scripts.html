@@ -6,6 +6,7 @@
 <script src="/static/js/opsoro.js?ver={{ version }}"></script>
 
 <script>
+  var app_data = undefined;
   $(document).ready(function () {
     $("#btnShutdown").click(function () {
       var delay = 20;
@@ -25,9 +26,10 @@
       var countdownInterval = setInterval(countdownFunction, 1000); //will call the function every 1 sec.
     });
     $("#btnRestart").click(function () {
+      var delay = 40;
       $("#ShutdownModal .content span").load("/restart/");
       var countdownFunction = function () {
-        $("#ShutdownModal .content").html("<span></span><p>{{ _('Restarting ' + opsoro.robot_name + '.<br/>Please wait <strong>" + delay + "</strong> seconds.') }}</p>");
+        $("#ShutdownModal .content").html("<span></span><p>{{ _('Restarting ' + opsoro.robot_name + '.<br/>Please wait <strong>" + delay + "</strong> seconds. Make sure you reconnect to the robot\'s wifi.') }}</p>");
         if (delay == 0) {
           clearInterval(countdownInterval);
           location.reload();

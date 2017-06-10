@@ -91,27 +91,9 @@
 		var plot;
 		var runningStatus = false;
 
-		var conn = null;
-		var connReady = false;
-		conn = new SockJS("http://" + window.location.host + "/appsockjs");
-
-		conn.onopen = function(){
-			console.log("SockJS connected.");
-			$.ajax({
-				url: "/appsockjstoken",
-				cache: false
-			})
-			.done(function(data) {
-				conn.send(JSON.stringify({action: "authenticate", token: data}));
-				connReady = true;
-				console.log("SockJS authenticated.");
-			});
-		};
-
-		conn.onmessage = function(e){
-			var msg = $.parseJSON(e.data);
-
-			if(msg.action == "updateelectrodes"){
+		app_socket_handler = function(data) {
+      switch (data.action) {
+			case "updateelectrodes":
 				$.each(msg.electrodedata, function(idx, val){
 					if(idx >= 0 && idx < 12){
 						electrodeData[idx].push(val);
@@ -123,12 +105,8 @@
 
 
 				updateChart();
+				break;
 			}
-		};
-		conn.onclose = function(){
-			console.log("SockJS disconnected.");
-			conn = null;
-			connReady = false;
 		};
 
 		function formatData(){

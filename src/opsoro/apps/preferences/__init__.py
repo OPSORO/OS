@@ -1,34 +1,34 @@
 from __future__ import with_statement
 
+import yaml
+from flask import Blueprint, flash, redirect, render_template, request, url_for
+
 from opsoro.console_msg import *
-from opsoro.robot import Robot
 # from opsoro.hardware import Hardware
 from opsoro.preferences import Preferences
+from opsoro.robot import Robot
 from opsoro.updater import Updater
-
-from flask import Blueprint, render_template, request, redirect, url_for, flash
 
 # constrain = lambda n, minn, maxn: max(min(maxn, n), minn)
 
 config = {
     'full_name':            'Preferences',
+    'author':               'OPSORO',
     'icon':                 'fa-cog',
     'color':                'gray_dark',
     'difficulty':           3,
     'tags':                 ['settings', 'setup'],
     'allowed_background':   False,
+    'multi_user':           False,
     'connection':           Robot.Connection.OFFLINE,
     'activation':           Robot.Activation.MANUAL
 }
-config['formatted_name'] =  config['full_name'].lower().replace(' ', '_')
-
-# clientconn = None
+config['formatted_name'] = config['full_name'].lower().replace(' ', '_')
 # dof_positions = {}
 
 # import os
 # from functools import partial
 
-import yaml
 try:
     from yaml import CLoader as Loader
 except ImportError:
@@ -36,13 +36,7 @@ except ImportError:
 
 
 def setup_pages(opsoroapp):
-    app_bp = Blueprint(
-        config['formatted_name'],
-        __name__,
-        template_folder='templates',
-        static_folder='static')
-
-    global clientconn
+    app_bp = Blueprint(config['formatted_name'], __name__, template_folder='templates', static_folder='static')
 
     @app_bp.route('/', methods=['GET', 'POST'])
     @opsoroapp.app_view
@@ -90,10 +84,7 @@ def setup_pages(opsoroapp):
 
             flash('Preferences have been saved.', 'success')
             Preferences.save_prefs()
-            Preferences.apply_prefs(
-                update_audio=True,
-                update_wireless=True,
-                restart_wireless=False)
+            Preferences.apply_prefs(update_audio=True, update_wireless=True, restart_wireless=False)
 
         # Prepare json string with prefs data
         data['prefs'] = {
@@ -123,7 +114,7 @@ def setup_pages(opsoroapp):
             'wireless': {
                 'ssid':         Preferences.get('wireless', 'ssid', 'OPSORO' + '_bot'),
                 'samePassword': Preferences.get('general', 'password', 'opsoro123') ==
-                                Preferences.get('wireless', 'password', 'opsoro123'),
+                Preferences.get('wireless', 'password', 'opsoro123'),
                 'channel':      Preferences.get('wireless', 'channel', '1')
             }
         }

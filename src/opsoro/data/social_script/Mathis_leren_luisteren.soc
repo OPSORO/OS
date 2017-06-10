@@ -1,0 +1,60 @@
+{
+  "voice_lines": [
+    {
+      "emotion": "Neutral",
+      "output": {
+        "type": "tts",
+        "data": "Hallo"
+      }
+    },
+    {
+      "emotion": "Happy",
+      "output": {
+        "type": "tts",
+        "data": "I'm Ono, Who are you guys?"
+      }
+    },
+    {
+      "emotion": "Sad",
+      "output": {
+        "type": "tts",
+        "data": "I've a little headache today"
+      }
+    },
+    {
+      "emotion": "Sad",
+      "output": {
+        "type": "tts",
+        "data": "Everybody spoke together in stead of listening to each other"
+      }
+    },
+    {
+      "emotion": "Neutral",
+      "output": {
+        "type": "tts",
+        "data": "What do you need to do Mathis?"
+      }
+    },
+    {
+      "emotion": "Happy",
+      "output": {
+        "type": "tts",
+        "data": "Yes! You first need to listen and then you can tell you're thoughts"
+      }
+    },
+    {
+      "emotion": "Happy",
+      "output": {
+        "type": "tts",
+        "data": "You're great Mathis!"
+      }
+    },
+    {
+      "emotion": "Happy",
+      "output": {
+        "type": "tts",
+        "data": "I'm very HAPPY you've learned this now! Try to use it always!"
+      }
+    }
+  ]
+}

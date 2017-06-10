@@ -54,6 +54,13 @@
 			<category name="Servo" id="catServo">
 				<!-- <block type="servo_init"></block> -->
 				<!-- <block type="servo_enabledisable"></block> -->
+				<block type="dof_set">
+					<value name="VALUE">
+						<block type="math_number">
+							<field name="NUM">0.5</field>
+						</block>
+					</value>
+				</block>
 				<block type="servo_set">
 					<value name="POS">
 						<block type="math_number">
@@ -312,6 +319,29 @@
 				{% endfor %}
 			{% else %}
 				["No sounds found!", "NOSOUND"]
+			{% endif %}
+		];
+		var expressionlist = [
+			{% if expressions %}
+				{% for expression in expressions %}
+					["{{ expression.name }}", "{{ expression.name }}"]{% if not loop.last %},{% endif %}
+				{% endfor %}
+			{% else %}
+				["No expressions found!", "NOEXPRESSIONS"]
+			{% endif %}
+		];
+		var doflist = [
+			{% if configs %}
+				{% for mod in configs['modules'] %}
+					{% if mod.dofs %}
+						{% for dof in mod.dofs %}
+							["{{ mod.name + ' ' + dof.name }}", "{{ mod.name + ' ' + dof.name }}"]{% if not loop.last %},{% endif %}
+						{% endfor %}
+						{% if not loop.last %},{% endif %}
+					{% endif %}
+				{% endfor %}
+			{% else %}
+				["No dofs found!", "NODOFS"]
 			{% endif %}
 		];
 	</script>

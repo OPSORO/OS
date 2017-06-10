@@ -1,13 +1,12 @@
 from opsoro.hardware.spi import SPI
 
-
 # > SERVO                    IN  OUT
-CMD_SERVO_INIT      = 40  # 0   0    Init PCA9685
-CMD_SERVO_ENABLE    = 41  # 0   0    Turn on MOSFET
-CMD_SERVO_DISABLE   = 42  # 0   0    Turn off MOSFET
-CMD_SERVO_NEUTRAL   = 43  # 0   0    Set all servos to 1500
-CMD_SERVO_SET       = 44  # 3   0    Set 1 servo position
-CMD_SERVO_SETALL    = 45  # 32  0    Set  position of all servos
+CMD_SERVO_INIT = 40  # 0   0    Init PCA9685
+CMD_SERVO_ENABLE = 41  # 0   0    Turn on MOSFET
+CMD_SERVO_DISABLE = 42  # 0   0    Turn off MOSFET
+CMD_SERVO_NEUTRAL = 43  # 0   0    Set all servos to 1500
+CMD_SERVO_SET = 44  # 3   0    Set 1 servo position
+CMD_SERVO_SETALL = 45  # 32  0    Set  position of all servos
 
 
 class Servo(object):
@@ -30,16 +29,14 @@ class Servo(object):
 
     def set(self, channel, pos):
         """
-    	Set the position of one servo.
-    	Pos in us, 500 to 2500
+        Set the position of one servo.
+        Pos in us, 500 to 2500
 
         :param int channel: channel of the servo
         :param int pos:     position of the servo (500 to 2500)
         """
         offtime = (pos + 2) // 4
-        SPI.command(CMD_SERVO_SET,
-            params=[channel, offtime >> 8, offtime & 0x00FF],
-            delay=0.008)
+        SPI.command(CMD_SERVO_SET, params=[channel, offtime >> 8, offtime & 0x00FF], delay=0.008)
 
     def set_all_us(self, us):
         """
