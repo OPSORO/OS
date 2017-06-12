@@ -93,13 +93,6 @@ $(document).ready(function(){
 		};
 	};
 
-	function robotSendTTSLang(text, lang){
-		$.post('/apps/sociono/', { 'action': 'playTweet', 'text': text, 'lang': lang}, function(resp) {
-			console.log("sound post done");
-		});
-	}
-
-
 	var SocialScriptModel = function(){
 		var self = this;
 
@@ -273,7 +266,7 @@ $(document).ready(function(){
 		};
 
 		// Custom TTS Speak function
-		self.robotSendTTSLang = function robotSendTTSLang(tweepyData) {
+		self.robotSendTTSLang = function(tweepyData) {
 			$.post('/apps/sociono/', { action: 'playTweet', data: JSON.stringify(tweepyData) }, function(resp) {
 				console.log("sound post done");
 			});
