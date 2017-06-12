@@ -1,9 +1,36 @@
 (function TelegramManager(){
 
 	var GeneralTelegram = function(){
+
 		var self = this;
 
+		var viewModel = function() {
+	      console.log('test');
+	      $.getJSON( '/apps/telegram/getmessages', function( data ) {
+	      //console.log(data["messages"]);
+	      var jsondata = data["messages"];
+	      console.log(jsondata);
+	      for(index = 0; index<jsondata.length; ++ index){
+	        console.log(jsondata[index]);
+	        var message = jsondata[index]["message"];
+	        var firstname = jsondata[index]["first_name"];
+	        console.log(message);
+	        $('#messages').append('<p>' + message + '</p>');
+	      }
+				//var json_data = JSON.parse(data);
+	      //globaljson = JSON.parse(json_data.messages)
+	      //for(var i in data)
+	      //console.log(json_data["message"]);
+	    })
+	    .error(function(error){
+	      console.log(error);
+
+			});
+	  }
+		return viewModel;
+
 	}
+
 	var ContactsTelegram = function(){
 
 		var self = this;
@@ -60,12 +87,21 @@
 		//als er op de save button geklikt word en item laten toeveoegen
 		self.save = function(){
 
-			var data_line = {
-		    name : self.conName(),
-		    phone : self.phone()
-			};
-			ko.toJSON(data_line);
-			self.saveJson(data_line);
+			$( "#error_contacts").empty();
+			if (self.conName().length < 30 && (self.phone().length > 9 && self.phone().length < 14 && isNumber(self.phone()))) {
+
+				var data_line = {
+			    name : self.conName(),
+			    phone : self.phone()
+				};
+				ko.toJSON(data_line);
+				self.saveJson(data_line);
+			}else{
+				//$("<br /><small>Data not valid</small>").appendTo("#error_contacts");
+				$("#error_contacts").append("<br /><small>Data not valid</small>");
+			}
+
+
 		};
 
 		// de json zelf opslaan in de json  en later doorsturen na de pytrhon
@@ -96,7 +132,7 @@
 
 		self.addBanItem = function(){
 			console.log(self.phoneBan());
-			self.bans.push(new Ban( self.phoneBan().value));
+			self.bans.push(new Ban( self.phoneBan()));
 		};
 
 		self.removeBanItem = function(item){
@@ -125,7 +161,7 @@
 					var json_data = JSON.parse(data);
 					GlobalBanDataJSON = JSON.parse(json_data.bans);
 					 $.each(GlobalBanDataJSON, function(idx, line){
-						 	self.phoneBan(line.phoneBan+" ");
+						 	self.phoneBan(line.phoneBan);
 					  	self.bans.push(new Ban( self.phoneBan()));
 					 });
 				 }
@@ -135,11 +171,20 @@
 		// opslaan als er op de save knop gedurk is, het object otevoegen
 		self.saveBan = function(){
 
-			var data_line = {
-		    phoneBan : self.phoneBan(),
-			};
-			ko.toJSON(data_line);
-			self.saveJson(data_line);
+			$( "#error_phoneban").empty();
+			if (self.phoneBan().length > 9 && self.phoneBan().length < 14 && isNumber(self.phoneBan())) {
+
+				var data_line = {
+			    phoneBan : self.phoneBan(),
+				};
+				ko.toJSON(data_line);
+				self.saveJson(data_line);
+			}else{
+				//$("<br /><small>Data not valid</small>").appendTo("#error_contacts");
+				$("#error_phoneban").append("<br /><small>Data not valid</small>");
+			}
+
+
 		};
 
 		self.saveJson = function(data_line){
@@ -184,6 +229,16 @@
 		var self = this;
 		self.phoneBan = ko.observable(phoneBan);
 	};
+
+	function isNumber(evt) {
+		console.log("test");
+    evt = (evt) ? evt : window.event;
+    var charCode = (evt.which) ? evt.which : evt.keyCode;
+    if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+        return false;
+    }
+    return true;
+}
 
 })();
 

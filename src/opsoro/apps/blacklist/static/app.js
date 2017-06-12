@@ -52,13 +52,28 @@
 		// als er op de save knop geduwdt word et object opstlaan
 		self.saveBannedWord = function(){
 
+			$( "#error_exists").empty();
 			self.replacedWord("swear word");
+
+			var exists = false;
 			var data_line = {
 				banWord : self.wordBan(),
 				replacedWord : self.replacedWord()
 			};
+
 			ko.toJSON(data_line);
-			self.saveJson(data_line);
+			$.grep(GlobalDataJSON, function(e){
+				if (JSON.stringify(e) == JSON.stringify(data_line)) {
+					exists = true;
+				}
+			});
+			if (!exists) {
+				self.saveJson(data_line);
+			}else{
+				$("#error_exists").append("<br /><small>Word exists</small>");
+
+			}
+
 		};
 
 		self.saveAll = function(){
@@ -83,7 +98,6 @@
 		// bedoeling op te slaan in de python
 		self.saveJson = function(data_line){
 
-			console.log(data_line);
 			var dataJSON = GlobalDataJSON;
 			dataJSON.push(data_line);
 			dataJSON = JSON.stringify(dataJSON);

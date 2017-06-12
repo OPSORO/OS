@@ -1,5 +1,10 @@
 
-
+li{
+  list-style: none;
+}
+.error{
+  color: #C00;
+}
 .contact_list{
   display: flex;
   flex-direction: row;

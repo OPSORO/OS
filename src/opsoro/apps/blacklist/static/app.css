@@ -3,6 +3,9 @@
 li {
   list-style: none;
 }
+.error{
+  color: #C00;
+}
 .ban_list{
   display: flex;
   flex-direction: row;

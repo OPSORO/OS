@@ -10,7 +10,7 @@
 <form data-abide method="post" id="telegram-form">
 <div class="main">
 	<ul class="accordion" data-responsive-accordion-tabs="tabs small-accordion medium-tabs large-tabs" id="telegram-tabs">
-	  <li class="accordion-item is-active" data-accordion-item>
+	  <li class="accordion-item" data-accordion-item>
 			<a href="#general">
 				<span class="fa fa-fw fa-cog"></span> General
 			</a>
@@ -22,10 +22,25 @@
 						General
 					</legend>
 					<div class="row">
-						<p>pagina</p>
+
+						<form id="formTTS">
+							<div class="row">
+								<div class="large-9 medium-8 small-12 columns">
+									<input type="text" name="txtTTS" id="txtTTS" style="width: 100%;" placeholder="Hello World!">
+								</div>
+								<div class="large-3 medium-4 small-12 columns">
+									<a href="#" class="button" style="width: 100%;"><span class="fa fa-volume-up"></span> Say it!</a>
+								</div>
+							</div>
+						</form>
+						</div>
+					</fieldset>
+					<a href="#" data-bind="" class="button" style="width : 100%;">testje</a>
+					<div id="messages">
+						<p></p>
 					</div>
 
-				</fieldset>
+
 	    </div>
 		</li>
 
@@ -60,7 +75,7 @@
 								<label for="name" class="text-right inline">Name</label>
 							</div>
 							<div class="small-8 medium-6 large-4 columns end">
-								<input type="text" id="name" name="name" value="" data-bind="value: conName" required pattern="[a-zA-Z]+{2,30}">
+								<input type="text" id="name" name="name" value="" data-bind="value: conName"maxlength="30" required pattern=".{2,30}[a-zA-Z]+">
 								<small class="error">A valid name is required</small>
 							</div>
 						</div>
@@ -70,7 +85,7 @@
 								<label for="phone" class="text-right inline">Number</label>
 							</div>
 							<div class="small-8 medium-6 large-4 columns end">
-								<input type="text" id="phone" name="phone" value="" data-bind="value: phone" required pattern="[0-9]{9,14}">
+								<input type="text" id="phone" name="phone" value="" data-bind="value: phone" maxlength="14" required pattern="[0-9]*">
 								<small class="error">A valid number is required</small>
 							</div>
 						</div>
@@ -81,6 +96,7 @@
 								<a class="action button" data-bind="click: save" style="padding-left: 2rem; padding-right: 2rem;">
 									<span class="fa fa-save"></span>
 									 &nbsp;Save!</a>
+								<span id="error_contacts" class="error"></span>
 							</div>
 						</div>
 					</article>
@@ -88,7 +104,7 @@
 	    </div>
 		</li>
 
-	  <li class="accordion-item" data-accordion-item>
+	  <li class="accordion-item is-active" data-accordion-item>
 			<a href="#blocked" class="accordion-title">
 				<span class="fa fa-fw fa-shield"></span> Blocked
 			</a>
@@ -119,7 +135,7 @@
 								<label for="phoneBan" class="text-right inline">Number</label>
 							</div>
 							<div class="small-8 medium-6 large-4 columns end">
-								<input type="text" id="phoneBan" name="phoneBan" value="" data-bind="value: phoneBan" required pattern="[0-9]{9,14}">
+								<input type="text" id="phoneBan" name="phoneBan" value="" data-bind="value: phoneBan" maxlength="14" required pattern="[0-9]">
 								<small class="error">A valid number is required</small>
 							</div>
 						</div>
@@ -130,6 +146,7 @@
 								<a class="action button" data-bind="click: saveBan" style="padding-left: 2rem; padding-right: 2rem;">
 									<span class="fa fa-save"></span>
 									 &nbsp;Save!</a>
+									 <span id="error_phoneban" class="error"></span>
 							</div>
 						</div>
 					</form>
@@ -180,6 +197,7 @@
 
 <!-- het load script voor de opgeslane json in te laden -->
 <script>
+	var app_formatted_name = "{{ app.formatted_name }}";
 	//var action_data = {{ actions|tojson|safe }};
 	$(window).bind("load", function() {
 		loadingData();
