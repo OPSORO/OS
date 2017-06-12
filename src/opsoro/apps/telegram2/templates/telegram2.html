@@ -1,0 +1,38 @@
+{% extends "app_base.html" %}
+
+{% block app_head %}
+
+<script src="static/recorderjs/main.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+
+{% endblock %}
+
+{% block app_content %}
+<fieldset>
+	<legend><span class="fa fa-commenting"></span> Text to speech</legend>
+	<form id="formTTS">
+		<div class="row">
+			<div class="large-9 medium-8 small-12 columns">
+				<input type="text" name="txtTTS" id="txtTTS" style="width: 100%;" placeholder="Hello World!">
+			</div>
+			<div class="large-3 medium-4 small-12 columns">
+				<a href="#" class="button" style="width: 100%;"><span class="fa fa-volume-up"></span> Say it!</a>
+			</div>
+		</div>
+	</form>
+</fieldset>
+<a href="#" data-bind="" class="button" style="width : 100%;">testje</a>
+<div id="messages">
+	<p></p>
+</div>
+{% endblock %}
+
+{% block app_scripts %}
+
+<script>
+
+var app_formatted_name = "{{ app.formatted_name }}";
+
+
+</script>
+{% endblock %}
