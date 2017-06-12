@@ -1,12 +1,11 @@
-(function BanManager(){
+(function BlacklistManager(){
 		var self = this;
-		var GlobalDataJSON = "";
-		
+		GlobalDataJSON = [];
+
 		self.templateBan = 'blacklistTemplate';
 
 		self.wordBan = ko.observable();
-		self.replacedWord = ko.observable("pudding");
-
+		self.replacedWord = ko.observable();
 		self.bans = ko.observableArray();
 
 		self.addBanItem = function(){
@@ -14,61 +13,85 @@
 		};
 
 		self.removeBanItem = function(item){
+
 			self.bans.remove(item);
+
+			var newitems = [];
+			var items = GlobalDataJSON;
+			var deletedItem = {banWord: item.wordBan(), replacedWord: item.replacedWord()}
+			var result = $.grep(items, function(e){
+				if (JSON.stringify(e) != JSON.stringify(deletedItem)) {
+					newitems.push(e)
+				}
+			});
+			GlobalDataJSON = newitems;
+			newitems = JSON.stringify(newitems);
+			 $.post('/apps/blacklist/signblacklist', { banlist: newitems }, function(resp) {
+			 	console.log('posted to python');
+			 });
 		};
 
 		// de bestaande objecten inladen en i nde html steken
-		self.load = function(){
+		self.loadBlacklist = function(){
 
-			var dataobj = JSON.parse(dummy);
-			$.each(dataobj.bannedwords, function(idx, line){
-			 	self.bans.push(new Ban( line.wordBan, line.replacedWord));
-
-			 });
+			$.get('/apps/blacklist/getblacklist', function( data ) {
+				if (data != "{}") {
+					var json_data = JSON.parse(data);
+					GlobalDataJSON = JSON.parse(json_data.banlist);
+					console.log(GlobalDataJSON);
+					 $.each(JSON.parse(json_data.banlist), function(idx, line){
+							self.wordBan(line.banWord);
+							self.replacedWord(line.replacedWord);
+							self.bans.push(new Ban( self.wordBan(), self.replacedWord()));
+					 });
+				}
+			});
 		};
 
 
 		// als er op de save knop geduwdt word et object opstlaan
-		self.saveBan = function(){
-	    console.log('savingBan');
-			self.addBanItem();
-			localStorage.setItem("stored_bans", ko.toJSON(self.wordBan(), self.replacedWord()));
-			// na python
+		self.saveBannedWord = function(){
+
+			self.replacedWord("swear word");
 			var data_line = {
-				name : self.wordBan(),
-				phone : self.replacedWord()
+				banWord : self.wordBan(),
+				replacedWord : self.replacedWord()
 			};
 			ko.toJSON(data_line);
 			self.saveJson(data_line);
 		};
 
 		self.saveAll = function(){
+
 			console.log('savig all');
-		}
+			var newitems = [];
+			$.grep(bans(), function(e){
+				var data_line = {
+					banWord : e.wordBan(),
+					replacedWord : e.replacedWord()
+				};
+				newitems.push(data_line);
+			});
+
+			GlobalDataJSON = newitems;
+			newitems = JSON.stringify(newitems);
+			$.post('/apps/blacklist/signblacklist', { banlist: newitems }, function(resp) {
+
+			});
+		};
 
 		// bedoeling op te slaan in de python
 		self.saveJson = function(data_line){
 
-			// get data first
-			var dataJSON = JSON.parse(dummy);
-			dataJSON.bannedwords.push(ko.toJSON(data_line));
-
-			// $.ajax({
-		  //   url: '/signcontacts',
-		  //   dataType: 'json',
-		  //   data: JSON.stringify(dataJSON),
-		  //   type: 'POST',
-		  //   success: function(response) {
-		  //       console.log(response);
-		  //   },
-		  //   error: function(error) {
-		  //       console.log(error);
-		  //   }
-			// });
-
+			console.log(data_line);
+			var dataJSON = GlobalDataJSON;
+			dataJSON.push(data_line);
+			dataJSON = JSON.stringify(dataJSON);
+			$.post('/apps/blacklist/signblacklist', { banlist: dataJSON }, function(resp) {
+			 	self.addBanItem();
+			});
 		};
 
-		//	ko.cleanNode(self.templateName);
 		ko.applyBindings(self.templateBan);
 
 })();

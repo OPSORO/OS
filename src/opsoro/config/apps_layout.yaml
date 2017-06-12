@@ -3,9 +3,7 @@
 - title: 1. telegram apps
   apps:
   - telegram
-  - contactlijst
   - blacklist
-  - banned_contacts
 
 - title: 2. Getting started
   apps:

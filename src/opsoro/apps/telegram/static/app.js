@@ -43,15 +43,17 @@
 		self.loadContacts = function(){
 
 			$.get('/apps/telegram/getcontacts', function( data ) {
-				var json_data = JSON.parse(data);
-				GlobalcontactsDataJSON = JSON.parse(json_data.contacts);
-				//console.log(GlobalcontactsDataJSON);
-				 $.each(JSON.parse(json_data.contacts), function(idx, line){
-						self.conName(line.name);
-						self.phone(line.phone);
-						self.contacts.push(new Contact(self.conName(), self.phone()));
+				if (data != "{}") {
+					var json_data = JSON.parse(data);
+					GlobalcontactsDataJSON = JSON.parse(json_data.contacts);
+					//console.log(GlobalcontactsDataJSON);
+					 $.each(JSON.parse(json_data.contacts), function(idx, line){
+							self.conName(line.name);
+							self.phone(line.phone);
+							self.contacts.push(new Contact(self.conName(), self.phone()));
 
-				 });
+					 });
+				 }
 			});
 		};
 
@@ -89,7 +91,7 @@
 		//data binden
 		self.templateBan = 'banlistTemplate';
 
-		self.phoneBan = ko.observable('');
+		self.phoneBan = ko.observable();
 		self.bans = ko.observableArray();
 
 		self.addBanItem = function(){
@@ -102,7 +104,7 @@
 
 			var newitems = [];
 			var items = GlobalBanDataJSON;
-			var deletedItem = {phoneBan: item.phoneban()}
+			var deletedItem = {phoneBan: item.phoneBan()}
 			var result = $.grep(items, function(e){
 				if (JSON.stringify(e) != JSON.stringify(deletedItem)) {
 					newitems.push(e)
@@ -111,7 +113,7 @@
 			GlobalBanDataJSON = newitems;
 			newitems = JSON.stringify(newitems);
 			 $.post('/apps/telegram/signbans', { bans: newitems }, function(resp) {
-			 //	console.log('posted to python');
+			 	console.log('posted to python');
 			 });
 		};
 
@@ -119,12 +121,14 @@
 		self.loadbans = function(){
 			// haven't tested, but probably won't work. I think you'd have to convert your JSON to observables
 			$.get( '/apps/telegram/getbans', function( data ) {
-				var json_data = JSON.parse(data);
-				GlobalBanDataJSON = JSON.parse(json_data.bans);
-				 $.each(GlobalBanDataJSON, function(idx, line){
-					 	self.phoneBan(line.phoneBan+" ");
-				  	self.bans.push(new Ban( self.phoneBan()));
-				 });
+				if (data != "{}") {
+					var json_data = JSON.parse(data);
+					GlobalBanDataJSON = JSON.parse(json_data.bans);
+					 $.each(GlobalBanDataJSON, function(idx, line){
+						 	self.phoneBan(line.phoneBan+" ");
+					  	self.bans.push(new Ban( self.phoneBan()));
+					 });
+				 }
 			});
 		};
 

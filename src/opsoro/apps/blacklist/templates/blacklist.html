@@ -59,6 +59,7 @@
 				</div>
 				<div class="small-8 medium-6 large-4 columns end">
 					<input type="text" id="wordBan" name="wordBan" value="" data-bind="value: wordBan" required pattern="[a-zA-Z]+">
+					<input type="text" id="replacedWord" name="replacedWord" value="pudding" data-bind="value: replacedWord" required pattern="[a-zA-Z]+{2,20}" style="display:none">
 					<small class="error">A valid word is required</small>
 				</div>
 			</div>
@@ -66,7 +67,7 @@
 			<div class="row">
 				<div class="text-center">
 					<!-- <a href="#" data-open="UpdateModal" class="action button" style="padding-left: 2rem; padding-right: 2rem;"> -->
-					<a class="action button" data-bind="click: saveBan" style="padding-left: 2rem; padding-right: 2rem;">
+					<a class="action button" data-bind="click: saveBannedWord" style="padding-left: 2rem; padding-right: 2rem;">
 						<span class="fa fa-save"></span>
 						 &nbsp;Save!
 					 </a>
@@ -103,7 +104,7 @@
 <script>
 	//var action_data = {{ actions|tojson|safe }};
 	$(window).bind("load", function() {
-		self.load();
+		self.loadBlacklist();
 	});
 </script>
 

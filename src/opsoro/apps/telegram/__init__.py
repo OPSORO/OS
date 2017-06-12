@@ -105,11 +105,16 @@ def setup_pages(opsoroapp):
 
     def readFile(jsonFile):
 
-        filename = os.path.join(telegram_bp.static_folder, jsonFile)
-        if os.path.exists(filename):
+        if os.path.exists(os.path.join(telegram_bp.static_folder, jsonFile)):
+            filename = os.path.join(telegram_bp.static_folder, jsonFile)
             with open(filename, 'r') as readfile:
-                json_data = json.load(readfile)
+                try:
+                    json_data = json.load(readfile)
+                except:
+                    print_info("File is empty")
+                    json_data = "{}"
             return json_data
+        print_info("File doesn't exist")
         return '{}'
 
     opsoroapp.register_app_blueprint(telegram_bp)
