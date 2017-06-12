@@ -10,6 +10,7 @@
 
 		self.addBanItem = function(){
 			self.bans.push(new Ban( self.wordBan(), self.replacedWord()));
+			self.reset();
 		};
 
 		self.removeBanItem = function(item){
@@ -43,6 +44,7 @@
 							self.wordBan(line.banWord);
 							self.replacedWord(line.replacedWord);
 							self.bans.push(new Ban( self.wordBan(), self.replacedWord()));
+							self.reset();
 					 });
 				}
 			});
@@ -104,6 +106,11 @@
 			$.post('/apps/blacklist/signblacklist', { banlist: dataJSON }, function(resp) {
 			 	self.addBanItem();
 			});
+		};
+
+		self.reset = function() {
+			self.wordBan('');
+			self.replacedWord('');
 		};
 
 		ko.applyBindings(self.templateBan);

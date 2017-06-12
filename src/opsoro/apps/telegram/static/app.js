@@ -44,6 +44,7 @@
 
 		self.addItem = function(){
 			self.contacts.push(new Contact(self.conName(), self.phone()));
+			self.reset();
 		};
 
 		//remove item van lijst En in json direct
@@ -78,7 +79,7 @@
 							self.conName(line.name);
 							self.phone(line.phone);
 							self.contacts.push(new Contact(self.conName(), self.phone()));
-
+							self.reset();
 					 });
 				 }
 			});
@@ -116,6 +117,13 @@
 			});
 
 		};
+
+		self.reset = function() {
+			console.log("reset");
+			self.conName('');
+			self.phone('');
+		};
+
 		return self.templateContacts
 	};
 
@@ -133,6 +141,7 @@
 		self.addBanItem = function(){
 			console.log(self.phoneBan());
 			self.bans.push(new Ban( self.phoneBan()));
+			self.reset();
 		};
 
 		self.removeBanItem = function(item){
@@ -163,6 +172,7 @@
 					 $.each(GlobalBanDataJSON, function(idx, line){
 						 	self.phoneBan(line.phoneBan);
 					  	self.bans.push(new Ban( self.phoneBan()));
+							self.reset();
 					 });
 				 }
 			});
@@ -197,6 +207,11 @@
 			});
 
 		};
+
+		self.reset = function() {
+			self.phoneBan('');
+		};
+
 		return self.templateBan
 	};
 
