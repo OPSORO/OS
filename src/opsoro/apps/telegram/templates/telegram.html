@@ -1,0 +1,189 @@
+{% extends "app_base.html" %}
+{% block app_head %}{% endblock %}
+
+{% block app_toolbar %}
+
+{% endblock %}
+
+{% block app_content %}
+
+<form data-abide method="post" id="telegram-form">
+<div class="main">
+	<ul class="accordion" data-responsive-accordion-tabs="tabs small-accordion medium-tabs large-tabs" id="telegram-tabs">
+	  <li class="accordion-item" data-accordion-item>
+			<a href="#general">
+				<span class="fa fa-fw fa-cog"></span> General
+			</a>
+			<div class="accordion-content" data-tab-content>
+
+				<fieldset data-bind="with: general">
+					<legend>
+						<span class="fa fa-cog"></span>
+						General
+					</legend>
+					<div class="row">
+						<p>pagina</p>
+					</div>
+
+				</fieldset>
+	    </div>
+		</li>
+
+	  <li class="accordion-item" data-accordion-item>
+			<a href="#contacts" class="accordion-title">
+				<span class="fa fa-fw fa-magic"></span> Contacts
+			</a>
+			<div data-bind="with: contacts" class="accordion-content" data-tab-content>
+				<fieldset>
+					<legend>
+						<span class="fa fa-cog"></span>
+						Overview
+					</legend>
+
+					<div class="contacts">
+						<div id="contacts">
+							<!-- de objecten (lijst) hier inladen -->
+							<ul class="contacts contact_list" id="contact_list" data-bind="template: {name: 'contactTemplate', foreach: contacts()}"></ul>
+						</div>
+					</div>
+				</fieldset>
+
+				<fieldset>
+					<legend>
+						<span class="fa fa-cloud-download"></span>
+						Add
+					</legend>
+
+					<article class="addContact">
+						<div class="row">
+							<div class="small-4 medium-4 large-4 columns">
+								<label for="name" class="text-right inline">Name</label>
+							</div>
+							<div class="small-8 medium-6 large-4 columns end">
+								<input type="text" id="name" name="name" value="" data-bind="value: conName" required pattern="[a-zA-Z]+">
+								<small class="error">A valid name is required</small>
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="small-4 medium-4 large-4 columns">
+								<label for="phone" class="text-right inline">Number</label>
+							</div>
+							<div class="small-8 medium-6 large-4 columns end">
+								<input type="text" id="phone" name="phone" value="" data-bind="value: phone" required pattern="[0-9]*">
+								<small class="error">A valid number is required</small>
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="text-center">
+								<!-- <a href="#" data-open="UpdateModal" class="action button" style="padding-left: 2rem; padding-right: 2rem;"> -->
+								<a class="action button" data-bind="click: save" style="padding-left: 2rem; padding-right: 2rem;">
+									<span class="fa fa-save"></span>
+									 &nbsp;Save!</a>
+							</div>
+						</div>
+					</article>
+				</fieldset>
+	    </div>
+		</li>
+
+	  <li class="accordion-item is-active" data-accordion-item>
+			<a href="#blocked" class="accordion-title">
+				<span class="fa fa-fw fa-shield"></span> Blocked
+			</a>
+			<div class="accordion-content" data-tab-content data-bind="with: bans">
+				<fieldset>
+					<legend>
+						<span class="fa fa-key"></span>
+						Blocked
+					</legend>
+					<div class="bans">
+						<div id="bans">
+
+							<!-- inladen van onze objecten via de json  -->
+							<ul class="bans ban_list" data-bind="template: {name: 'banlistTemplate', foreach: bans}"></ul>
+
+						</div>
+					</div>
+				</fieldset>
+				<fieldset>
+					<legend>
+						<span class="fa fa-cloud-download"></span>
+						Add
+					</legend>
+					<form class="addBan">
+
+						<div class="row">
+							<div class="small-4 medium-4 large-4 columns">
+								<label for="phoneBan" class="text-right inline">Number</label>
+							</div>
+							<div class="small-8 medium-6 large-4 columns end">
+								<input type="text" id="phoneBan" name="phoneBan" value="" data-bind="value: phoneBan" required pattern="[0-9]*">
+								<small class="error">A valid number is required</small>
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="text-center">
+								<!-- <a href="#" data-open="UpdateModal" class="action button" style="padding-left: 2rem; padding-right: 2rem;"> -->
+								<a class="action button" data-bind="click: saveBan" style="padding-left: 2rem; padding-right: 2rem;">
+									<span class="fa fa-save"></span>
+									 &nbsp;Save!</a>
+							</div>
+						</div>
+					</form>
+
+				</fieldset>
+	    </div>
+		</li>
+	</ul>
+</div>
+
+</form>
+
+{% endblock %}
+{% block app_modals %}
+
+<!-- het app model voor de toegevoegde objecten -->
+<script id="contactTemplate" type="text/template">
+  <li class="contact-container">
+    <div class="contact">
+      <span class="personIcon"></span>
+      <div class="contact_data">
+        <p>Name: <span class="name" data-bind="text: conName"></span></p>
+        <p>Phone: <span data-bind="text: phone"></span></p>
+        <a class="removeItem" data-bind="click: $parent.removeItem" href="#">Delete</a>
+      </div>
+	  </div>
+  </li>
+</script>
+
+<script id="banlistTemplate" type="text/template">
+  <li class="ban-container">
+    <div class="blacklist">
+      <span class="banIcon"></span>
+      <div class="ban_data">
+        <p>
+          Phone:
+          <span data-bind="text: phoneBan"></span>
+          <a class="removeBanItem" data-bind="click: $parent.removeBanItem" href="#">Delete</a>
+        </p>
+      </div>
+  	</div>
+  </li>
+</script>
+
+
+{% endblock %}
+{% block app_scripts %}
+
+<!-- het load script voor de opgeslane json in te laden -->
+<script>
+	//var action_data = {{ actions|tojson|safe }};
+	$(window).bind("load", function() {
+		loadingData();
+	});
+</script>
+
+{% endblock %}

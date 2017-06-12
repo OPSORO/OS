@@ -1,6 +1,13 @@
 $(document).ready(function() {
+
+
+
     var Model = function() {
         var self = this;
+
+        self.logging = function(){
+          console.log("blub");
+        }
 
         // File operations toolbar item
         self.fileIsLocked = ko.observable(false);

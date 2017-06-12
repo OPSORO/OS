@@ -23,10 +23,9 @@
 			$.getJSON( '/apps/banned_contacts/getbans', function( data ) {
 				var json_data = JSON.parse(data);
 				GlobalDataJSON = JSON.parse(json_data.bans);
-				console.log(GlobalDataJSON);
-				 $.each(GlobalDataJSON, function(idx, line){
-					 console.log(GlobalDataJSON);
-				  	//self.bans.push(new Ban( self.phoneBan()));
+				 $.each(JSON.parse(json_data.bans), function(idx, line){
+					 console.log(line.phoneBan);
+				  	self.bans.push(new Ban(line.phoneBan+""));
 				 });
 			});
 		};
