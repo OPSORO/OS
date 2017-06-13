@@ -6,7 +6,22 @@
 		app_socket_handler = function(data) {
 			switch (data.action) {
 				case "messageIncomming":
-      	$('#messages').prepend('<p>' + data.message.text + '</p>'); // unshifts -> pusht naar eerste element
+        var message = data.message.text;
+        var firstname = data.message.from.first_name;
+        var lastname = data.message.from.last_name;
+        var timestamp = data.message.date;
+
+        //convert timestamp to readable time and date
+        var date = new Date(timestamp*1000);
+        var datetime =  date.getDate() + '/' + (date.getMonth()+1) + '/' + date.getFullYear();
+        console.log(dateh);
+        var hours = date.getHours();
+        var minutes = "0" + date.getMinutes();
+        var seconds = "0" + date.getSeconds();
+        var formattedTime = hours + ":" + minutes.substr(-2) + ":" + seconds.substr(-2);
+
+        var name = firstname + " " + lastname;
+      	$('#messages').prepend('<div id="message"><p>'+message+'</p><p id="name">'+name+'</p><p id="date">'+datetime+'</p></div>'); // unshifts -> pusht naar eerste element
       	console.log(data)
       	break;
     	default:
@@ -21,14 +36,27 @@
 
 		self.templateContacts = 'contactTemplate';
 
-		self.conName = ko.observable('');
-		self.phone = ko.observable('');
+		self.conName = ko.observable();
+		self.lastname = ko.observable();
 		self.contacts = ko.observableArray();
 
 		self.addItem = function(){
-			self.contacts.push(new Contact(self.conName(), self.phone()));
+			self.contacts.push(new Contact(self.conName(), self.lastname()));
 			self.reset();
 		};
+
+		self.addContactFromMessage = function(name, lastname){
+
+			self.conName(name);
+			self.lastname(lastname);
+
+			var data_line = {
+				name : self.conName(),
+				lastname : self.lastname()
+			};
+			self.saveJson(data_line);
+
+		}
 
 		//remove item van lijst En in json direct
 		self.removeItem = function(item){
@@ -37,7 +65,7 @@
 
 			var newitems = [];
 			var items = GlobalcontactsDataJSON;
-			var deletedItem = {name: item.conName(), phone: item.phone()}
+			var deletedItem = {name: item.conName(), lastname: item.lastname()}
 			var result = $.grep(items, function(e){
 				if (JSON.stringify(e) != JSON.stringify(deletedItem)) {
 					newitems.push(e)
@@ -60,8 +88,8 @@
 					//console.log(GlobalcontactsDataJSON);
 					 $.each(JSON.parse(json_data.contacts), function(idx, line){
 							self.conName(line.name);
-							self.phone(line.phone);
-							self.contacts.push(new Contact(self.conName(), self.phone()));
+							self.lastname(line.lastname);
+							self.contacts.push(new Contact(self.conName(), self.lastname()));
 							self.reset();
 					 });
 				 }
@@ -72,16 +100,15 @@
 		self.save = function(){
 
 			$( "#error_contacts").empty();
-			if (self.conName().length < 30 && (self.phone().length > 9 && self.phone().length < 14 && isNumber(self.phone()))) {
+			if (self.conName().length < 20 && self.lastname().length < 20 ) {
 
 				var data_line = {
 			    name : self.conName(),
-			    phone : self.phone()
+			    lastname : self.lastname()
 				};
 				ko.toJSON(data_line);
 				self.saveJson(data_line);
 			}else{
-				//$("<br /><small>Data not valid</small>").appendTo("#error_contacts");
 				$("#error_contacts").append("<br /><small>Data not valid</small>");
 			}
 
@@ -102,12 +129,11 @@
 		};
 
 		self.reset = function() {
-			console.log("reset");
 			self.conName('');
-			self.phone('');
+			self.lastname('');
 		};
 
-		return self.templateContacts
+		return self.templateContacts;
 	};
 
 	var BlockedTelegram = function(){
@@ -117,14 +143,28 @@
 
 		//data binden
 		self.templateBan = 'banlistTemplate';
-
-		self.phoneBan = ko.observable();
+		self.banName = ko.observable();
+		self.banLastname = ko.observable();
+		self.banId = ko.observable();
 		self.bans = ko.observableArray();
 
 		self.addBanItem = function(){
-			console.log(self.phoneBan());
-			self.bans.push(new Ban( self.phoneBan()));
+			self.bans.push(new Ban( self.banName(), self.banLastname(), self.banId()));
 			self.reset();
+		};
+
+		self.addBanFromMessage = function(name , lastname, id){
+
+			self.banName(name);
+			self.banLastname(lastname);
+			self.banId(id);
+
+			var data_line = {
+				banName: self.banName(),
+				banLastname: self.banLastname(),
+				banId: self.banId()
+			};
+			self.saveJson(data_line);
 		};
 
 		self.removeBanItem = function(item){
@@ -132,7 +172,11 @@
 
 			var newitems = [];
 			var items = GlobalBanDataJSON;
-			var deletedItem = {phoneBan: item.phoneBan()}
+			var deletedItem = {
+				banName: item.banName(),
+				banLastname: item.banLastname(),
+				banId: item.banId()
+			}
 			var result = $.grep(items, function(e){
 				if (JSON.stringify(e) != JSON.stringify(deletedItem)) {
 					newitems.push(e)
@@ -141,7 +185,7 @@
 			GlobalBanDataJSON = newitems;
 			newitems = JSON.stringify(newitems);
 			 $.post('/apps/telegram/signbans', { bans: newitems }, function(resp) {
-			 	console.log('posted to python');
+			 	//console.log('posted to python');
 			 });
 		};
 
@@ -153,8 +197,10 @@
 					var json_data = JSON.parse(data);
 					GlobalBanDataJSON = JSON.parse(json_data.bans);
 					 $.each(GlobalBanDataJSON, function(idx, line){
-						 	self.phoneBan(line.phoneBan);
-					  	self.bans.push(new Ban( self.phoneBan()));
+							self.banName(line.banName);
+							self.banLastname(line.banLastname);
+							self.banId(line.banId);
+					  	self.bans.push(new Ban( self.banName(), self.banLastname(), self.banId()));
 							self.reset();
 					 });
 				 }
@@ -164,20 +210,13 @@
 		// opslaan als er op de save knop gedurk is, het object otevoegen
 		self.saveBan = function(){
 
-			$( "#error_phoneban").empty();
-			if (self.phoneBan().length > 9 && self.phoneBan().length < 14 && isNumber(self.phoneBan())) {
-
 				var data_line = {
-			    phoneBan : self.phoneBan(),
+					banName: item.banName(),
+					banLastname: item.banLastname(),
+					banId: item.banId()
 				};
 				ko.toJSON(data_line);
 				self.saveJson(data_line);
-			}else{
-				//$("<br /><small>Data not valid</small>").appendTo("#error_contacts");
-				$("#error_phoneban").append("<br /><small>Data not valid</small>");
-			}
-
-
 		};
 
 		self.saveJson = function(data_line){
@@ -192,11 +231,56 @@
 		};
 
 		self.reset = function() {
-			self.phoneBan('');
+			self.banName('');
+			self.banLastname('');
+			self.banId('');
 		};
 
-		return self.templateBan
+		return self.templateBan;
 	};
+
+	var PopupTelegram = function(){
+
+		self.addNewContact = function(name, lastname, id){
+
+			var pupupText = "<p>tekt voor de naam "+name+" "+lastname+". </p><p>Als je het bericht wilt lezen voeg haar toe bij je contacten of blokeer deze person.</p>";
+
+			$( function() {
+			$("#dialog-confirm").append(pupupText);
+		    $( "#dialog-confirm" ).dialog({
+		      resizable: false,
+		      height: "auto",
+		      width: 400,
+		      modal: true,
+		      buttons: {
+		        "Add person to contacts": function() {
+		          $( this ).dialog( "close" );
+							model.contacts().addContactFromMessage(name , lastname);
+							$( "#dialog-confirm").empty();
+		        },
+		        "Block person": function() {
+		          $( this ).dialog( "close" );
+							model.bans().addBanFromMessage(name , lastname, id);
+							$( "#dialog-confirm").empty();
+		        }
+		      }
+		    });
+	  	});
+		}
+
+		self.newContact  = function(person){
+			var name, lastname, id;
+			person = '{"messages": [{"maxid": 670008003, "first_name": "Joffrey", "update_id": 670008003, "message": "Hallo"}]}'
+
+			var json_Data = JSON.parse(person).messages;
+			name = json_Data[0].first_name;
+			lastname = json_Data[0].first_name;
+			id = json_Data[0].first_name;
+			self.addNewContact(name, lastname, id);
+		}
+
+		return self.templatePopup;
+	}
 
 	var TelegramModel = (function(){
 
@@ -204,6 +288,8 @@
 		self.general = ko.observable(new GeneralTelegram());
 		self.contacts = ko.observable(new ContactsTelegram());
 		self.bans = ko.observable(new BlockedTelegram());
+		self.popup = ko.observable(new PopupTelegram());
+
 	});
 
 	model = new TelegramModel();
@@ -215,28 +301,20 @@
 		model.bans().loadbans();
 	}
 
-	function Contact(name,phone){
+	function Contact(name, lastname){
 
 		var self = this;
 		self.conName = ko.observable(name)
-		self.phone = ko.observable(phone)
-	};
+		self.lastname = ko.observable(lastname)
+	}
 
-	function Ban(phoneBan){
+	function Ban(banName, banLastname, banId){
 
 		var self = this;
-		self.phoneBan = ko.observable(phoneBan);
+		self.banName = ko.observable(banName)
+		self.banLastname = ko.observable(banLastname)
+		self.banId = ko.observable(banId)
 	};
-
-	function isNumber(evt) {
-		console.log("test");
-    evt = (evt) ? evt : window.event;
-    var charCode = (evt.which) ? evt.which : evt.keyCode;
-    if (charCode > 31 && (charCode < 48 || charCode > 57)) {
-        return false;
-    }
-    return true;
-}
 
 })();
 

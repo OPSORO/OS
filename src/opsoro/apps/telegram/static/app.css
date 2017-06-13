@@ -75,3 +75,16 @@ li{
 .ban_data{
   margin-left: 6rem;
 }
+#message{
+  color:#2ba6cb;
+  font-family: 'FontAwesome';
+  font-weight: bold;
+}
+#name{
+  font-size: 0.8rem;
+  font-weight: lighter;
+}
+#date{
+  font-size:0.8rem;
+  font-weight:Lighter;
+}

@@ -244,13 +244,17 @@ def setup(opsoroapp):
 
 
 def start(opsoroapp):
-    global loop_t
-    #global MessageLoop
-    loop_t = StoppableThread(target=loop)
+    # global loop_t
+    # # global MessageLoop
+    # loop_t = StoppableThread(target=loop)
+    
+     pass
 
 def stop(opsoroapp):
-    global loop_t
-    loop_t.stop()
-    #global MessageLoop
-    #StoppableThread.stop(opsoroapp)
-    print("stop")
+    # global loop_t
+    # loop_t.stop()
+    # # global MessageLoop
+    # StoppableThread.stop(opsoroapp)
+    # print("stop")
+
+     pass
