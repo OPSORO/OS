@@ -25,12 +25,16 @@ from opsoro.hardware import Hardware
 from opsoro.robot import Robot
 # from opsoro.stoppable_thread import StoppableThread
 from opsoro.sound import Sound
+from opsoro.users import Users
 
 
 try:
     from yaml import CLoader as Loader
 except ImportError:
     from yaml import Loader
+
+def send_data(action, data):
+    Users.send_app_data(config["formatted_name"], action, data)
 
 
 def constrain(n, minn, maxn): return max(min(maxn, n), minn)
@@ -145,26 +149,37 @@ def setup_pages(opsoroapp):
         print_info("File doesn't exist")
         return '{}'
 
+
     opsoroapp.register_app_blueprint(telegram_bp)
 
 data = {}
 data['messages'] = []
 
 def loop():
-            def handle(msg):
+            def handle(msg,offset=None):
+                if offset:
+                    u = urllib.urlopen('https://api.telegram.org/bot371183808:AAH4HHCDqNkmCEavf5oxI-9wG27DNoY-m_E/getUpdates?offset={}'.format(offset))
                 u = urllib.urlopen('https://api.telegram.org/bot371183808:AAH4HHCDqNkmCEavf5oxI-9wG27DNoY-m_E/getUpdates')
                 z = json.load(u)
                 u.close
+                update_ids = []
                 for result in z['result']:
                     text = result["message"]["text"]
                     firstname = result["message"]["from"]["first_name"]
+                    update_id = result["update_id"]
                     print text
                     text = text.encode('unicode_escape')
-
+                    update_ids.append(int(result["update_id"]))
+                    maxid = max(update_ids);
+                    #print(maxid);
                     data['messages'].append({
                     'first_name' : firstname,
-                    'message' : text
+                    'message' : text,
+                    "update_id" : update_id,
+                    "maxid" : maxid
                     })
+
+                    send_data("messageIncomming", result)
 
                     with open('src/opsoro/apps/telegram/static/messages.json','w') as outfile:
                         json.dump(data,outfile)
@@ -197,7 +212,6 @@ def loop():
 
             bot = telepot.Bot('371183808:AAH4HHCDqNkmCEavf5oxI-9wG27DNoY-m_E')
             MessageLoop(bot,handle).run_as_thread()
-
             '''
                 print test
                 test = test.encode('unicode_escape')
