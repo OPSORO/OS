@@ -11,6 +11,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from opsoro.console_msg import *
 from opsoro.hardware import Hardware
 from opsoro.robot import Robot
+from opsoro.users import Users
 from opsoro.expression import Expression
 from opsoro.stoppable_thread import StoppableThread
 from opsoro.sound import Sound
@@ -26,9 +27,9 @@ get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 clientconn = None
 
 config = {
-    'full_name':            'opsoro personal assistant',
+    'full_name':            'personal assistant',
     'icon':                 'fa-child',
-    'color':                'green',
+    'color':                'blue',
     'difficulty':           1,
     'tags':                 ['template', 'developer'],
     'allowed_background':   False,
@@ -104,20 +105,27 @@ def setup_pages(server):
         json_data = read_json_file('Commands.json')
         return jsonify(json_data)
         
-    
-
+    #toevoegen van command via websocket
     @server.app_socket_message('command')
-    def socket_message(conn, data):
-        print_info(data)
-        #global command_queue
-        print_info("Message received")
-        #command_queue = data['data']
-        #command_queue.remove('placeholder')
-        #print_info(command_queue)
+    def socket_command(conn, data):
+        global command_queue
+        command_queue.append(data['data'])
         response = {
             'data': "Message received"
         }
-        conn.send_data("Message",response)
+        Users.send_app_data(config['formatted_name'], "MessageResponse", response)
+
+    #verwijderen van command via websocket
+    @server.app_socket_message('remove-command')
+    def socket_remove_command(conn, data):
+        global command_queue
+        command_queue[:] = [command for command in command_queue if command.get('id') != data['data']['id']]
+        response = {
+            'data': "Command "+data['data']['id']+" removed"
+        }
+        Users.send_app_data(config['formatted_name'], "MessageResponse", response)
+
+
 
     @server.app_socket_connected
     def socket_connected(conn):
@@ -126,7 +134,7 @@ def setup_pages(server):
         print_info("Connected")
     
     @server.app_socket_disconnected
-    def socket_connected(conn):
+    def socket_disconnected(conn):
         global clientconn
         clientconn = None
         print_info("Disconnected")
@@ -137,20 +145,29 @@ def setup_pages(server):
         data['date'] = str(datetime.date.today())
         data['time'] = str(datetime.datetime.now().strftime("%H:%M:%S"))
         print_info(data)
+        Users.send_app_data(config['formatted_name'], "MessageInComing", data)
         filename = os.path.join(app_bp.static_folder+'/json/', 'Activity.json')
-        with open(filename, 'r') as blog_file:
-            json_data = json.load(blog_file)
-            json_data['Activity'].append(data)   
-        with open(filename, 'w') as write_file:
-            write_file.write(json.dumps(json_data))
+        if os.path.exists(filename):
+            with open(filename, 'r') as blog_file:
+                json_data = json.load(blog_file)
+                json_data['Activity'].append(data)   
+            with open(filename, 'w') as write_file:
+                write_file.write(json.dumps(json_data))
+        else: #create activity.json if not exists
+            with open(filename, 'w+') as write_new_file:
+                json_data['Activity'].append(data)
+                write_new_file.write(json.dumps(json_data))
 
     #Data lezen van json file
     def read_json_file(filename):
         try:
             filename = os.path.join(app_bp.static_folder+'/json/',filename)
-            with open(filename) as json_file:
-                json_read = json.load(json_file)
-                return json_read
+            if os.path.exists(filename):
+                with open(filename) as json_file:
+                        json_read = json.load(json_file)
+                        return json_read
+            else:
+                print_info("No such file")
         except:
             print_error('Failed to read json file')
             return null  
@@ -190,18 +207,21 @@ def alarm():
     print_info("Alarm stopped...")
     return
 
+#commands uitvoeren en dan verwijderen van de queue
 def CommandLoop():
     print_info('Start Command loop')
     global command_queue
     time.sleep(1)
     while not command_webservice.stopped():
         if len(command_queue) > 0:
-            print_info(command_queue.pop(0))
+            command = command_queue.pop(0)
+            if command['command-type'] == "robot":
+
             #do something
             response = {
                 'data': "Remove"
             }
-            clientconn.send_data("Message",response)
+            Users.send_app_data(config['formatted_name'], "MessageCommand", response)
         command_webservice.sleep(5)
 
 def demo():

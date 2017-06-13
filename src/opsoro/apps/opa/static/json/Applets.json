@@ -21,17 +21,17 @@
 	"Applet_logo":"https://applets.imgix.net/https%3A%2F%2Fassets.ifttt.com%2Fimages%2Fchannels%2F941030000%2Ficons%2Fon_color_large.png%3Fversion%3D0?ixlib=rails-2.1.3&w=100&h=100&auto=compress&s=c1e46d4cb4a148c6a7fd55ccf2c5a21b"
   },
 	{
-	"Applet_name":"Event",
+	"Applet_name":"Google Calendar",
 	"Applet_url":"https://ifttt.com/applets/wjLHMbBx/embed?redirect_uri=http://opa.eu.ngrok.io/apps/opa/",
 	"Applet_color":"#2c6efc",
-	"Applet_categorie":"Location",
+	"Applet_categorie":"Calendar",
 	"Applet_logo":"https://applets.imgix.net/https%3A%2F%2Fassets.ifttt.com%2Fimages%2Fchannels%2F36%2Ficons%2Fon_color_large.png%3Fversion%3D0?ixlib=rails-2.1.3&w=100&h=100&auto=compress&s=f21aba281510145b7032da7abaa0ef74"
   },
 	{
 	"Applet_name":"ISS",
 	"Applet_url":"https://ifttt.com/applets/Ld8aRTUD/embed?redirect_uri=http://opa.eu.ngrok.io/apps/opa/",
 	"Applet_color":"#2e294e",
-	"Applet_categorie":"Education",
+	"Applet_categorie":"News",
 	"Applet_logo":"https://applets.imgix.net/https%3A%2F%2Fassets.ifttt.com%2Fimages%2Fchannels%2F1829340444%2Ficons%2Fon_color_large.png%3Fversion%3D0?ixlib=rails-2.1.3&w=100&h=100&auto=compress&s=e631efb18ee2b3e9c757c0a1f96c27c0"
   },
 	{
@@ -103,6 +103,27 @@
 	"Applet_color":"#003366",
 	"Applet_categorie":"News",
 	"Applet_logo":"https://applets.imgix.net/https%3A%2F%2Fassets.ifttt.com%2Fimages%2Fchannels%2F789804492%2Ficons%2Fon_color_large.png%3Fversion%3D0?ixlib=rails-2.1.3&w=100&h=100&auto=compress&s=d8980de80e654aa336f8cf3febdbdb58"
+  },
+	{
+	"Applet_name":"Gmail",
+	"Applet_url":"https://ifttt.com/applets/trewGZTz/embed?redirect_uri=http://opa.eu.ngrok.io/apps/opa/",
+	"Applet_color":"#23448b",
+	"Applet_categorie":"Email",
+	"Applet_logo":"https://applets.imgix.net/https%3A%2F%2Fassets.ifttt.com%2Fimages%2Fchannels%2F33%2Ficons%2Fon_color_large.png%3Fversion%3D0?ixlib=rails-2.1.3&w=100&h=100&auto=compress&s=85ba0fac09ef5978203da10c7513cc39"
+  },
+	{
+	"Applet_name":"Office 365 Email",
+	"Applet_url":"https://ifttt.com/applets/bMrPRsNK/embed?redirect_uri=http://opa.eu.ngrok.io/apps/opa/",
+	"Applet_color":"#0072c6",
+	"Applet_categorie":"Email",
+	"Applet_logo":"https://applets.imgix.net/https%3A%2F%2Fassets.ifttt.com%2Fimages%2Fchannels%2F908435712%2Ficons%2Fon_color_large.png%3Fversion%3D0?ixlib=rails-2.1.3&w=100&h=100&auto=compress&s=072e8a06beac29ece3897f21a75c74ef"
+  },
+	{
+	"Applet_name":"Office 365 Calender",
+	"Applet_url":"https://ifttt.com/applets/hD64JjnT/embed?redirect_uri=http://opa.eu.ngrok.io/apps/opa/",
+	"Applet_color":"#0072c6",
+	"Applet_categorie":"Calendar",
+	"Applet_logo":"https://applets.imgix.net/https%3A%2F%2Fassets.ifttt.com%2Fimages%2Fchannels%2F554351061%2Ficons%2Fon_color_large.png%3Fversion%3D0?ixlib=rails-2.1.3&w=100&h=100&auto=compress&s=8c6fa9ff50e281eaaccd7d8a5cd4a7ca"
   }
 ]
 }

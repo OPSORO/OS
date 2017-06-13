@@ -3,7 +3,7 @@
 
 	<!-- <script src="/site_media/static/js/....js"></script> -->
 	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-	<script src="http://knockoutjs.com/downloads/knockout-3.4.2.js"></script>	
+	<script src="http://knockoutjs.com/downloads/knockout-3.4.2.js"></script>
 	<link rel="stylesheet" type="text/css" href="/apps/opa/static/css/animate.min.css">
 
 {% endblock %}
@@ -53,7 +53,7 @@
 							<div  class="applet hidden animated bounceIn" data-bind="style: { 'background-color': Applet_color}">
 								<a   data-bind="attr: { href: Applet_url }">
 									<div  class="applet-content">
-										<img data-bind="attr: { src: Applet_logo }" alt="" class="logo"/>
+										<img data-bind="attr: { src: Applet_logo }" alt="" class="logo animated  rotateIn"/>
 										<h3 data-bind="text: Applet_name"></h3>
 										<p>
 											<span class="text-muted">By</span> Opsoro
@@ -84,7 +84,7 @@
 					<div class="row">
 						<div id="cmdqueue" class="connected-sortable">
 							<div command-id="placeholder" id="cmdqueue-placeholder" class="disabled">
-								<p><span class="fa fa-plus"></span> Move Commands here</p>
+								<p></span>Commands are queued here. Click on a command to remove it from the queue.</p>
 							</div>
 							
 						</div>
@@ -95,28 +95,27 @@
 						<span class="fa fa-terminal"></span>
 						Commands
 					</legend>
+					<div class="row">
+						<input placeholder="Search…" type="search" data-bind="value: commandQuery, valueUpdate: 'keyup'" autocomplete="off">
+					</div>
 
 					<div class="row">
-						<div id="cmdgrid" class="flex-container connected-sortable">
-							{% for command in commands['Commands']  %}
-							<div command-id="{{command.Command_id}}" class="command draggable animated bounceIn" style="background-color:{{command.Command_color}};">
+						<div id="cmdgrid" class="flex-container connected-sortable" data-bind="foreach: Commands">
+							<div class="command animated bounceIn" data-bind="attr: { 'command-id': Command_id},style: { 'background-color': Command_color}">
 								<a>
 									<div class="command-content">
-										<p>
-											{{command.Command_description}}
-										</p>
-										{% if command.Command_customizeable %}
+										<p data-bind="text: Command_description"></p>
+										<!-- DO NOT REMOVE !!!! next ko comments-->
+										<!-- ko  if: Command_customizeable-->
 											<input class="message" type="text" placeholder="Type your message here.">
-										{% endif %}
-										<div class="type hidden">{{command.Command_type}}</div>
-										<div class="eventname hidden">{{command.Command_eventname}}</div>
+										<!--/ko-->
+										<input type="hidden" data-bind="value: Command_type" class="type"></input>
+										<input type="hidden" data-bind="value: Command_eventname" class="eventname"></input>
 									</div>
-									<div class="command-footer" style="background-color:black">
-										Uses {{command.Command_uses}}
+									<div data-bind="text: Command_uses" class="command-footer" style="background-color:black">
 									</div>
 								</a>
 							</div>
-							{% endfor  %}
 						</div>
 					</div>
 
@@ -138,10 +137,10 @@
 							<div class="activity animated bounceIn " >
 								<div class="activity_headers">
 									<img class="icon" src="//web-assets.ifttt.com/assets/web/activity/icons-v2/check-3fdd5e5a0e88fac1838037e4ca46d02b6571fed09ab00497d94c7bfd6586cdc8.svg" alt="Check">	<h4>Applet ran</h4>
-									<p class=".text-muted">{{activity.date}} - {{activity.time}}</p>
+									<p class="date-time">{{activity.date}} - {{activity.time}}</p>
 								</div>
 								<div class="activity_content" style="background-color:{{activity.color}}">
-									<h5>{{ activity.service}}</h5>
+									<h5 class="activity_service">{{ activity.service}}</h5>
 									<p><span class="text-muted">by</span> Opsoro</p>
 								</div>
 							</div>

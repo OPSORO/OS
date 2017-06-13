@@ -14,32 +14,41 @@
     margin: 10px;
     border-radius: 15px;
     overflow: hidden;
+    height: 230px;
 }
 .applet-content{
     color: white;
     display: flex;
-    flex-wrap: wrap;
     width: 250px;
-    margin: 15px;
+    height: 195px;
+    padding: 15px;
     flex-direction: column;
 }
 .applet-content .logo{
     width: 36px;
     height: 36px;
     margin: 0;
-    position: absolute;
 }
+.applet-header {
+    height: 100px;
+    display: flex;
+
+    flex-direction: column;
+}
+
 .applet-content h3{
-    margin-left: 50px;
+    margin-top: auto;
 }
 .applet-footer{
     text-align: center;
-    height: 30px;
+    height: 35px;
+    margin-bottom: auto;
     line-height: 30px;
     font-size: 12px;
     color: white;
-    margin-top: auto;
-}
+    opacity:0.4;
+    align-self: flex-end;
+     }
 
 .command{
     z-index: 2;
@@ -133,4 +142,10 @@
 }
 .no-margin {
     margin: 0;
+}
+
+@media screen and (max-width: 550px) {
+    .activity {
+        width: 280px;
+    }
 }

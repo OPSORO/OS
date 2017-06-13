@@ -1,5 +1,5 @@
 audio:
-  master_volume: 50
+  master_volume: 30
   tts_engine: pico
   tts_gender: f
   tts_language: en
