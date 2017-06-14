@@ -10,15 +10,45 @@
 {% block sidebar_right %}{% endblock %}
 
 {% block app_content %}
-<button class="button round info" data-bind="click: startFacebookLiveDialog()">
-	<span class="text">Start Facebook live</span>
-</button>
 
-<input type="text" data-bind="value: streamKey"/>
+	<button class="button round info" data-bind="click: toggleStreaming">
+		<span class="text" data-bind="text: ! isStreaming() ? 'Start' : 'Stop' "></span>
+	</button>
 
-<button class="button round info" data-bind="click: startFunction()">
-	<span class="text">GO</span>
-</button>
+	<div class="iframe-container" data-bind="html: embedIFrame">
+	</div>
+
+	<div>
+		<label><input type="checkbox" data-bind="checked: autoRead"/> Auto read comments</label>
+	</div>
+
+	<div data-bind="sortable: { data: comments, options: {handle: '.gripper', axis: 'y', opacity: 0.75} }">
+		<div>
+			<div>
+				<span data-bind="text: username"></span>
+			</div>
+			<div>
+				<span data-bind="text: comment"></span>
+			</div>
+		</div>
+	</div>
+	<div>
+		Views: <span data-bind="text: views"></span>
+	</div>
+
+	<!--<div id="comments" data-bind="sortable: { data: comments, options: {handle: '.gripper', axis: 'y', opacity: 0.75} }">
+		<div>
+			<div class="avatar">
+				<a>
+					<img/>
+				</a>
+			</div>
+			<div class="content">
+				<span data-bind="html: comment"></span>
+			</div>
+		</div>
+	</div>-->
+
 
 	{% if not online %}
 		<!-- Content in this section is not displayed online, only on the robot. For example: it is a perfect place to put controls that access hardware stuff, which is not available online. -->
@@ -27,7 +57,11 @@
 {% endblock %}
 {% block app_scripts %}
 
-	<!-- <script src="/site_media/static/js/....js"></script> -->
+	<script src="/static/js/vendor/jquery-ui-sortable/jquery-ui.js"></script>
+	<script src="/static/js/knockout-sortable.min.js"></script>
+
+	<script src="/static/js/sockjs.min.js"></script>
+	<script src="/static/js/vendor/jquery-ui-touch/jquery.ui.touch-punch.min.js"></script>
 
 {% endblock %}
 {% block app_modals %}

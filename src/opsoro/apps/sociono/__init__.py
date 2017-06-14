@@ -37,17 +37,12 @@ import re
 import json
 import time
 
-def constrain(n, minn, maxn): return max(min(maxn, n), minn)
-
-
-# from opsoro.expression import Expression
-
 config = {
     'full_name':            'Sociono',
-    'icon':                 'fa-info',
-    'color':                'green',
-    'difficulty':           4,
-    'tags':                 [''],
+    'icon':                 'fa-hashtag',
+    'color':                'blue',
+    'difficulty':           1,
+    'tags':                 ['twitter', 'hashtag', 'sound', 'expressions'],
     'allowed_background':   False,
     'multi_user':           True,
     'connection':           Robot.Connection.OFFLINE,
@@ -59,6 +54,23 @@ config['formatted_name'] = config['full_name'].lower().replace(' ', '_')
 get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 
 dof_positions = {}
+
+sociono_t = None
+autoRead = None # globals -> can be decalerd in called methodes
+loop_T = None # loop var for Stoppable Thread
+loop_E = None # loop var for Emoticons
+autolooping = None
+Emoticons = []
+
+access_token = '735437381696905216-BboISY7Qcqd1noMDY61zN75CdGT0OSc'
+access_token_secret = 'd3A8D1ttrCxYV76pBOB389YqoLB32LiE0RVyoFwuMKUMb'
+consumer_key = 'AcdgqgujzF06JF6zWrfwFeUfF'
+consumer_secret = 'ss0wVcBTFAT6nR6hXrqyyOcFOhpa2sNW4cIap9JOoepcch93ky'
+
+auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+auth.set_access_token(access_token, access_token_secret)
+
+api = tweepy.API(auth)
 
 
 def send_action(action):
@@ -80,13 +92,6 @@ def wait_for_sound():
         loop_T.stop()
     pass
 
-
-sociono_t = None
-autoRead = None # globals -> can be decalerd in called methodes
-loop_T = None # loop var for Stoppable Thread
-loop_E = None # loop var for Emoticons
-Emoticons = []
-
 def setup_pages(opsoroapp):
     sociono_bp = Blueprint(config['formatted_name'], __name__, template_folder='templates', static_folder='static')
 
@@ -94,30 +99,14 @@ def setup_pages(opsoroapp):
     @opsoroapp.app_view
     def index():
         data = {'actions': {}, 'emotions': [], 'sounds': []}
-
-        action = request.args.get('action', None)
-        if action != None:
-            data['actions'][action] = request.args.get('param', None)
-
-        data['emotions'] = Expression.expressions
-
-        filenames = glob.glob(get_path('../../data/sounds/*.wav'))
-
-        for filename in filenames:
-            data['sounds'].append(os.path.split(filename)[1])
-        data['sounds'].sort()
-
-
         return opsoroapp.render_template(config['formatted_name'] + '.html', **data)
 
     @sociono_bp.route('/', methods=['POST'])
     @opsoroapp.app_view
     def post():
-
         data = {'actions': {}, 'emotions': [], 'sounds': []} # Overbodig ...
 
         # Auguste code --- Te verbeteren a.d.h.v. post actions
-        
         if request.form['action'] == 'startTweepy':
             stopTwitter()
             if request.form['data']:
@@ -125,27 +114,23 @@ def setup_pages(opsoroapp):
                 json_data = json.loads(request.form['data']) # Decoding strigified JSON
                 social_id = []
                 social_id.append(json_data['socialID'])
-                print_info(social_id)
 
                 # Auto Read
                 global autoRead
                 autoRead = json_data['autoRead']
-                print_info(autoRead)
 
                 # Start Tweepy stream
                 startTwitter(social_id)
 
         if request.form['action'] == 'stopTweepy':
-            stopTwitter()    
+            stopTwitter()
 
         if request.form['action'] == 'autoLoopTweepyNext':
             global loop_T
-            
             autolooping = 1
             stopTwitter()
             loop_T = StoppableThread(target=wait_for_sound)
-            #send_action(request.form['action'])
-            
+
         if request.form['action'] == 'autoLoopTweepyStop':
             global autolooping
             autolooping = 0
@@ -157,45 +142,26 @@ def setup_pages(opsoroapp):
                 global Emoticons
                 tweepyObj = json.loads(request.form['data'])
                 Emoticons = tweepyObj['text']['emoticon']
-
                 loop_E = StoppableThread(target=asyncEmotion)
-
                 playTweetInLanguage(tweepyObj)
 
-
         return opsoroapp.render_template(config['formatted_name'] + '.html', **data)
-
 
     opsoroapp.register_app_blueprint(sociono_bp)
 
 
-access_token = '735437381696905216-BboISY7Qcqd1noMDY61zN75CdGT0OSc'
-access_token_secret = 'd3A8D1ttrCxYV76pBOB389YqoLB32LiE0RVyoFwuMKUMb'
-consumer_key = 'AcdgqgujzF06JF6zWrfwFeUfF'
-consumer_secret = 'ss0wVcBTFAT6nR6hXrqyyOcFOhpa2sNW4cIap9JOoepcch93ky'
-
-auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
-auth.set_access_token(access_token, access_token_secret)
-
 #getting new tweet
 class MyStreamListener(tweepy.StreamListener):
-
     def on_status(self, status):
         dataToSend = processJson(status)
-        #print_info(dataToSend)
         if dataToSend['text']['filtered'] != None:
             send_data('dataFromTweepy', dataToSend)
 
-            #print_info(autoRead)
             if autoRead == True:
                 playTweetInLanguage(dataToSend) # if auto read = true -> read tweets when they come in
 
-
-
-api = tweepy.API(auth)
 myStreamListener = MyStreamListener()
 myStream = tweepy.Stream(auth=api.auth, listener=myStreamListener)
-
 
 # Default functions for setting up, starting and stopping an app
 def setup(opsoroapp):
@@ -207,32 +173,24 @@ def start(opsoroapp):
 def stop(opsoroapp):
     stopTwitter()
 
-
 def startTwitter(twitterWords):
     global myStream
     myStream.filter(track=twitterWords, async=True)
 
 
-    print_info(twitterWords)
-
 def stopTwitter():
     global myStream
     myStream.disconnect()
 
-    print_info("stop twitter stream")
-
-
-# Thibaud code
-
 #process tweepy json
 def processJson(status):
-    data = { 
-        "user": { 
-            "username": status._json["user"]["screen_name"], 
+    data = {
+        "user": {
+            "username": status._json["user"]["screen_name"],
             "profile_picture": status._json["user"]["profile_image_url_https"]
-        }, 
-        "text": { 
-            "original": status.text, 
+        },
+        "text": {
+            "original": status.text,
             "filtered": filterTweet(status),
             "lang": status.lang,
             "emoticon": checkForEmoji(status)
@@ -262,12 +220,11 @@ def languageCheck(strTweet,status):
         return strTweet.replace("@","von ", 1)
     elif status.lang == "fr":
         return strTweet.replace("@","de ", 1)
+    else:
+        return strTweet
 
 
 def playTweetInLanguage(tweepyObj):
-
-    print_info(tweepyObj)
-
     if not os.path.exists("/tmp/OpsoroTTS/"):
         os.makedirs("/tmp/OpsoroTTS/")
 
@@ -278,24 +235,18 @@ def playTweetInLanguage(tweepyObj):
         os.remove(full_path)
 
     TTS.create_espeak(tweepyObj['text']['filtered'], full_path, tweepyObj['text']['lang'], "f", "5", "150")
-
     Sound.play_file(full_path)
 
 
 # Emoticon functions
-
 def asyncEmotion():
     time.sleep(0.05)
-
     global loop_E
     global Emoticons
     currentAnimationArrayLength = len(Emoticons)
     playedAnimations = 0
-    print_info(Emoticons)
-    #print_info("hier komt hij")
     while not loop_E.stopped():
         # if running:
-        print_info(Emoticons)
         if currentAnimationArrayLength > playedAnimations:
             Expression.set_emotion_name(Emoticons[playedAnimations], -1)
             playedAnimations = playedAnimations+1
@@ -351,4 +302,3 @@ def checkForEmoji(status):
     if not emotions:
         emotions.append("none")
     return emotions
-

@@ -89,6 +89,8 @@ A "short lived" access token appears, short lived means that it will vanish when
 If you need a token that lasts longer or doesn't expire, you can follow this link:
 https://stackoverflow.com/questions/17197970/facebook-permanent-page-access-token
 
+You can check the validity of your token here: https://developers.facebook.com/tools/debug/accesstoken
+
 ### POST request
 
 Perform a POST request to create a Facebook live stream.
@@ -180,6 +182,18 @@ src: https://developers.facebook.com/docs/videos/live-video/getting-started
 
 # ONORobot
 
+### 1. Paste your access_token
+### 2. Get Request me/live_videos
+		Send response from python to JS & validate it there
+### 3. Filter out live video (status="LIVE"), get it's ID
+		Send back video IDs of the live videos only
+
+	#### 3.1 Set lay-out with live_video data -> embed iFrame error: this video can't be embed (not embeddable while streaming?)
+			Werkt nu toch via Facebook en dan OBS ???
+
+### 4. Use ID for Facebook call for comments & views
+		get request for live_views & comments
 
 
+Extra: Multiple videos ? Display all, check the one you want
 

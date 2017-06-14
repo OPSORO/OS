@@ -1,0 +1,9 @@
+.iframe-container {
+	max-height: 500px;
+	max-width: 750px;
+}
+
+iframe {
+	height: 500px!important;
+	width: 750px!important;
+}

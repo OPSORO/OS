@@ -1,8 +1,8 @@
 {% extends "app_base.html" %}
 
 {% block app_content %}
-	<div class="left-column" data-bind="visible: $root.fileIsLocked()">
-		<div id="fixedvoiceline" data-bind="sortable: { data: fixedVoiceLine, options: {handle: '.gripper', axis: 'y', opacity: 0.75} }">
+	<div class="left-column">
+		<div>
 			<div class="voiceline locked">
 				<input type="text" placeholder="Enter a search term" id="socialID" data-bind="value: $root.socialID">
 				<button class="button round info" data-bind="click: $root.toggleTweepy">
@@ -18,10 +18,10 @@
 		</div>
 	</div>
 
-	<div data-bind="css: { 'right-column': $root.fileIsLocked() }">
+	<div class="right-column">
 
 			<div id="voicelines" data-bind="sortable: { data: voiceLines, options: {handle: '.gripper', axis: 'y', opacity: 0.75} }">
-				<div class="voiceline" data-bind="css: { locked: $root.fileIsLocked(), unlocked: !$root.fileIsLocked()}">
+				<div class="voiceline locked">
 					<div class="avatar">
 						<a data-bind="attr: { href: url}" target="_blank">
 							<img data-bind="attr: { src: picture }"/>
@@ -51,7 +51,6 @@
 				var action_data = {{ actions|tojson|safe }};
 				var emotions_data = {{ emotions|tojson|safe }};
 				var sounds_data = {{ sounds|tojson|safe }};
-				console.log(emotions_data);
 			</script>
 			<script src="/static/js/sockjs.min.js"></script>
 			<script src="/static/js/vendor/jquery-ui-touch/jquery.ui.touch-punch.min.js"></script>

@@ -7,7 +7,7 @@ from flask import Blueprint, render_template, request, send_from_directory
 from werkzeug import secure_filename
 
 from opsoro.robot import Robot
-
+from opsoro.twitter import Twitter
 # import lupa
 from .scripthost import ScriptHost
 

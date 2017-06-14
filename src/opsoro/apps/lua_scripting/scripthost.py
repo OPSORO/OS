@@ -12,6 +12,7 @@ from opsoro.hardware import Hardware
 from opsoro.robot import Robot
 from opsoro.sound import Sound
 from opsoro.stoppable_thread import StoppableThread
+from opsoro.twitter import Twitter
 
 
 def callback(fn):
@@ -81,6 +82,8 @@ class ScriptHost(object):
         g["Hardware"] = LuaHardware(self.runtime)
         g["Animate"] = LuaAnimate
         g["AnimatePeriodic"] = LuaAnimatePeriodic
+
+        g["Twitter"] = Twitter
 
         g["UI"] = self.ui
 

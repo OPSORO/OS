@@ -1,1 +1,4 @@
-<block type="sociono_twitter"></block>
+<block type="sociono_get_tweet"></block>
+<block type="sociono_start_stream"></block>
+<block type="sociono_stop_stream"></block>
+<!-- <block type="sociono_stop_stream_exit"><block> -->

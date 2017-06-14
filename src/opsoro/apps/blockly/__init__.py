@@ -46,7 +46,6 @@ def send_started():
 def send_stopped():
     Users.send_app_data(config['formatted_name'], 'scriptStopped', {})
 
-
 def init_ui():
     Users.send_app_data(config['formatted_name'], 'initUI', {})
 
