@@ -22,7 +22,7 @@
 
         var name = firstname + " " + lastname;
       	//$('#messages').prepend('<div id="message"><p>'+message+'</p><p id="name">'+name+'</p><p id="date">'+datetime+'</p></div>'); // unshifts -> pusht naar eerste element
-				if ("bot" = "bot") {
+				if ("bot" == "bot") {
 					$('#messages').prepend('<div class="chatbox chatbox_me">'+
 						'<div class="bubblebox">'+
 							'<span class="name">'+name+'</span>'+
@@ -33,7 +33,7 @@
 					'</div>'
 					); // unshifts -> pusht naar eerste element
 				}else{
-					$('#messages').prepend($('#messages').prepend('<div class="chatbox chatbox_me">'+
+					$('#messages').prepend('<div class="chatbox chatbox_me">'+
 						'<div class="bubblebox">'+
 							'<span class="name">'+name+'</span>'+
 							 '<div class="bubble me">'+message+'</div>'+
