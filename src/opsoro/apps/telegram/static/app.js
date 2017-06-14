@@ -14,7 +14,6 @@
         //convert timestamp to readable time and date
         var date = new Date(timestamp*1000);
         var datetime =  date.getDate() + '/' + (date.getMonth()+1) + '/' + date.getFullYear();
-        console.log(dateh);
         var hours = date.getHours();
         var minutes = "0" + date.getMinutes();
         var seconds = "0" + date.getSeconds();
@@ -40,7 +39,7 @@
 							'<span class="time">'+datetime+'</span>'+
 						'</div>'+
 						'<span class="bubble_head"></span>'+
-						'<a href="#" class="repeat"></a>'+
+						'<!--<a href="#" class="repeat"></a>-->'+
 					'</div>'
 					); // unshifts -> pusht naar eerste element
 				}
@@ -267,57 +266,77 @@
 
 	var PopupTelegram = function(){
 
-		self.addNewContact = function(name, lastname, id){
+		var self = this;
+		var newName, newLastname, newId
 
-			console.log("in contacts..");
-			var pupupText = "<p>tekt voor de naam "+name+" "+lastname+". </p><p>Als je het bericht wilt lezen voeg haar toe bij je contacten of blokeer deze person.</p>";
+		self.addNewContact = function(){
 
+			// $(document).on('opening', '.remodal', function () {
+			// 	console.log('opening');
+			// });
+			//
+			// $(document).on('opened', '.remodal', function () {
+			// 	console.log('opened');
+			// });
+			//
+			// $(document).on('closing', '.remodal', function (e) {
+			// 	console.log('closing' + (e.reason ? ', reason: ' + e.reason : ''));
+			// });
+			//
+			// $(document).on('closed', '.remodal', function (e) {
+			// 	console.log('closed' + (e.reason ? ', reason: ' + e.reason : ''));
+			// });
+			//
+			// $(document).on('confirmation', '.remodal', function () {
+			// 	//console.log('confirmation');
+			// 	model.contacts().addContactFromMessage(newName, newLastname);
+			// 	$('#modal1Desc').empty();
+			// });
+			//
+			// $(document).on('cancellation', '.remodal', function () {
+			// 	console.log('cancellation');
+			// 	model.bans().addBanFromMessage(newName, newLastname, newId)
+			// 	$('#modal1Desc').empty();$('#modal1Desc').empty();
+			// });
+
+			console.log('confirmation');
+			model.contacts().addContactFromMessage(newName, newLastname);
 			$('#modal1Desc').empty();
-			$('#modal1Desc').append(pupupText);
-
-			$(document).on('opening', '.remodal', function () {
-				console.log('opening');
-			});
-
-			$(document).on('opened', '.remodal', function () {
-				console.log('opened');
-			});
-
-			$(document).on('closing', '.remodal', function (e) {
-				console.log('closing' + (e.reason ? ', reason: ' + e.reason : ''));
-			});
-
-			$(document).on('closed', '.remodal', function (e) {
-				console.log('closed' + (e.reason ? ', reason: ' + e.reason : ''));
-			});
-
-			$(document).on('confirmation', '.remodal', function () {
-				//console.log('confirmation');
-				model.contacts().addContactFromMessage(name, lastname);
-				$('#modal1Desc').empty();
-			});
-
-			$(document).on('cancellation', '.remodal', function () {
-				console.log('cancellation');
-				model.bans().addBanFromMessage(name, lastname, id)
-				$('#modal1Desc').empty();$('#modal1Desc').empty();
-			});
-
+			newName = "";
+			newLastname = "";
+			newId = "";
 
 		}
+		self.addNewBlocked = function(){
 
-		self.newContact  = function(person){
-			var name, lastname, id;
+			console.log('cancellation');
+			model.bans().addBanFromMessage(newName, newLastname, newId)
+			$('modal1Desc').empty();$('#modal1Desc').empty();
+			newName = "";
+			newLastname = "";
+			newId = "";
+		}
+
+		self.newContact  = function(name, lastname, id){
+		//self.newContact  = function(){
+
+			//console.log("lala");
+			window.location.href = "/apps/telegram/#modal";
+
 			person = '{"messages": [{"maxid": 670008003, "first_name": "Joffrey", "update_id": 670008003, "message": "Hallo"}]}'
 
 			var json_Data = JSON.parse(person).messages;
-			name = json_Data[0].first_name;
-			lastname = json_Data[0].first_name;
-			id = json_Data[0].first_name;
-			self.addNewContact(name, lastname, id);
+			newName = json_Data[0].first_name;
+			newLastname = json_Data[0].first_name;
+			newId = json_Data[0].first_name;
+
+			var pupupText = "<p>tekt voor de naam "+newName+" "+newLastname+". </p><p>Als je het bericht wilt lezen voeg haar toe bij je contacten of blokeer deze person.</p>";
+
+			$('#modal1Desc').empty();
+			$('#modal1Desc').append(pupupText);
 		}
 
-		return self.templatePopup;
+		return;
 	}
 
 	var TelegramModel = (function(){
@@ -327,11 +346,17 @@
 		self.contacts = ko.observable(new ContactsTelegram());
 		self.bans = ko.observable(new BlockedTelegram());
 		self.popup = ko.observable(new PopupTelegram());
-
 	});
 
 	model = new TelegramModel();
 	ko.applyBindings(model);
+
+	addNewContact= function(){
+		model.popup().addNewContact();
+	}
+	addBlockPerson = function(){
+		model.popup().addNewBlocked();
+	}
 
 	loadingData = function(){
 

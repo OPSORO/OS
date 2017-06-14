@@ -12,31 +12,31 @@
 
 <form data-abide method="post" id="telegram-form">
 <div class="remodal-bg main alert" data-bind="with popup">
-	<a href="#modal"> Modal №1</a><br>
+	<p onclick=" loadingNew()" > Modal №1</p><br>
 
 	<ul class="accordion" data-responsive-accordion-tabs="tabs small-accordion medium-tabs large-tabs" id="telegram-tabs">
 		<li class="accordion-item is-active" data-accordion-item>
  		 <a href="#general">
- 			 <span class="fa fa-fw fa-cog"></span> General
+ 			 <span class="fa fa-fw fa-commenting"></span> Messages
  		 </a>
  		 <div class="accordion-content" data-tab-content>
 
  			 <fieldset data-bind="with: general">
  				 <legend>
- 					 <span class="fa fa-cog"></span>
- 					 General
+ 					 <span class="fa fa-commenting"></span>
+ 					 Messages
  				 </legend>
  				 <div class="row">
  					 <div id="messages" class="chat">
 
 						 <div class="chatbox chatbox_you">
-							 <div class="bubblebox">
-								 <span class="chatname">Naam</span>
-								 <div class="bubble you">Hello there!</div>
-								 <span class="time">12/06/2017 12:34</span>
-							 </div>
-							 <span class="bubble_head"></span>
-							 <a href="#" class="repeat"></a>
+						 	<div class="bubblebox">
+						 		 <span class="chatname">Naam</span>
+						 		<div class="bubble you">Awesome.</div>
+						 		<span class="time">12/06/2017 12:34</span>
+						 	</div>
+						 	<span class="bubble_head"></span>
+						 	<!-- <a href="#" class="repeat"></a> -->
 						 </div>
 
 						 <div class="chatbox chatbox_me">
@@ -50,12 +50,12 @@
 
 						 <div class="chatbox chatbox_you">
 							 <div class="bubblebox">
-								  <span class="chatname">Naam</span>
-								 <div class="bubble you">Awesome.</div>
+								 <span class="chatname">Naam</span>
+								 <div class="bubble you">Hello there!</div>
 								 <span class="time">12/06/2017 12:34</span>
 							 </div>
 							 <span class="bubble_head"></span>
-							 <a href="#" class="repeat"></a>
+							 <!-- <a href="#" class="repeat"></a> -->
 						 </div>
 
  					 </div>
@@ -252,17 +252,17 @@
 {% block app_scripts %}
 
 <script src="/static/js/remodal_dist/remodal.min.js"></script>
+<script type="text/javascript">
 
-<script>
 $(document).on('confirmation', '.remodal', function () {
-	//console.log('confirmation');
-	model.contacts().addContactFromMessage(name, lastname);
+
+	addNewContact();
 	$('#modal1Desc').empty();
 });
 
 $(document).on('cancellation', '.remodal', function () {
-	console.log('cancellation');
-	model.bans().addBanFromMessage(name, lastname, id)
+
+	addBlockPerson();
 	$('#modal1Desc').empty();$('#modal1Desc').empty();
 });
 </script>
@@ -270,6 +270,7 @@ $(document).on('cancellation', '.remodal', function () {
 <!-- het load script voor de opgeslane json in te laden -->
 <script>
 	var app_formatted_name = "{{ app.formatted_name }}";
+
 	//var action_data = {{ actions|tojson|safe }};
 	$(window).bind("load", function() {
 		loadingData();
