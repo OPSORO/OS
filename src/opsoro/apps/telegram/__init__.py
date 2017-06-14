@@ -164,6 +164,8 @@ def loop():
                     text = result["message"]["text"]
                     firstname = result["message"]["from"]["first_name"]
                     lastname = result["message"]["from"]["last_name"]
+                    userid = result["message"]["from"]["id"]
+                    print userid
                     #print lastname
                     update_id = result["update_id"]
                     print text
@@ -188,6 +190,7 @@ def loop():
                             #print firstname
                         if firstname in dict["contacts"][x].values() and lastname in dict["contacts"][x].values():
                             print 'yes'
+                            print result
                             #if (text == "/start"):
                                 #print 'hopsaaa'
 
@@ -231,8 +234,8 @@ def loop():
                                 Sound.say_tts(textonly)
                         elif(text == '/start'):
                             print 'moet checken of toegelaten'
-
                                 #pass
+                            #newContact(firstname, lastname, userid)
                         else:
                             print 'gebruiker niet toegelaten'
 
