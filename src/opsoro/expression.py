@@ -124,6 +124,23 @@ class _Expression(object):
                 if exp['name'] == name:
                     self.set_emotion_index(index, anim_time)
 
+    def set_emotion_unicode(self, unicode_escape, anim_time=-1):
+
+        e = 0 + 0j
+
+        if unicode_escape is None:
+            raise RuntimeError("Bad combination of parameters; name needs to be provided.")
+
+        index = -1
+        for exp in self.expressions:
+
+            if 'filename' in exp:
+                index += 1
+                if exp['filename'] == unicode_escape:
+
+                    self.set_emotion_index(index, anim_time)
+
+
     def set_emotion_icon(self, icon, anim_time=-1):
         """
         Set an emotion with icon if defined in expression list, within a certain time.
