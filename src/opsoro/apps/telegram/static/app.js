@@ -87,7 +87,7 @@
 
 			var newitems = [];
 			var items = GlobalcontactsDataJSON;
-			var deletedItem = {name: item.conName(), lastname: item.lastname()}
+			var deletedItem = {lastname: item.lastname(), name: item.conName()}
 			var result = $.grep(items, function(e){
 				if (JSON.stringify(e) != JSON.stringify(deletedItem)) {
 					newitems.push(e)
@@ -106,9 +106,9 @@
 			$.get('/apps/telegram/getcontacts', function( data ) {
 				if (data != "{}") {
 					var json_data = data;
-					GlobalcontactsDataJSON = JSON.parse(json_data.contacts);
+					GlobalcontactsDataJSON = json_data.contacts;
 					//console.log(GlobalcontactsDataJSON);
-					 $.each(JSON.parse(json_data.contacts), function(idx, line){
+					 $.each(json_data.contacts, function(idx, line){
 							self.conName(line.name);
 							self.lastname(line.lastname);
 							self.contacts.push(new Contact(self.conName(), self.lastname()));
@@ -143,7 +143,7 @@
 			// get data first
 			var dataJSON = GlobalcontactsDataJSON;
 			dataJSON.push(data_line);
-			console.log(dataJSON);
+			//console.log(dataJSON);
 			dataJSON = JSON.stringify(dataJSON);
 			// console.log(dataJSON);
 			$.post('/apps/telegram/signcontacts', { contacts: dataJSON }, function(resp) {
@@ -198,9 +198,9 @@
 			var newitems = [];
 			var items = GlobalBanDataJSON;
 			var deletedItem = {
-				banName: item.banName(),
+				banId: item.banId(),
 				banLastname: item.banLastname(),
-				banId: item.banId()
+				banName: item.banName()
 			}
 			var result = $.grep(items, function(e){
 				if (JSON.stringify(e) != JSON.stringify(deletedItem)) {
@@ -220,7 +220,7 @@
 			$.get( '/apps/telegram/getbans', function( data ) {
 				if (data != "{}") {
 					var json_data = data;
-					GlobalBanDataJSON = JSON.parse(json_data.bans);
+					GlobalBanDataJSON = json_data.bans;
 					 $.each(GlobalBanDataJSON, function(idx, line){
 							self.banName(line.banName);
 							self.banLastname(line.banLastname);
@@ -297,7 +297,7 @@
 			});
 
 			$(document).on('cancellation', '.remodal', function () {
-				//console.log('cancellation');
+				console.log('cancellation');
 				model.bans().addBanFromMessage(name, lastname, id)
 				$('#modal1Desc').empty();$('#modal1Desc').empty();
 			});

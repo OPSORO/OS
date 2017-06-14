@@ -3,6 +3,7 @@ from __future__ import with_statement
 import os
 import json
 from functools import partial
+from pprint import pprint
 
 from flask import (Blueprint, flash, redirect, render_template, request,
                    send_from_directory, url_for, jsonify)
@@ -61,13 +62,13 @@ def setup_pages(opsoroapp):
     def signblacklist():
 
         data = {'banlist': {}}
-        bans = request.form['banlist']
+        bans = json.loads(request.form['banlist'])
+
         data['banlist'] = bans
-        json_data = json.dumps(data)
 
         filename = os.path.join(Blacklist_bp.static_folder, 'blacklist.json')
         with open(filename, 'w') as blacklist_file:
-                blacklist_file.write(json.dumps(json_data))
+                blacklist_file.write(json.dumps(data))
 
         getblacklist()
 

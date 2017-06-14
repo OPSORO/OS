@@ -13,6 +13,7 @@ import sys
 import time
 import telepot
 from telepot.loop import MessageLoop
+from pprint import pprint
 
 from flask import (Blueprint, flash, redirect, render_template, request,
                    send_from_directory, url_for, jsonify)
@@ -91,9 +92,8 @@ def setup_pages(opsoroapp):
     def signcontacts():
 
         data = {'actions': {}}
-        contacts = request.form['contacts']
+        contacts = json.loads(request.form['contacts'])
 
-        print_info(contacts)
         data['contacts'] = contacts
 
         writeFile('contacts.json', data)
@@ -112,7 +112,7 @@ def setup_pages(opsoroapp):
     def signbans():
 
         data = {'bans': {}}
-        bans = request.form['bans']
+        bans = json.loads(request.form['bans'])
         data['bans'] = bans
 
         writeFile('banlist.json', data)

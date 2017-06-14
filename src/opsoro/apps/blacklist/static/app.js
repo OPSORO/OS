@@ -37,10 +37,9 @@
 
 			$.get('/apps/blacklist/getblacklist', function( data ) {
 				if (data != "{}") {
-					var json_data = JSON.parse(data);
-					GlobalDataJSON = JSON.parse(json_data.banlist);
-					console.log(GlobalDataJSON);
-					 $.each(JSON.parse(json_data.banlist), function(idx, line){
+					var json_data = data;
+					GlobalDataJSON = json_data.banlist;
+					 $.each(json_data.banlist, function(idx, line){
 							self.wordBan(line.banWord);
 							self.replacedWord(line.replacedWord);
 							self.bans.push(new Ban( self.wordBan(), self.replacedWord()));

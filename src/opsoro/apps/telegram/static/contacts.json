@@ -1,1 +1,1 @@
-{"actions": {}, "contacts": "[{\"name\":\"jeroen\",\"lastname\":\"dellaert\"},{\"name\":\"ellen\",\"lastname\":\"Taillieu\"}]"}
+{"actions": {}, "contacts": [{"lastname": "dellaert", "name": "jeroen"}, {"lastname": "Taillieu", "name": "ellen"}]}
