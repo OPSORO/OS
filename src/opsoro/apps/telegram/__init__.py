@@ -155,9 +155,7 @@ data = {}
 data['messages'] = []
 
 def loop():
-            def handle(msg,offset=None):
-                if offset:
-                    u = urllib.urlopen('https://api.telegram.org/bot371183808:AAH4HHCDqNkmCEavf5oxI-9wG27DNoY-m_E/getUpdates?offset={}'.format(offset))
+            def handle(msg):
                 u = urllib.urlopen('https://api.telegram.org/bot371183808:AAH4HHCDqNkmCEavf5oxI-9wG27DNoY-m_E/getUpdates')
                 z = json.load(u)
                 u.close
@@ -165,49 +163,78 @@ def loop():
                 for result in z['result']:
                     text = result["message"]["text"]
                     firstname = result["message"]["from"]["first_name"]
+                    lastname = result["message"]["from"]["last_name"]
+                    #print lastname
                     update_id = result["update_id"]
                     print text
+
                     text = text.encode('unicode_escape')
                     update_ids.append(int(result["update_id"]))
                     maxid = max(update_ids);
                     #print(maxid);
-                    data['messages'].append({
-                    'first_name' : firstname,
-                    'message' : text,
-                    "update_id" : update_id,
-                    "maxid" : maxid
-                    })
+                    #if (text == "/start" ):
+                    with open('src/opsoro/apps/telegram/static/contacts.json') as data_file:
+                        dict = json.load(data_file)
+                        lengte = len(dict)
+                            #print lengte
+                        lengtetotaal = lengte + 1
+                            #print lengtetotaal
+                    for x in range(0, lengtetotaal):
+                            #print 'numberssss'
+                        naamke = dict["contacts"][x]["name"]
+                        lastnaamke = dict["contacts"][x]["lastname"]
+                            #print naamke
+                        print dict["contacts"][x]
+                            #print firstname
+                        if firstname in dict["contacts"][x].values() and lastname in dict["contacts"][x].values():
+                            print 'yes'
+                            #if (text == "/start"):
+                                #print 'hopsaaa'
 
-                    send_data("messageIncomming", result)
+                                #pass
+                            data['messages'].append({
+                            'first_name' : firstname,
+                            'message' : text,
+                            "update_id" : update_id,
+                            "maxid" : maxid
+                            })
 
-                    with open('src/opsoro/apps/telegram/static/messages.json','w') as outfile:
-                        json.dump(data,outfile)
+                            send_data("messageIncomming", result)
 
-                    print data
-                    #datamessages['message'] = text
-                    #print(json_data)
+                            with open('src/opsoro/apps/telegram/static/messages.json','w') as outfile:
+                                json.dump(data,outfile)
 
-                    if(text.startswith('\U')):
-                        print('emoji first + text')
-                        emo = text[5:]
-                        print(emo)
-                        Expression.set_emotion_unicode(emo)
-                        #Sound.say_tts(text)
+                            print data
+                            #datamessages['message'] = text
+                            #print(json_data)
 
-                    elif('\U' in text):
-                        print('text + emoji')
-                        print(text)
-                        emojitext = text.split('\U')
-                        print(emojitext)
-                        text = emojitext[0]
-                        emo = emojitext[1][3:]
-                        print(emo)
-                        Expression.set_emotion_unicode(emo)
-                        #Sound.say_tts(text)
+                            if(text.startswith('\U')):
+                                print('emoji first + text')
+                                emo = text[5:]
+                                print(emo)
+                                Expression.set_emotion_unicode(emo)
+                                #Sound.say_tts(text)
 
-                    else:
-                        textonly = text
-                        Sound.say_tts(textonly)
+                            elif('\U' in text):
+                                print('text + emoji')
+                                print(text)
+                                emojitext = text.split('\U')
+                                print(emojitext)
+                                text = emojitext[0]
+                                emo = emojitext[1][3:]
+                                print(emo)
+                                Expression.set_emotion_unicode(emo)
+                                #Sound.say_tts(text)
+
+                            else:
+                                textonly = text
+                                Sound.say_tts(textonly)
+                        elif(text == '/start'):
+                            print 'moet checken of toegelaten'
+
+                                #pass
+                        else:
+                            print 'gebruiker niet toegelaten'
 
             bot = telepot.Bot('371183808:AAH4HHCDqNkmCEavf5oxI-9wG27DNoY-m_E')
             MessageLoop(bot,handle).run_as_thread()
@@ -237,23 +264,22 @@ def loop():
                     textonly = test
                     Sound.say_tts(textonly)
                 '''
-
 def setup(opsoroapp):
     pass
 
 
 def start(opsoroapp):
-    # global loop_t
+    global loop_t
     # # global MessageLoop
-    # loop_t = StoppableThread(target=loop)
+    loop_t = StoppableThread(target=loop)
 
-     pass
+     #pass
 
 def stop(opsoroapp):
-    # global loop_t
-    # loop_t.stop()
+    global loop_t
+    loop_t.stop()
     # # global MessageLoop
     # StoppableThread.stop(opsoroapp)
     # print("stop")
 
-     pass
+     #pass
