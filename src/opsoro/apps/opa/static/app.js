@@ -31,6 +31,8 @@ $(document).ready(function() {
     conn.onmessage = function(e) {
         var applet = $('.activity').first().clone();
         var data = JSON.parse(e.data);
+        if(data.hasOwnProperty('data'))
+        {
         if(data.data.action == "MessageInComing"){
             applet.find(".date-time").empty().append(data.data.date + " " + data.data.time);
             applet.find(".activity_service").empty().append(data.data.service);
@@ -41,13 +43,12 @@ $(document).ready(function() {
         }
         if(data.data.action == "MessageCommand"){
             if(data.data.data == "Remove"){
-                $('#cmdqueue').find('.command:first').removeClass('bounceIn')
-                $('#cmdqueue').find('.command:first').addClass('bounceOut')
                 $('#cmdqueue').find('.command:first').remove();
             }
         }
         if(data.data.action == "MessageResponse"){
             console.log(data.data.data)
+        }
         }
     };   
 
@@ -94,18 +95,25 @@ $(document).ready(function() {
       }
     });
 
-    $('#filters').accordion({
-      collapsible: true
-    });
+    
     $('#cmdqueue').on('click', '.command', function() {      
         this.parentNode.removeChild(this);
     });
     */
+    $('#filters').accordion({
+      collapsible: true
+    });
     $('input').click(function(event) {
         event.preventDefault();
     });
     $('#cmdgrid').on('dblclick', '.command', function() {
+        //command clonen naar de command queue
+        //eerste clone nemen van de selected value voor reactie
+        var expression = $(this).find('.expression').val()
+        var sound = $(this).find('.sound').val()
         var command = $(this).clone().appendTo('#cmdqueue');
+        command.find('.expression').val(expression);
+        command.find('.sound').val(sound);
         command.uniqueId();
         $('#cmdqueue-placeholder').find('p').addClass("hidden");
         console.log(command.find('.type').val())
@@ -114,8 +122,14 @@ $(document).ready(function() {
             'command-id': command.attr('command-id'),
             'command-message': command.find('.message').val(),
             'command-type': command.find('.type').val(),
-            'command-eventname': command.find('.eventname').val()
+            'command-eventname': command.find('.eventname').val(),
+            'command-expression': expression,
+            'command-hasTTS': command.find('.tts').is(':checked'),
+            'command-say': command.find('.say').val(),
+            'command-hasSound': command.find('.playSound').is(':checked'),
+            'command-sound': command.find('.sound').val()
         }
+        
         conn.send(JSON.stringify({
                 action: "command",
                 data: data
@@ -229,7 +243,8 @@ $(document).ready(function() {
     }
 
     function Command(Command_id,Command_name,Command_color,Command_description,Command_uses
-    ,Command_type,Command_eventname,Command_customizeable) {
+    ,Command_type,Command_eventname,Command_customizeable,Command_expressions,Command_selectedReaction,Command_say
+    ,Command_saySomething,Command_sounds,Command_selectedSound,Command_displaySoundOptions,Command_displayOptions,Command_message) {
         this.Command_id = Command_id;
         this.Command_name = Command_name;
         this.Command_color = Command_color;
@@ -238,25 +253,55 @@ $(document).ready(function() {
         this.Command_type = Command_type;
         this.Command_eventname = Command_eventname;
         this.Command_customizeable = Command_customizeable;
+        this.Command_expressions = Command_expressions;
+        this.Command_selectedReaction = ko.observable(Command_selectedReaction);
+        this.Command_say = Command_say;
+        this.Command_saySomething = Command_saySomething;
+        this.Command_sounds = Command_sounds;
+        this.Command_selectedSound = ko.observable(Command_selectedSound);
+        this.Command_displaySoundOptions = ko.observable(Command_displaySoundOptions);
+        this.Command_displayOptions = ko.observable(Command_displayOptions);
+        this.Command_message = ko.observable(Command_message);
+    }
+
+    function Expression(Expression_name){
+        this.Expression_name = Expression_name;
     }
 
     var listOfApplets = [];
     var listOfCommands = [];
+    var listOfExpressions = [];
+    var listOfSounds = [];
+    var queue = [];
 
     $.when(
         $.get( "/apps/opa/getapplets", function( data ) {
-            console.log("get applets");
             $(data['Applets']).each(function(index, item){
                 listOfApplets.push(new Applet(item.Applet_name, item.Applet_url, item.Applet_color, item.Applet_categorie, item.Applet_logo));            
             });
         }),
 
+        $.get( "/apps/opa/getreactions", function( data ) {
+            $(data['expressions']).each(function(index, item){
+                listOfExpressions.push(item.name);
+            });
+        }),
+
+        $.get( "/apps/opa/getsounds", function( data ) {
+            console.log("get sounds");
+            $(data['sounds']).each(function(index, item){
+                listOfSounds.push(item);
+            });
+        }),
+
         $.get( "/apps/opa/getcommands", function( data ) {
             console.log("get commands");
+            //default waarden meegeven
             $(data['Commands']).each(function(index, item){
                 listOfCommands.push(new Command(item.Command_id,item.Command_name,item.Command_color
                 ,item.Command_description,item.Command_uses,item.Command_type,
-                item.Command_eventname,item.Command_customizeable));
+                item.Command_eventname,item.Command_customizeable,listOfExpressions,
+                "neutral",item.Command_say,true,listOfSounds,"1_kamelenrace.wav",false,false,""));
             });
         })
 
@@ -271,54 +316,48 @@ $(document).ready(function() {
         }
 
        var listOfCategories = [
-        new protocol(1, 'Social'),
-        new protocol(2, 'News'),
-        new protocol(3, 'Location'),
-        new protocol(4, 'Tools'),
-        new protocol(5, 'Email'),
-        new protocol(6, 'Calendar')
-    ];
+            new protocol(1, 'Social'),
+            new protocol(2, 'News'),
+            new protocol(3, 'Location'),
+            new protocol(4, 'Tools'),
+            new protocol(5, 'Email'),
+            new protocol(6, 'Calendar')
+        ];
 
-        var commands = [];
-        commands = listOfCommands;
-        
+       
         var viewModel = {
-            Commands: ko.observableArray(listOfCommands),
-            commandQuery: ko.observable(''),
-            search: function(value) {
-                
-                console.log(commands);
-                viewModel.Commands.removeAll();
-                console.log(commands);
-                
-                for(var x in commands) {
-                    console.log("test")
-                    if(commands[x].Command_name.toLowerCase().indexOf(value.toLowerCase()) >= 0) {
-                        viewModel.Commands.push(Commands[x]);
-                    }
-                }
-                
-            },
-            
-
+            commands: ko.observableArray(listOfCommands),
+            commandQuery: ko.observable(""),
+                 
             protocoldocs: ko.observableArray(listOfApplets),
             protocol: ko.observableArray(listOfCategories),
             selectedProtocol: ko.observableArray(),
             addprotocol: function (protocol, elem) {
-            var $checkBox = $(elem.srcElement);
-            var isChecked = $checkBox.is(':checked');
-            //If it is checked and not in the array, add it
-            if (isChecked && viewModel.selectedProtocol.indexOf(protocol) < 0) {
-            viewModel.selectedProtocol.push(protocol);
+                var $checkBox = $(elem.srcElement);
+                var isChecked = $checkBox.is(':checked');
+                //If it is checked and not in the array, add it
+                if (isChecked && viewModel.selectedProtocol.indexOf(protocol) < 0) {
+                viewModel.selectedProtocol.push(protocol);
+                }
+                //If it is in the array and not checked remove it                
+                else if (!isChecked && viewModel.selectedProtocol.indexOf(protocol) >= 0) {
+                viewModel.selectedProtocol.remove(protocol);
+                }
+                //Need to return to to allow the Checkbox to process checked/unchecked
+                return true;
             }
-            //If it is in the array and not checked remove it                
-            else if (!isChecked && viewModel.selectedProtocol.indexOf(protocol) >= 0) {
-            viewModel.selectedProtocol.remove(protocol);
+        }
+        viewModel.filteredCommands = ko.computed(function (){
+            var filter = viewModel.commandQuery().toLowerCase();
+
+            if (!filter) {
+                return viewModel.commands();
+            } else {
+                return ko.utils.arrayFilter(viewModel.commands(), function (item) {
+                    return item['Command_name'].toLowerCase().indexOf(filter) !== -1;
+                });
             }
-            //Need to return to to allow the Checkbox to process checked/unchecked
-            return true;
-        }
-        }
+        });
 
         viewModel.filteredProtocols = ko.computed(function () {
             var selectedProtocols = ko.utils.arrayFilter(viewModel.protocol(), function (p) {
@@ -355,7 +394,7 @@ $(document).ready(function() {
         };
 
         viewModel.commandQuery.subscribe(viewModel.search);
-
+        console.log(viewModel.commands())
         ko.applyBindings(viewModel);
         
     });

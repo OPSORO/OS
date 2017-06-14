@@ -1,7 +1,6 @@
 .flex-container{
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
 }
 #cmdqueue{
     display: flex;
@@ -49,36 +48,82 @@
     opacity:0.4;
     align-self: flex-end;
      }
-
+.applets {
+    display: flex !important;
+    flex-direction: row;
+}
+#filters {
+    padding-top:2em;
+    width: 250px;
+}
 .command{
     z-index: 2;
     margin: 10px;
-    width: 230px;
+    width: 250px;
     border-radius: 15px;
-    background-color: blue;
     overflow: hidden;
 }
 .command a{
     display: flex;
-    flex-wrap: wrap;
     flex-direction: column;
     height: 100%;
 }
+.options-cog{
+    font-size: 25px;
+    transition: all .2s ease-in-out;
+    position: absolute;
+    top: 5px;
+    right: 15px;
+}
+.search-container{
+    justify-content: center;
+}
+.search{
+    width: 250px;
+}
+.search-icon{
+    font-size: 30px;
+    margin-left: 15px;
+}
+#cmdqueue .options-cog{
+    display: none
+}
+.options-cog:hover{
+    opacity: 0.5;
+}
 .command-content{
-    margin: 15px;
-    max-width: 200px;
+    padding:15px 15px 0 15px !important;
+    color: white;
+    display: flex;
+    flex-direction: column;
+}
+.command-content label{
     color: white;
 }
 .command-footer{
     text-align: center;
     font-size: 12px;
     color: white;
-    height: 30px;
-    line-height: 30px;
+    height: 35px;
     width: 100%;
     margin-top: auto;
+    line-height: 35px;
+    opacity: 0.4;
 }
 
+.tts-div {
+    margin-left: auto;
+    margin-top: auto;
+}
+input[type=text], select, input[type=text]:focus, select:focus, select:active, .tts{
+    color:white;
+    background-color: rgba(255,255,255,0.2);
+    border:0;
+    border-radius: 0;
+}
+option {
+    border:0;
+}
 .flex-container > .highlight{
     background-color: green;
     opacity: 0.5;
@@ -134,7 +179,6 @@
 
 #protocolcontrol>ul>li {
     list-style-type: none;
-    display: inline-block;
 }
 #protocolcontrol {
     display: flex;
@@ -147,5 +191,15 @@
 @media screen and (max-width: 550px) {
     .activity {
         width: 280px;
+    }
+    .applets {
+        flex-direction: column;
+    }
+    #protocolcontrol>ul>li {
+        display: inline-block;
+    }
+    #filters {
+        padding-top: 0;
+        width:100%;
     }
 }

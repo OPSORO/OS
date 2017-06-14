@@ -4,9 +4,12 @@ import json, datetime
 import json,datetime
 
 import time
-from threading import Thread, current_thread
+import glob
+import requests
 
 from flask import Blueprint, render_template, request, redirect, url_for, flash, send_from_directory, jsonify
+from threading import Thread, current_thread
+from functools import partial
 
 from opsoro.console_msg import *
 from opsoro.hardware import Hardware
@@ -17,7 +20,7 @@ from opsoro.stoppable_thread import StoppableThread
 from opsoro.sound import Sound
 from opsoro.module.eye import Eye
 from opsoro.preferences import Preferences
-from functools import partial
+
 
 import os
 
@@ -33,6 +36,7 @@ config = {
     'difficulty':           1,
     'tags':                 ['template', 'developer'],
     'allowed_background':   False,
+    'multi_user':           True,
     'connection':           Robot.Connection.OFFLINE,
     'activation':           Robot.Activation.AUTO
 }
@@ -76,12 +80,12 @@ def setup_pages(server):
         json_dict = request.data
         data = json.loads(json_dict)
         print_info(data)
-        
+        #Opslaan van de activity
+        save_activity(data)
         #De data die verkregen is via de webhook laten uitspreken
         speak(data)
 
-        #Opslaan van de activity
-        save_activity(data)
+       
         Robot.sleep()
         return jsonify(data)
         
@@ -104,7 +108,35 @@ def setup_pages(server):
     def getcommands():
         json_data = read_json_file('Commands.json')
         return jsonify(json_data)
+
+    #ophalen expressions
+    @app_bp.route('/getreactions',methods=['GET'])
+    def getreactions():
+        data = {
+            'expressions': Expression.expressions,
+        }
+        return jsonify(data)
+    
+    #ophalen sounds
+    @app_bp.route('/getsounds',methods=['GET'])
+    def getsounds():
+        filenames = glob.glob(get_path('../../data/sounds/*.wav'))
+        data = {
+            'sounds': []
+        }
+        for filename in filenames:
+            data['sounds'].append(os.path.split(filename)[1])
+        data['sounds'].sort()
         
+        return jsonify(data)
+
+    '''
+    @app_bp.route('/getqueue',methods=['GET'])
+    def getqueue():
+        global command_queue
+        
+        return jsonify(json_data)
+    '''    
     #toevoegen van command via websocket
     @server.app_socket_message('command')
     def socket_command(conn, data):
@@ -203,7 +235,7 @@ def alarm():
     onetoten = range(0,3)
     for i in onetoten:
         Sound.play_file("1_kamelenrace.wav")
-        Sound.wait_for_sound(print_info)
+        Sound.wait_for_sound()
     print_info("Alarm stopped...")
     return
 
@@ -214,9 +246,27 @@ def CommandLoop():
     time.sleep(1)
     while not command_webservice.stopped():
         if len(command_queue) > 0:
+            
             command = command_queue.pop(0)
-            if command['command-type'] == "robot":
-
+            print_info(command)
+            Expression.set_emotion_name(command['command-expression'])
+            if command['command-hasSound']:
+                Sound.play_file(command['command-sound'])
+            #ifttt command
+            if command['command-type'] == "ifttt":
+                data = {
+                     "value1": command['command-message']
+                }
+                requests.post("https://maker.ifttt.com/trigger/"+command['command-eventname']+"/with/key/b4mn_DZW0F-ERF-VIpE3r",data)  
+            if command['command-hasTTS']:
+                Sound.say_tts(command['command-say'])
+                Sound.wait_for_sound()
+                if command['command-type'] == "emotion":
+                    Sound.say_tts(command['command-expression'])
+                if command['command-type'] == "sound":
+                    Sound.play_file(command['command-message'])
+                if command['command-type'] == "ifttt":
+                    Sound.say_tts(command['command-message'])                                   
             #do something
             response = {
                 'data': "Remove"
@@ -237,7 +287,7 @@ def setup(server):
     command_queue = []
 
 def start(server):
-    Sound.say_tts("Hello, my name is " + Preferences.get('general','robot_name','Robot'))
+    #Sound.say_tts("Hello, my name is " + Preferences.get('general','robot_name','Robot'))
     global command_webservice
     command_webservice = StoppableThread(target=CommandLoop)
 

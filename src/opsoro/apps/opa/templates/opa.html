@@ -9,17 +9,19 @@
 {% endblock %}
 
 <!-- These sidebars can be removed by removing the block tags -->
-{% block sidebar_left %}{% endblock %}
+
+
 {% block sidebar_right %}{% endblock %}
 
 {% block app_content %}
 	<div class="">
 	<ul class="accordion" data-responsive-accordion-tabs="tabs small-accordion medium-tabs large-tabs" id="settings-tabs">
-	  <li class="accordion-item is-active" data-accordion-item>
+	  	<li class="accordion-item is-active" data-accordion-item>
 			<a href="#my_applets">
 				<span class="fa fa-th"></span> My Applets
 			</a>
 			<div class="accordion-content" data-tab-content>
+				<div class="applets">
 				<fieldset id="filters">
 					<legend>
 						<span class="fa fa-filter"></span>
@@ -69,9 +71,10 @@
 					</div>
 
 				</fieldset>
+				</div>	
 	    	</div>
 		</li>
-	 <li class="accordion-item" data-accordion-item>
+	 	<li class="accordion-item" data-accordion-item>
 			<a href="#commands" class="accordion-title">
 				<span class="fa fa-terminal"></span> Commands
 			</a>
@@ -84,7 +87,7 @@
 					<div class="row">
 						<div id="cmdqueue" class="connected-sortable">
 							<div command-id="placeholder" id="cmdqueue-placeholder" class="disabled">
-								<p></span>Commands are queued here. Click on a command to remove it from the queue.</p>
+								<p></span>Double tap a command below to queue it here. Click on a command to remove it from the queue.</p>
 							</div>
 							
 						</div>
@@ -96,21 +99,47 @@
 						Commands
 					</legend>
 					<div class="row">
-						<input placeholder="Search…" type="search" data-bind="value: commandQuery, valueUpdate: 'keyup'" autocomplete="off">
+						<div class="flex-container search-container">
+							<input class="search" placeholder="Search…" type="search" data-bind="textInput: commandQuery" autocomplete="off">
+							<span class="fa fa-search search-icon" aria-hidden="true"></span>
+						</div>
 					</div>
 
 					<div class="row">
-						<div id="cmdgrid" class="flex-container connected-sortable" data-bind="foreach: Commands">
+						<div id="cmdgrid" class="flex-container connected-sortable" data-bind="foreach: filteredCommands">
 							<div class="command animated bounceIn" data-bind="attr: { 'command-id': Command_id},style: { 'background-color': Command_color}">
 								<a>
 									<div class="command-content">
-										<p data-bind="text: Command_description"></p>
-										<!-- DO NOT REMOVE !!!! next ko comments-->
-										<!-- ko  if: Command_customizeable-->
-											<input class="message" type="text" placeholder="Type your message here.">
-										<!--/ko-->
-										<input type="hidden" data-bind="value: Command_type" class="type"></input>
-										<input type="hidden" data-bind="value: Command_eventname" class="eventname"></input>
+										
+										<label class="options-cog" data-bind="attr: { 'for': Command_id}"><span class="fa fa-cog" aria-hidden="true"></span></label>
+										<input class="hidden" type="checkbox" data-bind="checked: Command_displayOptions,attr: { 'id': Command_id}"/>
+										<h3 data-bind="text: Command_description"></h3>
+										<div class="options animated flipInY" data-bind="visible: Command_displayOptions">
+											<!-- DO NOT REMOVE !!!! ko in commentaar is code dus niet verwijderen-->
+											<!-- ko  if: Command_customizeable-->
+												<input class="message" type="text" placeholder="Type your message here." data-bind="textInput: Command_message">
+											<!--/ko-->
+											<!-- ko  ifnot: Command_customizeable-->
+												<input class="message" type="hidden" value="" >
+											<!--/ko-->
+											<select class="expression" data-bind='options: Command_expressions,value: Command_selectedReaction'> </select>
+											<div class="tts-div">
+												<input class="tts" id="tts" type="checkbox" data-bind='checked: Command_saySomething'/> 
+												<label for="tts">Speak</label>
+												<input class="playSound" id="playSound" type="checkbox" data-bind='checked: Command_displaySoundOptions'/>
+												<label for="playSound">Play sound</label>
+											</div>
+											<select class="sound" data-bind='options: Command_sounds,value: Command_selectedSound,visible: Command_displaySoundOptions'> </select>
+											<input type="hidden" data-bind="value: Command_say" class="say"></input>
+											<input type="hidden" data-bind="value: Command_type" class="type"></input>
+											<input type="hidden" data-bind="value: Command_eventname" class="eventname"></input>
+										</div>
+										<div class="animated flipInY" data-bind="visible: !Command_displayOptions()">
+											<p data-bind="text: Command_message"></p>
+											<p><span class="text-muted">Reaction: </span><span data-bind="text: Command_selectedReaction"></span></p>
+											<p data-bind="visible: Command_displaySoundOptions"><span class="text-muted">Play sound: </span><span data-bind="text: Command_selectedSound"></span></p>
+											<p data-bind="visible: Command_saySomething"><span class="text-muted">Say something: </span><span data-bind="text: Command_saySomething"></span></p>
+										</div>	
 									</div>
 									<div data-bind="text: Command_uses" class="command-footer" style="background-color:black">
 									</div>
@@ -121,7 +150,7 @@
 
 				</fieldset>
 	    	</div>
-
+		</li>
 		 <li class="accordion-item" data-accordion-item>
 			<a href="#Activity" class="accordion-title">
 				<span class="fa fa-bar-chart"></span> Activity
@@ -299,26 +328,4 @@
 
 {% endblock %}
 {% block app_modals %}
-
-<div id="popup_window" class="reveal" data-reveal data-animation-in="fade-in" data-animation-out="fade-out">
-	<div class="titlebar">
-		<button class="close-button" data-close aria-label="Close" type="button"><span class="fa fa-close"></span></button>
-		<span class="fa fa-cogs"></span> Popup window!
-	</div>
-	<div class="content">
-		<p>This is a popup window.</p>
-		<form>
-			<div class="row collapse">
-				<div class="small-9 columns">
-					<input type="text" name="text" class="error" style="width: 100%;" data-bind="value: popupTextInput">
-					<small class="error hide"></small>
-				</div>
-				<div class="small-3 columns">
-					<a href="#" class="button" style="width: 100%;" data-bind="click: popupButtonHandler()"><span class="fa fa-save"></span> Save</a>
-				</div>
-			</div>
-		</form>
-	</div>
-</div>
-
 {% endblock %}
