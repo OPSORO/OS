@@ -268,29 +268,41 @@
 
 		self.addNewContact = function(name, lastname, id){
 
+			console.log("in contacts..");
 			var pupupText = "<p>tekt voor de naam "+name+" "+lastname+". </p><p>Als je het bericht wilt lezen voeg haar toe bij je contacten of blokeer deze person.</p>";
 
-			$( function() {
-			$("#dialog-confirm").append(pupupText);
-		    $( "#dialog-confirm" ).dialog({
-		      resizable: false,
-		      height: "auto",
-		      width: 400,
-		      modal: true,
-		      buttons: {
-		        "Add person to contacts": function() {
-		          $( this ).dialog( "close" );
-							model.contacts().addContactFromMessage(name , lastname);
-							$( "#dialog-confirm").empty();
-		        },
-		        "Block person": function() {
-		          $( this ).dialog( "close" );
-							model.bans().addBanFromMessage(name , lastname, id);
-							$( "#dialog-confirm").empty();
-		        }
-		      }
-		    });
-	  	});
+			$('#modal1Desc').empty();
+			$('#modal1Desc').append(pupupText);
+
+			$(document).on('opening', '.remodal', function () {
+				console.log('opening');
+			});
+
+			$(document).on('opened', '.remodal', function () {
+				console.log('opened');
+			});
+
+			$(document).on('closing', '.remodal', function (e) {
+				console.log('closing' + (e.reason ? ', reason: ' + e.reason : ''));
+			});
+
+			$(document).on('closed', '.remodal', function (e) {
+				console.log('closed' + (e.reason ? ', reason: ' + e.reason : ''));
+			});
+
+			$(document).on('confirmation', '.remodal', function () {
+				//console.log('confirmation');
+				model.contacts().addContactFromMessage(name, lastname);
+				$('#modal1Desc').empty();
+			});
+
+			$(document).on('cancellation', '.remodal', function () {
+				//console.log('cancellation');
+				model.bans().addBanFromMessage(name, lastname, id)
+				$('#modal1Desc').empty();$('#modal1Desc').empty();
+			});
+
+
 		}
 
 		self.newContact  = function(person){

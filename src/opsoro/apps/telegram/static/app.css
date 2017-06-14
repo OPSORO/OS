@@ -127,13 +127,13 @@ li{
   justify-content: flex-end;
   width: 80%;
 }
-.name{
+.chatname{
   color: #0095FF;
   display: block;
   margin-left: 3rem;
   font-size: 0.8rem;
 }
-.chatbox_me .name{
+.chatbox_me .chatname{
   color: #FFAF19;
 }
 .bubble{
@@ -209,4 +209,20 @@ li{
 .me::before {
     box-shadow: -2px 2px 2px 0px rgba( 255, 175, 25, .2 );
     left: -9px;
+}
+
+
+
+
+.remodal-bg.with-red-theme.remodal-is-opening,
+.remodal-bg.with-red-theme.remodal-is-opened {
+  filter: none;
+}
+
+.remodal-overlay.with-red-theme {
+  background-color: #f44336;
+}
+
+.remodal.with-red-theme {
+  background: #fff;
 }

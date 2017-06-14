@@ -7,13 +7,12 @@
 
 {% block app_content %}
 
-<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-<link rel="stylesheet" href="/resources/demos/style.css">
-<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<style type="text/css"> @import url("/static/js/remodal_dist/remodal.css"); </style>
+<style type="text/css"> @import url("/static/js/remodal_dist/remodal-default-theme.css"); </style>
 
 <form data-abide method="post" id="telegram-form">
-<div class="main">
+<div class="remodal-bg main alert" data-bind="with popup">
+	<a href="#modal"> Modal №1</a><br>
 
 	<ul class="accordion" data-responsive-accordion-tabs="tabs small-accordion medium-tabs large-tabs" id="telegram-tabs">
 		<li class="accordion-item is-active" data-accordion-item>
@@ -32,7 +31,7 @@
 
 						 <div class="chatbox chatbox_you">
 							 <div class="bubblebox">
-								 <span class="name">Naam</span>
+								 <span class="chatname">Naam</span>
 								 <div class="bubble you">Hello there!</div>
 								 <span class="time">12/06/2017 12:34</span>
 							 </div>
@@ -42,7 +41,7 @@
 
 						 <div class="chatbox chatbox_me">
 							 <div class="bubblebox">
-								 <span class="name">Naam</span>
+								 <span class="chatname">Naam</span>
 									<div class="bubble me">Hi. I'm an expandeable chat box   with box shadow. How are you? I expand horizontally and   vertically, as you can see here. Hi. I'm an expandeable chat box   with box shadow. How are you? I expand horizontally and   vertically, as you can see here. Hi. I'm an expandeable chat box   with box shadow. How are you? I expand horizontally and   vertically, as you can see here.</div>
 								 <span class="time">12/06/2017 12:34</span>
 							 </div>
@@ -51,7 +50,7 @@
 
 						 <div class="chatbox chatbox_you">
 							 <div class="bubblebox">
-								  <span class="name">Naam</span>
+								  <span class="chatname">Naam</span>
 								 <div class="bubble you">Awesome.</div>
 								 <span class="time">12/06/2017 12:34</span>
 							 </div>
@@ -197,16 +196,20 @@
 </div>
 </form>
 
-<div class="alert" data-bind="with: popup">
-	<div class="popup" id="popup">
-		<!-- <ol id="listItems">
-			<li id="listItem-1">
-					<span class="title">Item 1</span>
-					<a href="#" data-bind="click: newContact()"><span class="delete" >delete</span></a>
-			</li>
-		</ol> -->
-		<div id="dialog-confirm" title="Message from anonymous person"></div>
-	</div>
+<!-- <div class="remodal-bg alert">
+  <a href="#modal">Modal №1</a><br>
+</div> -->
+
+<div class="remodal" data-bind="with: popup" data-remodal-id="modal" role="dialog" aria-labelledby="modal1Title" aria-describedby="modal1Desc">
+  <button data-remodal-action="close" class="remodal-close" aria-label="Close"></button>
+  <div>
+    <h2 id="modal1Title">Remodal</h2>
+    <p id="modal1Desc">
+    </p>
+  </div>
+  <br>
+  <button data-remodal-action="cancel" class="remodal-cancel">block person</button>
+  <button data-remodal-action="confirm" class="remodal-confirm">Add to person to Contacts</button>
 </div>
 
 
@@ -243,8 +246,12 @@
   </li>
 </script>
 
+
+
 {% endblock %}
 {% block app_scripts %}
+
+<script src="/static/js/remodal_dist/remodal.min.js"></script>
 
 <!-- het load script voor de opgeslane json in te laden -->
 <script>
@@ -254,5 +261,6 @@
 		loadingData();
 	});
 </script>
+
 
 {% endblock %}

@@ -95,13 +95,12 @@ def setup_pages(opsoroapp):
 
         bans = request.form['bans']
         data['bans'] = bans
-        json_data = json.dumps(data)
 
         # print_info(json_data)
 
         filename = os.path.join(bans_bp.static_folder, 'banlist.json')
         with open(filename, 'w') as bans_file:
-                bans_file.write(json.dumps(json_data))
+                bans_file.write(json.dumps(data))
 
         getcontacts()
 
