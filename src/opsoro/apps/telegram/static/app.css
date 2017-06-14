@@ -127,7 +127,15 @@ li{
   justify-content: flex-end;
   width: 80%;
 }
-
+.name{
+  color: #0095FF;
+  display: block;
+  margin-left: 3rem;
+  font-size: 0.8rem;
+}
+.chatbox_me .name{
+  color: #FFAF19;
+}
 .bubble{
     background-color: #e6f4ff;
     border-radius: 5px;
@@ -171,7 +179,7 @@ li{
   content: "\f007";
   font-family: 'FontAwesome';
   font-size: 2.6rem;
-  padding-left: 0.45rem;
+  padding-left: 0.5rem;
 }
 .chatbox_me .bubble_head{
   background: #FFAF19;

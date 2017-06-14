@@ -21,7 +21,29 @@
         var formattedTime = hours + ":" + minutes.substr(-2) + ":" + seconds.substr(-2);
 
         var name = firstname + " " + lastname;
-      	$('#messages').prepend('<div id="message"><p>'+message+'</p><p id="name">'+name+'</p><p id="date">'+datetime+'</p></div>'); // unshifts -> pusht naar eerste element
+      	//$('#messages').prepend('<div id="message"><p>'+message+'</p><p id="name">'+name+'</p><p id="date">'+datetime+'</p></div>'); // unshifts -> pusht naar eerste element
+				if ("bot" = "bot") {
+					$('#messages').prepend('<div class="chatbox chatbox_me">'+
+						'<div class="bubblebox">'+
+							'<span class="name">'+name+'</span>'+
+							 '<div class="bubble me">'+message+'</div>'+
+							'<span class="time">'+datetime+'</span>'+
+						'</div>'+
+						'<span class="bubble_head"></span>'+
+					'</div>'
+					); // unshifts -> pusht naar eerste element
+				}else{
+					$('#messages').prepend($('#messages').prepend('<div class="chatbox chatbox_me">'+
+						'<div class="bubblebox">'+
+							'<span class="name">'+name+'</span>'+
+							 '<div class="bubble me">'+message+'</div>'+
+							'<span class="time">'+datetime+'</span>'+
+						'</div>'+
+						'<span class="bubble_head"></span>'+
+					'</div>'
+					); // unshifts -> pusht naar eerste element
+				}
+
       	console.log(data)
       	break;
     	default:
