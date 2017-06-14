@@ -12,7 +12,7 @@
 
 <form data-abide method="post" id="telegram-form">
 <div class="remodal-bg main alert" data-bind="with popup">
-	<a href="#modal" data-bind="click: newContact()"> Modal №1</a><br>
+	<a href="#modal"> Modal №1</a><br>
 
 	<ul class="accordion" data-responsive-accordion-tabs="tabs small-accordion medium-tabs large-tabs" id="telegram-tabs">
 		<li class="accordion-item is-active" data-accordion-item>
@@ -252,6 +252,20 @@
 {% block app_scripts %}
 
 <script src="/static/js/remodal_dist/remodal.min.js"></script>
+
+<script>
+$(document).on('confirmation', '.remodal', function () {
+	//console.log('confirmation');
+	model.contacts().addContactFromMessage(name, lastname);
+	$('#modal1Desc').empty();
+});
+
+$(document).on('cancellation', '.remodal', function () {
+	console.log('cancellation');
+	model.bans().addBanFromMessage(name, lastname, id)
+	$('#modal1Desc').empty();$('#modal1Desc').empty();
+});
+</script>
 
 <!-- het load script voor de opgeslane json in te laden -->
 <script>
