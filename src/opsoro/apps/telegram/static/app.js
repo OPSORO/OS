@@ -83,7 +83,7 @@
 
 			$.get('/apps/telegram/getcontacts', function( data ) {
 				if (data != "{}") {
-					var json_data = JSON.parse(data);
+					var json_data = data;
 					GlobalcontactsDataJSON = JSON.parse(json_data.contacts);
 					//console.log(GlobalcontactsDataJSON);
 					 $.each(JSON.parse(json_data.contacts), function(idx, line){
@@ -121,8 +121,11 @@
 			// get data first
 			var dataJSON = GlobalcontactsDataJSON;
 			dataJSON.push(data_line);
+			console.log(dataJSON);
 			dataJSON = JSON.stringify(dataJSON);
+			// console.log(dataJSON);
 			$.post('/apps/telegram/signcontacts', { contacts: dataJSON }, function(resp) {
+				console.log("test");
 				self.addItem();
 			});
 
@@ -194,7 +197,7 @@
 			// haven't tested, but probably won't work. I think you'd have to convert your JSON to observables
 			$.get( '/apps/telegram/getbans', function( data ) {
 				if (data != "{}") {
-					var json_data = JSON.parse(data);
+					var json_data = data;
 					GlobalBanDataJSON = JSON.parse(json_data.bans);
 					 $.each(GlobalBanDataJSON, function(idx, line){
 							self.banName(line.banName);

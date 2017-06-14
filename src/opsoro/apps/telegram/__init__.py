@@ -92,11 +92,11 @@ def setup_pages(opsoroapp):
 
         data = {'actions': {}}
         contacts = request.form['contacts']
+
         print_info(contacts)
         data['contacts'] = contacts
-        json_data = json.dumps(data)
 
-        writeFile('contacts.json', json_data)
+        writeFile('contacts.json', data)
         getcontacts()
 
         return opsoroapp.render_template(config['formatted_name'] + '.html', **data)
@@ -114,9 +114,8 @@ def setup_pages(opsoroapp):
         data = {'bans': {}}
         bans = request.form['bans']
         data['bans'] = bans
-        json_data = json.dumps(data)
 
-        writeFile('banlist.json', json_data)
+        writeFile('banlist.json', data)
         getbans()
 
         return opsoroapp.render_template(config['formatted_name'] + '.html', **data)
@@ -247,7 +246,7 @@ def start(opsoroapp):
     # global loop_t
     # # global MessageLoop
     # loop_t = StoppableThread(target=loop)
-    
+
      pass
 
 def stop(opsoroapp):
