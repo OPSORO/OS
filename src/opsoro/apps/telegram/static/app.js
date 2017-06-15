@@ -9,44 +9,70 @@
         var message = data.message.text;
         var firstname = data.message.from.first_name;
         var lastname = data.message.from.last_name;
+				var id = data.message.from.id;
         var timestamp = data.message.date;
 
-        //convert timestamp to readable time and date
-        var date = new Date(timestamp*1000);
-        var datetime =  date.getDate() + '/' + (date.getMonth()+1) + '/' + date.getFullYear();
-        var hours = date.getHours();
-        var minutes = "0" + date.getMinutes();
-        var seconds = "0" + date.getSeconds();
-        var formattedTime = hours + ":" + minutes.substr(-2) + ":" + seconds.substr(-2);
+				var contactsName, cotnactsLastname;
+				var contactsNotExist = true;
 
-        var name = firstname + " " + lastname;
-      	//$('#messages').prepend('<div id="message"><p>'+message+'</p><p id="name">'+name+'</p><p id="date">'+datetime+'</p></div>'); // unshifts -> pusht naar eerste element
-				// if ("bot" == "robot") {
-				// 	console.log("robot");
-				// 	$('#messages').prepend('<div class="chatbox chatbox_me">'+
-				// 		'<div class="bubblebox">'+
-				// 			'<span class="name">'+name+'</span>'+
-				// 			 '<div class="bubble me">'+message+'</div>'+
-				// 			'<span class="time">'+datetime+'</span>'+
-				// 		'</div>'+
-				// 		'<span class="bubble_head"></span>'+
-				// 	'</div>'
-				// 	); // unshifts -> pusht naar eerste element
-				// }else{
-					console.log("person");
-					$('#messages').prepend('<div class="chatbox chatbox_you">'+
-						'<div class="bubblebox">'+
-							'<span class="name">'+name+'</span>'+
-							 '<div class="bubble you">'+message+'</div>'+
-							'<span class="time">'+datetime+'</span>'+
-						'</div>'+
-						'<span class="bubble_head"></span>'+
-						'<!--<a href="#" class="repeat"></a>-->'+
-					'</div>'
-					); // unshifts -> pusht naar eerste element
-				//}
+				$.get('/apps/telegram/getcontacts', function( data ) {
+					if (data != "{}") {
+						var json_data = data;
+						 $.each(json_data.contacts, function(idx, line){
+								contactsName = line.name;
+								cotnactsLastname = line.lastname;
+								if (contactsName != firstname && cotnactsLastname != lastname ) {
+										contactsNotExist == false;
+								}
+						 });
+					 }
+				});
 
-      	console.log(data)
+				//name
+				if (contactsNotExist && message == "/start" ) {
+
+						model.popup().newContact(firstname, lastname, id);
+				}else if( message == "/start" ){
+
+					// do nothing
+				}else{
+					//convert timestamp to readable time and date
+	        var date = new Date(timestamp*1000);
+	        var datetime =  date.getDate() + '/' + (date.getMonth()+1) + '/' + date.getFullYear();
+	        var hours = date.getHours();
+	        var minutes = "0" + date.getMinutes();
+	        var seconds = "0" + date.getSeconds();
+	        var formattedTime = hours + ":" + minutes.substr(-2) + ":" + seconds.substr(-2);
+
+	        var name = firstname + " " + lastname;
+	      	//$('#messages').prepend('<div id="message"><p>'+message+'</p><p id="name">'+name+'</p><p id="date">'+datetime+'</p></div>'); // unshifts -> pusht naar eerste element
+					// if ("bot" == "robot") {
+					// 	console.log("robot");
+					// 	$('#messages').prepend('<div class="chatbox chatbox_me">'+
+					// 		'<div class="bubblebox">'+
+					// 			'<span class="chatname">'+name+'</span>'+
+					// 			 '<div class="bubble me">'+message+'</div>'+
+					// 			'<span class="time">'+datetime+'</span>'+
+					// 		'</div>'+
+					// 		'<span class="bubble_head"></span>'+
+					// 	'</div>'
+					// 	); // unshifts -> pusht naar eerste element
+					// }else{
+						console.log("person");
+						$('#messages').prepend('<div class="chatbox chatbox_you">'+
+							'<div class="bubblebox">'+
+								'<span class="chatname">'+name+'</span>'+
+								 '<div class="bubble you">'+message+'</div>'+
+								'<span class="time">'+datetime+'</span>'+
+							'</div>'+
+							'<span class="bubble_head"></span>'+
+							'<!--<a href="#" class="repeat"></a>-->'+
+						'</div>'
+						); // unshifts -> pusht naar eerste element
+					//}
+
+	      	console.log(data)
+				}
       	break;
     	default:
 			}
@@ -89,9 +115,9 @@
 
 			var newitems = [];
 			var items = GlobalcontactsDataJSON;
-			var deletedItem = {lastname: item.lastname(), name: item.conName()}
+			deletedItem = {lastname: item.lastname(), name: item.conName()};
 			var result = $.grep(items, function(e){
-				if (JSON.stringify(e) != JSON.stringify(deletedItem)) {
+				if (JSON.stringify(e) != JSON.stringify(deletedItem) ) {
 					newitems.push(e)
 				}
 			});
@@ -199,13 +225,10 @@
 
 			var newitems = [];
 			var items = GlobalBanDataJSON;
-			var deletedItem = {
-				banName: item.banName(),
-				banId: item.banId(),
-				banLastname: item.banLastname()
-			}
+			var deletedItem = item.banId();
 			var result = $.grep(items, function(e){
-				if (JSON.stringify(e) != JSON.stringify(deletedItem)) {
+
+				if ( e.banId != deletedItem) {
 					newitems.push(e)
 				}
 			});
@@ -266,10 +289,27 @@
 		return self.templateBan;
 	};
 
+	// model.popup
 	var PopupTelegram = function(){
 
 		var self = this;
-		var newName, newLastname, newId
+		var newName, newLastname, newId;
+
+		self.newContact  = function(name, lastname, id){
+		//self.newContact  = function(){
+
+			window.location.href = "/apps/telegram/#modal";
+
+			newName = name;
+			newLastname = lastname;
+			newId = id;
+
+			var pupupText = "<p>tekt voor de naam "+newName+" "+newLastname+". </p><p>Als je het bericht wilt lezen voeg haar toe bij je contacten of blokeer deze person.</p>";
+
+			$('#modal1Desc').empty();
+			$('#modal1Desc').append(pupupText);
+		}
+
 
 		self.addNewContact = function(){
 
@@ -319,25 +359,6 @@
 			newId = "";
 		}
 
-		self.newContact  = function(name, lastname, id){
-		//self.newContact  = function(){
-
-			//console.log("lala");
-			window.location.href = "/apps/telegram/#modal";
-
-			person = '{"messages": [{"maxid": 670008003, "first_name": "Joffrey", "update_id": 670008003, "message": "Hallo"}]}'
-
-			var json_Data = JSON.parse(person).messages;
-			newName = json_Data[0].first_name;
-			newLastname = json_Data[0].first_name;
-			newId = json_Data[0].first_name;
-
-			var pupupText = "<p>tekt voor de naam "+newName+" "+newLastname+". </p><p>Als je het bericht wilt lezen voeg haar toe bij je contacten of blokeer deze person.</p>";
-
-			$('#modal1Desc').empty();
-			$('#modal1Desc').append(pupupText);
-		}
-
 		return;
 	}
 
@@ -365,6 +386,7 @@
 		model.contacts().loadContacts();
 		model.bans().loadbans();
 	}
+
 	loadingNew = function(){
 		model.popup().newContact();
 	}

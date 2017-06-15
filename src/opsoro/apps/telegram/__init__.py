@@ -40,6 +40,7 @@ def send_data(action, data):
 
 def constrain(n, minn, maxn): return max(min(maxn, n), minn)
 
+
 # from opsoro.expression import Expression
 
 get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
@@ -91,7 +92,7 @@ def setup_pages(opsoroapp):
     @telegram_bp.route('/signcontacts', methods=['POST'])
     def signcontacts():
 
-        data = {'actions': {}}
+        data = {'contacts': {}}
         contacts = json.loads(request.form['contacts'])
 
         data['contacts'] = contacts
@@ -175,13 +176,24 @@ def loop():
                     maxid = max(update_ids);
                     #print(maxid);
                     #if (text == "/start" ):
+                    # with open('src/opsoro/apps/telegram/static/banlist.json') as ban_file:
+                    #     dictBan = json.load(ban_file)
+                    #     lengteban = len(dictBan["bans"])
+                    #     #print dict2
+                    # for y in range(0, lengteban):
+                    #     BanID = dictBan["bans"][y]["banId"]
+                    #     if userid in BanID:
+                    #         print 'gebruiker is geblokkeerd'
+                    #     else:
+                    #         print userID
                     with open('src/opsoro/apps/telegram/static/contacts.json') as data_file:
                         dict = json.load(data_file)
-                        lengte = len(dict)
+                        lengte = len(dict["contacts"])
+                        print lengte
                             #print lengte
-                        lengtetotaal = lengte + 1
+
                             #print lengtetotaal
-                    for x in range(0, lengtetotaal):
+                    for x in range(0, lengte):
                             #print 'numberssss'
                         naamke = dict["contacts"][x]["name"]
                         lastnaamke = dict["contacts"][x]["lastname"]
@@ -189,8 +201,8 @@ def loop():
                         print dict["contacts"][x]
                             #print firstname
                         if firstname in dict["contacts"][x].values() and lastname in dict["contacts"][x].values():
-                            print 'yes'
-                            print result
+                            #print 'yes'
+                            #print result
                             #if (text == "/start"):
                                 #print 'hopsaaa'
 
@@ -235,7 +247,7 @@ def loop():
                         elif(text == '/start'):
                             print 'moet checken of toegelaten'
                                 #pass
-                            #newContact(firstname, lastname, userid)
+                            send_data("messageIncomming", result)
                         else:
                             print 'gebruiker niet toegelaten'
 
