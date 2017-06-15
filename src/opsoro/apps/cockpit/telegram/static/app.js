@@ -14,7 +14,6 @@
 
 				var contactsName, cotnactsLastname;
 				var contactsNotExist = true;
-				console.log(message);
 
 				$.get('/apps/telegram/getcontacts', function( data ) {
 					if (data != "{}") {
@@ -22,9 +21,8 @@
 						 $.each(json_data.contacts, function(idx, line){
 								contactsName = line.name;
 								cotnactsLastname = line.lastname;
-
 								if (contactsName != firstname && cotnactsLastname != lastname ) {
-										contactsNotExist = false;
+										contactsNotExist == false;
 								}
 						 });
 					 }
@@ -35,7 +33,6 @@
 
 						model.popup().newContact(firstname, lastname, id);
 				}else if( message == "/start" ){
-
 
 					// do nothing
 				}else{

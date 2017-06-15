@@ -173,7 +173,6 @@ li{
   width: 3rem;
   border-radius: 100%;
   margin-left: 1rem;
-  margin-top: 1.3rem;
 }
 .bubble_head::before{
   color: white;

@@ -1,6 +1,6 @@
 ---
 # Always use '#. ' before the actual title, for sorting purposes
-- title: 1. telegram apps
+- title: 1. Telegram apps
   apps:
   - telegram
   - blacklist

@@ -157,7 +157,7 @@ data['messages'] = []
 
 def loop():
             def handle(msg):
-                u = urllib.urlopen('https://api.telegram.org/bot407630254:AAHlEzsDH8N_N1d9NlWFZMsbNebGUKWaEqk/getUpdates')
+                u = urllib.urlopen('https://api.telegram.org/bot371183808:AAH4HHCDqNkmCEavf5oxI-9wG27DNoY-m_E/getUpdates')
                 z = json.load(u)
                 u.close
                 update_ids = []
@@ -251,7 +251,7 @@ def loop():
                         else:
                             print 'gebruiker niet toegelaten'
 
-            bot = telepot.Bot('407630254:AAHlEzsDH8N_N1d9NlWFZMsbNebGUKWaEqk')
+            bot = telepot.Bot('371183808:AAH4HHCDqNkmCEavf5oxI-9wG27DNoY-m_E')
             MessageLoop(bot,handle).run_as_thread()
             '''
                 print test
@@ -288,7 +288,7 @@ def start(opsoroapp):
     # # global MessageLoop
     loop_t = StoppableThread(target=loop)
 
-    # pass
+     #pass
 
 def stop(opsoroapp):
     global loop_t
@@ -297,4 +297,4 @@ def stop(opsoroapp):
     # StoppableThread.stop(opsoroapp)
     # print("stop")
 
-    #  pass
+     #pass
