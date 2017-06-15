@@ -226,3 +226,10 @@ li{
 .remodal.with-red-theme {
   background: #fff;
 }
+.remodal{
+  border-radius: 1rem !important;
+}
+.remodal-confirm, .remodal-cancel{
+    padding: 1rem !important;
+    margin: 1rem !important;
+}

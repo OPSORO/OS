@@ -21,28 +21,30 @@
 
         var name = firstname + " " + lastname;
       	//$('#messages').prepend('<div id="message"><p>'+message+'</p><p id="name">'+name+'</p><p id="date">'+datetime+'</p></div>'); // unshifts -> pusht naar eerste element
-				if ("bot" == "robot") {
-					$('#messages').prepend('<div class="chatbox chatbox_me">'+
+				// if ("bot" == "robot") {
+				// 	console.log("robot");
+				// 	$('#messages').prepend('<div class="chatbox chatbox_me">'+
+				// 		'<div class="bubblebox">'+
+				// 			'<span class="name">'+name+'</span>'+
+				// 			 '<div class="bubble me">'+message+'</div>'+
+				// 			'<span class="time">'+datetime+'</span>'+
+				// 		'</div>'+
+				// 		'<span class="bubble_head"></span>'+
+				// 	'</div>'
+				// 	); // unshifts -> pusht naar eerste element
+				// }else{
+					console.log("person");
+					$('#messages').prepend('<div class="chatbox chatbox_you">'+
 						'<div class="bubblebox">'+
 							'<span class="name">'+name+'</span>'+
-							 '<div class="bubble me">'+message+'</div>'+
-							'<span class="time">'+datetime+'</span>'+
-						'</div>'+
-						'<span class="bubble_head"></span>'+
-					'</div>'
-					); // unshifts -> pusht naar eerste element
-				}else{
-					$('#messages').prepend('<div class="chatbox chatbox_me">'+
-						'<div class="bubblebox">'+
-							'<span class="name">'+name+'</span>'+
-							 '<div class="bubble me">'+message+'</div>'+
+							 '<div class="bubble you">'+message+'</div>'+
 							'<span class="time">'+datetime+'</span>'+
 						'</div>'+
 						'<span class="bubble_head"></span>'+
 						'<!--<a href="#" class="repeat"></a>-->'+
 					'</div>'
 					); // unshifts -> pusht naar eerste element
-				}
+				//}
 
       	console.log(data)
       	break;
@@ -198,9 +200,9 @@
 			var newitems = [];
 			var items = GlobalBanDataJSON;
 			var deletedItem = {
+				banName: item.banName(),
 				banId: item.banId(),
-				banLastname: item.banLastname(),
-				banName: item.banName()
+				banLastname: item.banLastname()
 			}
 			var result = $.grep(items, function(e){
 				if (JSON.stringify(e) != JSON.stringify(deletedItem)) {
@@ -362,6 +364,9 @@
 
 		model.contacts().loadContacts();
 		model.bans().loadbans();
+	}
+	loadingNew = function(){
+		model.popup().newContact();
 	}
 
 	function Contact(name, lastname){
