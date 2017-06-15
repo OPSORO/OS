@@ -154,10 +154,9 @@ def setup_pages(opsoroapp):
 
 data = {}
 data['messages'] = []
-
 def loop():
             def handle(msg):
-                u = urllib.urlopen('https://api.telegram.org/bot407630254:AAHlEzsDH8N_N1d9NlWFZMsbNebGUKWaEqk/getUpdates')
+                u = urllib.urlopen('https://api.telegram.org/bot371183808:AAH4HHCDqNkmCEavf5oxI-9wG27DNoY-m_E/getUpdates')
                 z = json.load(u)
                 u.close
                 update_ids = []
@@ -175,21 +174,20 @@ def loop():
                     update_ids.append(int(result["update_id"]))
                     maxid = max(update_ids);
                     #print(maxid);
-                    #if (text == "/start" ):
-                    # with open('src/opsoro/apps/telegram/static/banlist.json') as ban_file:
-                    #     dictBan = json.load(ban_file)
-                    #     lengteban = len(dictBan["bans"])
-                    #     #print dict2
-                    # for y in range(0, lengteban):
-                    #     BanID = dictBan["bans"][y]["banId"]
-                    #     if userid in BanID:
-                    #         print 'gebruiker is geblokkeerd'
-                    #     else:
-                    #         print userID
+                with open('src/opsoro/apps/telegram/static/banlist.json') as ban_file:
+                    dictBan = json.load(ban_file)
+                    lengteban = len(dictBan["bans"])
+                for y in range(0, lengteban):
+
+                        BanID = dictBan["bans"][y]["banId"]
+                if str(userid) in str(BanID):
+                    print 'De persoon is geblokkeerd'
+                else:
+                    print 'Gebruiker is toegelaten'
                     with open('src/opsoro/apps/telegram/static/contacts.json') as data_file:
                         dict = json.load(data_file)
                         lengte = len(dict["contacts"])
-                        print lengte
+                        #print lengte
                             #print lengte
 
                             #print lengtetotaal
@@ -219,7 +217,7 @@ def loop():
                             with open('src/opsoro/apps/telegram/static/messages.json','w') as outfile:
                                 json.dump(data,outfile)
 
-                            print data
+                            #print data
                             #datamessages['message'] = text
                             #print(json_data)
 
@@ -251,7 +249,24 @@ def loop():
                         else:
                             print 'gebruiker niet toegelaten'
 
-            bot = telepot.Bot('407630254:AAHlEzsDH8N_N1d9NlWFZMsbNebGUKWaEqk')
+
+                    # if (text == "Banned" ):
+                    #      with open('src/opsoro/apps/telegram/static/banlist.json') as ban_file:
+                    #              dictBan = json.load(ban_file)
+                    #              lengteban = len(dictBan["bans"])
+                    #              #print 'vanaf hier is ban'
+                    #              #print dictBan
+                    #      for y in range(0, lengteban):
+                    #           BanID = dictBan["bans"][y]["banId"]
+                    #           print BanID
+                    #           #print BanID
+                    #           if str(userid) in str(BanID):
+                    #               print 'Deze gebruiker is geblokkeerd'
+                    #           else:
+                    #               print 'Hier komt code voor niet gebannde gebruikers'
+
+
+            bot = telepot.Bot('371183808:AAH4HHCDqNkmCEavf5oxI-9wG27DNoY-m_E')
             MessageLoop(bot,handle).run_as_thread()
             '''
                 print test
@@ -288,7 +303,7 @@ def start(opsoroapp):
     # # global MessageLoop
     loop_t = StoppableThread(target=loop)
 
-    # pass
+     #pass
 
 def stop(opsoroapp):
     global loop_t
@@ -297,4 +312,4 @@ def stop(opsoroapp):
     # StoppableThread.stop(opsoroapp)
     # print("stop")
 
-    #  pass
+     #pass
