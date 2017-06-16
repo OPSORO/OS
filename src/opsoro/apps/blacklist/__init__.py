@@ -56,7 +56,7 @@ def setup_pages(opsoroapp):
             data['actions'][action] = request.args.get('param', None)
 
         getBlacklistJson()
-        text = "fuck fck f*ck ass a$$ cufk @ss"
+        text = "i'm awesome but fuck fck f*ck  shit sh1t sht ass a$$ cufk @ss is hot"
         scanSwearWordsInText(text)
 
         return opsoroapp.render_template(config['formatted_name'] + '.html', **data)
@@ -101,31 +101,27 @@ def setup_pages(opsoroapp):
 
     def scanSwearWordsInText(text):
 
-        regexList = SwearWordsToRegex()
+        textwords = text.split()
+        newText = ""
+        for textword in textwords:
 
-        for word in regexList:
+            safe = True
+            regexList = SwearWordsToRegex()
+            for word in regexList:
 
-            #regex = ur"" + word
-            print_info ( word )
-            regex = ur"[F,f]*[*,$,@,!,.,0,1,3]*[U,u]*[*,$,@,!,.,0,1,3]*[C,c]*[*,$,@,!,.,0,1,3]*[K,k]*[*,$,@,!,.,0,1,3]*"
-            print_info (re.compile(r'''((?:[^;"']|"[^"]*"|'[^']*')+)'''))
-            #re.compile(r'''((?:[^;"']|"[^"]*"|'[^']*')+)''')
-            #for swearWordRegex in regex:
+                regex = ur""+ word
+                matches = re.finditer(regex, text)
+                for matchNum, match in enumerate(matches):
 
-            matches = re.finditer(regex, text)
-            for matchNum, match in enumerate(matches):
-                matchNum = matchNum + 1
+                    if format(  match.group()) == textword:
 
-                # print ("Match {matchNum} was found at {start}-{end}: {match}".format(matchNum = matchNum, start = match.start(), end = match.end(), match = match.group()))
+                        safe = False
+            if not safe:
 
-                for groupNum in range(0, len(match.groups())):
-                    groupNum = groupNum + 1
+                textword = "swear"
+            newText = newText +" "+ textword
 
-                    # print ("Group {groupNum} found at {start}-{end}: {group}".format(groupNum = groupNum, start = match.start(groupNum), end = match.end(groupNum), group = match.group(groupNum)))
-
-
-        # Note: for Python 2.7 compatibility, use ur"" to prefix the regex and u"" to prefix the test string and substitution.
-
+        print_info ( newText )
         return;
 
     def SwearWordsToRegex():

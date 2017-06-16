@@ -271,14 +271,12 @@ def loop():
             '''
                 print test
                 test = test.encode('unicode_escape')
-
                 if(test.startswith('\U')):
                     print('emoji first + text')
                     emo = test[5:]
                     print(emo)
                     Expression.set_emotion_unicode(emo)
                     #Sound.say_tts(text)
-
                 elif('\U' in test):
                     print('text + emoji')
                     print(test)
@@ -289,7 +287,6 @@ def loop():
                     print(emo)
                     Expression.set_emotion_unicode(emo)
                     Sound.say_tts(text)
-
                 else:
                     textonly = test
                     Sound.say_tts(textonly)
