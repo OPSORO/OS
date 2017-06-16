@@ -56,7 +56,7 @@ def setup_pages(opsoroapp):
             data['actions'][action] = request.args.get('param', None)
 
         getBlacklistJson()
-        text = "i'm awesome but fuck fck f*ck  shit sh1t sht ass a$$ cufk @ss is hot"
+        text = "i'm awesome but fuck fck f*ck  shit sh1t s ass a$$ :@ :$ cufk @ss is hot"
         scanSwearWordsInText(text)
 
         return opsoroapp.render_template(config['formatted_name'] + '.html', **data)
@@ -103,53 +103,80 @@ def setup_pages(opsoroapp):
 
         textwords = text.split()
         newText = ""
-        for textword in textwords:
+        regexList = SwearWordsToRegex()
+        replacedList =  getReplacedWords()
+        if regexList == "{}":
 
-            safe = True
-            regexList = SwearWordsToRegex()
-            for word in regexList:
+            newText = text
+        else:
+            for textword in textwords:
 
-                regex = ur""+ word
-                matches = re.finditer(regex, text)
-                for matchNum, match in enumerate(matches):
+                safe = True
+                itemsId = -1;
+                for word in regexList:
 
-                    if format(  match.group()) == textword:
+                    itemsId = itemsId + 1
 
-                        safe = False
-            if not safe:
+                    regex = ur""+ word
+                    matches = re.finditer(regex, text)
+                    for matchNum, match in enumerate(matches):
 
-                textword = "swear"
-            newText = newText +" "+ textword
-newText
-        #print_info ( newText )
+                        if format(  match.group()) == textword:
+                            safe = False
+                            replacedword = replacedList[itemsId]
+                            #fuck = fuck => replace word pakken hoe?
+
+
+                if not safe:
+
+                    textword = replacedword
+
+                newText = newText +" "+ textword
+
+        print_info ( newText )
         return newText;
 
     def SwearWordsToRegex():
 
-        regex = []
-        regexwords = []
         blacklistJSON = json.loads(getBlacklistJson())
-        symbols = "[*,$,@,!,.,0,1,3]*"
+        if blacklistJSON != '{}':
 
-        for word in blacklistJSON['banlist']:
+            regex = []
+            regexwords = []
+            symbols = "[*,$,@,!,.,0,1,3]*"
+            for word in blacklistJSON['banlist']:
 
-            swaerWord = word['banWord']
-            splittedSwarWord =  list(swaerWord)
-            regixwoord = ""
+                swaerWord = word['banWord']
+                splittedSwarWord =  list(swaerWord)
+                regixwoord = ""
 
-            for letter in splittedSwarWord:
+                for letter in splittedSwarWord:
 
-                letterUp = letter.upper()
-                letterlow = letter.lower()
-                regixletter = "["+ letterUp + "," + letterlow + "]*"+ symbols
-                regixwoord = regixwoord + regixletter
+                    letterUp = letter.upper()
+                    letterlow = letter.lower()
+                    regixletter = "["+ letterUp + "," + letterlow + "]*"+ symbols
+                    regixwoord = regixwoord + regixletter
 
-                # 1e [F,f]*[*,$,@,!,.,0,1,3]*[U,u]*[*,$,@,!,.,0,1,3]*[C,c]*[*,$,@,!,.,0,1,3]*[K,k]*[*,$,@,!,.,0,1,3]*
-                # 2e [(F,f)|(*,$,@,!,.,0,1,3)]*[(U,u)|(*,$,@,!,.,0,1,3)]*[(C,c)|(*,$,@,!,.,0,1,3)]*[(K,k)|(*,$,@,!,.,0,1,3)]*
+                    # 1e [F,f]*[*,$,@,!,.,0,1,3]*[U,u]*[*,$,@,!,.,0,1,3]*[C,c]*[*,$,@,!,.,0,1,3]*[K,k]*[*,$,@,!,.,0,1,3]*
+                    # 2e [(F,f)|(*,$,@,!,.,0,1,3)]*[(U,u)|(*,$,@,!,.,0,1,3)]*[(C,c)|(*,$,@,!,.,0,1,3)]*[(K,k)|(*,$,@,!,.,0,1,3)]*
 
-            regex.append(regixwoord)
-
+                regex.append(regixwoord)
+        else:
+            regex = "{}"
         return regex
+
+    def getReplacedWords():
+
+        blacklistJSON = json.loads(getBlacklistJson())
+        if blacklistJSON != '{}':
+
+            words = []
+            for word in blacklistJSON['banlist']:
+                swaerWord = word['replacedWord']
+                words.append(swaerWord)
+        else:
+            words = "{}"
+        return words
 
     opsoroapp.register_app_blueprint(Blacklist_bp)
 
