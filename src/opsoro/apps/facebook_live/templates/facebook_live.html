@@ -1,8 +1,6 @@
 {% extends "app_base.html" %}
 {% block app_head %}
-
-	<!-- <script src="/site_media/static/js/....js"></script> -->
-
+	
 {% endblock %}
 
 <!-- These sidebars can be removed by removing the block tags -->
@@ -10,44 +8,66 @@
 {% block sidebar_right %}{% endblock %}
 
 {% block app_content %}
+	
+	<div id="fb-root"></div> <!-- required for the fb init -->
 
-	<button class="button round info" data-bind="click: toggleStreaming">
-		<span class="text" data-bind="text: ! isStreaming() ? 'Start' : 'Stop' "></span>
-	</button>
+	<div>
+		<button class="button info" data-bind="click: !loggedIn() ? fbLogin : fbLogout, text: !loggedIn() ? 'Log into Facebook' : 'Log out of Facebook'"></button> 		
+		<p>Your user ID: <span data-bind="text: userID()"></span></p>
+	</div>
+	<div>
+		<div data-bind="visible: isNewVideo()">
+			<span>Your new live video ID:</span><span data-bind="text: "></span>
+		</div>
 
-	<div class="iframe-container" data-bind="html: embedIFrame">
+		<div>
+			<span>Enter a Facebook ID: </span>
+			<input type="text" style="width: 40%; display: inline-block;" id="facebookID" data-bind="enable: !isNewVideo(), value: facebookID" required="true" placeholder="Enter a Facebook page id or a existing live_video id ...">
+
+			<p>Is of type: <select data-bind="options: ofTypes, optionsText: 'text', value: selectedType"></select></p>
+		</div>
+		
+		<button class="button round info" data-bind="click: toggleStreaming, enable: loggedIn() && !isNewVideo()">
+			<span class="text" data-bind="text: ! isStreaming() ? 'Start Stream' : 'Stop Stream' "></span>
+		</button>
+
+		<span>- or -</span>
+		<button class="button info" data-bind="click: startNewLiveStream, enable: loggedIn()"> <!-- haakjes voor observables en functions die direct mogen uitgevoerd worden?? -->
+			Start a new live stream!
+		</button>
+	</div>
+
+	<div class="iframe-container" data-bind="visible: isNewVideo() || isLiveVideo(), html: embedIframe">
+
 	</div>
 
 	<div>
 		<label><input type="checkbox" data-bind="checked: autoRead"/> Auto read comments</label>
+		<p>Reaction to comment: <select data-bind="options: availableEmotions, optionsText: 'name', value: selectedEmotion"></select></p>
 	</div>
 
-	<div data-bind="sortable: { data: comments, options: {handle: '.gripper', axis: 'y', opacity: 0.75} }">
-		<div>
-			<div>
-				<span data-bind="text: username"></span>
-			</div>
-			<div>
-				<span data-bind="text: comment"></span>
-			</div>
-		</div>
-	</div>
-	<div>
+	<div class="rightside">
 		Views: <span data-bind="text: views"></span>
 	</div>
 
-	<!--<div id="comments" data-bind="sortable: { data: comments, options: {handle: '.gripper', axis: 'y', opacity: 0.75} }">
+
+	<div class="rightside" data-bind="sortable: { data: comments, options: {handle: '.gripper', axis: 'y', opacity: 0.75} }">
 		<div>
-			<div class="avatar">
-				<a>
-					<img/>
-				</a>
+			<div>
+				<span data-bind="text: from.name"></span>
 			</div>
-			<div class="content">
-				<span data-bind="html: comment"></span>
+			<div>
+				<span data-bind="text: message"></span>
 			</div>
 		</div>
-	</div>-->
+	</div>
+
+	<div class="togglebox">
+		<label><input type="checkbox" data-bind="checked: autoRead"/> Auto read comments</label>
+	</div>
+	<div class="togglebox">
+		<label><input type="checkbox"/> React to comments</label>
+	</div>
 
 
 	{% if not online %}
@@ -59,7 +79,9 @@
 
 	<script src="/static/js/vendor/jquery-ui-sortable/jquery-ui.js"></script>
 	<script src="/static/js/knockout-sortable.min.js"></script>
-
+	<script>
+	var emotions_data = {{ emotions|tojson|safe }};
+	</script>
 	<script src="/static/js/sockjs.min.js"></script>
 	<script src="/static/js/vendor/jquery-ui-touch/jquery.ui.touch-punch.min.js"></script>
 

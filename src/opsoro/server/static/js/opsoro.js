@@ -191,7 +191,7 @@ function connectSocket() {
     conn.onmessage = function(e){
       try {
         var msg = $.parseJSON(e.data);
-        console.log(msg);
+        //console.log(msg);
         switch(msg.action) {
           case 'refresh':
             setTimeout(function() { location.reload(); }, 1000);

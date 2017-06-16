@@ -1,9 +1,79 @@
 .iframe-container {
 	max-height: 500px;
 	max-width: 750px;
+	height: 425px;
+	width: 750px;
+	/*background-color: black;*/
+	float: left;
 }
-
+.button {
+	display: block;
+	width: 30%;
+	margin-top: 1.5em;
+}
 iframe {
-	height: 500px!important;
+	height: 425px!important;
 	width: 750px!important;
+}
+.rightside {
+	/*background-color: red;*/
+	display: inline-block;
+	float: right;
+	width: 32%;
+	margin: 0 0.5em 0 0.5em;
+	padding: 0.5em
+}
+.ko_container {
+	padding: 0.5em;
+	/*background-color: blue;*/
+	width: 32%;
+	height: 600px;
+	overflow: hidden;
+}
+.leftside{
+
+}
+.togglebox {
+	/*background-color: green;*/
+	display: block;
+	width: auto;
+	float: left;
+	padding: 0.5em;
+}
+/*voicelines naam comment*/
+.voiceline.locked
+{
+    min-height: 2rem;
+    margin-bottom: 0rem;
+}
+.voiceline.locked .avatar
+{
+    width: 3.5rem;
+    height: 3.5rem;
+    margin: 0;
+    margin-bottom: .5rem;
+    margin-left: .5rem;
+    padding-top: .15rem;
+    padding-left: .15rem;
+}
+#voicelines .voiceline.locked
+{
+    margin-left: 1rem;
+}
+#fixedavatars .voiceline.locked
+{
+    width: auto;
+    height: auto;;
+}
+.voiceline.locked .avatar > div, .avatar img
+{
+    width: 3rem;
+    height: 3rem;
+
+    border-radius: 50%;
+    background-size: 100% !important;
+}
+#voicelines .voiceline.locked form
+{
+    display: none;
 }

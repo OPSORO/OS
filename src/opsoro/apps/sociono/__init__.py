@@ -22,6 +22,8 @@ from opsoro.robot import Robot
 from opsoro.sound import Sound
 from opsoro.sound.tts import TTS
 
+# from .emoji import textSplitter
+
 from opsoro.stoppable_thread import StoppableThread
 
 from opsoro.users import Users
@@ -62,10 +64,10 @@ loop_E = None # loop var for Emoticons
 autolooping = None
 Emoticons = []
 
-access_token = '735437381696905216-BboISY7Qcqd1noMDY61zN75CdGT0OSc'
-access_token_secret = 'd3A8D1ttrCxYV76pBOB389YqoLB32LiE0RVyoFwuMKUMb'
-consumer_key = 'AcdgqgujzF06JF6zWrfwFeUfF'
-consumer_secret = 'ss0wVcBTFAT6nR6hXrqyyOcFOhpa2sNW4cIap9JOoepcch93ky'
+access_token = '141268248-yAGsPydKTDgkCcV0RZTPc5Ff7FGE41yk5AWF1dtN'
+access_token_secret = 'UalduP04BS4X3ycgBJKn2QJymMhJUbNfQZlEiCZZezW6V'
+consumer_key = 'jHW1X0K58pKhPePYDVk1ko2E6'
+consumer_secret = '5SzUVSd0DD2aMPqwNRyGuS1ovWnEb4qSaMnPkAHZSKu5G42pri'
 
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
@@ -138,16 +140,21 @@ def setup_pages(opsoroapp):
 
         if request.form['action'] == 'playTweet':
             if request.form['data']:
-                global loop_E
-                global Emoticons
                 tweepyObj = json.loads(request.form['data'])
-                Emoticons = tweepyObj['text']['emoticon']
-                loop_E = StoppableThread(target=asyncEmotion)
-                playTweetInLanguage(tweepyObj)
+                playTweet(tweepyObj)
 
         return opsoroapp.render_template(config['formatted_name'] + '.html', **data)
 
     opsoroapp.register_app_blueprint(sociono_bp)
+
+def playTweet(tweepyDataModel):
+    global loop_E
+    global Emoticons
+    Emoticons = tweepyDataModel['text']['emoticon']
+    loop_E = StoppableThread(target=asyncEmotion)
+    print_info(tweepyDataModel)
+    if(not tweepyDataModel['text']['filtered'] == ""):
+        playTweetInLanguage(tweepyDataModel)
 
 
 #getting new tweet
@@ -156,9 +163,9 @@ class MyStreamListener(tweepy.StreamListener):
         dataToSend = processJson(status)
         if dataToSend['text']['filtered'] != None:
             send_data('dataFromTweepy', dataToSend)
-
             if autoRead == True:
-                playTweetInLanguage(dataToSend) # if auto read = true -> read tweets when they come in
+                playTweet(dataToSend)
+
 
 myStreamListener = MyStreamListener()
 myStream = tweepy.Stream(auth=api.auth, listener=myStreamListener)
@@ -175,12 +182,14 @@ def stop(opsoroapp):
 
 def startTwitter(twitterWords):
     global myStream
+    myStream = tweepy.Stream(auth= api.auth, listener=myStreamListener)
     myStream.filter(track=twitterWords, async=True)
 
 
 def stopTwitter():
     global myStream
     myStream.disconnect()
+    print_info("twitter stop")
 
 #process tweepy json
 def processJson(status):
@@ -197,6 +206,7 @@ def processJson(status):
         }
     }
 
+    # textSplitter.convertEmoji(status.text)
     return data
 
 def filterTweet(status):
@@ -225,17 +235,18 @@ def languageCheck(strTweet,status):
 
 
 def playTweetInLanguage(tweepyObj):
+    print_info("play tweet in language")
     if not os.path.exists("/tmp/OpsoroTTS/"):
         os.makedirs("/tmp/OpsoroTTS/")
 
-    full_path = os.path.join(
-        get_path("/tmp/OpsoroTTS/"), "Tweet.wav")
+    full_path = os.path.join(get_path("/tmp/OpsoroTTS/"), "Tweet.wav")
+    print_info(full_path)
 
-    if os.path.isfile(full_path):
-        os.remove(full_path)
+    if(tweepyObj['text']['lang'] == 'und'):
+        return
 
     TTS.create_espeak(tweepyObj['text']['filtered'], full_path, tweepyObj['text']['lang'], "f", "5", "150")
-    Sound.play_file(full_path)
+    Sound._play(full_path)
 
 
 # Emoticon functions

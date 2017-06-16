@@ -37,29 +37,35 @@ import time
 def constrain(n, minn, maxn): return max(min(maxn, n), minn)
 
 get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
-#Global variables for the class to handle authorization
-access_token = '735437381696905216-BboISY7Qcqd1noMDY61zN75CdGT0OSc'
-access_token_secret = 'd3A8D1ttrCxYV76pBOB389YqoLB32LiE0RVyoFwuMKUMb'
-consumer_key = 'AcdgqgujzF06JF6zWrfwFeUfF'
-consumer_secret = 'ss0wVcBTFAT6nR6hXrqyyOcFOhpa2sNW4cIap9JOoepcch93ky'
+access_token = '141268248-yAGsPydKTDgkCcV0RZTPc5Ff7FGE41yk5AWF1dtN'
+access_token_secret = 'UalduP04BS4X3ycgBJKn2QJymMhJUbNfQZlEiCZZezW6V'
+consumer_key = 'tNYqa3yLHTGhBvGNblUHHerlJ'
+consumer_secret = 'NxBbCA8VJZvxk1SNKWw3CWd5oSnJyNAcH9Kns5Lv1DV0cqrQiz'
 
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
 
 loop_T = None # loop var for wait_for_tweet
 loop_E = None # loop var for Emoticons
+loop_TC = None # loop var for tweets by amount
+
 Emoticons = []
 hasRecievedTweet = False
+TweetCount = 0
+TweetMax = 0
 
 class MyStreamListener(tweepy.StreamListener):
 
     def on_status(self, status):
+        print_info(status.text)
         dataToSend = Twitter.processJson(status)
         if dataToSend['text']['filtered'] != None:
             global hasRecievedTweet
             hasRecievedTweet = True
             Twitter.playEmotion(dataToSend)
             Twitter.playTweetInLanguage(dataToSend)
+            global TweetCount
+            TweetCount = TweetCount +1
 
 api = tweepy.API(auth)
 myStreamListener = MyStreamListener()
@@ -78,29 +84,60 @@ class _twitter(object):
         social_id.append(hashtag)
         hasRecievedTweet = False #if adding ui elements to blockly this can be used to get out of a loop
         myStream.filter(track=social_id, async=True);
+
     def stop_streamreader(self):
         global myStream
         global hasRecievedTweet
         myStream.disconnect()
-        hasRecievedTweet = False
+        hasRecievedTweet = True
         Sound.stop_sound()
+        print_info("stop twitter")
     def get_tweet(self, hashtag):
         global loop_T
-        self.start_streamreader(hashtag)
-        loop_T = StoppableThread(target=self.wait_for_tweet)
+        if not (val is None):
+            print_info(hashtag)
+            self.start_streamreader(hashtag)
+            loop_T = StoppableThread(target=self.wait_for_tweet)
+        else:
+            print_info("no input given")
     #streamreader stops after recieving a single tweet
     def wait_for_tweet(self):
-        time.sleep(1)  # delay
+        time.sleep(1)
 
         global loop_T
         while not loop_T.stopped():
-            #stops the streamreader when it has recieved a single tweet
             global hasRecievedTweet
             if hasRecievedTweet == True:
                 global myStream
                 myStream.disconnect()
                 print_info("stop twitter stream")
                 loop_T.stop()
+                pass
+    #start a streamreader and show X amount of tweets
+    def start_streamreader_amount(self, hashtag, times):
+        global myStream
+        global loop_TC
+        global TweetCount
+        global TweetMax
+        if not (val is None):
+            TweetCount = 0
+            TweetMax = times
+            social_id = []
+            social_id.append(hashtag)
+            myStream.filter(track=social_id, async=True);
+            loop_TC = StoppableThread(target=self.count_tweets)
+    def count_tweets(self):
+        time.sleep(1)  # delay
+        global TweetMax
+        global loop_TC
+        while not loop_TC.stopped():
+            global TweetCount
+            print_info(TweetCount)
+            if TweetCount == TweetMax:
+                global myStream
+                myStream.disconnect()
+                print_info("stop twitter stream")
+                loop_TC.stop()
                 pass
     #functions for filtering tweets
     def processJson(self, status):
