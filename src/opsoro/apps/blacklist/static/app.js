@@ -19,14 +19,15 @@
 
 			var newitems = [];
 			var items = GlobalDataJSON;
-			var deletedItem = {banWord: item.wordBan(), replacedWord: item.replacedWord()}
+			var deletedItem = item.wordBan()
 			var result = $.grep(items, function(e){
-				if (JSON.stringify(e) != JSON.stringify(deletedItem)) {
+				if (e.banWord != deletedItem) {
 					newitems.push(e)
 				}
 			});
 			GlobalDataJSON = newitems;
 			newitems = JSON.stringify(newitems);
+
 			 $.post('/apps/blacklist/signblacklist', { banlist: newitems }, function(resp) {
 			 	console.log('posted to python');
 			 });
