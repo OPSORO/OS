@@ -118,14 +118,18 @@
 
 			var newitems = [];
 			var items = GlobalcontactsDataJSON;
-			deletedItem = {lastname: item.lastname(), name: item.conName()};
+			var deletedItemName =  item.conName();
+			var deletedItemLastname =  item.lastname();
 			var result = $.grep(items, function(e){
-				if (JSON.stringify(e) != JSON.stringify(deletedItem) ) {
+				console.log(e);
+
+				if ((e.name != deletedItemName) && (e.lastname != deletedItemName)) {
 					newitems.push(e)
 				}
 			});
 			GlobalcontactsDataJSON = newitems;
 			newitems = JSON.stringify(newitems);
+			console.log(newitems);
 			 $.post('/apps/telegram/signcontacts', { contacts: newitems }, function(resp) {
 			 	console.log('posted to python');
 			 });
