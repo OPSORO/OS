@@ -108,7 +108,8 @@ def setup_pages(opsoroapp):
             #regex = ur"" + word
             print_info ( word )
             regex = ur"[F,f]*[*,$,@,!,.,0,1,3]*[U,u]*[*,$,@,!,.,0,1,3]*[C,c]*[*,$,@,!,.,0,1,3]*[K,k]*[*,$,@,!,.,0,1,3]*"
-            print_info (re.compile(ur, word))
+            print_info (re.compile(r'''((?:[^;"']|"[^"]*"|'[^']*')+)'''))
+            #re.compile(r'''((?:[^;"']|"[^"]*"|'[^']*')+)''')
             #for swearWordRegex in regex:
 
             matches = re.finditer(regex, text)
@@ -146,7 +147,7 @@ def setup_pages(opsoroapp):
                 letterlow = letter.lower()
                 regixletter = "["+ letterUp + "," + letterlow + "]*"+ symbols
                 regixwoord = regixwoord + regixletter
-                
+
                 # 1e [F,f]*[*,$,@,!,.,0,1,3]*[U,u]*[*,$,@,!,.,0,1,3]*[C,c]*[*,$,@,!,.,0,1,3]*[K,k]*[*,$,@,!,.,0,1,3]*
                 # 2e [(F,f)|(*,$,@,!,.,0,1,3)]*[(U,u)|(*,$,@,!,.,0,1,3)]*[(C,c)|(*,$,@,!,.,0,1,3)]*[(K,k)|(*,$,@,!,.,0,1,3)]*
 
