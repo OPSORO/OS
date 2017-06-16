@@ -120,9 +120,9 @@ def setup_pages(opsoroapp):
 
                 textword = "swear"
             newText = newText +" "+ textword
-
-        print_info ( newText )
-        return;
+newText
+        #print_info ( newText )
+        return newText;
 
     def SwearWordsToRegex():
 
