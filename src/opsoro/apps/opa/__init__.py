@@ -84,7 +84,6 @@ def setup_pages(server):
         save_activity(data)
         #De data die verkregen is via de webhook laten uitspreken
         speak(data)
-
        
         Robot.sleep()
         return jsonify(data)
@@ -129,6 +128,21 @@ def setup_pages(server):
         data['sounds'].sort()
         
         return jsonify(data)
+
+    @server.app_socket_message('saveapplet')
+    def saveApplet(conn, data):
+        print_info(data)
+        filename = os.path.join(app_bp.static_folder+'/json/', 'Applets.json')      
+        with open(filename, 'r') as blog_file:
+                json_data = json.load(blog_file)
+                json_data['Applets'].append(data['data']['applet'])   
+        with open(filename, 'w') as write_file:
+            write_file.write(json.dumps(json_data))
+        response = {
+            'data': "Applet added..."
+        }
+        Users.send_app_data(config['formatted_name'], "MessageResponse", response)
+
 
     '''
     @app_bp.route('/getqueue',methods=['GET'])
@@ -182,6 +196,9 @@ def setup_pages(server):
         if os.path.exists(filename):
             with open(filename, 'r') as blog_file:
                 json_data = json.load(blog_file)
+                print_info(len(json_data['Activity']))
+                if len(json_data['Activity']) == 20 :
+                    del json_data['Activity'][:1]
                 json_data['Activity'].append(data)   
             with open(filename, 'w') as write_file:
                 write_file.write(json.dumps(json_data))
@@ -259,6 +276,7 @@ def CommandLoop():
                 }
                 requests.post("https://maker.ifttt.com/trigger/"+command['command-eventname']+"/with/key/b4mn_DZW0F-ERF-VIpE3r",data)  
             if command['command-hasTTS']:
+                Sound.wait_for_sound()
                 Sound.say_tts(command['command-say'])
                 Sound.wait_for_sound()
                 if command['command-type'] == "emotion":

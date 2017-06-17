@@ -1,80 +1,77 @@
-{% extends "app_base.html" %}
-{% block app_head %}
+{% extends "app_base.html" %} {% block app_head %}
 
-	<!-- <script src="/site_media/static/js/....js"></script> -->
-	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-	<script src="http://knockoutjs.com/downloads/knockout-3.4.2.js"></script>
-	<link rel="stylesheet" type="text/css" href="/apps/opa/static/css/animate.min.css">
+<!-- <script src="/site_media/static/js/....js"></script> -->
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="http://knockoutjs.com/downloads/knockout-3.4.2.js"></script>
+<link rel="stylesheet" type="text/css" href="/apps/opa/static/css/animate.min.css">
 
 {% endblock %}
 
 <!-- These sidebars can be removed by removing the block tags -->
 
 
-{% block sidebar_right %}{% endblock %}
-
-{% block app_content %}
-	<div class="">
+{% block sidebar_right %}{% endblock %} {% block app_content %}
+<div class="">
 	<ul class="accordion" data-responsive-accordion-tabs="tabs small-accordion medium-tabs large-tabs" id="settings-tabs">
-	  	<li class="accordion-item is-active" data-accordion-item>
+		<li class="accordion-item is-active" data-accordion-item>
 			<a href="#my_applets">
 				<span class="fa fa-th"></span> My Applets
 			</a>
 			<div class="accordion-content" data-tab-content>
 				<div class="applets">
-				<fieldset id="filters">
-					<legend>
-						<span class="fa fa-filter"></span>
-						Filters
-						<span class="fa fa-caret-down"></span>
-					</legend>
+					<fieldset id="filters">
+						<legend>
+							<span class="fa fa-filter"></span> Filters
+							<span class="fa fa-caret-down"></span>
+						</legend>
 
-					<div class="row">
-						<div class="flex-container">
-							<!-- Filters hier -->
-							<div id="protocolcontrol">
-								<ul data-bind="foreach: protocol" class="no-margin">
-									<li class="protocolcontrol">
-									<input type="checkbox"  data-bind="checked:selected, attr: {id: 'checkBox' + id}">
-									<label data-bind="text: name, attr:{for: 'checkBox'+id}"></label>
-									</li>
-								</ul>
-						</div>
-						</div>
-					</div>
 
-				</fieldset>
-				<fieldset>
-					<legend>
-						<span class="fa fa-th-large"></span>
-						My Applets
-					</legend>
+						<div class="row">
+							<div class="flex-container">
+								<!-- Filters hier -->
+								<input class="search" placeholder="Search applets…" type="search" data-bind="textInput: appletQuery" autocomplete="off">
+								<div id="protocolcontrol">
+									<ul>
+										<li><a data-bind="click: clearFilters">Clear filters</a></li>
+									</ul>
 
-					<div class="row">
-						<div class="flex-container"  data-bind="foreach: filteredProtocols">
-							<div  class="applet hidden animated bounceIn" data-bind="style: { 'background-color': Applet_color}">
-								<a   data-bind="attr: { href: Applet_url }">
-									<div  class="applet-content">
-										<img data-bind="attr: { src: Applet_logo }" alt="" class="logo animated  rotateIn"/>
-										<h3 data-bind="text: Applet_name"></h3>
-										<p>
-											<span class="text-muted">By</span> Opsoro
-										</p>
-									</div>
-									<div class="applet-footer" style="background-color:black">
-										Uses Maker Webhook
-									</div>
-								</a>
+									<ul data-bind="foreach: protocol" class="no-margin">
+										<li class="protocolcontrol">
+											<input type="checkbox" data-bind="checked:selected, attr: {id: 'checkBox' + id,class: 'filter'}">
+											<label data-bind="text: name, attr:{for: 'checkBox'+id}"></label>
+										</li>
+									</ul>
+								</div>
 							</div>
 						</div>
-						
-					</div>
 
-				</fieldset>
-				</div>	
-	    	</div>
+					</fieldset>
+					<fieldset>
+						<div class="row">
+							<div id="appletsGrid" class="flex-container" data-bind="foreach: filteredProtocols">
+								<div class="applet hidden animated bounceIn" data-bind="style: { 'background-color': Applet_color},attr: {id: Applet_id}">
+									<a data-bind="attr: { href: Applet_url }">
+										<div class="applet-content">
+											<img data-bind="attr: { src: Applet_logo }" alt="" class="logo animated  rotateIn" />
+											<h3 data-bind="text: Applet_name"></h3>
+											<p>
+												<span class="text-muted">By</span> Opsoro
+											</p>
+										</div>
+										<div class="applet-footer" style="background-color:black">
+											Uses Maker Webhook
+										</div>
+									</a>
+								</div>
+							</div>
+
+						</div>
+
+					</fieldset>
+				</div>
+			</div>
 		</li>
-	 	<li class="accordion-item" data-accordion-item>
+		<li class="accordion-item" data-accordion-item>
 			<a href="#commands" class="accordion-title">
 				<span class="fa fa-terminal"></span> Commands
 			</a>
@@ -87,21 +84,21 @@
 					<div class="row">
 						<div id="cmdqueue" class="connected-sortable">
 							<div command-id="placeholder" id="cmdqueue-placeholder" class="disabled">
-								<p></span>Double tap a command below to queue it here. Click on a command to remove it from the queue.</p>
+								<p>
+									Double tap a command below to queue it here. Click on a command in the queue to remove it again.
+								</p>
 							</div>
-							
+
 						</div>
 					</div>
 				</fieldset>
 				<fieldset>
 					<legend>
-						<span class="fa fa-terminal"></span>
-						Commands
+						<span class="fa fa-terminal"></span> Commands
 					</legend>
 					<div class="row">
 						<div class="flex-container search-container">
-							<input class="search" placeholder="Search…" type="search" data-bind="textInput: commandQuery" autocomplete="off">
-							<span class="fa fa-search search-icon" aria-hidden="true"></span>
+							<input class="search" placeholder="Search commands…" type="search" data-bind="textInput: commandQuery" autocomplete="off">
 						</div>
 					</div>
 
@@ -110,26 +107,26 @@
 							<div class="command animated bounceIn" data-bind="attr: { 'command-id': Command_id},style: { 'background-color': Command_color}">
 								<a>
 									<div class="command-content">
-										
-										<label class="options-cog" data-bind="attr: { 'for': Command_id}"><span class="fa fa-cog" aria-hidden="true"></span></label>
-										<input class="hidden" type="checkbox" data-bind="checked: Command_displayOptions,attr: { 'id': Command_id}"/>
+
+										<label class="options-cog" data-bind="attr: { 'for': 'options-'+Command_id}"><span class="fa fa-cog" aria-hidden="true"></span></label>
+										<input class="hidden" type="checkbox" data-bind="checked: Command_displayOptions,attr: { 'id': 'options-'+Command_id}" />
 										<h3 data-bind="text: Command_description"></h3>
 										<div class="options animated flipInY" data-bind="visible: Command_displayOptions">
 											<!-- DO NOT REMOVE !!!! ko in commentaar is code dus niet verwijderen-->
 											<!-- ko  if: Command_customizeable-->
-												<input class="message" type="text" placeholder="Type your message here." data-bind="textInput: Command_message">
+											<input class="message" type="text" placeholder="Type your message here." data-bind="textInput: Command_message">
 											<!--/ko-->
 											<!-- ko  ifnot: Command_customizeable-->
-												<input class="message" type="hidden" value="" >
+											<input class="message" type="hidden" value="">
 											<!--/ko-->
 											<select class="expression" data-bind='options: Command_expressions,value: Command_selectedReaction'> </select>
 											<div class="tts-div">
-												<input class="tts" id="tts" type="checkbox" data-bind='checked: Command_saySomething'/> 
+												<input class="tts" id="tts" type="checkbox" data-bind='checked: Command_saySomething' />
 												<label for="tts">Speak</label>
-												<input class="playSound" id="playSound" type="checkbox" data-bind='checked: Command_displaySoundOptions'/>
+												<input class="playSound" id="playSound" type="checkbox" data-bind='checked: Command_displaySoundOptions' />
 												<label for="playSound">Play sound</label>
 											</div>
-											<select class="sound" data-bind='options: Command_sounds,value: Command_selectedSound,visible: Command_displaySoundOptions'> </select>
+											<select class="sound animated flipInY" data-bind='options: Command_sounds,value: Command_selectedSound,visible: Command_displaySoundOptions'> </select>
 											<input type="hidden" data-bind="value: Command_say" class="say"></input>
 											<input type="hidden" data-bind="value: Command_type" class="type"></input>
 											<input type="hidden" data-bind="value: Command_eventname" class="eventname"></input>
@@ -139,7 +136,7 @@
 											<p><span class="text-muted">Reaction: </span><span data-bind="text: Command_selectedReaction"></span></p>
 											<p data-bind="visible: Command_displaySoundOptions"><span class="text-muted">Play sound: </span><span data-bind="text: Command_selectedSound"></span></p>
 											<p data-bind="visible: Command_saySomething"><span class="text-muted">Say something: </span><span data-bind="text: Command_saySomething"></span></p>
-										</div>	
+										</div>
 									</div>
 									<div data-bind="text: Command_uses" class="command-footer" style="background-color:black">
 									</div>
@@ -149,9 +146,9 @@
 					</div>
 
 				</fieldset>
-	    	</div>
+			</div>
 		</li>
-		 <li class="accordion-item" data-accordion-item>
+		<li class="accordion-item" data-accordion-item>
 			<a href="#Activity" class="accordion-title">
 				<span class="fa fa-bar-chart"></span> Activity
 			</a>
@@ -162,170 +159,120 @@
 					</legend>
 
 					<div class="row activities">
-					{% for activity in activity  %}
-							<div class="activity animated bounceIn " >
-								<div class="activity_headers">
-									<img class="icon" src="//web-assets.ifttt.com/assets/web/activity/icons-v2/check-3fdd5e5a0e88fac1838037e4ca46d02b6571fed09ab00497d94c7bfd6586cdc8.svg" alt="Check">	<h4>Applet ran</h4>
-									<p class="date-time">{{activity.date}} - {{activity.time}}</p>
-								</div>
-								<div class="activity_content" style="background-color:{{activity.color}}">
-									<h5 class="activity_service">{{ activity.service}}</h5>
-									<p><span class="text-muted">by</span> Opsoro</p>
-								</div>
+						{% for activity in activity %}
+						<div class="activity animated bounceIn ">
+							<div class="activity_headers">
+								<img class="icon" src="//web-assets.ifttt.com/assets/web/activity/icons-v2/check-3fdd5e5a0e88fac1838037e4ca46d02b6571fed09ab00497d94c7bfd6586cdc8.svg"
+								 alt="Check">
+								<h4>Applet ran</h4>
+								<p class="date-time">{{activity.date}} - {{activity.time}}</p>
 							</div>
-					{% endfor %}	
+							<div class="activity_content" style="background-color:{{activity.color}}">
+								<h5 class="activity_service">{{ activity.service}}</h5>
+								<p><span class="text-muted">by</span> Opsoro</p>
+							</div>
+						</div>
+						{% endfor %}
 					</div>
 				</fieldset>
-	    	</div>
-		</li>	    
-			<li class="accordion-item" data-accordion-item>
-		<a href="#personal-assistant">
-			<span class="fa fa-android"></span> Personal Assistant
-		</a>
-		<div class="accordion-content" data-tab-content>
-			<fieldset>
-				<legend>
-					<span class="fa fa-android"></span>
-					Set your Personal Assistant's name</legend>
-				<div class="row">
-					<form action="name" method="POST">
-						<div class="small-4 medium-4 large-4 columns">
-							<label for="robotName" class="text-right inline">Personal Assistant's name</label>
-						</div>
-						<div class="small-8 medium-6 large-4 columns end">
-							<input type="text" id="robotName" name="robotName" value=""  required pattern="[a-zA-Z]+">
-							<button type="submit" class="button" style="margin-right:30%">Save</button>
-						</div>
-					</form>
-				</div>
-			</fieldset>
-		</div>
-	</li>
-	<li class="accordion-item" data-accordion-item>
-		<a href="#ifttt-account">
-			<span class="fa fa-fw fa-user"></span> IFTTT Account
-		</a>
-		<div class="accordion-content" data-tab-content>
-			<fieldset>
-				<legend>
-					<span class="fa fa-user"></span>
-					Create an IFTTT account
-				</legend>
-				<div class="row">
-					<div class="content">
-							<p>With a free IFTTT account you can manage your account information, manage your own applets and connect with services like Amazon, Facebook, Instagram, Skype, .... Click on the button below to create an IFTTT account.</p></br>
-							<a href="https://ifttt.com/join" target="blank"><button type="submit" class="button" style="margin-right:30%">Create IFTTT account</button></a>
-					</div>
-				</div>
-			</fieldset>
-			<fieldset>
-				<legend>
-					<span class="fa fa-mobile"></span>
-					Connect your phone with the IFTTT app
-				</legend>
-				<div class="row">
-					<div class="content">
-						<p>By using the IFTTT app, you can manage your account information, manage your own applets and connect with services like Amazon, Facebook, Instagram, Skype, .... Click on one of the buttons below to download and install the IFTTT app for Android or iOS</p></br>
-						<a href="https://play.google.com/store/apps/details?id=com.ifttt.ifttt" target="blank"><button type="submit" class="button" style="margin-right:30%" >Download Android app</button></a>
-						<a href="https://itunes.apple.com/nl/app/ifttt/id660944635" target="blank"><button type="submit" class="button" style="margin-right:30%" >Download iOS app</button></a>
-					</div>
-				</div>
-			</fieldset>
-		</div>
-	</li>
-
-	<li class="accordion-item" data-accordion-item>
-		<a href="#recipes">
-			<span class="fa fa-fw fa-gear"></span> Create Applets
-		</a>
-		<div class="accordion-content" data-tab-content>
-			<fieldset>
-				<legend>
-					<span class="fa fa-gear"></span>
-					STEP 1
-				</legend>
-				<div class="row">
-					<div class="content">
-							<p>Go to the IFTTT website and sign in with the account that you have created earlier.</p></br>
-							<a href="https://ifttt.com/login" target="blank"><button type="submit" class="button" style="margin-right:30%">Go to IFTTT website</button></a>
-					</div>
-				</div>
-		</fieldset>
-		<fieldset>
-			<legend>
-				<span class="fa fa-gear"></span>
-				STEP 2
-			</legend>
-			<div class="row">
-				<div class="content">
-					<p>When you are signed in, choose in the menu above for My Applets. Now you will see all the applets you have created earlier. Choose for New Applet.</p>
-					<img src="static/images/screenshot-opsoro-step2.png">
-				</div>
 			</div>
-		</fieldset>
-		<fieldset>
-			<legend>
-				<span class="fa fa-gear"></span>
-				STEP 3
-			</legend>
-			<div class="row">
-				<div class="content">
-					<p>Now you will see a page with IF THIS THEN THAT. Click on THIS and choose a service. You can choose any service you want. Follow the steps on-screen to configure your service.</p>
-					<img src="static/images/screenshot-opsoro-step3.png">
-				</div>
-			</div>
-		</fieldset>
-		<fieldset>
-			<legend>
-				<span class="fa fa-gear"></span>
-				STEP 4
-			</legend>
-			<div class="row">
-				<div class="content">
-					<p>After you have succesfully created your service, you will return to the IF THIS THEN THAT page. Now click on THAT and choose Maker Webhooks as action service.</p>
-					<img src="static/images/screenshot-opsoro-step4.png">
-				</div>
-			</div>
-		</fieldset>
-		<fieldset>
-			<legend>
-				<span class="fa fa-gear"></span>
-				STEP 5
-			</legend>
-			<div class="row">
-				<div class="content">
-					<p>Choose to make a web request. Fill in the form as shown in the image below. The BODY may vary depending on your chosen service. You can add options in the BODY field by clicking on Add ingredient.</p>
-					<img src="static/images/screenshot-opsoro-step5.png">
-				</div>
-			</div>
-		</fieldset>
-		<fieldset>
-			<legend>
-				<span class="fa fa-gear"></span>
-				STEP 6
-			</legend>
-			<div class="row">
-				<div class="content">
-					<p>In the last step you get an overview of the applet you have just created. To create the applet click on Finish.</p>
-				</div>
-			</div>
-		</fieldset>
-	</div>
-	</li>
+		</li>
 	</ul>
 </div>
 
-{% endblock %}
-{% block app_scripts %}
+<!-- Add applet -->
+<div id="addApplet" class="hidden">
+	<a data-bind="click: showPopup">
+		<div class="addApplet">
+			<span class="fa fa-plus" aria-hidden="true"></span>
+		</div>
+	</a>
+</div>
 
-	<script>
-		// var action_data = {{ actions|tojson|safe }};
+{% endblock %} {% block app_scripts %}
+{% endblock %} {% block app_modals %}
 
-		// var data = {{ data|tojson|safe }};
-	</script>
 
-	<!-- <script src="/site_media/static/js/....js"></script> -->
+<div id="popup_window" class="reveal" data-reveal data-animation-in="fade-in" data-animation-out="fade-out">
+	<div class="titlebar">
+		<button class="close-button" data-close aria-label="Close" type="button"><span class="fa fa-close"></span></button>
+		<span class="fa fa-cogs"></span> Create Applet
+	</div>
+	<div class="content">
+		<div id="slideshow">
+			<div class="step">
+				<div class="step-header">
+					<h2>Step 1: Sign in to IFTTT and go to the maker platform</h2>
+				</div>
+				<div class="step-content">
+				</div>
+				<div class="step-footer">
+					<p class="next">Step 2 <i class="fa fa-chevron-right" aria-hidden="true"></i></p>
+				</div>
+			</div>
+			<div class="step">
+				<div class="step-header">
+					<h2>Step 2: Create a new private applet</h2>
+				</div>
+				<div class="step-content">
+					<ul>
+						<li>1. Choose a trigger</li>
+						<li>2. Choose <span class="text-bold">Maker Webhook </span> for action</li>
+						<li>3. Request URL:</li>
 
-{% endblock %}
-{% block app_modals %}
-{% endblock %}
+						<div class="values">
+							<input type="text" class="input-values" id="copyTarget" value="http://opsoro:spotify123@opa.eu.ngrok.io/apps/opa/action"
+							 readonly> <button id="copyButton"><i class="fa fa-clipboard" aria-hidden="true"></i></button><br><br>
+						</div>
+						<li>4. Method: <span class="text-bold">POST </span> </li>
+						<li>5. Content type: <span class="text-bold">Text/Plain </span> </li>
+						<li>6. Body:</li>
+						<div class="values">
+							<textarea rows="10" cols="4">
+										{
+										"service":"Office 365 Calendar",
+										"say":"True",
+										"play" : { 
+										"1": "You have an event starting soon",
+										"2": "The location is {{Location}} ",
+										"3":"The subject is {{Subject}}"
+										},
+										"color":"#0072C6"
+										}
+								</textarea> <button id="copyButton"><i class="fa fa-clipboard" aria-hidden="true"></i></button><br><br>
+						</div>
+						<li>7. Add the applet title + description and Save</li>
+					</ul>
+					<p class="text-muted">Note: All settings for the Maker webhook must be hidden from user</p>
+
+				</div>
+				<div class="step-footer">
+					<p class="next">Step 3 <i class="fa fa-chevron-right" aria-hidden="true"></i></p>
+				</div>
+			</div>
+			<div class="step">
+				<div class="step-header">
+					<h2>Step 3: Add Applet to robot </h2>
+				</div>
+				<div class="step-content">
+					<form data-bind="submit: addApplet">
+						<input type="text" placeholder="Applet name.." data-bind="textInput: newApplet.NewApplet_name">
+						<input type="text" placeholder="Applet id.." data-bind="textInput: newApplet.NewApplet_url">
+						<input type="text" placeholder="e.g.,#000000,red" data-bind="textInput: colorpicker">
+						<div class="colorpicker" data-bind="style: { 'background-color': colorpicker }">
+						</div>
+						<select data-bind="options: protocol,optionsText: 'name',value: newApplet.NewApplet_categorie"> </select>
+						<button class="button applet-submit" data-close="" type="submit">Add Applet</button>
+					</form>
+				</div>
+				<div class="step-footer">
+					<p class="next">Step 1 <i class="fa fa-chevron-right" aria-hidden="true"></i></p>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+
+
+	{% endblock %}

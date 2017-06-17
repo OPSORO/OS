@@ -2,6 +2,21 @@
     display: flex;
     flex-wrap: wrap;
 }
+.applet-submit{
+    background-color: #ffaf19;
+}
+.tabs-content{
+    min-height: 500px;
+}
+.colorpicker{
+    height: 85px;
+    width: 85px;
+    line-height: 65px;
+    text-align: center;
+    margin: 15px;
+    border-radius: 15px;
+    border: 2px solid #d1d1d1;
+}
 #cmdqueue{
     display: flex;
     flex-wrap: wrap;
@@ -9,6 +24,17 @@
     min-width: 170px;
     min-height: 170px;
 }
+#addApplet .addApplet{
+    margin: 10px;
+    border-radius: 15px;
+    width: 250px;
+    height: 230px;
+    line-height: 230px;
+    text-align: center;
+    border: 4px dashed #d1d1d1;
+    font-size: 95px;
+}
+
 .applet{
     margin: 10px;
     border-radius: 15px;
@@ -62,6 +88,11 @@
     width: 250px;
     border-radius: 15px;
     overflow: hidden;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select:none;
+    user-select:none;
+    -o-user-select:none;
 }
 .command a{
     display: flex;
@@ -75,16 +106,11 @@
     top: 5px;
     right: 15px;
 }
-.search-container{
-    justify-content: center;
-}
+
 .search{
-    width: 250px;
+    width: 190px;
 }
-.search-icon{
-    font-size: 30px;
-    margin-left: 15px;
-}
+
 #cmdqueue .options-cog{
     display: none
 }
@@ -115,7 +141,7 @@
     margin-left: auto;
     margin-top: auto;
 }
-input[type=text], select, input[type=text]:focus, select:focus, select:active, .tts{
+input[type=text], select, input[type=text]:focus, select:focus, select:active, .tts, textarea:active, textarea, textarea:focus{
     color:white;
     background-color: rgba(255,255,255,0.2);
     border:0;
@@ -131,7 +157,7 @@ option {
 
 #cmdqueue-placeholder{
     position: absolute;
-    border: 4px dashed #f8f8f8;
+    border: 4px dashed #d1d1d1;
     text-align: center;
     display: flex;
     justify-content: center;
@@ -144,13 +170,23 @@ option {
 .text-muted{
     opacity: 0.8;
 }
+.text-bold{
+    font-weight: bold;
+}
 .hidden{
     display: none !important;
 }
 .visible{
     display: block;
 }
-
+.flex-row {
+    display: flex;
+    flex-direction: row;
+}
+.flex-column {
+    display: flex;
+    flex-direction: column;
+}
 .activity {
     width:400px;
     margin-bottom: 2em
@@ -182,10 +218,60 @@ option {
 }
 #protocolcontrol {
     display: flex;
+    flex-direction: column;
     justify-content: center;
 }
 .no-margin {
     margin: 0;
+}
+#slideshow { 
+    color: white;
+    position: relative; 
+        height: 550px;
+}
+#slideshow h2 {
+         color: white !important; 
+
+}
+.step {
+    display: flex;
+    flex-direction: column;
+    padding: 2em;
+}
+.step-footer {
+    text-align: right;
+    font-weight: bold;
+    margin-top: auto;
+}
+#slideshow > div { 
+    position: absolute; 
+    top: 10px; 
+    left: 10px; 
+    right: 10px; 
+    bottom: 10px; 
+}
+.values {
+    margin-top: 1em;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+#copyButton {
+    color: white;
+}
+
+#slideshow li {
+    list-style-type: none;
+}
+.input-values, textarea {
+    width: 90%;
+}
+.next, #copyButton {
+    cursor: pointer;
+}
+#popup_window {
+    background-color: #0095FF !important;
 }
 
 @media screen and (max-width: 550px) {
@@ -199,7 +285,12 @@ option {
         display: inline-block;
     }
     #filters {
+        min-height: 150px;
         padding-top: 0;
         width:100%;
     }
+    #cmdqueue{
+        flex-direction: column;
+    }
+    
 }

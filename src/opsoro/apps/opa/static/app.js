@@ -1,61 +1,70 @@
-$(document).ready(function() {
+$(document).ready(function () {
 
-     
+    $("#slideshow > div:gt(0)").hide();
+
+    $('.next').click(function () {
+        $('#slideshow > div:first')
+            .fadeOut(0)
+            .next()
+            .fadeIn(0)
+            .end()
+            .appendTo('#slideshow');
+    })
+    console.log(new Date().getTime());
+
     //Websockets
     conn = null;
     connReady = false;
     conn = new SockJS('http://' + window.location.host + '/sockjs');
 
-    conn.onopen = function(){
-      console.log("SockJS connected.");
-      $.ajax({
-        url: "/sockjstoken/",
-        cache: false
-      }).done(function(data) {
-        
-        if ('formatted_name' in app_data) {
-            appname = app_data['formatted_name'];
-            console.log(appname)
-        }
-        
-        conn.send(JSON.stringify({
-          app: appname,
-          action: "authenticate",
-          token: data
-        }));
-        connReady = true;
-        console.log("SockJS authenticated.");
-      });
+    conn.onopen = function () {
+        console.log("SockJS connected.");
+        $.ajax({
+            url: "/sockjstoken/",
+            cache: false
+        }).done(function (data) {
+
+            if ('formatted_name' in app_data) {
+                appname = app_data['formatted_name'];
+            }
+
+            conn.send(JSON.stringify({
+                app: appname,
+                action: "authenticate",
+                token: data
+            }));
+            connReady = true;
+            console.log("SockJS authenticated.");
+        });
     };
-    
-    conn.onmessage = function(e) {
+
+    conn.onmessage = function (e) {
         var applet = $('.activity').first().clone();
         var data = JSON.parse(e.data);
-        if(data.hasOwnProperty('data'))
-        {
-        if(data.data.action == "MessageInComing"){
-            applet.find(".date-time").empty().append(data.data.date + " " + data.data.time);
-            applet.find(".activity_service").empty().append(data.data.service);
-            applet.find(".activity_content").css("background-color", data.data.color);
-            applet.removeClass("bounceIn").addClass("bounceInRight");
-            applet.find(".icon").addClass("animated rotateIn")
-            $(".activities").append(applet);
-        }
-        if(data.data.action == "MessageCommand"){
-            if(data.data.data == "Remove"){
-                $('#cmdqueue').find('.command:first').remove();
+        if (data.hasOwnProperty('data')) {
+            if (data.data.action == "MessageInComing") {
+                applet.find(".date-time").empty().append(data.data.date + " " + data.data.time);
+                applet.find(".activity_service").empty().append(data.data.service);
+                applet.find(".activity_content").css("background-color", data.data.color);
+                applet.removeClass("bounceIn").addClass("bounceInRight");
+                applet.find(".icon").addClass("animated rotateIn")
+                $(".activities").append(applet);
+            }
+            if (data.data.action == "MessageCommand") {
+                if (data.data.data == "Remove") {
+                    $('#cmdqueue').find('.command:first').remove();
+                }
+            }
+            if (data.data.action == "MessageResponse") {
+                console.log(data.data.data)
             }
         }
-        if(data.data.action == "MessageResponse"){
-            console.log(data.data.data)
-        }
-        }
-    };   
+    };
 
-    conn.onclose = function() {
-            console.log("SockJS disconnected.");
-            conn = null;
-            connReady = false;
+    conn.onclose = function () {
+        console.log("SockJS disconnected.");
+        conn = null;
+        connReady = false;
     };
 
     //JQuery UI
@@ -65,13 +74,13 @@ $(document).ready(function() {
         placeholder: "highlight command",
         cancel: ".disabled",
         stop: function ( event, ui){
-            
+
             var data = $(this).sortable('toArray', { attribute: 'command-id' });
             conn.send(JSON.stringify({
                 action: "command",
                 data: data
             }));
-            
+
         }
     });
     $('#sortable').disableSelection();
@@ -95,18 +104,18 @@ $(document).ready(function() {
       }
     });
 
-    
-    $('#cmdqueue').on('click', '.command', function() {      
+
+    $('#cmdqueue').on('click', '.command', function() {
         this.parentNode.removeChild(this);
     });
     */
     $('#filters').accordion({
-      collapsible: true
+        collapsible: true
     });
-    $('input').click(function(event) {
+    $('input').click(function (event) {
         event.preventDefault();
     });
-    $('#cmdgrid').on('dblclick', '.command', function() {
+    $('#cmdgrid').on('dblclick', '.command', function () {
         //command clonen naar de command queue
         //eerste clone nemen van de selected value voor reactie
         var expression = $(this).find('.expression').val()
@@ -129,112 +138,26 @@ $(document).ready(function() {
             'command-hasSound': command.find('.playSound').is(':checked'),
             'command-sound': command.find('.sound').val()
         }
-        
+
         conn.send(JSON.stringify({
-                action: "command",
-                data: data
+            action: "command",
+            data: data
         }));
-        /*
-        $.ajax({
-            type: "POST",
-            url: "/apps/opa/addcommand",
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            data: JSON.stringify(data)
-        });*/
+
     });
-    $('#cmdqueue').on('click', '.command', function() {      
+    $('#cmdqueue').on('click', '.command', function () {
         this.parentNode.removeChild(this);
         data = {
             'id': $(this).attr('id')
         }
         conn.send(JSON.stringify({
-                action: "remove-command",
-                data: data
+            action: "remove-command",
+            data: data
         }));
     });
 
-    
-    //Knockout JS
-    var Model = function() {
-        var self = this;
-
-        // File operations toolbar item
-        self.fileIsLocked = ko.observable(false);
-        self.fileIsModified = ko.observable(false);
-        self.fileName = ko.observable("");
-        self.fileStatus = ko.observable("");
-        self.fileExtension = ko.observable(".ext");
-
-        // Script operations toolbar item
-        self.isRunning = ko.observable(false);
-        self.isUI = ko.observable(false);
-
-        // Lock/Unlock toolbar item
-        self.toggleLocked = function() {
-            if (self.fileIsLocked()) {
-                self.unlockFile();
-            } else {
-                self.lockFile();
-            }
-        };
-        self.lockFile = function() {
-            self.fileIsLocked(true);
-            self.fileStatus("Locked")
-        };
-        self.unlockFile = function() {
-            self.fileIsLocked(false);
-            self.fileStatus("Editing")
-        };
-
-        
-
-        // Popup window
-        /*
-        self.popupTextInput = ko.observable("Hi! This text can be changed. Click on the button to change me!");
-        self.showPopup = function() {
-          $("#popup_window").foundation('open');
-
-        };
-        self.closePopup = function() {
-            $("#popup_window").foundation('close');
-        };
-        self.popupButtonHandler = function() {
-            self.closePopup();
-        };
-
-        self.init = function() {
-            // Clear data, new file, ...
-            self.fileName("Untitled");
-            self.unlockFile();
-            self.fileIsModified(false);
-        };
-
-        self.loadFileData = function(data) {
-            if (data == undefined) {
-                return;
-            }
-
-            // Load data, parse if needed
-            var dataobj = JSON.parse(data);
-
-
-            self.fileIsModified(false);
-            self.lockFile();
-        };
-
-        self.saveFileData = function() {
-            // Convert data
-            file_data = {};
-
-            var data = ko.toJSON(file_data, null, 2);
-            self.fileIsModified(false);
-            return data;
-        };
-        */
-    };
-
-    function Applet(Applet_name, Applet_url, Applet_color, Applet_categorie, Applet_logo) {
+    function Applet(Applet_id, Applet_name, Applet_url, Applet_color, Applet_categorie, Applet_logo) {
+        this.Applet_id = Applet_id;
         this.Applet_name = Applet_name;
         this.Applet_url = Applet_url;
         this.Applet_color = Applet_color;
@@ -242,9 +165,9 @@ $(document).ready(function() {
         this.Applet_logo = Applet_logo;
     }
 
-    function Command(Command_id,Command_name,Command_color,Command_description,Command_uses
-    ,Command_type,Command_eventname,Command_customizeable,Command_expressions,Command_selectedReaction,Command_say
-    ,Command_saySomething,Command_sounds,Command_selectedSound,Command_displaySoundOptions,Command_displayOptions,Command_message) {
+    function Command(Command_id, Command_name, Command_color, Command_description, Command_uses
+        , Command_type, Command_eventname, Command_customizeable, Command_expressions, Command_selectedReaction, Command_say
+        , Command_saySomething, Command_sounds, Command_selectedSound, Command_displaySoundOptions, Command_displayOptions, Command_message) {
         this.Command_id = Command_id;
         this.Command_name = Command_name;
         this.Command_color = Command_color;
@@ -264,8 +187,12 @@ $(document).ready(function() {
         this.Command_message = ko.observable(Command_message);
     }
 
-    function Expression(Expression_name){
-        this.Expression_name = Expression_name;
+    function NewApplet() {
+        this.NewApplet_id = ko.observable('');
+        this.NewApplet_name = ko.observable('');
+        this.NewApplet_url = ko.observable('');
+        this.NewApplet_categorie = ko.observable('');
+        this.NewApplet_logo = ko.observable('');
     }
 
     var listOfApplets = [];
@@ -275,37 +202,35 @@ $(document).ready(function() {
     var queue = [];
 
     $.when(
-        $.get( "/apps/opa/getapplets", function( data ) {
-            $(data['Applets']).each(function(index, item){
-                listOfApplets.push(new Applet(item.Applet_name, item.Applet_url, item.Applet_color, item.Applet_categorie, item.Applet_logo));            
+        $.get("/apps/opa/getapplets", function (data) {
+            $(data['Applets']).each(function (index, item) {
+                listOfApplets.push(new Applet(item.Applet_id, item.Applet_name, item.Applet_url, item.Applet_color, item.Applet_categorie, item.Applet_logo));
             });
         }),
 
-        $.get( "/apps/opa/getreactions", function( data ) {
-            $(data['expressions']).each(function(index, item){
+        $.get("/apps/opa/getreactions", function (data) {
+            $(data['expressions']).each(function (index, item) {
                 listOfExpressions.push(item.name);
             });
         }),
 
-        $.get( "/apps/opa/getsounds", function( data ) {
-            console.log("get sounds");
-            $(data['sounds']).each(function(index, item){
+        $.get("/apps/opa/getsounds", function (data) {
+            $(data['sounds']).each(function (index, item) {
                 listOfSounds.push(item);
             });
         }),
 
-        $.get( "/apps/opa/getcommands", function( data ) {
-            console.log("get commands");
+        $.get("/apps/opa/getcommands", function (data) {
             //default waarden meegeven
-            $(data['Commands']).each(function(index, item){
-                listOfCommands.push(new Command(item.Command_id,item.Command_name,item.Command_color
-                ,item.Command_description,item.Command_uses,item.Command_type,
-                item.Command_eventname,item.Command_customizeable,listOfExpressions,
-                "neutral",item.Command_say,true,listOfSounds,"1_kamelenrace.wav",false,false,""));
+            $(data['Commands']).each(function (index, item) {
+                listOfCommands.push(new Command(item.Command_id, item.Command_name, item.Command_color
+                    , item.Command_description, item.Command_uses, item.Command_type,
+                    item.Command_eventname, item.Command_customizeable, listOfExpressions,
+                    "neutral", item.Command_say, true, listOfSounds, "1_kamelenrace.wav", false, false, ""));
             });
         })
 
-    ).then(function(){
+    ).then(function () {
         console.log("ready")
         $(".applet").removeClass("hidden");
 
@@ -315,7 +240,7 @@ $(document).ready(function() {
             this.selected = ko.observable(false);
         }
 
-       var listOfCategories = [
+        var listOfCategories = [
             new protocol(1, 'Social'),
             new protocol(2, 'News'),
             new protocol(3, 'Location'),
@@ -324,11 +249,13 @@ $(document).ready(function() {
             new protocol(6, 'Calendar')
         ];
 
-       
+
         var viewModel = {
             commands: ko.observableArray(listOfCommands),
             commandQuery: ko.observable(""),
-                 
+            appletQuery: ko.observable(""),
+            newApplet: NewApplet,
+            colorpicker: ko.observable('orange'),
             protocoldocs: ko.observableArray(listOfApplets),
             protocol: ko.observableArray(listOfCategories),
             selectedProtocol: ko.observableArray(),
@@ -337,17 +264,74 @@ $(document).ready(function() {
                 var isChecked = $checkBox.is(':checked');
                 //If it is checked and not in the array, add it
                 if (isChecked && viewModel.selectedProtocol.indexOf(protocol) < 0) {
-                viewModel.selectedProtocol.push(protocol);
+                    viewModel.selectedProtocol.push(protocol);
                 }
-                //If it is in the array and not checked remove it                
+                //If it is in the array and not checked remove it
                 else if (!isChecked && viewModel.selectedProtocol.indexOf(protocol) >= 0) {
-                viewModel.selectedProtocol.remove(protocol);
+                    viewModel.selectedProtocol.remove(protocol);
                 }
                 //Need to return to to allow the Checkbox to process checked/unchecked
                 return true;
             }
         }
-        viewModel.filteredCommands = ko.computed(function (){
+        viewModel.addApplet = function (form) {
+            /*
+            var uniekid = 1;
+            for(var i =0; i < listOfApplets.length; i++){
+               
+                console.log(uniekid + "  " + listOfApplets[i]["Applet_id"]);
+                if(listOfApplets[i]["Applet_id"] == uniekid)
+                {
+                    console.log(uniekid + listOfApplets[i]["Applet_id"] + "is niet uniek");
+                    uniekid++;
+                }
+                else 
+                {
+                    console.log(+ listOfApplets[i]["Applet_id"] +  "is uniek")
+                    uniekid = uniekid + 2;
+                }
+            }*/
+            /*
+            var ids = []
+            for(var i = 0; i < listOfApplets.length; i++){
+                ids.push(listOfApplets[i]["Applet_id"])
+            }
+            console.log(ids)
+
+            for(var i = 0; i <= ids.length + 1; i++){
+               if(!!(listOfApplets.indexOf(ids[i]))){
+                   console.log('nope');
+               }
+               else if(ids[i] == 'undefined'){
+                   console.log('unqiue: '+i);
+               }                
+            }*/
+            var unique_id = new Date().getTime();
+            var a = new Applet(
+                unique_id,
+                viewModel.newApplet.NewApplet_name,
+                'https://ifttt.com/applets/' + viewModel.newApplet.NewApplet_url + '/embed?redirect_uri=http://opa.eu.ngrok.io/apps/opa/',
+                viewModel.colorpicker(),
+                viewModel.newApplet.NewApplet_categorie.name,
+                'static/images/opsoro_icon_light.png'
+            )
+            viewModel.protocoldocs.push(a);
+            data = {
+                'applet': a
+            }
+            conn.send(JSON.stringify({
+                action: "saveapplet",
+                data: data
+            }));
+        };
+
+        viewModel.clearFilters = function () {
+            var selectedProtocols = ko.utils.arrayFilter(viewModel.protocol(), function (p) {
+                return p.selected(false);
+            });
+        };
+
+        viewModel.filteredCommands = ko.computed(function () {
             var filter = viewModel.commandQuery().toLowerCase();
 
             if (!filter) {
@@ -360,66 +344,114 @@ $(document).ready(function() {
         });
 
         viewModel.filteredProtocols = ko.computed(function () {
+            var filter = viewModel.appletQuery().toLowerCase();
             var selectedProtocols = ko.utils.arrayFilter(viewModel.protocol(), function (p) {
                 return p.selected();
             });
-            if (selectedProtocols.length == 0) { //if none selected return all
-                //console.log("selected is null");
-                //console.log(selectedProtocols.length);
-                //console.log(viewModel.protocoldocs());
+            if (selectedProtocols.length == 0 && filter == "") { //if none selected return all
                 return viewModel.protocoldocs();
             }
-            else { 
+            else if (selectedProtocols.length > 0 && filter == "") {
                 return ko.utils.arrayFilter(viewModel.protocoldocs(), function (item) {
-                return ko.utils.arrayFilter(selectedProtocols, function (p) {
-                    if(p.name == 'All'){
-                        return viewModel.protocoldocs();
-                    }
-                    return p.name == item.Applet_categorie
-                }).length > 0;
-            });
-            
+                    return ko.utils.arrayFilter(selectedProtocols, function (p) {
+                        if (p.name == 'All') {
+                            return viewModel.protocoldocs();
+                        }
+                        return p.name == item.Applet_categorie
+                    }).length > 0;
+                });
+
+            }
+            else {
+                return ko.utils.arrayFilter(viewModel.filteredProtocols(), function (item) {
+                    return item['Applet_name'].toLowerCase().indexOf(filter) !== -1;
+                });
             }
         })
-        
+
         ko.bindingHandlers.visibleAndSelect = {
-            update: function(element, valueAccessor) {
+            update: function (element, valueAccessor) {
                 ko.bindingHandlers.visible.update(element, valueAccessor);
                 if (valueAccessor()) {
-                    setTimeout(function() {
+                    setTimeout(function () {
                         $(element).find("input").focus().select();
                     }, 0); //new tasks are not in DOM yet
                 }
             }
         };
 
+
         viewModel.commandQuery.subscribe(viewModel.search);
-        console.log(viewModel.commands())
         ko.applyBindings(viewModel);
-        
+
+
+
+
+        viewModel.showPopup = function () {
+            $("#popup_window").foundation('open');
+
+        };
+        viewModel.closePopup = function () {
+            $("#popup_window").foundation('close');
+        };
+
+        $('#addApplet').removeClass('hidden');
+        $('#addApplet').appendTo('#appletsGrid');
+
+
+        document.getElementById("copyButton").addEventListener("click", function () {
+            copyToClipboard(document.getElementById("copyTarget"));
+        });
+
+        function copyToClipboard(elem) {
+            // create hidden text element, if it doesn't already exist
+            var targetId = "_hiddenCopyText_";
+            var isInput = elem.tagName === "INPUT" || elem.tagName === "TEXTAREA";
+            var origSelectionStart, origSelectionEnd;
+            if (isInput) {
+                // can just use the original source element for the selection and copy
+                target = elem;
+                origSelectionStart = elem.selectionStart;
+                origSelectionEnd = elem.selectionEnd;
+            } else {
+                // must use a temporary form element for the selection and copy
+                target = document.getElementById(targetId);
+                if (!target) {
+                    var target = document.createElement("textarea");
+                    target.style.position = "absolute";
+                    target.style.left = "-9999px";
+                    target.style.top = "0";
+                    target.id = targetId;
+                    target.value = "http://opsoro:spotify123@opa.eu.ngrok.io/apps/opa/action"
+                    document.body.appendChild(target);
+                }
+            }
+            // select the content
+            var currentFocus = document.activeElement;
+            target.focus();
+            target.setSelectionRange(0, target.value.length);
+
+            // copy the selection
+            var succeed;
+            try {
+                succeed = document.execCommand("copy");
+            } catch (e) {
+                succeed = false;
+            }
+            // restore original focus
+            if (currentFocus && typeof currentFocus.focus === "function") {
+                currentFocus.focus();
+            }
+
+            if (isInput) {
+                // restore prior selection
+                elem.setSelectionRange(origSelectionStart, origSelectionEnd);
+            } else {
+                // clear temporary content
+                target.textContent = "";
+            }
+            return succeed;
+        }
     });
 
-
-    
-    
-    /*
-    $.get("/apps/opa/getapplets", function(data, status){
-        var i =0;
-         $(data['Applets']).each(function(index, item){
-            
-           listOfApplets.push(new Applet(item.Applet_name, item.Applet_url, item.Applet_color, item.Applet_categorie, item.Applet_logo));
-          
-       });
-    });
-*/
-    
-
-    //var newDropped = false;
-   
-    //ko.applyBindings(viewModel, $("#protocoldocs")[0]);
-    // This makes Knockout get to work
-   // ko.applyBindings(model);
-    
-    // Configurate toolbar handlers
-    //config_file_operations("", model.fileExtension(), model.saveFileData, model.loadFileData, model.init);
 });
