@@ -442,21 +442,18 @@ $(document).ready(function () {
                         break;
                     case "SpeechStartDetectedEvent":
                         UpdateStatus("Speech detected");
-                        console.log(JSON.stringify(event.Result));
                         break;
                     case "SpeechHypothesisEvent":
                         UpdateRecognizedHypothesis(event.Result.Text);
-                        console.log(JSON.stringify(event.Result));
                         break;
                     case "SpeechEndDetectedEvent":
-                        OnSpeechEndDetected();
                         UpdateStatus("Processing");
-                        console.log(JSON.stringify(event.Result));
                         break;
                     case "SpeechSimplePhraseEvent":
-                        console.log(JSON.stringify(event.Result, null, 3));
                         if (event.Result.RecognitionStatus != "Success") {
                             robotSendTTS("Sorry, I didn't understand what you said.");
+                            UpdateStatus("Idle")
+                            Stop();
                         } else {
                             speechresult = event.Result.DisplayText;
                         }
@@ -464,10 +461,7 @@ $(document).ready(function () {
                     case "RecognitionEndedEvent":
                         OnComplete();
                         UpdateStatus("Idle");
-                        console.log(JSON.stringify(event));
-                        balert('checked'); reak;
-                    case "ConnectionClosedEvent":
-                        console.log("connection lost");
+                        break;
                 }
             })
                 .On(() => {
@@ -504,18 +498,14 @@ $(document).ready(function () {
         function UpdateRecognizedHypothesis(text) {
             $('#speechHypothesis').html(text);
         }
-        function OnSpeechEndDetected() {
-           
-        }
+        
         function OnComplete() {
             var isUnderstood = false;
+            // kijken welk command we moeten geven door te vergelijken met de speech command
             $.each(listOfCommands, function (index, value) {
-                console.log(value['Command_description']);
                 var compare = value['Command_description'].replace(/[^a-zA-Z ]/g, "").toString().toLowerCase();
                 var result = speechresult.replace(/[^a-zA-Z ]/g, "").toString().toLowerCase();
-                console.log(compare +" = "+ result);
                 if(result.indexOf(compare) !== -1){
-                    console.log('its a match');
                     var n = result.split(compare)
                     if(value['Command_customizeable']){
                         $("#"+value['Command_id']).find('.message').val(n[1])
@@ -530,24 +520,10 @@ $(document).ready(function () {
             $('#speechStartStop').prop("checked", false);
             Stop();
         }
-        /*
-        $('#speechStartStop').change(function () {
-            console.log('chnaged');
-            if ($(this).is(':checked')) {
-                if (!recognizer) {
-                    Setup();
-                }
-                RecognizerStart(SDK, recognizer);
-                Start();
-            }
-            else {
-                RecognizerStop(SDK, recognizer);
-                Stop();
-            }
-        });*/
-
+        
         Initialize(function (speechSdk) {
             SDK = speechSdk;
+            $('.voice').removeClass('hidden');
         });
     });
 
