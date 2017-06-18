@@ -10,7 +10,6 @@ $(document).ready(function () {
             .end()
             .appendTo('#slideshow');
     })
-    console.log(new Date().getTime());
 
     //Websockets
     conn = null;
@@ -67,53 +66,9 @@ $(document).ready(function () {
         connReady = false;
     };
 
-    //JQuery UI
-    /*
-    $('#cmdqueue').sortable({
-        revert: true,
-        placeholder: "highlight command",
-        cancel: ".disabled",
-        stop: function ( event, ui){
-
-            var data = $(this).sortable('toArray', { attribute: 'command-id' });
-            conn.send(JSON.stringify({
-                action: "command",
-                data: data
-            }));
-
-        }
-    });
-    $('#sortable').disableSelection();
-    $('.draggable').draggable({
-            connectToSortable: "#cmdqueue",
-            helper: "clone",
-            revert: "invalid",
-            start:  function (event,ui){
-                return true;
-            },
-            drag: function (event,ui){
-                $(this).removeClass('bounceIn')
-            },
-            stop: function (event,ui){
-                $(this).addClass('bounceIn')
-            }
-    });
-    $('#cmdqueue').droppable({
-      drop: function( event, ui ) {
-        $('#cmdqueue-placeholder').find('p').addClass("hidden");
-      }
-    });
-
-
-    $('#cmdqueue').on('click', '.command', function() {
-        this.parentNode.removeChild(this);
-    });
-    */
+    /* JQuery UI */
     $('#filters').accordion({
         collapsible: true
-    });
-    $('input').click(function (event) {
-        event.preventDefault();
     });
     $('#cmdgrid').on('dblclick', '.command', function () {
         //command clonen naar de command queue
@@ -124,7 +79,6 @@ $(document).ready(function () {
         command.find('.expression').val(expression);
         command.find('.sound').val(sound);
         command.uniqueId();
-        $('#cmdqueue-placeholder').find('p').addClass("hidden");
         console.log(command.find('.type').val())
         data = {
             'id': command.attr('id'),
@@ -156,6 +110,7 @@ $(document).ready(function () {
         }));
     });
 
+    /* KNOCKOUT */
     function Applet(Applet_id, Applet_name, Applet_url, Applet_color, Applet_categorie, Applet_logo) {
         this.Applet_id = Applet_id;
         this.Applet_name = Applet_name;
@@ -274,38 +229,23 @@ $(document).ready(function () {
                 return true;
             }
         }
-        viewModel.addApplet = function (form) {
-            /*
-            var uniekid = 1;
-            for(var i =0; i < listOfApplets.length; i++){
-               
-                console.log(uniekid + "  " + listOfApplets[i]["Applet_id"]);
-                if(listOfApplets[i]["Applet_id"] == uniekid)
-                {
-                    console.log(uniekid + listOfApplets[i]["Applet_id"] + "is niet uniek");
-                    uniekid++;
+        viewModel.speechChanged = function (data) {
+            if ($('#speechStartStop').is(':checked')) {
+                if (!recognizer) {
+                    Setup();
                 }
-                else 
-                {
-                    console.log(+ listOfApplets[i]["Applet_id"] +  "is uniek")
-                    uniekid = uniekid + 2;
-                }
-            }*/
-            /*
-            var ids = []
-            for(var i = 0; i < listOfApplets.length; i++){
-                ids.push(listOfApplets[i]["Applet_id"])
+                RecognizerStart(SDK, recognizer);
+                Start();
             }
-            console.log(ids)
+            else {
+                RecognizerStop(SDK, recognizer);
+                Stop();
+            }
+        }
 
-            for(var i = 0; i <= ids.length + 1; i++){
-               if(!!(listOfApplets.indexOf(ids[i]))){
-                   console.log('nope');
-               }
-               else if(ids[i] == 'undefined'){
-                   console.log('unqiue: '+i);
-               }                
-            }*/
+
+        viewModel.addApplet = function (form) {
+
             var unique_id = new Date().getTime();
             var a = new Applet(
                 unique_id,
@@ -380,12 +320,8 @@ $(document).ready(function () {
             }
         };
 
-
         viewModel.commandQuery.subscribe(viewModel.search);
         ko.applyBindings(viewModel);
-
-
-
 
         viewModel.showPopup = function () {
             $("#popup_window").foundation('open');
@@ -452,6 +388,167 @@ $(document).ready(function () {
             }
             return succeed;
         }
+
+        /* SPEECH */
+        var SDK;
+        var recognizer;
+        var key = "98d77b29792e489db96b5094d29b34e5";
+        var language = "en-US";
+        var format = "Simple";
+        var speechresult;
+
+        // voor een of andere reden is deze checked bij load dus unchecken
+        $('#speechStartStop').removeAttr('checked');
+
+        // Laden speech browser sdk met require
+        function Initialize(onComplete) {
+            require(["Speech.Browser.Sdk"], function (SDK) {
+                onComplete(SDK);
+            });
+        }
+
+        // Setup recongizer
+        function RecognizerSetup(SDK, recognitionMode, language, format, subscriptionKey) {
+            var recognizerConfig = new SDK.RecognizerConfig(
+                new SDK.SpeechConfig(
+                    new SDK.Context(
+                        new SDK.OS(navigator.userAgent, "Browser", null),
+                        new SDK.Device("Raspberry Pi Foundation", "Raspberry Pi 3", "8"))),
+                recognitionMode,
+                language,
+                format);
+
+            // authenticatie
+            var authentication = new SDK.CognitiveSubscriptionKeyAuthentication(subscriptionKey);
+
+            return SDK.CreateRecognizer(recognizerConfig, authentication);
+        }
+
+        // Start recognition
+        function RecognizerStart(SDK, recognizer) {
+            recognizer.Recognize((event) => {
+
+                // de verschillende events van speech recognition
+                switch (event.Name) {
+                    case "RecognitionTriggeredEvent":
+                        UpdateStatus("Initializing");
+                        break;
+                    case "ListeningStartedEvent":
+                        UpdateStatus("Listening");
+                        robotSendSound("smb_1-up.wav");
+                        break;
+                    case "RecognitionStartedEvent":
+                        UpdateStatus("Recognizing");
+                        break;
+                    case "SpeechStartDetectedEvent":
+                        UpdateStatus("Speech detected");
+                        console.log(JSON.stringify(event.Result));
+                        break;
+                    case "SpeechHypothesisEvent":
+                        UpdateRecognizedHypothesis(event.Result.Text);
+                        console.log(JSON.stringify(event.Result));
+                        break;
+                    case "SpeechEndDetectedEvent":
+                        OnSpeechEndDetected();
+                        UpdateStatus("Processing");
+                        console.log(JSON.stringify(event.Result));
+                        break;
+                    case "SpeechSimplePhraseEvent":
+                        console.log(JSON.stringify(event.Result, null, 3));
+                        if (event.Result.RecognitionStatus != "Success") {
+                            robotSendTTS("Sorry, I didn't understand what you said.");
+                        } else {
+                            speechresult = event.Result.DisplayText;
+                        }
+                        break;
+                    case "RecognitionEndedEvent":
+                        OnComplete();
+                        UpdateStatus("Idle");
+                        console.log(JSON.stringify(event));
+                        balert('checked'); reak;
+                    case "ConnectionClosedEvent":
+                        console.log("connection lost");
+                }
+            })
+                .On(() => {
+                    //request succes
+                },
+                (error) => {
+                    console.error(error);
+                    UpdateStatus("Error")
+                });
+        }
+
+        // Stop the Recognition.
+        function RecognizerStop(SDK, recognizer) {
+            recognizer.AudioSource.TurnOff();
+
+        }
+        function Setup() {
+            recognizer = RecognizerSetup(SDK, SDK.RecognitionMode.Interactive, language, SDK.SpeechResultFormat[format], key);
+        }
+
+        function Start() {
+            $('#speechIndicator').removeClass('fa fa-microphone')
+            $('#speechIndicator').addClass('fa fa-microphone-slash animated infinite pulse recording')
+        }
+
+        function Stop() {
+            $('#speechIndicator').removeClass('fa fa-microphone-slash animated infinite pulse recording')
+            $('#speechIndicator').addClass('fa fa-microphone')
+        }
+
+        function UpdateStatus(status) {
+            $('#speechStatus').html(status);
+        }
+        function UpdateRecognizedHypothesis(text) {
+            $('#speechHypothesis').html(text);
+        }
+        function OnSpeechEndDetected() {
+           
+        }
+        function OnComplete() {
+            var isUnderstood = false;
+            $.each(listOfCommands, function (index, value) {
+                console.log(value['Command_description']);
+                var compare = value['Command_description'].replace(/[^a-zA-Z ]/g, "").toString().toLowerCase();
+                var result = speechresult.replace(/[^a-zA-Z ]/g, "").toString().toLowerCase();
+                console.log(compare +" = "+ result);
+                if(result.indexOf(compare) !== -1){
+                    console.log('its a match');
+                    var n = result.split(compare)
+                    if(value['Command_customizeable']){
+                        $("#"+value['Command_id']).find('.message').val(n[1])
+                    }
+                    $( "#"+value['Command_id'] ).dblclick();
+                    isUnderstood = true;
+                }
+            });
+            if(!isUnderstood){
+                robotSendTTS("Sorry, I didn't understand what you said.");
+            }
+            $('#speechStartStop').prop("checked", false);
+            Stop();
+        }
+        /*
+        $('#speechStartStop').change(function () {
+            console.log('chnaged');
+            if ($(this).is(':checked')) {
+                if (!recognizer) {
+                    Setup();
+                }
+                RecognizerStart(SDK, recognizer);
+                Start();
+            }
+            else {
+                RecognizerStop(SDK, recognizer);
+                Stop();
+            }
+        });*/
+
+        Initialize(function (speechSdk) {
+            SDK = speechSdk;
+        });
     });
 
 });

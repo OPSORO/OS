@@ -8,6 +8,29 @@
 .tabs-content{
     min-height: 500px;
 }
+.voice{
+    margin-left: auto;
+    display: flex;
+}
+#speechIndicator{
+    width: 65px;
+    height: 65px;
+    border-radius: 65px;
+    line-height: 65px;
+    padding: 0;
+}
+.recording{
+    background-color: #c60f13 !important;
+}
+.recording:hover{
+    background-color: #0095FF !important;
+}
+.voice-controls{
+    display: flex;
+    flex-direction: column;
+    text-align: right;
+    margin-right: 15px;
+}
 .colorpicker{
     height: 85px;
     width: 85px;
@@ -169,6 +192,9 @@ option {
 }
 .text-muted{
     opacity: 0.8;
+}
+.text-italic{
+    font-style: italic;
 }
 .text-bold{
     font-weight: bold;

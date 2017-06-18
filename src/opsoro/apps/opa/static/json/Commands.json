@@ -2,9 +2,9 @@
     "Commands": [
         {
             "Command_id": "1497641841128",
-            "Command_name": "Facebook status",
+            "Command_name": "Facebook status:",
             "Command_color": "#3b579d",
-            "Command_description": "Status update:",
+            "Command_description": "Facebook",
             "Command_uses": "Facebook",
             "Command_type": "ifttt",
             "Command_eventname": "facebookstatus",
@@ -13,9 +13,9 @@
         },
         {
             "Command_id": "1497641871304",
-            "Command_name": "Robot Command",
+            "Command_name": "Robot Command:",
             "Command_color": "#ffaf19",
-            "Command_description": "Robot command:",
+            "Command_description": "Robot",
             "Command_uses": "Opsoro",
             "Command_type": "emotion",
             "Command_eventname": "happy",
@@ -24,9 +24,9 @@
         },
         {
             "Command_id": "1497641888078",
-            "Command_name": "Android music",
+            "Command_name": "Android music:",
             "Command_color": "#66cc00",
-            "Command_description": "Play music:",
+            "Command_description": "Play song",
             "Command_uses": "Android device",
             "Command_type": "ifttt",
             "Command_eventname": "music",
@@ -35,7 +35,7 @@
         },
         {
             "Command_id": "1497641904577",
-            "Command_name": "Android mute",
+            "Command_name": "Android mute:",
             "Command_color": "#66cc00",
             "Command_description": "Mute phone",
             "Command_uses": "Android device",

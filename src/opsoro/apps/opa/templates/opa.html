@@ -3,9 +3,7 @@
 <!-- <script src="/site_media/static/js/....js"></script> -->
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script src="http://knockoutjs.com/downloads/knockout-3.4.2.js"></script>
-<link rel="stylesheet" type="text/css" href="/apps/opa/static/css/animate.min.css">
-
-{% endblock %}
+<link rel="stylesheet" type="text/css" href="/apps/opa/static/css/animate.min.css"> {% endblock %}
 
 <!-- These sidebars can be removed by removing the block tags -->
 
@@ -99,18 +97,28 @@
 					<div class="row">
 						<div class="flex-container search-container">
 							<input class="search" placeholder="Search commands…" type="search" data-bind="textInput: commandQuery" autocomplete="off">
+							<div class="voice">
+								<div class="voice-controls">									
+									<div><span class="text-italic" id="speechHypothesis"></span></div>
+									<div><span id="speechStatus"></span></div>
+								</div>
+								<label id="speechIndicator" class="button fa fa-microphone" for="speechStartStop"></label>
+								<input type="checkbox" class="hidden" id="speechStartStop" data-bind="event:{change:speechChanged}"/>
+							</div>
+
+
 						</div>
 					</div>
 
 					<div class="row">
 						<div id="cmdgrid" class="flex-container connected-sortable" data-bind="foreach: filteredCommands">
-							<div class="command animated bounceIn" data-bind="attr: { 'command-id': Command_id},style: { 'background-color': Command_color}">
+							<div class="command animated bounceIn" data-bind="attr: { 'command-id': Command_id,'id':Command_id},style: { 'background-color': Command_color}">
 								<a>
 									<div class="command-content">
 
 										<label class="options-cog" data-bind="attr: { 'for': 'options-'+Command_id}"><span class="fa fa-cog" aria-hidden="true"></span></label>
 										<input class="hidden" type="checkbox" data-bind="checked: Command_displayOptions,attr: { 'id': 'options-'+Command_id}" />
-										<h3 data-bind="text: Command_description"></h3>
+										<h3 data-bind="text: Command_name"></h3>
 										<div class="options animated flipInY" data-bind="visible: Command_displayOptions">
 											<!-- DO NOT REMOVE !!!! ko in commentaar is code dus niet verwijderen-->
 											<!-- ko  if: Command_customizeable-->
@@ -136,6 +144,7 @@
 											<p><span class="text-muted">Reaction: </span><span data-bind="text: Command_selectedReaction"></span></p>
 											<p data-bind="visible: Command_displaySoundOptions"><span class="text-muted">Play sound: </span><span data-bind="text: Command_selectedSound"></span></p>
 											<p data-bind="visible: Command_saySomething"><span class="text-muted">Say something: </span><span data-bind="text: Command_saySomething"></span></p>
+											<p><span class="fa fa-microphone"></span> <span class="text-muted text-italic">"<span class="" data-bind="text: Command_description"></span>"</span></p>
 										</div>
 									</div>
 									<div data-bind="text: Command_uses" class="command-footer" style="background-color:black">
@@ -190,6 +199,10 @@
 </div>
 
 {% endblock %} {% block app_scripts %}
+<!-- speech recognition -->
+<script src="/apps/opa/static/js/require.js"></script>
+<script src="/apps/opa/static/js/speech.browser.sdk-min.js"></script>
+
 {% endblock %} {% block app_modals %}
 
 
