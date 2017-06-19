@@ -98,12 +98,12 @@
 						<div class="flex-container search-container">
 							<input class="search" placeholder="Search commands…" type="search" data-bind="textInput: commandQuery" autocomplete="off">
 							<div class="voice hidden animated bounceIn">
-								<div class="voice-controls">									
+								<div class="voice-controls">
 									<div><span class="text-italic" id="speechHypothesis"></span></div>
 									<div><span id="speechStatus"></span></div>
 								</div>
 								<label id="speechIndicator" class="button fa fa-microphone" for="speechStartStop"></label>
-								<input type="checkbox" class="hidden" id="speechStartStop" data-bind="event:{change:speechChanged}"/>
+								<input type="checkbox" class="hidden" id="speechStartStop" data-bind="event:{change:speechChanged}" />
 							</div>
 
 
@@ -122,19 +122,19 @@
 										<div class="options animated flipInY" data-bind="visible: Command_displayOptions">
 											<!-- DO NOT REMOVE !!!! ko in commentaar is code dus niet verwijderen-->
 											<!-- ko  if: Command_customizeable-->
-											<input class="message" type="text" placeholder="Type your message here." data-bind="textInput: Command_message">
+											<input class="message" type="text" placeholder="Type your message here." data-bind="textInput: Command_message,event: {change:commandOptionsChanged}">
 											<!--/ko-->
 											<!-- ko  ifnot: Command_customizeable-->
 											<input class="message" type="hidden" value="">
 											<!--/ko-->
-											<select class="expression" data-bind='options: Command_expressions,value: Command_selectedReaction'> </select>
+											<select class="expression" data-bind='options: Command_expressions,value: Command_selectedReaction,event: {change:commandOptionsChanged}'> </select>
 											<div class="tts-div">
-												<input class="tts" id="tts" type="checkbox" data-bind='checked: Command_saySomething' />
+												<input class="tts" id="tts" type="checkbox" data-bind='checked: Command_saySomething,event: {change:commandOptionsChanged}' />
 												<label for="tts">Speak</label>
-												<input class="playSound" id="playSound" type="checkbox" data-bind='checked: Command_displaySoundOptions' />
+												<input class="playSound" id="playSound" type="checkbox" data-bind='checked: Command_displaySoundOptions,event: {change:commandOptionsChanged}' />
 												<label for="playSound">Play sound</label>
 											</div>
-											<select class="sound animated flipInY" data-bind='options: Command_sounds,value: Command_selectedSound,visible: Command_displaySoundOptions'> </select>
+											<select class="sound animated flipInY" data-bind='options: Command_sounds,value: Command_selectedSound,visible: Command_displaySoundOptions,event: {change:commandOptionsChanged}'> </select>
 											<input type="hidden" data-bind="value: Command_say" class="say"></input>
 											<input type="hidden" data-bind="value: Command_type" class="type"></input>
 											<input type="hidden" data-bind="value: Command_eventname" class="eventname"></input>
@@ -144,7 +144,8 @@
 											<p><span class="text-muted">Reaction: </span><span data-bind="text: Command_selectedReaction"></span></p>
 											<p data-bind="visible: Command_displaySoundOptions"><span class="text-muted">Play sound: </span><span data-bind="text: Command_selectedSound"></span></p>
 											<p data-bind="visible: Command_saySomething"><span class="text-muted">Say something: </span><span data-bind="text: Command_saySomething"></span></p>
-											<p><span class="fa fa-microphone"></span> <span class="text-muted text-italic">"<span class="" data-bind="text: Command_description"></span>"</span></p>
+											<p><span class="fa fa-microphone"></span> <span class="text-muted text-italic">"<span class="" data-bind="text: Command_description"></span>"</span>
+											</p>
 										</div>
 									</div>
 									<div data-bind="text: Command_uses" class="command-footer" style="background-color:black">
@@ -218,6 +219,8 @@
 					<h2>Step 1: Sign in to IFTTT and go to the maker platform</h2>
 				</div>
 				<div class="step-content">
+				<a href="https://ifttt.com/login?return_to=partners_landing" class="button-orange">Sign in</a>
+				<a href="https://platform.ifttt.com/" class="button-orange">Ifttt platform</a>
 				</div>
 				<div class="step-footer">
 					<p class="next">Step 2 <i class="fa fa-chevron-right" aria-hidden="true"></i></p>
@@ -235,28 +238,11 @@
 
 						<div class="values">
 							<input type="text" class="input-values" id="copyTarget" value="http://opsoro:spotify123@opa.eu.ngrok.io/apps/opa/action"
-							 readonly> <button id="copyButton"><i class="fa fa-clipboard" aria-hidden="true"></i></button><br><br>
+							 readonly> <button id="copyButton"><i class="fa fa-clipboard" aria-hidden="true"></i></button>
 						</div>
 						<li>4. Method: <span class="text-bold">POST </span> </li>
 						<li>5. Content type: <span class="text-bold">Text/Plain </span> </li>
-						<li>6. Body:</li>
-						<div class="values">
-							<textarea rows="10" cols="4">
-										{
-										"service":"Office 365 Calendar",
-										"say":"True",
-										"play" : { 
-										"1": "You have an event starting soon",
-										"2": "The location is {{Location}} ",
-										"3":"The subject is {{Subject}}"
-										},
-										"color":"#0072C6"
-										}
-								</textarea> <button id="copyButton"><i class="fa fa-clipboard" aria-hidden="true"></i></button><br><br>
-						</div>
-						<li>7. Add the applet title + description and Save</li>
 					</ul>
-					<p class="text-muted">Note: All settings for the Maker webhook must be hidden from user</p>
 
 				</div>
 				<div class="step-footer">
@@ -265,12 +251,48 @@
 			</div>
 			<div class="step">
 				<div class="step-header">
-					<h2>Step 3: Add Applet to robot </h2>
+					<h2>Step 3: Create body</h2>
+				</div>
+				<div class="step-content">
+
+					<li>6. Body:</li>
+					<p class="orange text-bold">Add the name of your trigger service</p>
+					<input type="text" placeholder="Service" data-bind="textInput: applet_service">
+					<p class=" orange text-bold">Add sentences your robot need to say when the applets runs</p>
+					<input type="text" placeholder="Sentence 1..." data-bind="textInput: applet_zin1">
+					<input type="text" placeholder="Sentence 2... (optional)" data-bind="textInput: applet_zin2">
+					<input type="text" placeholder="Sentence 3... (optional)" data-bind="textInput: applet_zin3">
+					<p class="text-muted">Note: You can add ingredients from your trigger to your sentences in IFTTT</p>
+					<input type="text" placeholder="e.g.,#000000,red" data-bind="textInput: colorpicker">
+					<div class="colorpicker" data-bind="style: { 'background-color': colorpicker }">
+					</div>
+					<p class="orange text-bold">Copy this to your body field in your Applet</p>
+					<div class="values">
+
+						<textarea name="" id="json_data" cols="30" rows="10" data-bind="value: applet_json" readonly>
+
+							</textarea>
+						<button id="copyButton2"><i class="fa fa-clipboard" aria-hidden="true"></i></button>
+					</div>
+
+					<li>7. Add the applet title + description and Save</li>
+					</ul>
+					<p class="text-muted">Note: All settings for the Maker webhook must be hidden from user</p>
+
+				</div>
+				<div class="step-footer">
+					<p class="next">Step 4 <i class="fa fa-chevron-right" aria-hidden="true"></i></p>
+				</div>
+			</div>
+			<div class="step">
+				<div class="step-header">
+					<h2>Step 4: Add Applet to robot </h2>
 				</div>
 				<div class="step-content">
 					<form data-bind="submit: addApplet">
 						<input type="text" placeholder="Applet name.." data-bind="textInput: newApplet.NewApplet_name">
 						<input type="text" placeholder="Applet id.." data-bind="textInput: newApplet.NewApplet_url">
+						<p class="text-muted">Note: The applet id can you find on the page of your private applet on the ifttt platform</p>
 						<input type="text" placeholder="e.g.,#000000,red" data-bind="textInput: colorpicker">
 						<div class="colorpicker" data-bind="style: { 'background-color': colorpicker }">
 						</div>
@@ -285,7 +307,5 @@
 		</div>
 
 	</div>
-
-
 
 	{% endblock %}

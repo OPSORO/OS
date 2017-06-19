@@ -164,7 +164,7 @@
     margin-left: auto;
     margin-top: auto;
 }
-input[type=text], select, input[type=text]:focus, select:focus, select:active, .tts, textarea:active, textarea, textarea:focus{
+input[type=text], select, input[type=text]:focus, select:focus, select:active, .tts, textarea:read-only{
     color:white;
     background-color: rgba(255,255,255,0.2);
     border:0;
@@ -172,6 +172,8 @@ input[type=text], select, input[type=text]:focus, select:focus, select:active, .
 }
 option {
     border:0;
+    background-color: white;
+    color: black;
 }
 .flex-container > .highlight{
     background-color: green;
@@ -189,6 +191,16 @@ option {
     width: calc(100% - 20px);
     height: calc(100% - 20px);
     margin: 10px;
+}
+
+.button-orange {
+    background-color: #FFAF19;
+    padding:1em;
+    color: white;
+    border-radius: 5px;
+}
+.orange{
+    color:#FFAF19;
 }
 .text-muted{
     opacity: 0.8;
@@ -283,10 +295,18 @@ option {
     justify-content: space-between;
     align-items: center;
 }
-#copyButton {
+#copyButton, #copyButton2 {
+    cursor:pointer;
     color: white;
 }
+#copyButton:hover, #copyButton2:hover {
+    cursor:pointer;
+    color: #FFAF19;
+}
+.next:hover {
+        color: #FFAF19;
 
+}
 #slideshow li {
     list-style-type: none;
 }

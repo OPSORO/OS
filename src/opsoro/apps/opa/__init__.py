@@ -36,7 +36,6 @@ config = {
     'difficulty':           1,
     'tags':                 ['template', 'developer'],
     'allowed_background':   False,
-    'multi_user':           True,
     'connection':           Robot.Connection.OFFLINE,
     'activation':           Robot.Activation.AUTO
 }
@@ -196,7 +195,6 @@ def setup_pages(server):
         if os.path.exists(filename):
             with open(filename, 'r') as blog_file:
                 json_data = json.load(blog_file)
-                print_info(len(json_data['Activity']))
                 if len(json_data['Activity']) == 20 :
                     del json_data['Activity'][:1]
                 json_data['Activity'].append(data)   

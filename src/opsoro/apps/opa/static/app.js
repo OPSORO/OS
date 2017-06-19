@@ -140,6 +140,32 @@ $(document).ready(function () {
         this.Command_displaySoundOptions = ko.observable(Command_displaySoundOptions);
         this.Command_displayOptions = ko.observable(Command_displayOptions);
         this.Command_message = ko.observable(Command_message);
+        this.commandOptionsChanged = function (data) {
+            //opslaan opties als er een optie veranderd
+            var command = $('#' + data['Command_id']);
+            var key = data['Command_id'].toString();
+            var exists = JSON.parse(localStorage.getItem(localStorage.key(findIndexOfKey(key))));
+            data = {
+                'id': command.attr('id'),
+                'command-id': command.attr('command-id'),
+                'command-message': command.find('.message').val(),
+                'command-type': command.find('.type').val(),
+                'command-eventname': command.find('.eventname').val(),
+                'command-expression': command.find('.expression').val(),
+                'command-hasTTS': command.find('.tts').is(':checked'),
+                'command-say': command.find('.say').val(),
+                'command-hasSound': command.find('.playSound').is(':checked'),
+                'command-sound': command.find('.sound').val()
+            }
+            //als de localstorage entry al bestaat vervang deze
+            if(exists){
+                localStorage.setItem(key,JSON.stringify(data));
+            }
+            else{
+                localStorage[key] = JSON.stringify(data);
+            }
+            
+        }
     }
 
     function NewApplet() {
@@ -148,6 +174,15 @@ $(document).ready(function () {
         this.NewApplet_url = ko.observable('');
         this.NewApplet_categorie = ko.observable('');
         this.NewApplet_logo = ko.observable('');
+    }
+
+    function findIndexOfKey(searchKey) {
+        for (var i = 0; i < localStorage.length; i++) {
+            var key = localStorage.key(i);
+            if (key === searchKey)
+                return i;
+        }
+        return -1;
     }
 
     var listOfApplets = [];
@@ -178,10 +213,27 @@ $(document).ready(function () {
         $.get("/apps/opa/getcommands", function (data) {
             //default waarden meegeven
             $(data['Commands']).each(function (index, item) {
-                listOfCommands.push(new Command(item.Command_id, item.Command_name, item.Command_color
-                    , item.Command_description, item.Command_uses, item.Command_type,
-                    item.Command_eventname, item.Command_customizeable, listOfExpressions,
-                    "neutral", item.Command_say, true, listOfSounds, "1_kamelenrace.wav", false, false, ""));
+
+                //stored values ophalen
+                var key = item.Command_id.toString();
+                var storedValues = JSON.parse(localStorage.getItem(localStorage.key(findIndexOfKey(key))));
+                
+                //als er een stored value is de waardes terug geven anders default waardes
+                if (storedValues) {
+                    console.log();
+                    listOfCommands.push(new Command(item.Command_id, item.Command_name, item.Command_color
+                        , item.Command_description, item.Command_uses, item.Command_type,
+                        item.Command_eventname, item.Command_customizeable, listOfExpressions,
+                        storedValues['command-expression'], item.Command_say,storedValues['command-hasTTS'], 
+                        listOfSounds,storedValues['command-sound'],storedValues['command-hasSound'],
+                        false,storedValues['command-message']));
+                }
+                else {
+                    listOfCommands.push(new Command(item.Command_id, item.Command_name, item.Command_color
+                        , item.Command_description, item.Command_uses, item.Command_type,
+                        item.Command_eventname, item.Command_customizeable, listOfExpressions,
+                        "neutral", item.Command_say, true, listOfSounds, "1_kamelenrace.wav", false, false, ""));
+                }
             });
         })
 
@@ -211,6 +263,12 @@ $(document).ready(function () {
             appletQuery: ko.observable(""),
             newApplet: NewApplet,
             colorpicker: ko.observable('orange'),
+
+            applet_zin1: ko.observable(''),
+            applet_zin2: ko.observable(''),
+            applet_zin3: ko.observable(''),
+            applet_service: ko.observable(''),
+
             protocoldocs: ko.observableArray(listOfApplets),
             protocol: ko.observableArray(listOfCategories),
             selectedProtocol: ko.observableArray(),
@@ -229,6 +287,14 @@ $(document).ready(function () {
                 return true;
             }
         }
+
+        viewModel.applet_json = ko.computed(function () {
+            var obj = '{ "service":"' + viewModel.applet_service() + '" , "say":"True", "play":{ "1":"' + viewModel.applet_zin1() + '", "2":"' + viewModel.applet_zin2() + '",  "3":"' + viewModel.applet_zin3() + '"}, "color":"' + viewModel.colorpicker() + '" }';
+            var json = JSON.parse(obj);
+            var pretty = JSON.stringify(json, undefined, 5);
+            return pretty;
+        })
+
         viewModel.speechChanged = function (data) {
             if ($('#speechStartStop').is(':checked')) {
                 if (!recognizer) {
@@ -242,6 +308,7 @@ $(document).ready(function () {
                 Stop();
             }
         }
+
 
 
         viewModel.addApplet = function (form) {
@@ -337,6 +404,10 @@ $(document).ready(function () {
 
         document.getElementById("copyButton").addEventListener("click", function () {
             copyToClipboard(document.getElementById("copyTarget"));
+        });
+
+        document.getElementById("copyButton2").addEventListener("click", function () {
+            copyToClipboard(document.getElementById("json_data"));
         });
 
         function copyToClipboard(elem) {
@@ -469,7 +540,8 @@ $(document).ready(function () {
                 },
                 (error) => {
                     console.error(error);
-                    UpdateStatus("Error")
+                    UpdateStatus("Error");
+                    
                 });
         }
 
@@ -498,29 +570,30 @@ $(document).ready(function () {
         function UpdateRecognizedHypothesis(text) {
             $('#speechHypothesis').html(text);
         }
-        
+
         function OnComplete() {
             var isUnderstood = false;
             // kijken welk command we moeten geven door te vergelijken met de speech command
             $.each(listOfCommands, function (index, value) {
                 var compare = value['Command_description'].replace(/[^a-zA-Z ]/g, "").toString().toLowerCase();
                 var result = speechresult.replace(/[^a-zA-Z ]/g, "").toString().toLowerCase();
-                if(result.indexOf(compare) !== -1){
+                if (result.indexOf(compare) !== -1) {
                     var n = result.split(compare)
-                    if(value['Command_customizeable']){
-                        $("#"+value['Command_id']).find('.message').val(n[1])
+                    if (value['Command_customizeable']) {
+                        $("#" + value['Command_id']).find('.message').val(n[1])
                     }
-                    $( "#"+value['Command_id'] ).dblclick();
+                    $("#" + value['Command_id']).dblclick();
                     isUnderstood = true;
+                    return false;
                 }
             });
-            if(!isUnderstood){
+            if (!isUnderstood) {
                 robotSendTTS("Sorry, I didn't understand what you said.");
             }
             $('#speechStartStop').prop("checked", false);
             Stop();
         }
-        
+
         Initialize(function (speechSdk) {
             SDK = speechSdk;
             $('.voice').removeClass('hidden');

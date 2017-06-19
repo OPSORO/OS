@@ -1,0 +1,430 @@
+[I 170619 17:53:36 wsgi:355] 302 GET / (192.168.0.135) 23.67ms
+[I 170619 17:53:36 wsgi:355] 302 GET /login/ (192.168.0.135) 84.03ms
+[I 170619 17:53:37 wsgi:355] 200 GET / (192.168.0.135) 474.50ms
+[I 170619 17:53:37 wsgi:355] 200 GET /static/js/opsoro.js?ver=6423 (192.168.0.135) 18.42ms
+[I 170619 17:53:37 web:2063] 200 GET /sockjs/info (192.168.0.135) 3.52ms
+[I 170619 17:53:37 web:2063] 101 GET /sockjs/577/cvs_z6xn/websocket (192.168.0.135) 2.20ms
+[I 170619 17:53:37 wsgi:355] 200 GET /sockjstoken/?_=1497887619259 (192.168.0.135) 5.14ms
+[I 170619 17:53:47 wsgi:355] 200 GET / (192.168.0.135) 105.19ms
+[I 170619 17:53:47 wsgi:355] 200 GET /static/js/opsoro.js?ver=7013 (192.168.0.135) 12.65ms
+[I 170619 17:53:47 web:2063] 200 GET /sockjs/info (192.168.0.135) 3.17ms
+[I 170619 17:53:47 web:2063] 101 GET /sockjs/872/f695mf1j/websocket (192.168.0.135) 3.47ms
+[I 170619 17:53:47 wsgi:355] 200 GET /sockjstoken/?_=1497887628954 (192.168.0.135) 9.19ms
+[I 170619 17:53:49 wsgi:355] 302 GET /app/open/opa/ (192.168.0.135) 36.34ms
+[I 170619 17:53:50 wsgi:355] 200 GET /apps/opa/ (192.168.0.135) 163.07ms
+[I 170619 17:53:50 wsgi:355] 200 GET /apps/opa/static/app.css?ver=2346 (192.168.0.135) 7.57ms
+[I 170619 17:53:50 wsgi:355] 200 GET /apps/opa/static/css/animate.min.css (192.168.0.135) 8.12ms
+[I 170619 17:53:50 wsgi:355] 200 GET /static/js/opsoro.js?ver=2346 (192.168.0.135) 6.99ms
+[I 170619 17:53:50 wsgi:355] 200 GET /apps/opa/static/app.js?ver=2346 (192.168.0.135) 7.60ms
+[I 170619 17:53:50 wsgi:355] 200 GET /apps/opa/static/js/require.js (192.168.0.135) 7.61ms
+[I 170619 17:53:50 wsgi:355] 200 GET /apps/opa/static/js/speech.browser.sdk-min.js (192.168.0.135) 8.12ms
+[I 170619 17:53:50 wsgi:355] 200 GET /apps/opa/getapplets (192.168.0.135) 6.85ms
+[I 170619 17:53:50 wsgi:355] 200 GET /apps/opa/getreactions (192.168.0.135) 6.30ms
+[I 170619 17:53:50 wsgi:355] 200 GET /apps/opa/getsounds (192.168.0.135) 6.69ms
+[I 170619 17:53:50 wsgi:355] 200 GET /apps/opa/getcommands (192.168.0.135) 6.31ms
+[I 170619 17:53:50 web:2063] 200 GET /sockjs/info (192.168.0.135) 1.74ms
+[I 170619 17:53:50 web:2063] 200 GET /sockjs/info (192.168.0.135) 2.00ms
+[I 170619 17:53:50 web:2063] 101 GET /sockjs/948/6ni5ds68/websocket (192.168.0.135) 2.57ms
+[I 170619 17:53:50 wsgi:355] 200 GET /apps/opa/static/images/opsoro_icon_light.png (192.168.0.135) 6.95ms
+[I 170619 17:53:50 web:2063] 101 GET /sockjs/849/kpaa3oe1/websocket (192.168.0.135) 2.80ms
+[I 170619 17:53:50 wsgi:355] 200 GET /sockjstoken/?_=1497887631940 (192.168.0.135) 9.16ms
+[I 170619 17:53:50 wsgi:355] 200 GET /sockjstoken/?_=1497887631941 (192.168.0.135) 11.35ms
+[I 170619 17:56:55 wsgi:355] 200 GET /apps/opa/ (192.168.0.135) 78.29ms
+[I 170619 17:56:55 wsgi:355] 200 GET /apps/opa/static/app.css?ver=2700 (192.168.0.135) 8.39ms
+[I 170619 17:56:55 wsgi:355] 200 GET /static/js/opsoro.js?ver=2700 (192.168.0.135) 8.72ms
+[I 170619 17:56:55 wsgi:355] 200 GET /apps/opa/static/app.js?ver=2700 (192.168.0.135) 10.40ms
+[I 170619 17:56:56 wsgi:355] 200 GET /apps/opa/getapplets (192.168.0.135) 12.46ms
+[I 170619 17:56:56 wsgi:355] 200 GET /apps/opa/getreactions (192.168.0.135) 9.71ms
+[I 170619 17:56:56 wsgi:355] 200 GET /apps/opa/getcommands (192.168.0.135) 9.97ms
+[I 170619 17:56:56 wsgi:355] 200 GET /apps/opa/getsounds (192.168.0.135) 9.97ms
+[I 170619 17:56:56 web:2063] 200 GET /sockjs/info (192.168.0.135) 3.10ms
+[I 170619 17:56:56 web:2063] 200 GET /sockjs/info (192.168.0.135) 3.08ms
+[I 170619 17:56:56 web:2063] 101 GET /sockjs/958/pribq2_r/websocket (192.168.0.135) 3.49ms
+[I 170619 17:56:56 web:2063] 101 GET /sockjs/761/rbujmfzw/websocket (192.168.0.135) 3.46ms
+[I 170619 17:56:56 wsgi:355] 200 GET /sockjstoken/?_=1497887817542 (192.168.0.135) 9.13ms
+[I 170619 17:56:56 wsgi:355] 200 GET /sockjstoken/?_=1497887817543 (192.168.0.135) 12.14ms
+[I 170619 17:57:47 wsgi:355] 200 GET /apps/opa/ (192.168.0.135) 66.98ms
+[I 170619 17:57:47 wsgi:355] 200 GET /apps/opa/static/app.css?ver=8713 (192.168.0.135) 12.31ms
+[I 170619 17:57:47 wsgi:355] 200 GET /static/js/opsoro.js?ver=8713 (192.168.0.135) 12.32ms
+[I 170619 17:57:47 wsgi:355] 200 GET /apps/opa/static/app.js?ver=8713 (192.168.0.135) 12.45ms
+[I 170619 17:57:48 wsgi:355] 200 GET /apps/opa/getapplets (192.168.0.135) 6.82ms
+[I 170619 17:57:48 wsgi:355] 200 GET /apps/opa/getsounds (192.168.0.135) 5.89ms
+[I 170619 17:57:48 wsgi:355] 200 GET /apps/opa/getreactions (192.168.0.135) 5.52ms
+[I 170619 17:57:48 wsgi:355] 200 GET /apps/opa/getcommands (192.168.0.135) 5.40ms
+[I 170619 17:57:48 web:2063] 200 GET /sockjs/info (192.168.0.135) 1.75ms
+[I 170619 17:57:48 web:2063] 200 GET /sockjs/info (192.168.0.135) 3.16ms
+[I 170619 17:57:48 web:2063] 101 GET /sockjs/048/1igesy_f/websocket (192.168.0.135) 3.62ms
+[I 170619 17:57:48 web:2063] 101 GET /sockjs/299/x2hsexud/websocket (192.168.0.135) 3.59ms
+[I 170619 17:57:48 wsgi:355] 200 GET /sockjstoken/?_=1497887869453 (192.168.0.135) 9.30ms
+[I 170619 17:57:48 wsgi:355] 200 GET /sockjstoken/?_=1497887869454 (192.168.0.135) 11.67ms
+[I 170619 17:58:28 wsgi:355] 200 GET /apps/opa/ (192.168.0.135) 111.14ms
+[I 170619 17:58:28 wsgi:355] 200 GET /apps/opa/static/app.css?ver=3252 (192.168.0.135) 8.60ms
+[I 170619 17:58:28 wsgi:355] 200 GET /static/js/opsoro.js?ver=3252 (192.168.0.135) 8.82ms
+[I 170619 17:58:28 wsgi:355] 200 GET /apps/opa/static/app.js?ver=3252 (192.168.0.135) 8.99ms
+[I 170619 17:58:29 wsgi:355] 200 GET /apps/opa/getreactions (192.168.0.135) 13.07ms
+[I 170619 17:58:29 wsgi:355] 200 GET /apps/opa/getsounds (192.168.0.135) 13.69ms
+[I 170619 17:58:29 wsgi:355] 200 GET /apps/opa/getapplets (192.168.0.135) 16.62ms
+[I 170619 17:58:29 wsgi:355] 200 GET /apps/opa/getcommands (192.168.0.135) 12.98ms
+[I 170619 17:58:29 web:2063] 200 GET /sockjs/info (192.168.0.135) 4.27ms
+[I 170619 17:58:29 web:2063] 200 GET /sockjs/info (192.168.0.135) 4.78ms
+[I 170619 17:58:29 web:2063] 101 GET /sockjs/783/nekaa90b/websocket (192.168.0.135) 2.00ms
+[I 170619 17:58:29 web:2063] 101 GET /sockjs/923/ni27z_6h/websocket (192.168.0.135) 1.96ms
+[I 170619 17:58:30 wsgi:355] 200 GET /sockjstoken/?_=1497887910973 (192.168.0.135) 5.12ms
+[I 170619 17:58:30 wsgi:355] 200 GET /sockjstoken/?_=1497887910974 (192.168.0.135) 6.54ms
+[I 170619 17:59:37 wsgi:355] 200 GET / (192.168.0.135) 84.15ms
+[I 170619 17:59:37 wsgi:355] 200 GET /static/js/opsoro.js?ver=6287 (192.168.0.135) 12.85ms
+[I 170619 17:59:37 web:2063] 200 GET /sockjs/info (192.168.0.135) 2.40ms
+[I 170619 17:59:37 web:2063] 101 GET /sockjs/418/ae76cqml/websocket (192.168.0.135) 2.09ms
+[I 170619 17:59:37 wsgi:355] 200 GET /sockjstoken/?_=1497887979157 (192.168.0.135) 5.26ms
+[I 170619 17:59:41 wsgi:355] 301 GET /app/open/blockly (192.168.0.135) 23.74ms
+[I 170619 17:59:41 wsgi:355] 302 GET /app/open/blockly/ (192.168.0.135) 35.31ms
+[I 170619 17:59:41 wsgi:355] 200 GET /apps/blockly/ (192.168.0.135) 208.49ms
+[I 170619 17:59:41 wsgi:355] 200 GET /apps/blockly/static/app.css?ver=1801 (192.168.0.135) 6.83ms
+[I 170619 17:59:41 wsgi:355] 200 GET /static/js/opsoro.js?ver=1801 (192.168.0.135) 7.10ms
+[I 170619 17:59:41 wsgi:355] 200 GET /apps/blockly/static/app.js?ver=1801 (192.168.0.135) 7.03ms
+[I 170619 17:59:41 wsgi:355] 200 GET /static/js/ace/ace.js (192.168.0.135) 9.50ms
+[I 170619 17:59:41 wsgi:355] 200 GET /static/js/ace/mode-lua.js (192.168.0.135) 6.86ms
+[I 170619 17:59:41 wsgi:355] 200 GET /apps/lua_scripting/static/ono-lua-highlighter.js (192.168.0.135) 6.73ms
+[I 170619 17:59:41 wsgi:355] 301 GET /blockly (192.168.0.135) 8.18ms
+[I 170619 17:59:42 wsgi:355] 200 GET /blockly/ (192.168.0.135) 211.30ms
+[I 170619 17:59:42 web:2063] 200 GET /sockjs/info (192.168.0.135) 1.94ms
+[I 170619 17:59:42 wsgi:355] 200 GET /static/js/ace/theme-twilight.js (192.168.0.135) 7.07ms
+[I 170619 17:59:42 wsgi:355] 200 GET /static/js/ace/worker-lua.js (192.168.0.135) 7.38ms
+[I 170619 17:59:42 wsgi:355] 200 GET /docs/data/blockly/?f=currentscript.xml.tmp&_=1497887983504 (192.168.0.135) 8.11ms
+[I 170619 17:59:42 wsgi:355] 200 GET /static/js/blockly/blocks_compressed.js (192.168.0.135) 8.08ms
+[I 170619 17:59:42 wsgi:355] 200 GET /static/js/blockly/msg/js/en.js (192.168.0.135) 9.02ms
+[I 170619 17:59:42 wsgi:355] 200 GET /static/js/blockly/blockly_compressed.js (192.168.0.135) 14.74ms
+[I 170619 17:59:42 web:2063] 101 GET /sockjs/029/y9uh8er9/websocket (192.168.0.135) 2.83ms
+[I 170619 17:59:42 wsgi:355] 200 GET /static/js/blockly/lua_compressed.js (192.168.0.135) 9.92ms
+[I 170619 17:59:42 wsgi:355] 200 GET /static/js/blockly/custom_blocks/general.js (192.168.0.135) 9.40ms
+[I 170619 17:59:42 wsgi:355] 200 GET /static/js/blockly/custom_blocks/servo.js (192.168.0.135) 9.92ms
+[I 170619 17:59:42 wsgi:355] 200 GET /static/js/blockly/custom_blocks/expression.js (192.168.0.135) 9.12ms
+[I 170619 17:59:42 wsgi:355] 200 GET /static/js/blockly/custom_blocks/interface.js (192.168.0.135) 7.12ms
+[I 170619 17:59:42 wsgi:355] 200 GET /static/js/blockly/custom_blocks/touch.js (192.168.0.135) 8.16ms
+[I 170619 17:59:42 wsgi:355] 200 GET /static/js/blockly/custom_blocks/neopixel.js (192.168.0.135) 6.75ms
+[I 170619 17:59:42 wsgi:355] 200 GET /static/js/blockly/custom_blocks/hardware.js (192.168.0.135) 7.98ms
+[I 170619 17:59:42 wsgi:355] 200 GET /static/js/blockly/custom_blocks/sound.js (192.168.0.135) 6.71ms
+[I 170619 17:59:42 wsgi:355] 200 GET /sockjstoken/?_=1497887983505 (192.168.0.135) 7.48ms
+[I 170619 17:59:43 wsgi:355] 200 GET /static/images/fontawesome/white/svg/volume-down.svg (192.168.0.135) 12.62ms
+[I 170619 17:59:43 wsgi:355] 200 GET /static/images/fontawesome/white/svg/gamepad.svg (192.168.0.135) 12.12ms
+[I 170619 18:00:43 wsgi:355] 200 GET / (192.168.0.135) 88.05ms
+[I 170619 18:00:43 wsgi:355] 200 GET /static/js/opsoro.js?ver=8543 (192.168.0.135) 12.84ms
+[I 170619 18:00:44 web:2063] 200 GET /sockjs/info (192.168.0.135) 3.29ms
+[I 170619 18:00:44 web:2063] 101 GET /sockjs/195/2s65ixt7/websocket (192.168.0.135) 3.56ms
+[I 170619 18:00:44 wsgi:355] 200 GET /sockjstoken/?_=1497888045711 (192.168.0.135) 9.20ms
+[I 170619 18:00:45 wsgi:355] 302 GET /app/open/opa/ (192.168.0.135) 36.04ms
+[I 170619 18:00:45 wsgi:355] 200 GET /apps/opa/ (192.168.0.135) 86.03ms
+[I 170619 18:00:45 wsgi:355] 200 GET /apps/opa/static/app.css?ver=8956 (192.168.0.135) 6.88ms
+[I 170619 18:00:45 wsgi:355] 200 GET /static/js/opsoro.js?ver=8956 (192.168.0.135) 7.10ms
+[I 170619 18:00:45 wsgi:355] 200 GET /apps/opa/static/app.js?ver=8956 (192.168.0.135) 7.20ms
+[I 170619 18:00:46 wsgi:355] 200 GET /apps/opa/getapplets (192.168.0.135) 7.23ms
+[I 170619 18:00:46 wsgi:355] 200 GET /apps/opa/getreactions (192.168.0.135) 5.83ms
+[I 170619 18:00:46 wsgi:355] 200 GET /apps/opa/getsounds (192.168.0.135) 7.66ms
+[I 170619 18:00:46 wsgi:355] 200 GET /apps/opa/getcommands (192.168.0.135) 9.73ms
+[I 170619 18:00:46 web:2063] 200 GET /sockjs/info (192.168.0.135) 3.98ms
+[I 170619 18:00:46 web:2063] 200 GET /sockjs/info (192.168.0.135) 3.09ms
+[I 170619 18:00:46 web:2063] 101 GET /sockjs/475/i7yf2vyr/websocket (192.168.0.135) 4.72ms
+[I 170619 18:00:46 web:2063] 101 GET /sockjs/534/486t93cu/websocket (192.168.0.135) 4.52ms
+[I 170619 18:00:46 wsgi:355] 200 GET /sockjstoken/?_=1497888047863 (192.168.0.135) 10.41ms
+[I 170619 18:00:46 wsgi:355] 200 GET /sockjstoken/?_=1497888047864 (192.168.0.135) 10.20ms
+[I 170619 18:02:16 wsgi:355] 200 GET / (192.168.0.135) 87.45ms
+[I 170619 18:02:16 wsgi:355] 200 GET /static/js/opsoro.js?ver=5078 (192.168.0.135) 6.71ms
+[I 170619 18:02:17 web:2063] 200 GET /sockjs/info (192.168.0.135) 1.74ms
+[I 170619 18:02:17 web:2063] 101 GET /sockjs/546/ttlruilp/websocket (192.168.0.135) 1.96ms
+[I 170619 18:02:17 wsgi:355] 200 GET /sockjstoken/?_=1497888138788 (192.168.0.135) 5.10ms
+[I 170619 18:02:25 wsgi:355] 200 GET / (192.168.0.135) 84.51ms
+[I 170619 18:02:25 wsgi:355] 200 GET /static/js/opsoro.js?ver=5130 (192.168.0.135) 12.28ms
+[I 170619 18:02:25 web:2063] 200 GET /sockjs/info (192.168.0.135) 3.09ms
+[I 170619 18:02:25 web:2063] 101 GET /sockjs/261/x0m1j3ne/websocket (192.168.0.135) 3.41ms
+[I 170619 18:02:25 wsgi:355] 200 GET /sockjstoken/?_=1497888147029 (192.168.0.135) 9.07ms
+[I 170619 18:02:28 wsgi:355] 302 GET /app/open/opa/ (192.168.0.135) 35.82ms
+[I 170619 18:02:28 wsgi:355] 200 GET /apps/opa/ (192.168.0.135) 83.35ms
+[I 170619 18:02:28 wsgi:355] 200 GET /apps/opa/static/app.css?ver=5541 (192.168.0.135) 12.05ms
+[I 170619 18:02:28 wsgi:355] 200 GET /static/js/opsoro.js?ver=5541 (192.168.0.135) 12.33ms
+[I 170619 18:02:28 wsgi:355] 200 GET /apps/opa/static/app.js?ver=5541 (192.168.0.135) 12.22ms
+[I 170619 18:02:28 wsgi:355] 200 GET /apps/opa/getapplets (192.168.0.135) 12.29ms
+[I 170619 18:02:28 wsgi:355] 200 GET /apps/opa/getcommands (192.168.0.135) 9.74ms
+[I 170619 18:02:28 wsgi:355] 200 GET /apps/opa/getsounds (192.168.0.135) 14.39ms
+[I 170619 18:02:28 wsgi:355] 200 GET /apps/opa/getreactions (192.168.0.135) 9.93ms
+[I 170619 18:02:28 web:2063] 200 GET /sockjs/info (192.168.0.135) 1.72ms
+[I 170619 18:02:28 web:2063] 200 GET /sockjs/info (192.168.0.135) 1.71ms
+[I 170619 18:02:28 web:2063] 101 GET /sockjs/600/pwye5rjk/websocket (192.168.0.135) 1.94ms
+[I 170619 18:02:28 web:2063] 101 GET /sockjs/768/92_m6t4z/websocket (192.168.0.135) 1.93ms
+[I 170619 18:02:28 wsgi:355] 200 GET /sockjstoken/?_=1497888150235 (192.168.0.135) 5.91ms
+[I 170619 18:02:28 wsgi:355] 200 GET /sockjstoken/?_=1497888150236 (192.168.0.135) 5.10ms
+[I 170619 18:03:02 wsgi:355] 200 GET / (192.168.0.135) 93.49ms
+[I 170619 18:03:02 wsgi:355] 200 GET /static/js/opsoro.js?ver=4112 (192.168.0.135) 12.31ms
+[I 170619 18:03:02 web:2063] 200 GET /sockjs/info (192.168.0.135) 3.21ms
+[I 170619 18:03:02 web:2063] 101 GET /sockjs/009/tx305og4/websocket (192.168.0.135) 3.43ms
+[I 170619 18:03:02 wsgi:355] 200 GET /sockjstoken/?_=1497888183952 (192.168.0.135) 9.34ms
+[I 170619 18:04:59 wsgi:355] 302 GET / (::1) 18.72ms
+[I 170619 18:05:09 wsgi:355] 302 GET /login/ (::1) 117.93ms
+[I 170619 18:05:09 wsgi:355] 200 GET / (::1) 89.87ms
+[I 170619 18:05:09 wsgi:355] 200 GET /static/js/opsoro.js?ver=2986 (::1) 12.37ms
+[I 170619 18:05:09 wsgi:355] 304 GET /static/js/vendor/jquery-ui-touch/jquery-1.7.2.min.js (::1) 12.98ms
+[I 170619 18:05:09 wsgi:355] 304 GET /static/js/vendor/jquery-ui-touch/jquery-ui.min.js (::1) 14.68ms
+[I 170619 18:05:09 wsgi:355] 304 GET /static/js/vendor/modernizr.js (::1) 11.08ms
+[I 170619 18:05:09 wsgi:355] 304 GET /static/css/opsoro.css (::1) 7.42ms
+[I 170619 18:05:09 wsgi:355] 304 GET /static/css/foundation.min.css (::1) 8.24ms
+[I 170619 18:05:09 wsgi:355] 304 GET /static/js/vendor/jquery.js (::1) 7.95ms
+[I 170619 18:05:09 wsgi:355] 304 GET /static/js/vendor/foundation.min.js (::1) 7.17ms
+[I 170619 18:05:09 wsgi:355] 304 GET /static/js/knockout-3.4.0.js (::1) 7.38ms
+[I 170619 18:05:09 wsgi:355] 304 GET /static/js/knockout-slider-binding.js (::1) 7.10ms
+[I 170619 18:05:09 wsgi:355] 304 GET /static/js/sockjs.min.js (::1) 7.00ms
+[I 170619 18:05:09 wsgi:355] 304 GET /static/images/logo/opsoro_icon_light.png (::1) 7.47ms
+[I 170619 18:05:09 wsgi:355] 304 GET /static/images/logo/opsoro_icon_medium.png (::1) 7.50ms
+[I 170619 18:05:09 wsgi:355] 304 GET /static/fonts/AvenirNext-Regular.ttf (::1) 7.89ms
+[I 170619 18:05:10 wsgi:355] 304 GET /static/fonts/AvenirNext-Bold.ttf (::1) 7.01ms
+[I 170619 18:05:10 wsgi:355] 304 GET /static/fonts/fontawesome-webfont.woff2?v=4.7.0 (::1) 6.88ms
+[I 170619 18:05:10 web:2063] 200 GET /sockjs/info (::1) 2.78ms
+[I 170619 18:05:10 web:2063] 101 GET /sockjs/142/07ugs148/websocket (::1) 3.42ms
+[I 170619 18:05:10 wsgi:355] 200 GET /sockjstoken/?_=1497888311628 (::1) 9.20ms
+[I 170619 18:05:13 wsgi:355] 302 GET /app/open/opa/ (::1) 36.58ms
+[I 170619 18:05:13 wsgi:355] 200 GET /apps/opa/ (::1) 89.96ms
+[I 170619 18:05:13 wsgi:355] 200 GET /apps/opa/static/app.css?ver=4155 (::1) 14.51ms
+[I 170619 18:05:13 wsgi:355] 200 GET /apps/opa/static/css/animate.min.css (::1) 15.79ms
+[I 170619 18:05:14 wsgi:355] 200 GET /static/js/opsoro.js?ver=4155 (::1) 13.69ms
+[I 170619 18:05:14 wsgi:355] 200 GET /apps/opa/static/app.js?ver=4155 (::1) 16.44ms
+[I 170619 18:05:14 wsgi:355] 200 GET /apps/opa/static/js/require.js (::1) 7.88ms
+[I 170619 18:05:14 wsgi:355] 200 GET /apps/opa/static/js/speech.browser.sdk-min.js (::1) 8.33ms
+[I 170619 18:05:14 wsgi:355] 200 GET /apps/opa/getreactions (::1) 5.51ms
+[I 170619 18:05:14 wsgi:355] 200 GET /apps/opa/getapplets (::1) 7.36ms
+[I 170619 18:05:14 wsgi:355] 200 GET /apps/opa/getcommands (::1) 6.12ms
+[I 170619 18:05:14 web:2063] 200 GET /sockjs/info (::1) 1.81ms
+[I 170619 18:05:14 wsgi:355] 200 GET /apps/opa/getsounds (::1) 5.66ms
+[I 170619 18:05:14 web:2063] 200 GET /sockjs/info (::1) 1.81ms
+[I 170619 18:05:14 web:2063] 101 GET /sockjs/752/_m4c3voh/websocket (::1) 6.33ms
+[I 170619 18:05:14 wsgi:355] 200 GET /apps/opa/static/images/opsoro_icon_light.png (::1) 12.52ms
+[I 170619 18:05:15 web:2063] 101 GET /sockjs/013/pz3bv50e/websocket (::1) 3.52ms
+[I 170619 18:05:15 wsgi:355] 200 GET /sockjstoken/?_=1497888315809 (::1) 9.17ms
+[I 170619 18:05:15 wsgi:355] 200 GET /sockjstoken/?_=1497888315810 (::1) 9.10ms
+[I 170619 18:05:20 wsgi:355] 200 GET /robot/sound/?s=smb_1-up.wav (::1) 34.56ms
+[I 170619 18:05:26 wsgi:355] 200 GET /robot/tts/?t=Sorry%2C+I+didn%27t+understand+what+you+said. (::1) 351.64ms
+[I 170619 18:05:31 wsgi:355] 200 GET /robot/sound/?s=smb_1-up.wav (::1) 30.50ms
+[I 170619 18:05:35 wsgi:355] 200 GET /robot/tts/?t=Sorry%2C+I+didn%27t+understand+what+you+said. (::1) 31.09ms
+[I 170619 18:06:17 wsgi:355] 200 GET / (::1) 89.42ms
+[I 170619 18:06:17 wsgi:355] 200 GET /static/js/opsoro.js?ver=7483 (::1) 12.75ms
+[I 170619 18:06:17 web:2063] 200 GET /sockjs/info (::1) 3.35ms
+[I 170619 18:06:18 web:2063] 101 GET /sockjs/641/f_fg0_vp/websocket (::1) 5.62ms
+[I 170619 18:06:18 wsgi:355] 200 GET /sockjstoken/?_=1497888379300 (::1) 12.77ms
+[I 170619 18:06:35 wsgi:355] 302 GET / (::1) 15.93ms
+[I 170619 18:06:35 wsgi:355] 302 GET /login/ (::1) 71.77ms
+[I 170619 18:06:36 wsgi:355] 200 GET / (::1) 94.80ms
+[I 170619 18:06:36 wsgi:355] 304 GET /static/css/foundation.min.css (::1) 12.55ms
+[I 170619 18:06:36 wsgi:355] 304 GET /static/js/vendor/jquery-ui-touch/jquery-ui.min.js (::1) 12.94ms
+[I 170619 18:06:36 wsgi:355] 304 GET /static/js/vendor/modernizr.js (::1) 14.36ms
+[I 170619 18:06:36 wsgi:355] 304 GET /static/js/vendor/jquery-ui-touch/jquery-1.7.2.min.js (::1) 16.30ms
+[I 170619 18:06:36 wsgi:355] 304 GET /static/css/opsoro.css (::1) 14.47ms
+[I 170619 18:06:36 wsgi:355] 304 GET /static/js/vendor/jquery.js (::1) 7.00ms
+[I 170619 18:06:36 wsgi:355] 304 GET /static/js/vendor/foundation.min.js (::1) 6.85ms
+[I 170619 18:06:36 wsgi:355] 304 GET /static/fonts/AvenirNext-Regular.ttf (::1) 6.82ms
+[I 170619 18:06:36 wsgi:355] 304 GET /static/js/knockout-3.4.0.js (::1) 6.73ms
+[I 170619 18:06:36 wsgi:355] 304 GET /static/fonts/AvenirNext-Bold.ttf (::1) 6.74ms
+[I 170619 18:06:36 wsgi:355] 304 GET /static/fonts/fontawesome-webfont.woff2?v=4.7.0 (::1) 6.77ms
+[I 170619 18:06:36 wsgi:355] 304 GET /static/js/knockout-slider-binding.js (::1) 6.81ms
+[I 170619 18:06:36 wsgi:355] 304 GET /static/images/logo/opsoro_icon_light.png (::1) 7.33ms
+[I 170619 18:06:36 wsgi:355] 200 GET /static/js/opsoro.js?ver=5154 (::1) 6.79ms
+[I 170619 18:06:36 wsgi:355] 304 GET /static/js/sockjs.min.js (::1) 7.79ms
+[I 170619 18:06:36 wsgi:355] 304 GET /static/images/logo/opsoro_icon_medium.png (::1) 6.92ms
+[I 170619 18:06:36 web:2063] 200 GET /sockjs/info (::1) 1.82ms
+[I 170619 18:06:36 web:2063] 101 GET /sockjs/290/ib0vxe7m/websocket (::1) 3.20ms
+[I 170619 18:06:36 wsgi:355] 200 GET /sockjstoken/?_=1497888398122 (::1) 5.15ms
+[I 170619 18:06:41 wsgi:355] 302 GET /app/open/opa/ (::1) 35.94ms
+[I 170619 18:06:41 wsgi:355] 200 GET /apps/opa/ (::1) 88.13ms
+[I 170619 18:06:41 wsgi:355] 200 GET /apps/opa/static/app.css?ver=8883 (::1) 14.06ms
+[I 170619 18:06:41 wsgi:355] 200 GET /apps/opa/static/css/animate.min.css (::1) 12.60ms
+[I 170619 18:06:41 wsgi:355] 200 GET /static/js/opsoro.js?ver=8883 (::1) 13.77ms
+[I 170619 18:06:41 wsgi:355] 200 GET /apps/opa/static/app.js?ver=8883 (::1) 21.52ms
+[I 170619 18:06:41 wsgi:355] 200 GET /apps/opa/static/js/speech.browser.sdk-min.js (::1) 14.99ms
+[I 170619 18:06:41 wsgi:355] 200 GET /apps/opa/static/js/require.js (::1) 14.72ms
+[I 170619 18:06:42 wsgi:355] 200 GET /apps/opa/getapplets (::1) 9.08ms
+[I 170619 18:06:42 wsgi:355] 200 GET /apps/opa/getreactions (::1) 6.43ms
+[I 170619 18:06:42 wsgi:355] 200 GET /apps/opa/getcommands (::1) 6.37ms
+[I 170619 18:06:42 wsgi:355] 200 GET /apps/opa/getsounds (::1) 6.04ms
+[I 170619 18:06:42 web:2063] 200 GET /sockjs/info (::1) 1.99ms
+[I 170619 18:06:42 web:2063] 200 GET /sockjs/info (::1) 2.00ms
+[I 170619 18:06:42 wsgi:355] 200 GET /apps/opa/static/images/opsoro_icon_light.png (::1) 6.96ms
+[I 170619 18:06:42 web:2063] 101 GET /sockjs/852/bojz20pg/websocket (::1) 2.01ms
+[I 170619 18:06:42 wsgi:355] 200 GET /sockjstoken/?_=1497888403336 (::1) 5.03ms
+[I 170619 18:06:42 web:2063] 101 GET /sockjs/662/u3kdijbr/websocket (::1) 2.04ms
+[I 170619 18:06:42 wsgi:355] 200 GET /sockjstoken/?_=1497888403337 (::1) 11.48ms
+[I 170619 18:07:14 wsgi:355] 200 GET / (::1) 106.30ms
+[I 170619 18:07:14 wsgi:355] 200 GET /static/js/opsoro.js?ver=8347 (::1) 12.35ms
+[I 170619 18:07:14 web:2063] 200 GET /sockjs/info (::1) 3.27ms
+[I 170619 18:07:14 web:2063] 101 GET /sockjs/246/ykodeg4a/websocket (::1) 3.51ms
+[I 170619 18:07:14 wsgi:355] 200 GET /sockjstoken/?_=1497888436267 (::1) 9.38ms
+[I 170619 18:07:17 wsgi:355] 302 GET /app/open/opa/ (::1) 35.85ms
+[I 170619 18:07:17 wsgi:355] 200 GET /apps/opa/ (::1) 99.42ms
+[I 170619 18:07:17 wsgi:355] 200 GET /apps/opa/static/app.css?ver=9939 (::1) 12.36ms
+[I 170619 18:07:17 wsgi:355] 200 GET /static/js/opsoro.js?ver=9939 (::1) 12.67ms
+[I 170619 18:07:17 wsgi:355] 200 GET /apps/opa/static/app.js?ver=9939 (::1) 12.40ms
+[I 170619 18:07:17 wsgi:355] 200 GET /apps/opa/getreactions (::1) 9.70ms
+[I 170619 18:07:17 wsgi:355] 200 GET /apps/opa/getapplets (::1) 15.89ms
+[I 170619 18:07:17 web:2063] 200 GET /sockjs/info (::1) 5.65ms
+[I 170619 18:07:17 wsgi:355] 200 GET /apps/opa/getsounds (::1) 10.09ms
+[I 170619 18:07:17 wsgi:355] 200 GET /apps/opa/getcommands (::1) 13.42ms
+[I 170619 18:07:17 web:2063] 200 GET /sockjs/info (::1) 1.83ms
+[I 170619 18:07:17 web:2063] 101 GET /sockjs/377/70s81p71/websocket (::1) 4.11ms
+[I 170619 18:07:18 wsgi:355] 200 GET /sockjstoken/?_=1497888439236 (::1) 8.30ms
+[I 170619 18:07:18 web:2063] 101 GET /sockjs/874/61vgntzn/websocket (::1) 2.08ms
+[I 170619 18:07:18 wsgi:355] 200 GET /sockjstoken/?_=1497888439237 (::1) 5.50ms
+[I 170619 18:07:46 wsgi:355] 200 GET / (::1) 87.17ms
+[I 170619 18:07:47 wsgi:355] 200 GET /static/js/opsoro.js?ver=9101 (::1) 6.92ms
+[I 170619 18:07:47 web:2063] 200 GET /sockjs/info (::1) 1.86ms
+[I 170619 18:07:47 web:2063] 101 GET /sockjs/274/lvhd7s7k/websocket (::1) 2.00ms
+[I 170619 18:07:47 wsgi:355] 200 GET /sockjstoken/?_=1497888468729 (::1) 5.06ms
+[I 170619 18:08:23 wsgi:355] 302 GET /app/open/opa/ (::1) 36.58ms
+[I 170619 18:08:23 wsgi:355] 200 GET /apps/opa/ (::1) 94.40ms
+[I 170619 18:08:23 wsgi:355] 200 GET /apps/opa/static/app.css?ver=3553 (::1) 12.39ms
+[I 170619 18:08:23 wsgi:355] 200 GET /static/js/opsoro.js?ver=3553 (::1) 12.12ms
+[I 170619 18:08:23 wsgi:355] 200 GET /apps/opa/static/app.js?ver=3553 (::1) 12.31ms
+[I 170619 18:08:24 wsgi:355] 200 GET /apps/opa/getapplets (::1) 15.24ms
+[I 170619 18:08:24 wsgi:355] 200 GET /apps/opa/getcommands (::1) 11.52ms
+[I 170619 18:08:24 wsgi:355] 200 GET /apps/opa/getsounds (::1) 10.50ms
+[I 170619 18:08:24 wsgi:355] 200 GET /apps/opa/getreactions (::1) 11.27ms
+[I 170619 18:08:24 web:2063] 200 GET /sockjs/info (::1) 3.50ms
+[I 170619 18:08:24 web:2063] 200 GET /sockjs/info (::1) 1.93ms
+[I 170619 18:08:24 web:2063] 101 GET /sockjs/911/2iksb2lc/websocket (::1) 2.03ms
+[I 170619 18:08:24 wsgi:355] 200 GET /sockjstoken/?_=1497888505691 (::1) 5.16ms
+[I 170619 18:08:24 web:2063] 101 GET /sockjs/511/o8odyaeq/websocket (::1) 2.01ms
+[I 170619 18:08:24 wsgi:355] 200 GET /sockjstoken/?_=1497888505692 (::1) 5.13ms
+[I 170619 18:09:38 wsgi:355] 200 GET /apps/opa/ (::1) 100.81ms
+[I 170619 18:09:38 wsgi:355] 200 GET /apps/opa/static/app.css?ver=2375 (::1) 6.69ms
+[I 170619 18:09:38 wsgi:355] 200 GET /static/js/opsoro.js?ver=2375 (::1) 6.82ms
+[I 170619 18:09:38 wsgi:355] 200 GET /apps/opa/static/app.js?ver=2375 (::1) 6.92ms
+[I 170619 18:09:38 wsgi:355] 200 GET /apps/opa/getapplets (::1) 7.27ms
+[I 170619 18:09:38 wsgi:355] 200 GET /apps/opa/getcommands (::1) 5.67ms
+[I 170619 18:09:38 wsgi:355] 200 GET /apps/opa/getsounds (::1) 5.83ms
+[I 170619 18:09:38 wsgi:355] 200 GET /apps/opa/getreactions (::1) 5.46ms
+[I 170619 18:09:38 web:2063] 200 GET /sockjs/info (::1) 1.90ms
+[I 170619 18:09:38 web:2063] 200 GET /sockjs/info (::1) 1.80ms
+[I 170619 18:09:38 web:2063] 101 GET /sockjs/699/6dz1edec/websocket (::1) 2.12ms
+[I 170619 18:09:39 wsgi:355] 200 GET /sockjstoken/?_=1497888580296 (::1) 9.31ms
+[I 170619 18:09:39 web:2063] 101 GET /sockjs/739/0g9c6ie6/websocket (::1) 3.92ms
+[I 170619 18:09:39 wsgi:355] 200 GET /sockjstoken/?_=1497888580297 (::1) 9.26ms
+[I 170619 18:09:50 wsgi:355] 200 GET /apps/opa/ (::1) 88.20ms
+[I 170619 18:09:50 wsgi:355] 200 GET /apps/opa/static/app.css?ver=3096 (::1) 12.35ms
+[I 170619 18:09:50 wsgi:355] 200 GET /static/js/opsoro.js?ver=3096 (::1) 12.27ms
+[I 170619 18:09:50 wsgi:355] 200 GET /apps/opa/static/app.js?ver=3096 (::1) 12.34ms
+[I 170619 18:09:51 wsgi:355] 200 GET /apps/opa/getapplets (::1) 12.74ms
+[I 170619 18:09:51 wsgi:355] 200 GET /apps/opa/getcommands (::1) 10.13ms
+[I 170619 18:09:51 wsgi:355] 200 GET /apps/opa/getsounds (::1) 10.24ms
+[I 170619 18:09:51 wsgi:355] 200 GET /apps/opa/getreactions (::1) 9.88ms
+[I 170619 18:09:51 web:2063] 200 GET /sockjs/info (::1) 3.17ms
+[I 170619 18:09:51 web:2063] 200 GET /sockjs/info (::1) 1.83ms
+[I 170619 18:09:51 web:2063] 101 GET /sockjs/703/fmnp47ln/websocket (::1) 2.02ms
+[I 170619 18:09:51 wsgi:355] 200 GET /sockjstoken/?_=1497888592625 (::1) 5.11ms
+[I 170619 18:09:51 web:2063] 101 GET /sockjs/126/uob1r5a5/websocket (::1) 2.10ms
+[I 170619 18:09:51 wsgi:355] 200 GET /sockjstoken/?_=1497888592626 (::1) 5.16ms
+[I 170619 18:10:16 wsgi:355] 200 GET /apps/opa/ (::1) 104.10ms
+[I 170619 18:10:17 wsgi:355] 200 GET /apps/opa/static/app.css?ver=9738 (::1) 22.67ms
+[I 170619 18:10:17 wsgi:355] 200 GET /static/js/opsoro.js?ver=9738 (::1) 12.24ms
+[I 170619 18:10:17 wsgi:355] 200 GET /apps/opa/static/app.js?ver=9738 (::1) 8.36ms
+[I 170619 18:10:17 wsgi:355] 200 GET /apps/opa/getapplets (::1) 7.22ms
+[I 170619 18:10:17 wsgi:355] 200 GET /apps/opa/getcommands (::1) 5.57ms
+[I 170619 18:10:17 wsgi:355] 200 GET /apps/opa/getsounds (::1) 5.84ms
+[I 170619 18:10:17 wsgi:355] 200 GET /apps/opa/getreactions (::1) 5.40ms
+[I 170619 18:10:17 web:2063] 200 GET /sockjs/info (::1) 1.80ms
+[I 170619 18:10:17 web:2063] 200 GET /sockjs/info (::1) 1.77ms
+[I 170619 18:10:17 web:2063] 101 GET /sockjs/862/lckfo_pn/websocket (::1) 2.07ms
+[I 170619 18:10:17 wsgi:355] 200 GET /sockjstoken/?_=1497888618923 (::1) 5.04ms
+[I 170619 18:10:17 web:2063] 101 GET /sockjs/742/j8ahxcdf/websocket (::1) 2.00ms
+[I 170619 18:10:17 wsgi:355] 200 GET /sockjstoken/?_=1497888618924 (::1) 8.10ms
+[I 170619 18:11:00 wsgi:355] 200 GET /apps/opa/ (::1) 95.18ms
+[I 170619 18:11:00 wsgi:355] 200 GET /apps/opa/static/app.css?ver=3792 (::1) 12.29ms
+[I 170619 18:11:00 wsgi:355] 200 GET /static/js/opsoro.js?ver=3792 (::1) 12.94ms
+[I 170619 18:11:00 wsgi:355] 200 GET /apps/opa/static/app.js?ver=3792 (::1) 13.40ms
+[I 170619 18:11:00 wsgi:355] 200 GET /apps/opa/getapplets (::1) 12.71ms
+[I 170619 18:11:00 wsgi:355] 200 GET /apps/opa/getcommands (::1) 19.22ms
+[I 170619 18:11:00 wsgi:355] 200 GET /apps/opa/getsounds (::1) 10.58ms
+[I 170619 18:11:00 wsgi:355] 200 GET /apps/opa/getreactions (::1) 9.88ms
+[I 170619 18:11:00 web:2063] 200 GET /sockjs/info (::1) 3.18ms
+[I 170619 18:11:00 web:2063] 200 GET /sockjs/info (::1) 1.79ms
+[I 170619 18:11:00 web:2063] 101 GET /sockjs/262/j807ojhl/websocket (::1) 3.44ms
+[I 170619 18:11:00 wsgi:355] 200 GET /sockjstoken/?_=1497888662124 (::1) 5.49ms
+[I 170619 18:11:00 web:2063] 101 GET /sockjs/291/uhnxk0yo/websocket (::1) 2.50ms
+[I 170619 18:11:01 wsgi:355] 200 GET /sockjstoken/?_=1497888662125 (::1) 5.81ms
+[1m[[94m SPI [0m[1m][0m No SPI installed, using dummy class
+[1m[[96m INFO [0m[1m][0m []
+[1m[[96m INFO [0m[1m][0m Preferences loaded
+[1m[[96m INFO [0m[1m][0m Using simplejson
+[1m[[96m INFO [0m[1m][0m Modules: {'turn': 7, 'eye': 2}
+[1m[[96m INFO [0m[1m][0m 9 modules loaded [robot_config.conf]
+[1m[[96m INFO [0m[1m][0m 11 expressions loaded [robot_expressions.conf]
+[1m[[96m INFO [0m[1m][0m OPSORO OS started...
+[1m[[92m APP LOADED [0m[1m][0m app_template
+[1m[[92m APP LOADED [0m[1m][0m blockly
+[1m[[92m APP LOADED [0m[1m][0m circumplex
+[1m[[92m APP LOADED [0m[1m][0m cockpit
+[1m[[92m APP LOADED [0m[1m][0m configurator
+[1m[[92m APP LOADED [0m[1m][0m expression_configurator
+[1m[[92m APP LOADED [0m[1m][0m lua_scripting
+[1m[[92m APP LOADED [0m[1m][0m opa
+[1m[[92m APP LOADED [0m[1m][0m preferences
+[1m[[92m APP LOADED [0m[1m][0m robot_configurator
+[1m[[92m APP LOADED [0m[1m][0m sliders
+[1m[[92m APP LOADED [0m[1m][0m social_response
+[1m[[92m APP LOADED [0m[1m][0m social_script
+[1m[[92m APP LOADED [0m[1m][0m sounds
+[1m[[92m APP LOADED [0m[1m][0m touch_graph
+[1m[[96m INFO [0m[1m][0m I am awake!
+[1m[[96m INFO [0m[1m][0m OFFLINE MODE
+[1m[[96m INFO [0m[1m][0m Start Robot loop
+[1m[[92m APP STARTED [0m[1m][0m opa
+[1m[[96m INFO [0m[1m][0m Start Command loop
+[1m[[96m INFO [0m[1m][0m Night night... ZZZZzzzz....
+[1m[[96m INFO [0m[1m][0m Night night... ZZZZzzzz....
+[1m[[96m INFO [0m[1m][0m Night night... ZZZZzzzz....
+[1m[[96m INFO [0m[1m][0m Night night... ZZZZzzzz....
+[1m[[93m APP STOPPED [0m[1m][0m opa
+[1m[[96m INFO [0m[1m][0m Stop Command loop
+[1m[[96m INFO [0m[1m][0m Stop Robot loop
+[1m[[96m INFO [0m[1m][0m Start Robot loop
+[1m[[92m APP STARTED [0m[1m][0m blockly
+[1m[[96m INFO [0m[1m][0m Start Robot loop
+[1m[[92m APP STARTED [0m[1m][0m opa
+[1m[[96m INFO [0m[1m][0m Start Command loop
+[1m[[96m INFO [0m[1m][0m Night night... ZZZZzzzz....
+[1m[[93m APP STOPPED [0m[1m][0m opa
+[1m[[96m INFO [0m[1m][0m Stop Command loop
+[1m[[96m INFO [0m[1m][0m Stop Robot loop
+[1m[[96m INFO [0m[1m][0m Start Robot loop
+[1m[[92m APP STARTED [0m[1m][0m opa
+[1m[[96m INFO [0m[1m][0m Start Command loop
+[1m[[96m INFO [0m[1m][0m Night night... ZZZZzzzz....
+[1m[[93m APP STOPPED [0m[1m][0m opa
+[1m[[96m INFO [0m[1m][0m Stop Command loop
+[1m[[96m INFO [0m[1m][0m Stop Robot loop
+[1m[[96m INFO [0m[1m][0m OFFLINE MODE
+[1m[[96m INFO [0m[1m][0m Start Robot loop
+[1m[[92m APP STARTED [0m[1m][0m opa
+[1m[[96m INFO [0m[1m][0m Start Command loop
+[1m[[96m INFO [0m[1m][0m Night night... ZZZZzzzz....
+[1m[[93m APP STOPPED [0m[1m][0m opa
+[1m[[96m INFO [0m[1m][0m Stop Command loop
+[1m[[96m INFO [0m[1m][0m Stop Robot loop
+[1m[[96m INFO [0m[1m][0m OFFLINE MODE
+[1m[[96m INFO [0m[1m][0m Start Robot loop
+[1m[[92m APP STARTED [0m[1m][0m opa
+[1m[[96m INFO [0m[1m][0m Start Command loop
+[1m[[96m INFO [0m[1m][0m Night night... ZZZZzzzz....
+[1m[[93m APP STOPPED [0m[1m][0m opa
+[1m[[96m INFO [0m[1m][0m Stop Command loop
+[1m[[96m INFO [0m[1m][0m Stop Robot loop
+[1m[[96m INFO [0m[1m][0m Start Robot loop
+[1m[[92m APP STARTED [0m[1m][0m opa
+[1m[[96m INFO [0m[1m][0m Start Command loop
+[1m[[96m INFO [0m[1m][0m Night night... ZZZZzzzz....
+[1m[[93m APP STOPPED [0m[1m][0m opa
+[1m[[96m INFO [0m[1m][0m Stop Command loop
+[1m[[96m INFO [0m[1m][0m Stop Robot loop
+[1m[[96m INFO [0m[1m][0m Start Robot loop
+[1m[[92m APP STARTED [0m[1m][0m opa
+[1m[[96m INFO [0m[1m][0m Start Command loop
+[1m[[96m INFO [0m[1m][0m Night night... ZZZZzzzz....
+[1m[[96m INFO [0m[1m][0m Night night... ZZZZzzzz....
+[1m[[96m INFO [0m[1m][0m Night night... ZZZZzzzz....
+[1m[[96m INFO [0m[1m][0m Night night... ZZZZzzzz....
+[1m[[96m INFO [0m[1m][0m Night night... ZZZZzzzz....
+[1m[[96m INFO [0m[1m][0m I am awake!
+[1m[[96m INFO [0m[1m][0m {u'colo

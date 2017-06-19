@@ -145,68 +145,12 @@
             "Applet_name": "Office 365 Calender"
         },
         {
-            "Applet_categorie": "Social",
-            "Applet_color": "green",
-            "Applet_id": 1497640421398,
-            "Applet_logo": "static/images/opsoro_icon_light.png",
-            "Applet_url": "https://ifttt.com/applets/test/embed?redirect_uri=http://opa.eu.ngrok.io/apps/opa/",
-            "Applet_name": "My test app 1"
-        },
-        {
-            "Applet_categorie": "Social",
-            "Applet_color": "red",
-            "Applet_id": 1497640437366,
-            "Applet_logo": "static/images/opsoro_icon_light.png",
-            "Applet_url": "https://ifttt.com/applets/test/embed?redirect_uri=http://opa.eu.ngrok.io/apps/opa/",
-            "Applet_name": "My test app 2"
-        },
-        {
-            "Applet_categorie": "Social",
-            "Applet_color": "orange",
-            "Applet_id": 1497640444656,
-            "Applet_logo": "static/images/opsoro_icon_light.png",
-            "Applet_url": "https://ifttt.com/applets/test/embed?redirect_uri=http://opa.eu.ngrok.io/apps/opa/",
-            "Applet_name": "My test app 3"
-        },
-        {
-            "Applet_categorie": "Calendar",
-            "Applet_color": "purple",
-            "Applet_id": 1497640456733,
-            "Applet_logo": "static/images/opsoro_icon_light.png",
-            "Applet_url": "https://ifttt.com/applets/test/embed?redirect_uri=http://opa.eu.ngrok.io/apps/opa/",
-            "Applet_name": "My test app 4"
-        },
-        {
             "Applet_categorie": "Tools",
-            "Applet_color": "blue",
-            "Applet_id": 1497640477581,
+            "Applet_color": "black",
+            "Applet_id": 1497864624964,
             "Applet_logo": "static/images/opsoro_icon_light.png",
-            "Applet_url": "https://ifttt.com/applets/test/embed?redirect_uri=http://opa.eu.ngrok.io/apps/opa/",
-            "Applet_name": "My test app 5"
-        },
-        {
-            "Applet_categorie": "Social",
-            "Applet_color": "darkred",
-            "Applet_id": 1497642598902,
-            "Applet_logo": "static/images/opsoro_icon_light.png",
-            "Applet_url": "https://ifttt.com/applets/test/embed?redirect_uri=http://opa.eu.ngrok.io/apps/opa/",
-            "Applet_name": "Another test"
-        },
-        {
-            "Applet_categorie": "Tools",
-            "Applet_color": "pink",
-            "Applet_id": 1497643134961,
-            "Applet_logo": "static/images/opsoro_icon_light.png",
-            "Applet_url": "https://ifttt.com/applets/app/embed?redirect_uri=http://opa.eu.ngrok.io/apps/opa/",
-            "Applet_name": "The fucking app"
-        },
-        {
-            "Applet_categorie": "Social",
-            "Applet_color": "yellow",
-            "Applet_id": 1497643227838,
-            "Applet_logo": "static/images/opsoro_icon_light.png",
-            "Applet_url": "https://ifttt.com/applets/test/embed?redirect_uri=http://opa.eu.ngrok.io/apps/opa/",
-            "Applet_name": "the new applet"
+            "Applet_url": "https://ifttt.com/applets/fgfdg/embed?redirect_uri=http://opa.eu.ngrok.io/apps/opa/",
+            "Applet_name": "gggfg"
         }
     ]
 }
