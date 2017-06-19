@@ -1,6 +1,6 @@
 {% extends "app_base.html" %}
 {% block app_head %}
-	
+
 {% endblock %}
 
 <!-- These sidebars can be removed by removing the block tags -->
@@ -8,11 +8,11 @@
 {% block sidebar_right %}{% endblock %}
 
 {% block app_content %}
-	
+
 	<div id="fb-root"></div> <!-- required for the fb init -->
 
 	<div>
-		<button class="button info" data-bind="click: !loggedIn() ? fbLogin : fbLogout, text: !loggedIn() ? 'Log into Facebook' : 'Log out of Facebook'"></button> 		
+		<button class="button info" data-bind="click: !loggedIn() ? fbLogin : fbLogout, text: !loggedIn() ? 'Log into Facebook' : 'Log out of Facebook'"></button>
 		<p>Your user ID: <span data-bind="text: userID()"></span></p>
 	</div>
 	<div>
@@ -22,52 +22,51 @@
 
 		<div>
 			<span>Enter a Facebook ID: </span>
-			<input type="text" style="width: 40%; display: inline-block;" id="facebookID" data-bind="enable: !isNewVideo(), value: facebookID" required="true" placeholder="Enter a Facebook page id or a existing live_video id ...">
 
-			<p>Is of type: <select data-bind="options: ofTypes, optionsText: 'text', value: selectedType"></select></p>
+			<input type="text" id="facebookID" data-bind="enable: !isNewVideo(), value: facebookID" required="true" placeholder="Enter a Facebook page id or a existing live_video id ...">
 		</div>
-		
-		<button class="button round info" data-bind="click: toggleStreaming, enable: loggedIn() && !isNewVideo()">
-			<span class="text" data-bind="text: ! isStreaming() ? 'Start Stream' : 'Stop Stream' "></span>
-		</button>
+		<div>
+			<span>Is of type: </span>
+			<select data-bind="enable: !isNewVideo(), options: ofTypes, optionsText: 'text', value: selectedType"></select>
+		</div>
 
-		<span>- or -</span>
-		<button class="button info" data-bind="click: startNewLiveStream, enable: loggedIn()"> <!-- haakjes voor observables en functions die direct mogen uitgevoerd worden?? -->
-			Start a new live stream!
+		<button class="button round info" data-bind="click: toggleStreaming, enable: loggedIn() && facebookID()">
+			<span class="text" data-bind="text: ! isStreaming() ? 'Start Stream' : 'Stop Stream'"></span>
 		</button>
+		<div data-bind="visible: !isNewVideo() && !facebookID()">
+			<span>- or -</span>
+			<button class="button info" data-bind="click: startNewLiveStream, enable: loggedIn() && !isStreaming()"> <!-- haakjes voor observables en functions die direct mogen uitgevoerd worden?? -->
+				Start a new live stream!
+			</button>
+		</div>
 	</div>
 
 	<div class="iframe-container" data-bind="visible: isNewVideo() || isLiveVideo(), html: embedIframe">
 
 	</div>
-
-	<div>
-		<label><input type="checkbox" data-bind="checked: autoRead"/> Auto read comments</label>
-		<p>Reaction to comment: <select data-bind="options: availableEmotions, optionsText: 'name', value: selectedEmotion"></select></p>
-	</div>
-
 	<div class="rightside">
 		Views: <span data-bind="text: views"></span>
+		<p>Reactions: 0<span></span></p>
 	</div>
 
 
 	<div class="rightside" data-bind="sortable: { data: comments, options: {handle: '.gripper', axis: 'y', opacity: 0.75} }">
-		<div>
+		<div id="voicelines" class="bubble">
 			<div>
-				<span data-bind="text: from.name"></span>
+				<span class="voiceline locked name" data-bind="text: from.name"></span>
 			</div>
-			<div>
+			<div class="voiceline locked">
 				<span data-bind="text: message"></span>
 			</div>
 		</div>
 	</div>
-
 	<div class="togglebox">
 		<label><input type="checkbox" data-bind="checked: autoRead"/> Auto read comments</label>
-	</div>
-	<div class="togglebox">
 		<label><input type="checkbox"/> React to comments</label>
+		<p>Reaction to comment: <select data-bind="options: availableEmotions, optionsText: 'name', value: selectedEmotion"></select></p>
 	</div>
+
+
 
 
 	{% if not online %}

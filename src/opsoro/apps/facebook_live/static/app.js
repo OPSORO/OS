@@ -5,7 +5,7 @@ $(document).ready(function() {
 
   window.fbAsyncInit = function() {
     FB.init({
-      appId            : '288611811599525',
+      appId            : '1710409469251997',
       autoLogAppEvents : true,
       xfbml            : true,
       version          : 'v2.9'
@@ -28,7 +28,6 @@ $(document).ready(function() {
      js.src = "//connect.facebook.net/en_US/sdk.js";
      fjs.parentNode.insertBefore(js, fjs);
    }(document, 'script', 'facebook-jssdk'));
-
 
   /* Models */
 
@@ -60,10 +59,10 @@ $(document).ready(function() {
       /* Observables for facebook Auth */
       self.loggedIn = ko.observable(false);
       self.accessToken = ko.observable(""); // retrieved from log in, needed for every Facebook call
-      self.userID = ko.observable(""); // when logged into facebook, could be used if you'd like to get your own wall posts ect. 
+      self.userID = ko.observable(""); // when logged into facebook, could be used if you'd like to get your own wall posts ect.
 
       /* Observables for handling the new live video stream */
-      self.newLiveVideo = ko.observable(""); // holds the new live video's data
+      self.newLiveVideoData = ko.observable(""); // holds the new live video's data
       self.isNewVideo = ko.observable(); // check for starting a new live video -> toggle lay-out & functionality
       self.fbDataResponse = ko.observable(); // catches the facebook response every interval ... needed to set embed_html once
       self.embedIframe = ko.observable("");
@@ -89,7 +88,7 @@ $(document).ready(function() {
       }
 
       self.getLoginStatus = function() {
-        FB.getLoginStatus(function(response){ 
+        FB.getLoginStatus(function(response){
           if (response.status === 'connected') {
             console.log(response)
             self.setData(response);
@@ -110,13 +109,13 @@ $(document).ready(function() {
             // error ?
             console.log(response)
           }
-        });      
+        }, {scope: 'user_videos, user_posts, user_photos, user_actions.video'});
       }
 
       self.fbLogout = function() {
         FB.logout(function(response) {
           console.log(response)
-          this.unsetData();
+          self.unsetData();
         });
       }
 
@@ -130,6 +129,9 @@ $(document).ready(function() {
         self.loggedIn(false)
         self.accessToken("")
         self.userID("")
+
+        // Stop stream & reset layout !!
+        self.stopStream();
       }
 
       self.fbGET = function(obj) {
@@ -149,7 +151,7 @@ $(document).ready(function() {
             } else if(self.isPost()) {
               // get post's comments ect ... ?
             } else if(self.isLiveVideo()) {
-              
+
               self.setIFrame();
               self.handleLayout(response);
 
@@ -164,22 +166,19 @@ $(document).ready(function() {
       /* Videos */
 
       self.startNewLiveStream = function() {
-        if(self.isStreaming()){
-          self.stopStream();
-        }
-
         FB.ui({
             display: 'popup',
             method: 'live_broadcast',
-            phase: 'create',
-            fields: 'embed_html'
+            phase: 'create'
         }, function(response) {
             if (!response.id) {
               alert('dialog canceled');
               return;
             }
+            self.newLiveVideoData(response);
+            self.facebookID(response.id);
             self.isNewVideo(true);
-            self.handleData(response)
+            self.selectedType(self.ofTypes()[2]); // setting the selected option to "Live Video"
           }
         );
       }
@@ -189,12 +188,16 @@ $(document).ready(function() {
           display: 'popup',
           method: 'live_broadcast',
           phase: 'publish',
-          broadcast_data: response,
+          broadcast_data: obj,
         }, function(response) {
           console.log(response)
           //  alert("video status: \n" + response.status);
-          if (response.status === "live") {
-            self.postToThread(obj)
+
+          if (response && response.status === "live") {
+            self.isNewVideo(false); // the video has already streamed so it's not new anymore ...
+            self.postToThread(obj);
+          } else {
+            // error dialog is canceld before video went on air !!!
           }
         });
       }
@@ -202,20 +205,25 @@ $(document).ready(function() {
       /* Custom page input */
 
       self.toggleStreaming = function(){
-
         console.log(self.isStreaming());
 
         if(self.isStreaming()){
           self.stopStream();
         } else {
 
-          self.isNewVideo(false); // firing custom request so disable the ability to start a new live video
+          var obj;
 
-          console.log(self.facebookID()); // make sure facebookID is bound to HTML without () for two-way binding
+          if (self.newLiveVideoData() != "") {
+            obj = self.newLiveVideoData();
+            obj.fb_id = self.facebookID();
+            obj.fields = "";
+          } else {
+            self.isNewVideo(false); // firing custom request so disable the ability to start a new live video
+            obj = { fb_id: self.facebookID() } // sending the id in an object because handleData expects an object
+            console.log(self.facebookID()); // make sure facebookID is bound to HTML without () for two-way binding
+          }
 
-          var data_obj = { id: self.facebookID() } // sending the id in an object because handleData expects an object
-
-          self.handleData(data_obj);
+          self.handleData(obj);
         }
 
         self.isStreaming(!self.isStreaming()); // will this be instantly executed or only after the functions above ??
@@ -247,7 +255,6 @@ $(document).ready(function() {
 
         // self.postToThread(obj)
 
-
       }
 
       /* General */
@@ -257,20 +264,29 @@ $(document).ready(function() {
         self.sendPost('stopThread', {});
 
         // reset lay-out
+        self.resetLayout();
+      }
+
+      self.resetLayout = function() {
+        self.isNewVideo(false);
+        self.newLiveVideoData("");
+        self.embedIframe("");
+        self.isStreaming(false);
+        self.selectedType(self.ofTypes()[0]); // reset to element 0
+        self.facebookID("");
+        self.fbDataResponse("");
         self.comments.removeAll();
         self.isNewVideo(false);
         self.isLiveVideo(false);
         self.views(0);
       }
 
-      self.handleData = function(data) { // function will be used for a new live video but also for custom id input so don't set isNewVideo(true) likewise in here
-        
-        self.facebookID(data.id);
 
-        var obj = { fb_id: self.facebookID(), fields: "" }
+      self.handleData = function(obj) { // function will be used for a new live video but also for custom id input so don't set isNewVideo(true) likewise in here
+
+        self.facebookID(obj.fb_id);
 
         if(self.isNewVideo()) {
-          self.newLiveVideo(data);
           obj.fields = "status,live_views,comments{from,message,permalink_url},embed_html,title,reactions{name,link,type},likes{name}";
           self.newVideoRequest(obj);
         } else {
@@ -283,6 +299,7 @@ $(document).ready(function() {
           console.log("Posted to thread to wait few seconds")
         });
       }
+
 
       self.setIFrame = function() {
         if ((self.isNewVideo() || self.isLiveVideo()) && self.fbDataResponse().embed_html) {

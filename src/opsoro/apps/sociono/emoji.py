@@ -37,28 +37,6 @@ def constrain(n, minn, maxn): return max(min(maxn, n), minn)
 
 Emoticons = []
 loop_T = None # loop var for Stoppable Thread
-
-# Emoticon functions
-#check if the post has an standard emoticon
-# def checkForEmoji(status):
-#     emotions = []
-#     emoticonStr = status.text
-#
-#     winking = len(re.findall(u"[\U0001F609]", emoticonStr))
-#     angry = len(re.findall(u"[\U0001F620]", emoticonStr))
-#     happy_a = len(re.findall(u"[\U0000263A]", emoticonStr))
-#     happy_b = len(re.findall(u"[\U0000263b]", emoticonStr))
-#     happy_c = len(re.findall(u"[\U0001f642]", emoticonStr))
-#     thinking = len(re.findall(u"[\U0001F914]", emoticonStr))
-#     frowning = len(re.findall(u"[\U00002639]", emoticonStr))
-#     nauseated = len(re.findall(u"[\U0001F922]", emoticonStr))
-#     astonished = len(re.findall(u"[\U0001F632]", emoticonStr))
-#     neutral = len(re.findall(u"[\U0001F610]", emoticonStr))
-#     fearful = len(re.findall(u"[\U0001F628]", emoticonStr))
-#     laughing = len(re.findall(u"[\U0001F603]", emoticonStr))
-#     tired = len(re.findall(u"[\U0001F62B]", emoticonStr))
-#     sad = len(re.findall(u"[\U0001f641]", emoticonStr))
-#
 #     if winking > 0:
 #         emotions.append("tong")
 #     if angry > 0:
@@ -85,7 +63,6 @@ loop_T = None # loop var for Stoppable Thread
 #     if not emotions:
 #         emotions.append("none")
 #     return emotions
-#
 # def wait_for_sound():
     # time.sleep(0.05)  # delay
     #
@@ -114,19 +91,47 @@ class _textSplitter(object):
     """docstring for textSplitter."""
     def __init__(self):
         super(_textSplitter, self).__init__()
+    def split(self,text, emoji):
+        re.split(emoji, text)
 
-    def convertEmoji(self,strTweet):
-        # emotions = []
+    def convertEmoji(self):
+        emotions = []
         # emoticonStr = status.text
-        print_info(strTweet)
-    #    delimiters = {u"[\U0001F609]",u"[\U0001F620]",u"[\U0000263A]", u"[\U0000263b]",u"[\U0001f642]", u"[\U0001F914]", u"[\U00002639]", u"[\U0001F922]",u"[\U0001F632]",u"[\U0001F610]",u"[\U0001F628]",u"[\U0001F603]",u"[\U0001F62B]",u"[\U0001f641]" }
+        # print_info(strTweet)
         delimiters = {"\U0001F609","\U0001F620","\U0000263A", "\U0000263b","\U0001f642", "\U0001F914", "\U00002639", "\U0001F922","\U0001F632","\U0001F610","\U0001F628","\U0001F603","\U0001F62B","\U0001f641" }
-        # regexPattern = '|'.join(map(re.escape, delimiters))
-        #splittedText = re.split(delimiters, strTweet)
-        for delimiter in delimiters:
-            print_info(delimiter)
-            print_info(re.split(delimiter, 'thvander test \U0001F609 emoji'))
-        #print_info(re.split(delimiters, strTweet))
+        #regexPattern = '|'.join(map(re.escape, delimiters))
+
+        text = 'thvander U0001f642, test U0001F609 emoji U0001F609 U0001f642 2'
+        split = text.split(delimiters)
+        print_info(split)
+        for splitpart in split:
+            print_info(splitpart)
+        # splittedText = []
+        # for delimiter in delimiters:
+        #     print_info(delimiter)
+        #     if re.search(delimiter, text):
+        #         splittedText = re.split("("+delimiter+")", text)
+        #
+        # splittedTextcopy = splittedText
+        # print_info(splittedTextcopy)
+        # for text in splittedTextcopy:
+        #     delimiters.pop()
+        #     subtext = re.split("("+delimiter+")", text)
+        #     print_info(subtext)
+        #
+        # delimiters.pop()
+        # print_info(delimiters)
+        # for delimiter in delimiters:
+        #     for text in splittedText:
+        #         print_info(text)
+        #         pass
+# if re.search(delimiter, text):
+#      print_info("emoji found" + text)
+
+# for text in splittedText:
+#     print_info(text)
+#     subsplit = re.split("("+delimiter+")", text)
+#     print_info(subsplit)
 
         # winking = len(re.findall(u"[\U0001F609]", emoticonStr))
         # angry = len(re.findall(u"[\U0001F620]", emoticonStr))
@@ -144,26 +149,26 @@ class _textSplitter(object):
         # sad = len(re.findall(u"[\U0001f641]", emoticonStr))
 
         # if winking > 0:
-        #     PlayEmoji("tong")
+            # winking
         # if angry > 0:
-        #     PlayEmoji("angry")
+            # angry
         # if happy_a > 0 or happy_b > 0 or happy_c > 0:
-        #     PlayEmoji("happy")
+            # happy
         # if frowning > 0:
-        #     PlayEmoji("tired")
+            # frowning
         # if nauseated > 0:
-        #     PlayEmoji("disgusted")
+            # nauseated
         # if astonished > 0:
-        #     PlayEmoji("surprised")
+            # astonished
         # if neutral > 0:
-        #     PlayEmoji("neutral")
+            # neutral
         # if fearful > 0:
-        #     PlayEmoji("afraid")
+            # fear
         # if laughing > 0:
-        #     PlayEmoji("laughing")
+            # laughing
         # if tired > 0:
-        #     PlayEmoji("sleep")
+            # tired
         # if sad > 0:
-        #     emotions.append("sad")
+            # sad
 
 textSplitter = _textSplitter()

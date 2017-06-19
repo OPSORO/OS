@@ -22,8 +22,6 @@ from opsoro.robot import Robot
 from opsoro.sound import Sound
 from opsoro.sound.tts import TTS
 
-# from .emoji import textSplitter
-
 from opsoro.stoppable_thread import StoppableThread
 
 from opsoro.users import Users
@@ -38,6 +36,7 @@ import tweepy
 import re
 import json
 import time
+from .emoji import textSplitter
 
 config = {
     'full_name':            'Sociono',
@@ -175,6 +174,7 @@ def setup(opsoroapp):
     pass
 
 def start(opsoroapp):
+    # textSplitter.convertEmoji()
     pass
 
 def stop(opsoroapp):
@@ -206,7 +206,6 @@ def processJson(status):
         }
     }
 
-    # textSplitter.convertEmoji(status.text)
     return data
 
 def filterTweet(status):
