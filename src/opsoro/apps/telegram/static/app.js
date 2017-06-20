@@ -33,7 +33,7 @@
 				});
 
 				//name
-				if (contactsNotExist && message == "/start" ) {
+				if (contactsNotExist && (message == "/start" || message == " /start") ) {
 
 						model.popup().newContact(firstname, lastname, id);
 				}else if( message == "/start" ){
