@@ -17,6 +17,7 @@ from pprint import pprint
 #from opsoro.telepot import loop
 #from opsoro.telepot.loop import MessageLoop
 #from opsoro.telepot import *
+from opsoro.apps.blacklist import scanSwearWordsInText
 from flask import (Blueprint, flash, redirect, render_template, request,
                    send_from_directory, url_for, jsonify)
 
@@ -157,8 +158,11 @@ def setup_pages(opsoroapp):
 
 data = {}
 data['messages'] = []
+
 def loop():
             def handle(msg):
+                swearArry = {}
+                swearArry['message'] = []
                 u = urllib.urlopen('https://api.telegram.org/bot371183808:AAH4HHCDqNkmCEavf5oxI-9wG27DNoY-m_E/getUpdates')
                 z = json.load(u)
                 u.close
@@ -171,10 +175,20 @@ def loop():
                     print userid
                     #print lastname
                     update_id = result["update_id"]
-                    print text
+                    #print text
                     text = text.encode('unicode_escape')
                     update_ids.append(int(result["update_id"]))
                     maxid = max(update_ids);
+                swearText = scanSwearWordsInText(text)
+                swearArry['message'].append({
+                'first_name' : firstname,
+                'last_name' : lastname,
+                'text' : swearText,
+                "id" : userid
+                })
+
+                #print bericht
+                #print 'swearwords'
                     #print(maxid);
                 with open('src/opsoro/apps/telegram/static/banlist.json') as ban_file:
                     dictBan = json.load(ban_file)
@@ -204,12 +218,12 @@ def loop():
                                 #pass
                             data['messages'].append({
                             'first_name' : firstname,
-                            'message' : text,
+                            'message' : swearText,
                             "update_id" : update_id,
                             "maxid" : maxid
                             })
 
-                            send_data("messageIncomming", result)
+                            send_data("messageIncomming", swearArry)
 
                             with open('src/opsoro/apps/telegram/static/messages.json','w') as outfile:
                                 json.dump(data,outfile)
@@ -237,12 +251,12 @@ def loop():
                                 #Sound.say_tts(text)
 
                             else:
-                                textonly = text
+                                textonly = swearText
                                 Sound.say_tts(textonly)
                         elif(text == '/start'):
                             print 'moet checken of toegelaten'
                                 #pass
-                            send_data("messageIncomming", result)
+                            send_data("messageIncomming", swearArry)
                         else:
                             print 'gebruiker niet toegelaten'
                 else:
@@ -275,12 +289,12 @@ def loop():
                                     #pass
                                 data['messages'].append({
                                 'first_name' : firstname,
-                                'message' : text,
+                                'message' : swearText,
                                 "update_id" : update_id,
                                 "maxid" : maxid
                                 })
 
-                                send_data("messageIncomming", result)
+                                send_data("messageIncomming", swearArry)
 
                                 with open('src/opsoro/apps/telegram/static/messages.json','w') as outfile:
                                     json.dump(data,outfile)
@@ -308,12 +322,12 @@ def loop():
                                     #Sound.say_tts(text)
 
                                 else:
-                                    textonly = text
+                                    textonly = swearText
                                     Sound.say_tts(textonly)
                             elif(text == '/start'):
                                 print 'moet checken of toegelaten'
                                     #pass
-                                send_data("messageIncomming", result)
+                                send_data("messageIncomming", swearArry)
                             else:
                                 print 'gebruiker niet toegelaten'
 
