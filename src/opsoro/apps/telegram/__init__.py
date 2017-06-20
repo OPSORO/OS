@@ -12,11 +12,11 @@ import json
 import sys
 import time
 import telepot
-from telepot.loop import MessageLoop
+# from telepot.loop import MessageLoop
 from pprint import pprint
-#from opsoro.telepot import loop
-#from opsoro.telepot.loop import MessageLoop
-#from opsoro.telepot import *
+from opsoro.telepot import loop
+from opsoro.telepot.loop import MessageLoop
+from opsoro.telepot import *
 from opsoro.apps.blacklist import scanSwearWordsInText
 from opsoro.apps.blacklist import scanSwearWordsInText
 from flask import (Blueprint, flash, redirect, render_template, request,
@@ -169,7 +169,8 @@ def loop():
                 u.close
                 update_ids = []
                 for result in z['result']:
-                    result["message"]["text"] = scanSwearWordsInText(result["message"]["text"])
+                    if result["message"]["text"] != "/start":
+                        result["message"]["text"] = scanSwearWordsInText(result["message"]["text"])
                     text = result["message"]["text"]
                     firstname = result["message"]["from"]["first_name"]
                     lastname = result["message"]["from"]["last_name"]
