@@ -6,15 +6,17 @@
 		app_socket_handler = function(data) {
 			switch (data.action) {
 				case "messageIncomming":
-        var message = data.message.text;
-        var firstname = data.message.from.first_name;
-        var lastname = data.message.from.last_name;
-				var id = data.message.from.id;
-        var timestamp = data.message.date;
+        var message = data.message[0].text;
+        var firstname = data.message[0].first_name;
+        var lastname = data.message[0].last_name;
+				var id = data.message[0].id;
+        var timestamp = data.message[0].date;
+
+				//console.log(JSON.stringify(data.message));
 
 				var contactsName, cotnactsLastname;
 				var contactsNotExist = true;
-				console.log(message);
+
 
 				$.get('/apps/telegram/getcontacts', function( data ) {
 					if (data != "{}") {
