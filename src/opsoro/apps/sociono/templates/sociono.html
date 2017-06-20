@@ -13,7 +13,7 @@
 					<span class="fa " data-bind="css: { 'fa-close': $root.autoLooping(), 'fa-refresh': ! $root.autoLooping() }"></span>
 					<span class="text" data-bind="text: $root.autoLooping() > 0 ? '{{ _('Stop Autoloop') }}' : '{{ _('Start Autoloop') }}' "></span>
 				</button>
-				<label><input type="checkbox" data-bind="checked: $root.autoRead"/> Toggle Auto Read</label>
+				<label><input type="checkbox" data-bind="checked: $root.autoRead(), event: {change: toggleAutoRead}"/> Toggle Auto Read</label>
 			</div>
 		</div>
 	</div>

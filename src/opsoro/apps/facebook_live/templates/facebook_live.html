@@ -12,7 +12,7 @@
 	<div id="fb-root"></div> <!-- required for the fb init -->
 
 	<div>
-		<button class="button info" data-bind="click: !loggedIn() ? fbLogin : fbLogout, text: !loggedIn() ? 'Log into Facebook' : 'Log out of Facebook'"></button>
+		<button class="button info" data-bind="click: !loggedIn() ? fbLogin : fbLogout, text: !loggedIn() ? 'Log into Facebook' : 'Log out of Facebook', enable: fbInitialized()"></button>
 		<p>Your user ID: <span data-bind="text: userID()"></span></p>
 	</div>
 	<div>
@@ -23,7 +23,7 @@
 		<div>
 			<span>Enter a Facebook ID: </span>
 
-			<input type="text" id="facebookID" data-bind="enable: !isNewVideo(), value: facebookID" required="true" placeholder="Enter a Facebook page id or a existing live_video id ...">
+			<input type="text" id="facebookID" data-bind="enable: !isNewVideo(), value: facebookID" required="true" placeholder="Enter your Facebook page id, post id or an existing live_video id ...">
 		</div>
 		<div>
 			<span>Is of type: </span>
@@ -31,7 +31,7 @@
 		</div>
 
 		<button class="button round info" data-bind="click: toggleStreaming, enable: loggedIn() && facebookID()">
-			<span class="text" data-bind="text: ! isStreaming() ? 'Start Stream' : 'Stop Stream'"></span>
+			<span class="text" data-bind="text: !isStreaming() && facebookID() ? 'Start Stream' : 'Stop Stream'"></span>
 		</button>
 		<div data-bind="visible: !isNewVideo() && !facebookID()">
 			<span>- or -</span>
@@ -45,12 +45,11 @@
 
 	</div>
 	<div class="rightside">
-		Views: <span data-bind="text: views"></span>
-		<p>Reactions: 0<span></span></p>
+		<p data-bind="visible: isNewVideo() || isLiveVideo()">Views: <span data-bind="text: views"></span></p>
+		<p data-bind="visible: isPost() || isLiveVideo() || isNewVideo()">Likes: <span data-bind="text: likes()"></span></p>
 	</div>
 
-
-	<div class="rightside" data-bind="sortable: { data: comments, options: {handle: '.gripper', axis: 'y', opacity: 0.75} }">
+	<div class="rightside" data-bind="visible: comments().length > 0, sortable: { data: comments, options: {handle: '.gripper', axis: 'y', opacity: 0.75} }">
 		<div id="voicelines" class="bubble">
 			<div>
 				<span class="voiceline locked name" data-bind="text: from.name"></span>
@@ -60,14 +59,25 @@
 			</div>
 		</div>
 	</div>
-	<div class="togglebox">
-		<label><input type="checkbox" data-bind="checked: autoRead"/> Auto read comments</label>
-		<label><input type="checkbox"/> React to comments</label>
-		<p>Reaction to comment: <select data-bind="options: availableEmotions, optionsText: 'name', value: selectedEmotion"></select></p>
+
+	<!-- For the page's posts -->
+	<div class="rightside" data-bind="sortable: { data: pagePosts, options: {handle: '.gripper', axis: 'y', opacity: 0.75} }, visible: pagePosts().length > 0">
+		<div id="voicelines" class="bubble">
+			<div>
+				<span class="voiceline locked name" data-bind="text: story"></span>
+			</div>
+			<div class="voiceline locked">
+				<span data-bind="text: message"></span>
+			</div>
+		</div>
 	</div>
 
 
-
+	<div class="togglebox">
+		<label><input type="checkbox" data-bind="checked: autoRead"/> Auto read comments</label>
+		<label data-bind="visible: !isPage()"><input type="checkbox" data-bind="checked: reactToLikes"/> React to likes </label>
+		<p data-bind="visible: !isPage()">Reaction to comment: <select data-bind="options: availableEmotions, optionsText: 'name', value: selectedEmotion"></select></p>
+	</div>
 
 	{% if not online %}
 		<!-- Content in this section is not displayed online, only on the robot. For example: it is a perfect place to put controls that access hardware stuff, which is not available online. -->

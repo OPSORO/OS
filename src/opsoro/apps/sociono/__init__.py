@@ -63,10 +63,11 @@ loop_E = None # loop var for Emoticons
 autolooping = None
 Emoticons = []
 
-access_token = '141268248-yAGsPydKTDgkCcV0RZTPc5Ff7FGE41yk5AWF1dtN'
-access_token_secret = 'UalduP04BS4X3ycgBJKn2QJymMhJUbNfQZlEiCZZezW6V'
-consumer_key = 'jHW1X0K58pKhPePYDVk1ko2E6'
-consumer_secret = '5SzUVSd0DD2aMPqwNRyGuS1ovWnEb4qSaMnPkAHZSKu5G42pri'
+access_token = '735437381696905216-BboISY7Qcqd1noMDY61zN75CdGT0OSc'
+access_token_secret = 'd3A8D1ttrCxYV76pBOB389YqoLB32LiE0RVyoFwuMKUMb'
+consumer_key = 'AcdgqgujzF06JF6zWrfwFeUfF'
+consumer_secret = 'ss0wVcBTFAT6nR6hXrqyyOcFOhpa2sNW4cIap9JOoepcch93ky'
+
 
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
@@ -133,7 +134,7 @@ def setup_pages(opsoroapp):
             loop_T = StoppableThread(target=wait_for_sound)
 
         if request.form['action'] == 'autoLoopTweepyStop':
-            global autolooping
+            #global autolooping
             autolooping = 0
             send_action(request.form['action'])
 
@@ -141,6 +142,9 @@ def setup_pages(opsoroapp):
             if request.form['data']:
                 tweepyObj = json.loads(request.form['data'])
                 playTweet(tweepyObj)
+        if request.form['action'] == 'toggleAutoRead':
+            autoRead = not autoRead
+            print_info(autoRead)
 
         return opsoroapp.render_template(config['formatted_name'] + '.html', **data)
 

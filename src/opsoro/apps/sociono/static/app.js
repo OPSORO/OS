@@ -11,8 +11,6 @@ $(document).ready(function(){
 	var searchField = "";
 
 	var sendPost = function(action, data){
-		console.log("sending post request:");
-		console.log(data);
 		$.ajax({
 			dataType: 'json',
 			type: 'POST',
@@ -26,6 +24,20 @@ $(document).ready(function(){
 				}
 			}
 		});
+	}
+
+	function highlight_links(str) {
+	    // force http: on www.
+	    str = str.replace(/www\./g, "http://www.");
+	    // eliminate duplicates after force
+	    str = str.replace(/https:\/\/http:\/\/www\./g, "https://www.");
+	    str = str.replace(/http:\/\/http:\/\/www\./g, "http://www.");
+	    // Set the regex string
+	    var regex = /(\b(https?|ftp|file|http):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+	    // Replace plain text links by hyperlinks
+	    var replaced_text = str.replace(regex, "<a href='$1' class='contact-link' target='_blank'>$1</a>");
+
+	    return replaced_text;
 	}
 
 	// Here's my data model
@@ -85,7 +97,18 @@ $(document).ready(function(){
 		self.autoRead = ko.observable(false);
 		self.autoLooping = ko.observable(false);
 
+		//change autoread when streaming
+		self.toggleAutoRead = function(){
+			console.log("in functie");
+			if(self.isStreaming()){
+				//only send when streaming
+				sendPost('toggleAutoRead', {});
+				console.log("autoreadSend");
+			}
+		}
+
 		self.addTweetLine = function(data){
+			data['text']['original'] = highlight_links(data['text']['original']);//make http, https, ... links clickable
 			self.voiceLines.unshift(new VoiceLine(data)); // unshift to push to first index of arr
 		};
 
@@ -137,6 +160,10 @@ $(document).ready(function(){
 		self.autoLoopTweepyRun = function() {
 			self.index_voiceLine(self.index_voiceLine() + 1); // increment observable
 			if (self.index_voiceLine() <= self.voiceLines().length) {
+				self.autoLoopTweepyNext();
+			}
+			else {
+				self.index_voiceLine(1);
 				self.autoLoopTweepyNext();
 			}
 		}
@@ -191,4 +218,20 @@ $(document).ready(function(){
 		}
 	};
 
+});
+$( window ).unload(function() {
+  $.ajax({
+    dataType: 'json',
+    type: 'POST',
+    url: '/apps/facebook_live/',
+    data: {action: 'stopTweepy', data: {} },
+    success: function(data){
+      if (!data.success) {
+        showMainError(data.message);
+      } else {
+        return "";
+      }
+    }
+  });
+  return "";
 });
