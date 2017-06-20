@@ -1,14 +1,3 @@
-"""
-This file read en write the blacklisted words & have a mathod to return a whitelisted Sentence
-
-   :signblacklist:
-   :getBlacklistJson:
-   :scanSwearWordsInText:
-   :SwearWordsToRegex:
-   :getReplacedWords:
-
-"""
-
 from __future__ import with_statement
 
 import os
@@ -67,21 +56,13 @@ def setup_pages(opsoroapp):
             data['actions'][action] = request.args.get('param', None)
 
         getBlacklistJson()
-
-        ### tested method
-        text = "i'm awesome but fuck fck f*ck  shit sh1t s ass a$$ :@ :$ cufk @ss is hot"
+        text = "i'm awesome but fuck fck f*ck  shit sh1t sht ass a$$ cufk @ss is hot"
         scanSwearWordsInText(text)
 
         return opsoroapp.render_template(config['formatted_name'] + '.html', **data)
 
     @Blacklist_bp.route('/signblacklist', methods=['POST'])
     def signblacklist():
-        """
-        signblacklist Method.
-
-        :needs             json file created/not empty/not to write in
-
-        """
 
         data = {'banlist': {}}
         bans = json.loads(request.form['banlist'])
@@ -103,96 +84,53 @@ def setup_pages(opsoroapp):
         return jsonify(json.loads(getBlacklistJson()))
 
 
-    opsoroapp.register_app_blueprint(Blacklist_bp)
+    def getBlacklistJson():
+        if os.path.exists(os.path.join(Blacklist_bp.static_folder, 'blacklist.json')):
+            filename = os.path.join(Blacklist_bp.static_folder, 'blacklist.json')
+            with open(filename, 'r') as blacklist_file:
+                try:
+                    json_data = json.load(blacklist_file)
+                except:
+                    print_info("File is empty")
+                    json_data = "{}"
 
-def getBlacklistJson():
-    """
-    getBlacklistJson Method.
+                #print (json_data)
+            return json.dumps(json_data)
+        print_info("File doesn't exist")
+        return '{}'
 
-    :needs             json file created/not empty/not
+    def scanSwearWordsInText(text):
 
-    return:            a json empty or with data
-
-    """
-    
-    Blacklist_bp = Blueprint(config['formatted_name'], __name__, template_folder='templates', static_folder='static')
-
-    if os.path.exists(os.path.join(Blacklist_bp.static_folder, 'blacklist.json')):
-        filename = os.path.join(Blacklist_bp.static_folder, 'blacklist.json')
-        with open(filename, 'r') as blacklist_file:
-            try:
-                json_data = json.load(blacklist_file)
-            except:
-                print_info("File is empty")
-                json_data = "{}"
-
-            #print (json_data)
-        return json.dumps(json_data)
-    print_info("File doesn't exist")
-    return '{}'
-
-def scanSwearWordsInText(text):
-    """
-    scanSwearWordsInText Method.
-
-    :param string text:         clear text with sear words
-    :needed methods             swearWordsToRegex
-
-    return:                     same text without de sear words, the sear words were filterd out a json file
-
-    """
-
-    textwords = text.split()
-    newText = ""
-    regexList = SwearWordsToRegex()
-    replacedList =  getReplacedWords()
-    if regexList == "{}":
-
-        newText = text
-    else:
+        textwords = text.split()
+        newText = ""
         for textword in textwords:
 
             safe = True
-            itemsId = -1;
+            regexList = SwearWordsToRegex()
             for word in regexList:
-
-                itemsId = itemsId + 1
 
                 regex = ur""+ word
                 matches = re.finditer(regex, text)
                 for matchNum, match in enumerate(matches):
 
                     if format(  match.group()) == textword:
+
                         safe = False
-                        replacedword = replacedList[itemsId]
-                        #fuck = fuck => replace word pakken hoe?
-
-
             if not safe:
 
-                textword = replacedword
-
+                textword = "swear"
             newText = newText +" "+ textword
+newText
+        #print_info ( newText )
+        return newText;
 
-    print_info ( newText )
-    return newText;
-
-def SwearWordsToRegex():
-    """
-    SwearWordsToRegex Method.
-
-    :needed methods             getBlacklistJson -> read a json file
-
-    return:                     everey word returns in the json file return as a regulair expression
-
-    """
-
-    blacklistJSON = json.loads(getBlacklistJson())
-    if blacklistJSON != '{}':
+    def SwearWordsToRegex():
 
         regex = []
         regexwords = []
+        blacklistJSON = json.loads(getBlacklistJson())
         symbols = "[*,$,@,!,.,0,1,3]*"
+
         for word in blacklistJSON['banlist']:
 
             swaerWord = word['banWord']
@@ -210,28 +148,10 @@ def SwearWordsToRegex():
                 # 2e [(F,f)|(*,$,@,!,.,0,1,3)]*[(U,u)|(*,$,@,!,.,0,1,3)]*[(C,c)|(*,$,@,!,.,0,1,3)]*[(K,k)|(*,$,@,!,.,0,1,3)]*
 
             regex.append(regixwoord)
-    else:
-        regex = "{}"
-    return regex
 
-def getReplacedWords():
-    """
-    getReplacedWords Method.
+        return regex
 
-    return:                     gets the swaarwords and his whitelisted word from the json
-
-    """
-
-    blacklistJSON = json.loads(getBlacklistJson())
-    if blacklistJSON != '{}':
-
-        words = []
-        for word in blacklistJSON['banlist']:
-            swaerWord = word['replacedWord']
-            words.append(swaerWord)
-    else:
-        words = "{}"
-    return words
+    opsoroapp.register_app_blueprint(Blacklist_bp)
 
 def setup(opsoroapp):
     pass

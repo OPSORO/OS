@@ -8,6 +8,67 @@
 		self.replacedWord = ko.observable();
 		self.bans = ko.observableArray();
 
+
+		// var inputs = document.querySelectorAll( '.inputfile' );
+		// 	Array.prototype.forEach.call( inputs, function( input )
+		// 	{
+		// 		var label	 = input.nextElementSibling,
+		// 			labelVal = label.innerHTML;
+		//
+		// 		input.addEventListener( 'change', function( e )
+		// 		{
+		// 			var fileName = '';
+		// 			fileName = e.target.value.split( '\\' ).pop();
+		//
+		// 			if( fileName )
+		// 				label.querySelector( 'span' ).innerHTML = fileName;
+		// 			else
+		// 				label.innerHTML = labelVal;
+		// 		});
+		//
+		// 		// Firefox bug fix
+		// 		input.addEventListener( 'focus', function(){ input.classList.add( 'has-focus' ); });
+		// 		input.addEventListener( 'blur', function(){ input.classList.remove( 'has-focus' ); });
+		// 	});
+		//
+		// self.uploadFile = function(){
+		//
+		// 	console.log('uploadFile');
+		// 	// var newitems = [];
+		// 	// $.grep(bans(), function(e){
+		// 	// 	var data_line = {
+		// 	// 		banWord : e.wordBan(),
+		// 	// 		replacedWord : e.replacedWord()
+		// 	// 	};
+		// 	// 	newitems.push(data_line);
+		// 	// });
+		// 	//
+		// 	// GlobalDataJSON = newitems;
+		// 	// newitems = JSON.stringify(newitems);
+		// 	// $.post('/apps/blacklist/signblacklist', { banlist: newitems }, function(resp) {
+		// 	//
+		// 	// });
+		// };
+		//
+		// self.saveFile = function(){
+		//
+		// 	console.log('savig saveFile');
+		// 	// var newitems = [];
+		// 	// $.grep(bans(), function(e){
+		// 	// 	var data_line = {
+		// 	// 		banWord : e.wordBan(),
+		// 	// 		replacedWord : e.replacedWord()
+		// 	// 	};
+		// 	// 	newitems.push(data_line);
+		// 	// });
+		// 	//
+		// 	// GlobalDataJSON = newitems;
+		// 	// newitems = JSON.stringify(newitems);
+		// 	// $.post('/apps/blacklist/signblacklist', { banlist: newitems }, function(resp) {
+		// 	//
+		// 	// });
+		// };
+
 		self.addBanItem = function(){
 			self.bans.push(new Ban( self.wordBan(), self.replacedWord()));
 			self.reset();
@@ -55,7 +116,7 @@
 		self.saveBannedWord = function(){
 
 			$( "#error_exists").empty();
-			self.replacedWord("swear word");
+			self.replacedWord("swear");
 
 			var exists = false;
 			var data_line = {
@@ -124,3 +185,9 @@ function Ban(wodBan, replacedWord){
 	self.wordBan = ko.observable(wodBan);
 	self.replacedWord = ko.observable(replacedWord);
 }
+
+var FileModel= function (name, src) {
+    var self = this;
+    this.name = name;
+    this.src= src ;
+};

@@ -3,6 +3,7 @@
 - title: 1. Telegram apps
   apps:
   - telegram
+  - telegram2
   - blacklist
 
 - title: 2. Getting started

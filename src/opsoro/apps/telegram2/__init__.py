@@ -14,6 +14,7 @@ import time
 import telepot
 from telepot.loop import MessageLoop
 from pprint import pprint
+from threading import Timer
 
 from flask import (Blueprint, flash, redirect, render_template, request,
                    send_from_directory, url_for, jsonify)
@@ -47,7 +48,7 @@ def constrain(n, minn, maxn): return max(min(maxn, n), minn)
 get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 
 config = {
-    'full_name':            'Telegram',
+    'full_name':            'Telegram2',
     'author':               'howest',
     'icon':                 'fa-commenting-o',
     'color':                'orange',
@@ -60,6 +61,9 @@ config = {
 }
 config['formatted_name'] = config['full_name'].lower().replace(' ', '_')
 
+TELEGRAM_API_KEY = ''
+
+
 def setup_pages(opsoroapp):
     telegram_bp = Blueprint(
         config['formatted_name'],
@@ -70,6 +74,7 @@ def setup_pages(opsoroapp):
     @telegram_bp.route('/', methods=['GET'])
     @opsoroapp.app_view
     def index():
+
         data = {'expressions': {}}
 
         icons_static_folder = '../../server/static/images/emojione/'
@@ -77,8 +82,6 @@ def setup_pages(opsoroapp):
         data['expressions'] = Expression.expressions
 
         return opsoroapp.render_template(config['formatted_name'] + '.html', **data)
-
-
 
     @telegram_bp.route('/getmessages', methods=['GET'])
     def getmessages():
@@ -127,37 +130,51 @@ def setup_pages(opsoroapp):
     def getbans():
 
         json_data = readFile('banlist.json')
-        return jsonify(json_data)
+        return jsonify(json.loads(json_data))
+
+    @telegram_bp.route('/signsettings', methods=['POST'])
+    def signsettings():
+
+        data = {'settings': {}}
+        api = request.form
+        data['settings'] = api
+
+        writeFile('settinglist.json', data)
+        getsettings()
+
+        return opsoroapp.render_template(config['formatted_name'] + '.html', **data)
+        # return redirect("/")
+
+    @telegram_bp.route('/getsettings', methods=['GET'])
+    def getsettings():
+
+        json_data = readFile('settinglist.json')
+        return jsonify(json.loads(json_data))
+
 
     def writeFile(jsonFile, data):
+
+        telegram_bp = Blueprint(
+            config['formatted_name'],
+            __name__,
+            template_folder='templates',
+            static_folder='static')
 
         filename = os.path.join(telegram_bp.static_folder, jsonFile)
         with open(filename, 'w') as json_file:
             json_file.write(json.dumps(data))
         return;
 
-    def readFile(jsonFile):
-
-        if os.path.exists(os.path.join(telegram_bp.static_folder, jsonFile)):
-            filename = os.path.join(telegram_bp.static_folder, jsonFile)
-            with open(filename, 'r') as readfile:
-                try:
-                    json_data = json.load(readfile)
-                except:
-                    print_info("File is empty")
-                    json_data = "{}"
-            return json_data
-        print_info("File doesn't exist")
-        return '{}'
-
-
     opsoroapp.register_app_blueprint(telegram_bp)
 
 data = {}
 data['messages'] = []
-def loop():
+def loop(api_key):
+
             def handle(msg):
-                u = urllib.urlopen('https://api.telegram.org/bot407630254:AAHlEzsDH8N_N1d9NlWFZMsbNebGUKWaEqk/getUpdates')
+
+
+                u = urllib.urlopen('https://api.telegram.org/bot'+api_key+'/getUpdates')
                 z = json.load(u)
                 u.close
                 update_ids = []
@@ -318,25 +335,61 @@ def loop():
 
 
 
-            bot = telepot.Bot('407630254:AAHlEzsDH8N_N1d9NlWFZMsbNebGUKWaEqk')
+            bot = telepot.Bot(api_key)
             MessageLoop(bot,handle).run_as_thread()
+
+
+def readFile(jsonFile):
+
+    telegram_bp = Blueprint(
+        config['formatted_name'],
+        __name__,
+        template_folder='templates',
+        static_folder='static')
+
+    if os.path.exists(os.path.join(telegram_bp.static_folder, jsonFile)):
+        filename = os.path.join(telegram_bp.static_folder, jsonFile)
+        with open(filename, 'r') as readfile:
+            try:
+                json_data = json.load(readfile)
+            except:
+                print_info("File is empty")
+                json_data = "{}"
+        return json.dumps(json_data)
+    print ("File doesn't exist")
+    return '{}'
+
+
+def getTelegramApiKey():
+
+    settingsList = readFile('settinglist.json')
+    settingsList = json.loads(settingsList)
+    API_KEY = settingsList['settings']['apiKey']
+    print(API_KEY)
+
+    return API_KEY;
 
 def setup(opsoroapp):
     pass
 
-
 def start(opsoroapp):
-    global loop_t
-    # # global MessageLoop
-    loop_t = StoppableThread(target=loop)
+
+    TELEGRAM_API_KEY = getTelegramApiKey()
+    api_key  = getTelegramApiKey()
+
+    # global loop_t
+    # global MessageLoop
+    # loop_t = StoppableThread(target=loop(api_key))
+    loop(api_key)
+
 
      #pass
 
 def stop(opsoroapp):
-    global loop_t
-    loop_t.stop()
+    # global loop_t
+    # loop_t.stop()
     # # global MessageLoop
     # StoppableThread.stop(opsoroapp)
     # print("stop")
 
-     #pass
+    pass
