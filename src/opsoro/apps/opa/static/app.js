@@ -49,13 +49,20 @@ $(document).ready(function () {
                 applet.find(".icon").addClass("animated rotateIn")
                 $(".activities").append(applet);
             }
-            if (data.data.action == "MessageCommand") {
+            else if (data.data.action == "MessageCommand") {
                 if (data.data.data == "Remove") {
                     $('#cmdqueue').find('.command:first').remove();
                 }
             }
-            if (data.data.action == "MessageResponse") {
-                console.log(data.data.data)
+            else if (data.data.action == "AppletRemoved") {
+                alert('Applet Removed.');
+                $('#' + data.data.data).remove();
+            }
+            else if (data.data.action == "AppletAdded") {
+                alert('Applet Added.');
+            }
+            else if (data.data.action == "MessageResponse") {
+                console.log(data.data.data);
             }
         }
     };
@@ -118,6 +125,18 @@ $(document).ready(function () {
         this.Applet_color = Applet_color;
         this.Applet_categorie = Applet_categorie;
         this.Applet_logo = Applet_logo;
+        this.appletDelete = function (data) {
+            if (confirm('Are you sure you want to delete this applet?')) {
+                data = {
+                    'applet-id': data['Applet_id']
+                }
+                conn.send(JSON.stringify({
+                    action: "deleteapplet",
+                    data: data
+                }));
+            }
+
+        }
     }
 
     function Command(Command_id, Command_name, Command_color, Command_description, Command_uses
@@ -158,14 +177,15 @@ $(document).ready(function () {
                 'command-sound': command.find('.sound').val()
             }
             //als de localstorage entry al bestaat vervang deze
-            if(exists){
-                localStorage.setItem(key,JSON.stringify(data));
+            if (exists) {
+                localStorage.setItem(key, JSON.stringify(data));
             }
-            else{
+            else {
                 localStorage[key] = JSON.stringify(data);
             }
-            
+
         }
+
     }
 
     function NewApplet() {
@@ -217,16 +237,16 @@ $(document).ready(function () {
                 //stored values ophalen
                 var key = item.Command_id.toString();
                 var storedValues = JSON.parse(localStorage.getItem(localStorage.key(findIndexOfKey(key))));
-                
+
                 //als er een stored value is de waardes terug geven anders default waardes
                 if (storedValues) {
                     console.log();
                     listOfCommands.push(new Command(item.Command_id, item.Command_name, item.Command_color
                         , item.Command_description, item.Command_uses, item.Command_type,
                         item.Command_eventname, item.Command_customizeable, listOfExpressions,
-                        storedValues['command-expression'], item.Command_say,storedValues['command-hasTTS'], 
-                        listOfSounds,storedValues['command-sound'],storedValues['command-hasSound'],
-                        false,storedValues['command-message']));
+                        storedValues['command-expression'], item.Command_say, storedValues['command-hasTTS'],
+                        listOfSounds, storedValues['command-sound'], storedValues['command-hasSound'],
+                        false, storedValues['command-message']));
                 }
                 else {
                     listOfCommands.push(new Command(item.Command_id, item.Command_name, item.Command_color
@@ -541,7 +561,7 @@ $(document).ready(function () {
                 (error) => {
                     console.error(error);
                     UpdateStatus("Error");
-                    
+
                 });
         }
 

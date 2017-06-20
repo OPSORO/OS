@@ -127,29 +127,42 @@ def setup_pages(server):
         data['sounds'].sort()
         
         return jsonify(data)
-
+    
+    #save applet
     @server.app_socket_message('saveapplet')
     def saveApplet(conn, data):
-        print_info(data)
         filename = os.path.join(app_bp.static_folder+'/json/', 'Applets.json')      
-        with open(filename, 'r') as blog_file:
-                json_data = json.load(blog_file)
+        with open(filename, 'r') as read_file:
+                json_data = json.load(read_file)
                 json_data['Applets'].append(data['data']['applet'])   
         with open(filename, 'w') as write_file:
             write_file.write(json.dumps(json_data))
         response = {
             'data': "Applet added..."
         }
-        Users.send_app_data(config['formatted_name'], "MessageResponse", response)
+        Users.send_app_data(config['formatted_name'], "AppletAdded", response)
+    
+    #remove applet
+    @server.app_socket_message('deleteapplet')
+    def deleteApplet(conn,data):
+        removed_applet = data['data']['applet-id']
+        filename = os.path.join(app_bp.static_folder+'/json/', 'Applets.json')
+        with open(filename, 'r') as read_file:
+            json_data = json.load(read_file)
+            applets = json_data['Applets']
+            for applet in xrange(len(applets)):
+                if applets[applet]["Applet_id"] == removed_applet:
+                    applets.pop(applet)
+                    break
+            json_data['Applets'] = applets
+        with open(filename, 'w') as write_file:
+            write_file.write(json.dumps(json_data))
+        response = {
+            'data': removed_applet
+        }
+        Users.send_app_data(config['formatted_name'], "AppletRemoved", response)
 
-
-    '''
-    @app_bp.route('/getqueue',methods=['GET'])
-    def getqueue():
-        global command_queue
-        
-        return jsonify(json_data)
-    '''    
+    
     #toevoegen van command via websocket
     @server.app_socket_message('command')
     def socket_command(conn, data):
@@ -193,8 +206,8 @@ def setup_pages(server):
         Users.send_app_data(config['formatted_name'], "MessageInComing", data)
         filename = os.path.join(app_bp.static_folder+'/json/', 'Activity.json')
         if os.path.exists(filename):
-            with open(filename, 'r') as blog_file:
-                json_data = json.load(blog_file)
+            with open(filename, 'r') as read_file:
+                json_data = json.load(read_file)
                 if len(json_data['Activity']) == 20 :
                     del json_data['Activity'][:1]
                 json_data['Activity'].append(data)   

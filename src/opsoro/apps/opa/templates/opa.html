@@ -3,11 +3,10 @@
 <!-- <script src="/site_media/static/js/....js"></script> -->
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script src="http://knockoutjs.com/downloads/knockout-3.4.2.js"></script>
-<link rel="stylesheet" type="text/css" href="/apps/opa/static/css/animate.min.css"> {% endblock %}
+<link rel="stylesheet" type="text/css" href="/apps/opa/static/css/animate.min.css"> 
+{% endblock %}
 
 <!-- These sidebars can be removed by removing the block tags -->
-
-
 {% block sidebar_right %}{% endblock %} {% block app_content %}
 <div class="">
 	<ul class="accordion" data-responsive-accordion-tabs="tabs small-accordion medium-tabs large-tabs" id="settings-tabs">
@@ -51,6 +50,7 @@
 									<a data-bind="attr: { href: Applet_url }">
 										<div class="applet-content">
 											<img data-bind="attr: { src: Applet_logo }" alt="" class="logo animated  rotateIn" />
+											<span class="applet-delete fa fa-trash-o" data-bind="click: appletDelete"></span>
 											<h3 data-bind="text: Applet_name"></h3>
 											<p>
 												<span class="text-muted">By</span> Opsoro
@@ -205,7 +205,15 @@
 <script src="/apps/opa/static/js/speech.browser.sdk-min.js"></script>
 
 {% endblock %} {% block app_modals %}
-
+<div id="popup_delete" class="reveal" data-reveal data-animation-in="fade-in" data-animation-out="fade-out">
+	<div class="titlebar">
+		<button class="close-button" data-close aria-label="Close" type="button"><span class="fa fa-close"></span></button>
+		<span class="fa fa-exclamation-triangle"></span> Remove Applet
+	</div>
+	<div class="content">
+		<h4>Are you sure you want to delete this applet?</h4>
+	</div>
+</div>
 
 <div id="popup_window" class="reveal" data-reveal data-animation-in="fade-in" data-animation-out="fade-out">
 	<div class="titlebar">

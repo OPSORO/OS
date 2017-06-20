@@ -77,6 +77,16 @@
     height: 36px;
     margin: 0;
 }
+.applet-delete{
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    font-size: 25px;
+    transition: all .2s ease-in-out;
+}
+.applet-delete:hover{
+    opacity: 0.5;
+}
 .applet-header {
     height: 100px;
     display: flex;
