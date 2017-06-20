@@ -162,8 +162,6 @@ data['messages'] = []
 
 def loop():
             def handle(msg):
-                swearArry = {}
-                swearArry['message'] = []
                 u = urllib.urlopen('https://api.telegram.org/bot371183808:AAH4HHCDqNkmCEavf5oxI-9wG27DNoY-m_E/getUpdates')
                 z = json.load(u)
                 u.close
@@ -182,13 +180,6 @@ def loop():
                     text = text.encode('unicode_escape')
                     update_ids.append(int(result["update_id"]))
                     maxid = max(update_ids);
-                swearText = scanSwearWordsInText(text)
-                swearArry['message'].append({
-                'first_name' : firstname,
-                'last_name' : lastname,
-                'text' : swearText,
-                "id" : userid
-                })
 
                 #print bericht
                 #print 'swearwords'
@@ -221,12 +212,12 @@ def loop():
                                 #pass
                             data['messages'].append({
                             'first_name' : firstname,
-                            'message' : swearText,
+                            'message' : text,
                             "update_id" : update_id,
                             "maxid" : maxid
                             })
 
-                            send_data("messageIncomming", swearArry)
+                            send_data("messageIncomming", result)
 
                             with open('src/opsoro/apps/telegram/static/messages.json','w') as outfile:
                                 json.dump(data,outfile)
@@ -254,12 +245,12 @@ def loop():
                                 #Sound.say_tts(text)
 
                             else:
-                                textonly = swearText
+                                textonly = Text
                                 Sound.say_tts(textonly)
                         elif(text == '/start'):
                             print 'moet checken of toegelaten'
                                 #pass
-                            send_data("messageIncomming", swearArry)
+                            send_data("messageIncomming", result)
                         else:
                             print 'gebruiker niet toegelaten'
                 else:
@@ -292,12 +283,12 @@ def loop():
                                     #pass
                                 data['messages'].append({
                                 'first_name' : firstname,
-                                'message' : swearText,
+                                'message' : Text,
                                 "update_id" : update_id,
                                 "maxid" : maxid
                                 })
 
-                                send_data("messageIncomming", swearArry)
+                                send_data("messageIncomming", result)
 
                                 with open('src/opsoro/apps/telegram/static/messages.json','w') as outfile:
                                     json.dump(data,outfile)
@@ -325,12 +316,12 @@ def loop():
                                     #Sound.say_tts(text)
 
                                 else:
-                                    textonly = swearText
+                                    textonly = Text
                                     Sound.say_tts(textonly)
                             elif(text == '/start'):
                                 print 'moet checken of toegelaten'
                                     #pass
-                                send_data("messageIncomming", swearArry)
+                                send_data("messageIncomming", result)
                             else:
                                 print 'gebruiker niet toegelaten'
 
