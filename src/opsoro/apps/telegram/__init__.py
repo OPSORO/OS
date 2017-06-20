@@ -18,6 +18,7 @@ from pprint import pprint
 #from opsoro.telepot.loop import MessageLoop
 #from opsoro.telepot import *
 from opsoro.apps.blacklist import scanSwearWordsInText
+from opsoro.apps.blacklist import scanSwearWordsInText
 from flask import (Blueprint, flash, redirect, render_template, request,
                    send_from_directory, url_for, jsonify)
 
@@ -168,6 +169,7 @@ def loop():
                 u.close
                 update_ids = []
                 for result in z['result']:
+                    result["message"]["text"] = scanSwearWordsInText(result["message"]["text"])
                     text = result["message"]["text"]
                     firstname = result["message"]["from"]["first_name"]
                     lastname = result["message"]["from"]["last_name"]
