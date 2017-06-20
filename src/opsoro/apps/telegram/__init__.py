@@ -12,9 +12,11 @@ import json
 import sys
 import time
 import telepot
-from telepot.loop import MessageLoop
+#from telepot.loop import MessageLoop
 from pprint import pprint
-
+from opsoro.telepot import loop
+from opsoro.telepot.loop import MessageLoop
+from opsoro.telepot import *
 from flask import (Blueprint, flash, redirect, render_template, request,
                    send_from_directory, url_for, jsonify)
 
@@ -157,7 +159,7 @@ data = {}
 data['messages'] = []
 def loop():
             def handle(msg):
-                u = urllib.urlopen('https://api.telegram.org/bot407630254:AAHlEzsDH8N_N1d9NlWFZMsbNebGUKWaEqk/getUpdates')
+                u = urllib.urlopen('https://api.telegram.org/bot371183808:AAH4HHCDqNkmCEavf5oxI-9wG27DNoY-m_E/getUpdates')
                 z = json.load(u)
                 u.close
                 update_ids = []
@@ -188,7 +190,7 @@ def loop():
                             #print lengtetotaal
                     for x in range(0, lengte):
                             #print 'numberssss'
-                        naamke = dict["contacts"][x]["name"]
+                        contactsName = dict["contacts"][x]["name"]
                         lastnaamke = dict["contacts"][x]["lastname"]
                             #print naamke
                         print dict["contacts"][x]
@@ -259,8 +261,8 @@ def loop():
                                 #print lengtetotaal
                         for x in range(0, lengte):
                                 #print 'numberssss'
-                            naamke = dict["contacts"][x]["name"]
-                            lastnaamke = dict["contacts"][x]["lastname"]
+                            contactsName = dict["contacts"][x]["name"]
+                            lastname = dict["contacts"][x]["lastname"]
                                 #print naamke
                             print dict["contacts"][x]
                                 #print firstname
@@ -318,7 +320,7 @@ def loop():
 
 
 
-            bot = telepot.Bot('407630254:AAHlEzsDH8N_N1d9NlWFZMsbNebGUKWaEqk')
+            bot = telepot.Bot('371183808:AAH4HHCDqNkmCEavf5oxI-9wG27DNoY-m_E')
             MessageLoop(bot,handle).run_as_thread()
 
 def setup(opsoroapp):
@@ -326,17 +328,17 @@ def setup(opsoroapp):
 
 
 def start(opsoroapp):
-    global loop_t
+    #global loop_t
     # # global MessageLoop
-    loop_t = StoppableThread(target=loop)
-
+    #loop_t = StoppableThread(target=loop)
+    loop()
      #pass
 
 def stop(opsoroapp):
-    global loop_t
-    loop_t.stop()
+    #global loop_t
+    #loop_t.stop()
     # # global MessageLoop
     # StoppableThread.stop(opsoroapp)
     # print("stop")
 
-     #pass
+     pass
