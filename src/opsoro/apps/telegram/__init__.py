@@ -12,11 +12,11 @@ import json
 import sys
 import time
 import telepot
-#from telepot.loop import MessageLoop
+from telepot.loop import MessageLoop
 from pprint import pprint
-from opsoro.telepot import loop
-from opsoro.telepot.loop import MessageLoop
-from opsoro.telepot import *
+#from opsoro.telepot import loop
+#from opsoro.telepot.loop import MessageLoop
+#from opsoro.telepot import *
 from flask import (Blueprint, flash, redirect, render_template, request,
                    send_from_directory, url_for, jsonify)
 
@@ -29,7 +29,7 @@ from opsoro.robot import Robot
 # from opsoro.stoppable_thread import StoppableThread
 from opsoro.sound import Sound
 from opsoro.users import Users
-from twx.botapi import TelegramBot
+#from twx.botapi import TelegramBot
 
 
 try:
