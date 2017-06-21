@@ -153,7 +153,12 @@
 			});
 		};
 
-		//als er op de save button geklikt word en item laten toeveoegen
+		$('input[type=text]').on('keydown', function(e) {
+		    if (e.which == 13) {
+		       self.save();
+		    }
+		});
+
 		self.save = function(){
 
 			$( "#error_contacts").empty();
@@ -311,7 +316,7 @@
 			newLastname = lastname;
 			newId = id;
 
-			var pupupText = "<p>tekt voor de naam "+newName+" "+newLastname+". </p><p>Als je het bericht wilt lezen voeg haar toe bij je contacten of blokeer deze person.</p>";
+			var pupupText = "<p>You received a message from "+newName+" "+newLastname+". </p><p>You can either add this person to your Contacts, or you can block this person.</p>";
 
 			$('#modal1Desc').empty();
 			$('#modal1Desc').append(pupupText);
