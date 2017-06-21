@@ -113,30 +113,38 @@
 
 
 		// als er op de save knop geduwdt word et object opstlaan
+	
+		$('input[type=text]').on('keydown', function(e) {
+		    if (e.which == 13) {
+			self.saveBannedWord();
+		    }
+		});
 		self.saveBannedWord = function(){
+			if(self.wordBan() != ""){
+				$( "#error_exists").empty();
+				self.replacedWord("swear");
 
-			$( "#error_exists").empty();
-			self.replacedWord("swear");
+				var exists = false;
+				var data_line = {
+					banWord : self.wordBan(),
+					replacedWord : self.replacedWord()
+				};
 
-			var exists = false;
-			var data_line = {
-				banWord : self.wordBan(),
-				replacedWord : self.replacedWord()
-			};
+				ko.toJSON(data_line);
+				$.grep(GlobalDataJSON, function(e){
+					if (JSON.stringify(e) == JSON.stringify(data_line)) {
+						exists = true;
+					}
+				});
+				if (!exists) {
+					self.saveJson(data_line);
+				}else{
+					$("#error_exists").append("<br /><small>Word exists</small>");
 
-			ko.toJSON(data_line);
-			$.grep(GlobalDataJSON, function(e){
-				if (JSON.stringify(e) == JSON.stringify(data_line)) {
-					exists = true;
 				}
-			});
-			if (!exists) {
-				self.saveJson(data_line);
 			}else{
-				$("#error_exists").append("<br /><small>Word exists</small>");
-
+				$("#error_exists").append("<br /><small>field is empty</small>");
 			}
-
 		};
 
 		self.saveAll = function(){
