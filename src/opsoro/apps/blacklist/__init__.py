@@ -25,7 +25,6 @@ from opsoro.expression import Expression
 from opsoro.hardware import Hardware
 from opsoro.robot import Robot
 # from opsoro.stoppable_thread import StoppableThread
-from opsoro.sound import Sound
 
 
 try:
