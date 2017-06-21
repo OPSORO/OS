@@ -52,7 +52,8 @@ $(document).ready(function(){
 		// If Data received from tweepy through addTweetLine(data)
 		if (tweepyData) {
 			self.picture = ko.observable(tweepyData["user"]["profile_picture"] || "");
-			self.tts = ko.observable(tweepyData["text"]["original"] || "");
+			self.tts = ko.observable(tweepyData['text']['original'] || "");
+			self.tts(highlight_links(self.tts()));//make http, https, ... links clickable
 			self.url = ko.observable("https://twitter.com/" + tweepyData["user"]["username"] || "")
 			self.lang = ko.observable(tweepyData["text"]["lang"] || "");
 			self.emoticons = ko.observable(tweepyData["text"]["emoticon"] || "")
@@ -108,7 +109,6 @@ $(document).ready(function(){
 		}
 
 		self.addTweetLine = function(data){
-			data['text']['original'] = highlight_links(data['text']['original']);//make http, https, ... links clickable
 			self.voiceLines.unshift(new VoiceLine(data)); // unshift to push to first index of arr
 		};
 
@@ -153,6 +153,7 @@ $(document).ready(function(){
 		self.autoLoopTweepyNext = function() {
 			self.selectedVoiceLine(self.voiceLines()[self.index_voiceLine() - 1]); // starting at 1 so -1
 			self.selectedVoiceLine().pressPlay();
+			console.log("hier stuurt hij bpost");
 			sendPost('autoLoopTweepyNext', {});
 
 		}

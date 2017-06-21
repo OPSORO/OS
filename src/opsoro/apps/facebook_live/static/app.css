@@ -1,34 +1,131 @@
-input[type="text"]{
+a {
+    text-decoration: none;
+    font-weight: normal;
+    color: #2ba6cb;
+}
+.lower-section p{
+	margin-top: 1.5rem!important;
+}
+.upper-section{
+	margin-bottom: 50px;
+	width: 100%;
+	padding: 20px;
+	text-align: center;
+}
+.upper-section > .button{
+		font-family: "Avenir Next";
+		width: 200px;
+		height: 200px;
+		-webkit-border-radius: 100px;
+			 -moz-border-radius: 100px;
+						border-radius: 100px;
+}
+.big-icon{
+	font-size: 3rem;
+	margin-bottom: 10px;
+}
+small{
+	margin-left: 2rem;
+}
+.upper-section > .button > span, .icon-span{
+	display: block;
+	font-weight: bold;
+	font-size: 1.5rem;
+	text-transform: capitalize;
+}
+.middle-section input[type="text"], .middle-section select{
+	margin-left: 0.5rem;
+	width: 68%;
+	display: inline-block;
+}
+.start-stream{
+	border: lightGray dashed thick;
+	padding: 40px;
+	padding-bottom: 20px!important;
+	float: left;
+	display: block;
+	width: 60%;
+	-webkit-border-radius: 5px;
+		 -moz-border-radius: 5px;
+					border-radius: 5px;
+}
+.start-stream button{
+	font-family: "Avenir Next";
+	width: 100%;
+}
+.startnew {
+	display: inline-block;
+	width: 40%;
+	text-align: center;
+}
+.startnew button {
+	font-family: "Avenir Next";
+	width: 200px;
+	height: 200px;
+	-webkit-border-radius: 100px;
+		 -moz-border-radius: 100px;
+					border-radius: 100px;
+}
+.lower-section{
+	padding-top: 10px
+}
+input[type="text"] {
 	margin-left: 0.5rem;
 	width: 40%;
 	display: inline-block;
 }
+label > input[type="checkbox"]{
+	top: 0.25rem;
+	position: relative;
+}
 iframe {
-	height: 425px!important;
-	width: 750px!important;
+	max-width: 750px;
+	max-height: 425px;
 }
 select {
 	display: inline-block;
 	width: 40%;
 	margin-left: 0.5rem;
 }
+.fixed_width{
+	width: 30%;
+	display: inline-block;
+}
+.fixed_width > span{
+}
+.appbody span{
+	width: 30%;
+}
 .iframe-container {
 	max-height: 425px;
 	max-width: 750px;
 	float: left;
-}
-.button {
-	margin-top: 1.5em;
+	margin-top: 2rem;
 }
 .block {
 	display: block;
 }
+.centralised{
+	font-size: 1.3rem;
+	display: block;
+	float: left;
+	width: 100%;
+	overflow-y: scroll;
+	height: auto;
+	max-height: 390px;
+	font-weight: normal;
+	margin-bottom: 10px;
+	margin-top: 20px;
+	padding-right: 5px;
+}
 .rightside {
+	font-size: 1.3rem;
+	font-weight: bold;
 	display: inline-block;
 	float: right;
 	width: 32%;
 	margin: 0 0.5em 0 0.5em;
-	padding: 0.5em;
+	padding: 0 0.5em;
 	height:35px;
 }
 .rightside p{
@@ -36,27 +133,59 @@ select {
 	float: right;
 	margin: 0;
 }
-.ko_container {
+.leftside p{
+	font-size: 1.3rem;
+	font-weight: bold;
+}
+.commentscontainer{
 	padding: 0.5em;
 	width: 32%;
 	overflow: hidden;
-	height:390px;
-
+	height: auto;
+	max-height: 390px;
+	font-weight: normal;
+	margin-top: 1rem;
 }
-.leftside{
+/*.commentscontainerpost{
+	padding: 0.5em;
+	width: 100%;
+	overflow: hidden;
+	height: auto;
+	max-height: 390px;
+	font-weight: normal;
+}*/
+.commentsElement{
+	display: block;
+	width: 100%;
+	word-wrap: break-word;
 
+	/*float: left;
+	word-wrap: break-word;*/
 }
+/*.ko_container {
+	padding: 0.5em;
+	width: 32%;
+	overflow: hidden;
+	height: auto;
+	max-height: 390px;
+	font-weight: normal;
+}*/
 .togglebox {
 	/*background-color: green;*/
 	display: block;
 	width: 99.3%;
 	float: left;
-	padding: 0.5em;
+	padding-top: 0.5em;
 }
 .togglebox p {
 	display: inline-block;
 	float: right;
-	margin-right: 1.5em;
+	/*margin-right: 1.5em;*/
+	width: 30%
+}
+.togglebox > select{
+	width: 30%;
+	float: right;
 }
 .togglebox label{
 	display: inline-block;
@@ -87,32 +216,15 @@ select {
 
     position: relative;
     margin-bottom: .25rem;
-    margin-left: 0.75rem;
 		padding: 0.5rem;
+		height: auto;
+		overflow-y:auto;
 
     -webkit-border-radius: .5rem;
        -moz-border-radius: .5rem;
             border-radius: .5rem;
     background: #ddd;
 }
-/*.bubble:after
-{
-    position: absolute;
-    top: .3rem;
-    bottom: auto;
-    left: -1.1rem;
-
-    display: block;
-
-    width: 0;
-
-    content: '';
-
-    border-width: .75rem 1.2rem .75rem 0;
-    border-style: solid;
-    border-color: #f3961c transparent;
-    border-color: transparent #ddd;
-}*/
 
 .bubble .fa
 {
@@ -123,9 +235,40 @@ select {
 	.rightside {
 		display: block;
 		width: 100%;
+		margin: 0 auto;
 	}
-	.ko_container {
-		width: 100%;
+	.bubble
+	{
+	    font-size: .9rem;
 
+	    position: relative;
+	    margin-bottom: .25rem;
+			padding: 0.5rem;
+			height: auto;
+			overflow-y:auto;
+
+	    -webkit-border-radius: .5rem;
+	       -moz-border-radius: .5rem;
+	            border-radius: .5rem;
+	    background: #ddd;
+	}
+	.rightside p{
+		display: inline-block;
+		float: right;
+		margin: 0;
+	}
+	.commentscontainer{
+		display: block;
+		padding: 0.5em;
+		margin: 0 auto;
+		width: 100%;
+		overflow: hidden;
+		height: auto;
+		max-height: 390px;
+		font-weight: normal;
+	}
+	.togglebox p {
+		display: block;
+		width: 30%
 	}
 }
