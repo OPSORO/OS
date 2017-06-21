@@ -114,7 +114,7 @@ def getBlacklistJson():
     return:            a json empty or with data
 
     """
-    
+
     Blacklist_bp = Blueprint(config['formatted_name'], __name__, template_folder='templates', static_folder='static')
 
     if os.path.exists(os.path.join(Blacklist_bp.static_folder, 'blacklist.json')):
@@ -153,20 +153,26 @@ def scanSwearWordsInText(text):
         for textword in textwords:
 
             safe = True
-            itemsId = -1;
-            for word in regexList:
+            textwordLetters =  list(textword)
+            if len(textwordLetters) >= 3:
+                print "word >= 3"
 
-                itemsId = itemsId + 1
+                itemsId = -1;
+                for word in regexList:
 
-                regex = ur""+ word
-                matches = re.finditer(regex, text)
-                for matchNum, match in enumerate(matches):
+                    itemsId = itemsId + 1
 
-                    if format(  match.group()) == textword:
-                        safe = False
-                        replacedword = replacedList[itemsId]
-                        #fuck = fuck => replace word pakken hoe?
+                    regex = ur""+ word
+                    matches = re.finditer(regex, text)
+                    for matchNum, match in enumerate(matches):
 
+                        if format(  match.group()) == textword:
+                            safe = False
+                            replacedword = replacedList[itemsId]
+                            #fuck = fuck => replace word pakken hoe?
+            else:
+                print textwordLetters
+                print_info ( "> 3")
 
             if not safe:
 
