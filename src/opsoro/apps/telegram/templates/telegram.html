@@ -30,33 +30,23 @@
  				 <div class="row">
  					 <div id="messages" class="chat">
 
-						 <div class="chatbox chatbox_you">
+						 <!-- <div class="chatbox chatbox_you">
 						 	<div class="bubblebox">
 						 		 <span class="chatname">Naam</span>
 						 		<div class="bubble you">Awesome.</div>
 						 		<span class="time">12/06/2017 12:34</span>
 						 	</div>
 						 	<span class="bubble_head"></span>
-						 	<!-- <a href="#" class="repeat"></a> -->
-						 </div>
+						 	<a href="#" class="repeat"></a>
+						 </div> -->
 
 						 <div class="chatbox chatbox_me">
 							 <div class="bubblebox">
 								 <span class="chatname">Naam</span>
-									<div class="bubble me">Hi. I'm an expandeable chat box   with box shadow. How are you? I expand horizontally and   vertically, as you can see here. Hi. I'm an expandeable chat box   with box shadow. How are you? I expand horizontally and   vertically, as you can see here. Hi. I'm an expandeable chat box   with box shadow. How are you? I expand horizontally and   vertically, as you can see here.</div>
+									<div class="bubble me">Hi there. I’m your chatbot from Telegram.  Here you will be able to see the messages you send me through the app. I cannot respond to you yet, perhaps this function will be implemented in the future 😊</div>
 								 <span class="time">12/06/2017 12:34</span>
 							 </div>
 							 <span class="bubble_head"></span>
-						 </div>
-
-						 <div class="chatbox chatbox_you">
-							 <div class="bubblebox">
-								 <span class="chatname">Naam</span>
-								 <div class="bubble you">Hello there!</div>
-								 <span class="time">12/06/2017 12:34</span>
-							 </div>
-							 <span class="bubble_head"></span>
-							 <!-- <a href="#" class="repeat"></a> -->
 						 </div>
 
  					 </div>
@@ -193,6 +183,33 @@
 				</fieldset> -->
 	    </div>
 		</li>
+
+		<li class="accordion-item" data-accordion-item>
+			<a href="#settings" class="accordion-title">
+				<span class="fa fa-fw fa-magic"></span> Settings
+			</a>
+			<div data-bind="with: settings" class="accordion-content" data-tab-content>
+				<fieldset>
+					<legend>
+						<span class="fa fa-cog"></span>
+						Settings
+					</legend>
+						<div class="settings-container">
+							<div class="settingslist">
+								<span class="settingsIcon"></span>
+								<div class="settings_data">
+									<p>
+										<span>Telegram API Key: </span>
+										<input data-bind="value: api" class="small-8 medium-6 large-4 columns center" type="text" name="replasedword" value="pudding">
+										<a class="action button" data-bind="click: saveApi" style="padding-left: 2rem; padding-right: 2rem;">Save</a>
+									</p>
+								</div>
+							</div>
+						</div>
+				</fieldset>
+	    </div>
+		</li>
+
 	</ul>
 </div>
 </form>

@@ -75,6 +75,48 @@ li{
 .ban_data{
   margin-left: 6rem;
 }
+
+.settings_list{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+ .settingsIcon {
+  border-radius: 20%;
+  width: 3rem;
+  height: 3rem;
+  position: absolute;
+  margin-left: 1rem;
+  background: #00E58B ;
+  text-align:center;
+  line-height: 48px;
+}
+ .settingsIcon::before{
+  color: white;
+  content: "\f084";
+  font-family: 'FontAwesome';
+  font-size:2rem;
+}
+.settings_data p{
+  padding-top: 0.8rem;
+  display: flex;
+  justify-content: space-between;
+}
+.settings_data p span + .settings_data p a{
+  display: cell;
+}
+.settings_list div {
+  width: 100%;
+  margin: 0.5rem;
+  list-style: none;
+}
+.settings_data{
+  margin-left: 6rem;
+}
+
+
+
 #message{
   color:#2ba6cb;
   font-family: 'FontAwesome';

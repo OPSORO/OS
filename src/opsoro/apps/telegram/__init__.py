@@ -113,7 +113,7 @@ def setup_pages(opsoroapp):
     def getcontacts():
 
         json_data = readFile('contacts.json')
-        return jsonify(json_data)
+        return jsonify(json.loads(json_data))
 
     @telegram_bp.route('/signbans', methods=['POST'])
     def signbans():
@@ -132,28 +132,38 @@ def setup_pages(opsoroapp):
     def getbans():
 
         json_data = readFile('banlist.json')
-        return jsonify(json_data)
+        return jsonify(json.loads(json_data))
+
+    @telegram_bp.route('/signsettings', methods=['POST'])
+    def signsettings():
+
+        data = {'settings': {}}
+        api = request.form
+        data['settings'] = api
+
+        writeFile('settinglist.json', data)
+        getsettings()
+
+
+        return opsoroapp.render_template(config['formatted_name'] + '.html', **data)
+        # return redirect("/")
+
+    @telegram_bp.route('/getsettings', methods=['GET'])
+    def getsettings():
+
+        json_data = readFile('settinglist.json')
+        return jsonify(json.loads(json_data))
 
     def writeFile(jsonFile, data):
 
+        global mls
+        mls.stop_threads()
         filename = os.path.join(telegram_bp.static_folder, jsonFile)
         with open(filename, 'w') as json_file:
             json_file.write(json.dumps(data))
+        api_key  = getTelegramApiKey()
+        loop(api_key)
         return;
-
-    def readFile(jsonFile):
-
-        if os.path.exists(os.path.join(telegram_bp.static_folder, jsonFile)):
-            filename = os.path.join(telegram_bp.static_folder, jsonFile)
-            with open(filename, 'r') as readfile:
-                try:
-                    json_data = json.load(readfile)
-                except:
-                    print_info("File is empty")
-                    json_data = "{}"
-            return json_data
-        print_info("File doesn't exist")
-        return '{}'
 
 
     opsoroapp.register_app_blueprint(telegram_bp)
@@ -161,106 +171,44 @@ def setup_pages(opsoroapp):
 data = {}
 data['messages'] = []
 mls = None
-def loop():
-            def handle(msg):
-                u = urllib.urlopen('https://api.telegram.org/bot371183808:AAH4HHCDqNkmCEavf5oxI-9wG27DNoY-m_E/getUpdates')
-                z = json.load(u)
-                u.close
-                update_ids = []
-                for result in z['result']:
-                    if result["message"]["text"] != '/start':
-                        result["message"]["text"] = scanSwearWordsInText(result["message"]["text"])
-                    text = result["message"]["text"]
-                    firstname = result["message"]["from"]["first_name"]
-                    lastname = result["message"]["from"]["last_name"]
-                    userid = result["message"]["from"]["id"]
-                    print userid
-                    #print lastname
-                    update_id = result["update_id"]
-                    #print text
-                    text = text.encode('unicode_escape')
-                    update_ids.append(int(result["update_id"]))
-                    maxid = max(update_ids);
 
-                #print bericht
-                #print 'swearwords'
-                    #print(maxid);
-                    with open('src/opsoro/apps/telegram/static/banlist.json') as ban_file:
-                        dictBan = json.load(ban_file)
-                        lengteban = len(dictBan["bans"])
-                    if lengteban == 0:
-                        print 'Banlist is leeg ERROR'
-                        with open('src/opsoro/apps/telegram/static/contacts.json') as data_file:
-                            dict = json.load(data_file)
-                            lengte = len(dict["contacts"])
-                            #print lengte
-                                #print lengte
+def loop(api_key):
 
-                                #print lengtetotaal
-                        for x in range(0, lengte):
-                                #print 'numberssss'
-                            contactsName = dict["contacts"][x]["name"]
-                            lastnaamke = dict["contacts"][x]["lastname"]
-                                #print naamke
-                            print dict["contacts"][x]
-                                #print firstname
-                            if firstname in dict["contacts"][x].values() and lastname in dict["contacts"][x].values():
-                                #print 'yes'
-                                #print result
-                                #if (text == "/start"):
-                                    #print 'hopsaaa'
+            localApiKey = ''
+            if api_key != '':
+                localApiKey = api_key
+            else:
+                localApiKey = getTelegramApiKey()
 
-                                    #pass
-                                data['messages'].append({
-                                'first_name' : firstname,
-                                'message' : text,
-                                "update_id" : update_id,
-                                "maxid" : maxid
-                                })
+            if localApiKey != '':
+                def handle(msg):
+                    u = urllib.urlopen('https://api.telegram.org/bot'+localApiKey+'/getUpdates')
+                    z = json.load(u)
+                    u.close
+                    update_ids = []
+                    for result in z['result']:
+                        if result["message"]["text"] != '/start':
+                            result["message"]["text"] = scanSwearWordsInText(result["message"]["text"])
+                        text = result["message"]["text"]
+                        firstname = result["message"]["from"]["first_name"]
+                        lastname = result["message"]["from"]["last_name"]
+                        userid = result["message"]["from"]["id"]
+                        print userid
+                        #print lastname
+                        update_id = result["update_id"]
+                        #print text
+                        text = text.encode('unicode_escape')
+                        update_ids.append(int(result["update_id"]))
+                        maxid = max(update_ids);
 
-                                send_data("messageIncomming", result)
-
-                                with open('src/opsoro/apps/telegram/static/messages.json','w') as outfile:
-                                    json.dump(data,outfile)
-
-                                #print data
-                                #datamessages['message'] = text
-                                #print(json_data)
-
-                                if(text.startswith('\U')):
-                                    print('emoji first + text')
-                                    emo = text[5:]
-                                    print(emo)
-                                    Expression.set_emotion_unicode(emo)
-                                    #Sound.say_tts(text)
-
-                                elif('\U' in text):
-                                    print('text + emoji')
-                                    print(text)
-                                    emojitext = text.split('\U')
-                                    print(emojitext)
-                                    text = emojitext[0]
-                                    emo = emojitext[1][3:]
-                                    print(emo)
-                                    Expression.set_emotion_unicode(emo)
-                                    #Sound.say_tts(text)
-
-                                else:
-                                    textonly = text
-                                    Sound.say_tts(textonly)
-                            elif(text == '/start'):
-                                print 'moet checken of toegelaten'
-                                    #pass
-                                send_data("messageIncomming", result)
-                            else:
-                                print 'gebruiker niet toegelaten'
-                    else:
-                        for y in range(0, lengteban):
-                            BanID = dictBan["bans"][y]["banId"]
-                        if str(userid) in str(BanID):
-                            print 'De persoon is geblokkeerd'
-                        else:
-                            print 'Gebruiker is toegelaten'
+                    #print bericht
+                    #print 'swearwords'
+                        #print(maxid);
+                        with open('src/opsoro/apps/telegram/static/banlist.json') as ban_file:
+                            dictBan = json.load(ban_file)
+                            lengteban = len(dictBan["bans"])
+                        if lengteban == 0:
+                            print 'Banlist is leeg ERROR'
                             with open('src/opsoro/apps/telegram/static/contacts.json') as data_file:
                                 dict = json.load(data_file)
                                 lengte = len(dict["contacts"])
@@ -271,7 +219,7 @@ def loop():
                             for x in range(0, lengte):
                                     #print 'numberssss'
                                 contactsName = dict["contacts"][x]["name"]
-                                lastname = dict["contacts"][x]["lastname"]
+                                lastnaamke = dict["contacts"][x]["lastname"]
                                     #print naamke
                                 print dict["contacts"][x]
                                     #print firstname
@@ -325,14 +273,123 @@ def loop():
                                     send_data("messageIncomming", result)
                                 else:
                                     print 'gebruiker niet toegelaten'
+                        else:
+                            for y in range(0, lengteban):
+                                BanID = dictBan["bans"][y]["banId"]
+                            if str(userid) in str(BanID):
+                                print 'De persoon is geblokkeerd'
+                            else:
+                                print 'Gebruiker is toegelaten'
+                                with open('src/opsoro/apps/telegram/static/contacts.json') as data_file:
+                                    dict = json.load(data_file)
+                                    lengte = len(dict["contacts"])
+                                    #print lengte
+                                        #print lengte
+
+                                        #print lengtetotaal
+                                for x in range(0, lengte):
+                                        #print 'numberssss'
+                                    contactsName = dict["contacts"][x]["name"]
+                                    lastname = dict["contacts"][x]["lastname"]
+                                        #print naamke
+                                    print dict["contacts"][x]
+                                        #print firstname
+                                    if firstname in dict["contacts"][x].values() and lastname in dict["contacts"][x].values():
+                                        #print 'yes'
+                                        #print result
+                                        #if (text == "/start"):
+                                            #print 'hopsaaa'
+
+                                            #pass
+                                        data['messages'].append({
+                                        'first_name' : firstname,
+                                        'message' : text,
+                                        "update_id" : update_id,
+                                        "maxid" : maxid
+                                        })
+
+                                        send_data("messageIncomming", result)
+
+                                        with open('src/opsoro/apps/telegram/static/messages.json','w') as outfile:
+                                            json.dump(data,outfile)
+
+                                        #print data
+                                        #datamessages['message'] = text
+                                        #print(json_data)
+
+                                        if(text.startswith('\U')):
+                                            print('emoji first + text')
+                                            emo = text[5:]
+                                            print(emo)
+                                            Expression.set_emotion_unicode(emo)
+                                            #Sound.say_tts(text)
+
+                                        elif('\U' in text):
+                                            print('text + emoji')
+                                            print(text)
+                                            emojitext = text.split('\U')
+                                            print(emojitext)
+                                            text = emojitext[0]
+                                            emo = emojitext[1][3:]
+                                            print(emo)
+                                            Expression.set_emotion_unicode(emo)
+                                            #Sound.say_tts(text)
+
+                                        else:
+                                            textonly = text
+                                            Sound.say_tts(textonly)
+                                    elif(text == '/start'):
+                                        print 'moet checken of toegelaten'
+                                            #pass
+                                        send_data("messageIncomming", result)
+                                    else:
+                                        print 'gebruiker niet toegelaten'
 
 
 
 
-            bot = Bot('371183808:AAH4HHCDqNkmCEavf5oxI-9wG27DNoY-m_E')
-            global mls
-            mls = MessageLoop(bot,handle)
-            mls.start_threads()
+                bot = Bot(localApiKey)
+                global mls
+                mls = MessageLoop(bot,handle)
+                mls.start_threads()
+
+
+def readFile(jsonFile):
+
+    telegram_bp = Blueprint(
+        config['formatted_name'],
+        __name__,
+        template_folder='templates',
+        static_folder='static')
+
+    if os.path.exists(os.path.join(telegram_bp.static_folder, jsonFile)):
+        filename = os.path.join(telegram_bp.static_folder, jsonFile)
+        with open(filename, 'r') as readfile:
+            try:
+                json_data = json.load(readfile)
+            except:
+                print_info("File is empty")
+                json_data = "{}"
+        return json.dumps(json_data)
+    print ("File doesn't exist")
+    return '{}'
+
+
+def getTelegramApiKey():
+
+    API_KEY = ''
+    settingsList = readFile('settinglist.json')
+    if settingsList != '{}':
+        settingsList = json.loads(settingsList)
+        API_KEY = settingsList['settings']['apiKey']
+
+    print(API_KEY)
+
+    # 371183808:AAH4HHCDqNkmCEavf5oxI-9wG27DNoY-m_E
+    # 407630254:AAHlEzsDH8N_N1d9NlWFZMsbNebGUKWaEqk
+
+    return API_KEY;
+
 def setup(opsoroapp):
     pass
 
@@ -341,7 +398,8 @@ def start(opsoroapp):
     #global loop_t
     # # global MessageLoop
     #loop_t = StoppableThread(target=loop)
-    loop()
+    api_key  = getTelegramApiKey()
+    loop(api_key)
      #pass
 
 def stop(opsoroapp):
