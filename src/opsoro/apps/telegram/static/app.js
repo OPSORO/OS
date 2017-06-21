@@ -6,17 +6,15 @@
 		app_socket_handler = function(data) {
 			switch (data.action) {
 				case "messageIncomming":
-        			var message = data.message.text;
-        			var firstname = data.message.from.first_name;
-        			var lastname = data.message.from.last_name;
+        var message = data.message.text;
+        var firstname = data.message.from.first_name;
+        var lastname = data.message.from.last_name;
 				var id = data.message.from.id;
-        			var timestamp = data.message.date;
-
-				//console.log(JSON.stringify(data.message));
+        var timestamp = data.message.date;
 
 				var contactsName, cotnactsLastname;
 				var contactsNotExist = true;
-
+				console.log(message);
 
 				$.get('/apps/telegram/getcontacts', function( data ) {
 					if (data != "{}") {
@@ -33,7 +31,7 @@
 				});
 
 				//name
-				if (contactsNotExist && (message == "/start" || message == " /start") ) {
+				if (contactsNotExist && message == "/start" ) {
 
 						model.popup().newContact(firstname, lastname, id);
 				}else if( message == "/start" ){
@@ -368,43 +366,7 @@
 			newId = "";
 		}
 
-		return;settings
-	}
-
-	var SettignsTelegram = function(){
-
-		var self = this;
-		self.api = ko.observable();
-		self.APIS = ko.observableArray();
-
-		self.addItem = function(){
-			self.APIS.push(new API(self.api()));
-		};
-
-		self.loadApiKey = function(){
-			// haven't tested, but probably won't work. I think you'd have to convert your JSON to observables
-			$.get('/apps/telegram2/getsettings', function( data ) {
-				if (data != "{}") {
-					var json_data = data;
-					console.log(data);
-					//console.log(GlobalcontactsDataJSON);
-					 $.each(json_data.settings, function(idx, line){
-							self.api(line);
-							self.APIS.push(new API(self.api()));
-
-					 });
-				 }
-			});
-		};
-
-		self.saveApi = function(){
-	    console.log('saving');
-			var data = self.api()
-			$.post('/apps/telegram2/signsettings', { apiKey: data }, function(resp) {
-				self.addItem();
-			});
-		};
-
+		return;
 	}
 
 	var TelegramModel = (function(){
@@ -413,7 +375,6 @@
 		self.general = ko.observable(new GeneralTelegram());
 		self.contacts = ko.observable(new ContactsTelegram());
 		self.bans = ko.observable(new BlockedTelegram());
-		self.settings = ko.observable(new SettignsTelegram());
 		self.popup = ko.observable(new PopupTelegram());
 	});
 
@@ -431,7 +392,6 @@
 
 		model.contacts().loadContacts();
 		model.bans().loadbans();
-		model.settings().loadApiKey();
 	}
 
 	loadingNew = function(){
@@ -452,12 +412,6 @@
 		self.banLastname = ko.observable(banLastname)
 		self.banId = ko.observable(banId)
 	};
-
-	function API(apiKey){
-
-		var self = this;
-		self.apikey = ko.observable(apiKey)
-	}
 
 })();
 

@@ -17,7 +17,7 @@ from . import hack
 
 from . import exception
 
-
+from . import finiteloop
 __version_info__ = (12, 0)
 __version__ = '.'.join(map(str, __version_info__))
 
@@ -304,6 +304,10 @@ class Bot(_BotBase):
             self._eventq = []
             self._lock = threading.RLock()  # reentrant lock to allow locked method calling locked method
             self._event_handler = None
+            self._shutdown = threading.Event()
+
+        def stop(self):
+            self._shutdown.set()
 
         def _locked(fn):
             def k(self, *args, **kwargs):

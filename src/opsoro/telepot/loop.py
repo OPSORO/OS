@@ -4,6 +4,9 @@ import json
 import threading
 import traceback
 import collections
+from abc import abstractmethod
+
+from . import finiteloop
 
 try:
     import Queue as queue
@@ -13,16 +16,32 @@ except ImportError:
 from . import exception
 from . import _find_first_key, flavor_router
 
+#
+# class StoppableDaemon(threading.Thread):
+#     def __init__(self, *args, **kwargs):
+#         super(StoppableDaemon, self).__init__(*args, **kwargs)
+#         self.daemon = True
+#         self._shutdown = threading.Event()
+#
+#     def stop(self):
+#         self._shutdown.set()
 
-class RunForeverAsThread(object):
-    def run_as_thread(self, *args, **kwargs):
-        t = threading.Thread(target=self.run_forever, args=args, kwargs=kwargs)
-        t.daemon = True
-        t.start()
+
+# class RunForeverAsThread(object):
+#
+#     def run_as_thread(self, *args, **kwargs):
+#         t = threading.Thread(target=self.run_forever, args=args, kwargs=kwargs)
+#         t.daemon = True
+#         t.start()
+#
+#     @abstractmethod
+#     def run_forever(self):
+#         pass
 
 
-class CollectLoop(RunForeverAsThread):
-    def __init__(self, handle):
+class CollectLoop(finiteloop.StoppableDaemon):
+    def __init__(self, handle, *args, **kwargs):
+        super(CollectLoop, self).__init__(*args, **kwargs)
         self._handle = handle
         self._inqueue = queue.Queue()
 
@@ -30,28 +49,34 @@ class CollectLoop(RunForeverAsThread):
     def input_queue(self):
         return self._inqueue
 
-    def run_forever(self):
-        while 1:
+    def run(self):
+        while not self._shutdown.isSet():
             try:
-                msg = self._inqueue.get(block=True)
+                msg = self._inqueue.get(block=True, timeout=5)
                 self._handle(msg)
+            except queue.Empty:
+                pass
             except:
                 traceback.print_exc()
 
 
-class GetUpdatesLoop(RunForeverAsThread):
-    def __init__(self, bot, on_update):
+class GetUpdatesLoop(finiteloop.StoppableDaemon):
+    def __init__(self, bot, on_update, relax=0.1, timeout=20, allowed_updates=None, *args, **kwargs):
+        super(GetUpdatesLoop, self).__init__(*args, **kwargs)
         self._bot = bot
         self._update_handler = on_update
+        self._relax = relax
+        self._timeout = timeout
+        self._allowed_upd = allowed_updates
 
-    def run_forever(self, relax=0.1, timeout=20, allowed_updates=None):
+    def run(self):
         offset = None  # running offset
-        allowed_upd = allowed_updates
-        while 1:
+        # allowed_upd = allowed_updates
+        while not self._shutdown.isSet():
             try:
                 result = self._bot.getUpdates(offset=offset,
-                                              timeout=timeout,
-                                              allowed_updates=allowed_upd)
+                                              timeout=self._timeout,
+                                              allowed_updates=self._allowed_upd)
 
                 # Once passed, this parameter is no longer needed.
                 allowed_upd = None
@@ -71,7 +96,7 @@ class GetUpdatesLoop(RunForeverAsThread):
             except:
                 traceback.print_exc()
             finally:
-                time.sleep(relax)
+                time.sleep(self._relax)
 
 
 def _dictify3(data):
@@ -84,6 +109,7 @@ def _dictify3(data):
     else:
         raise ValueError()
 
+
 def _dictify27(data):
     if type(data) in [str, unicode]:
         return json.loads(data)
@@ -93,6 +119,7 @@ def _dictify27(data):
         raise ValueError()
 
 _dictify = _dictify3 if sys.version_info >= (3,) else _dictify27
+
 
 def _extract_message(update):
     key = _find_first_key(update, ['message',
@@ -106,6 +133,7 @@ def _extract_message(update):
                                    'pre_checkout_query'])
     return key, update[key]
 
+
 def _infer_handler_function(bot, h):
     if h is None:
         return bot.handle
@@ -115,12 +143,14 @@ def _infer_handler_function(bot, h):
         return h
 
 
-class MessageLoop(RunForeverAsThread):
+class MessageLoop(object):
     def __init__(self, bot, handle=None):
         self._bot = bot
         self._handle = _infer_handler_function(bot, handle)
+        self._collectloop = None
+        self._updatesloop = None
 
-    def run_forever(self, *args, **kwargs):
+    def start_threads(self, *args, **kwargs):
         """
         :type relax: float
         :param relax: seconds between each :meth:`.getUpdates`
@@ -138,21 +168,34 @@ class MessageLoop(RunForeverAsThread):
         Calling this method will block forever. Use :meth:`.run_as_thread` to
         run it non-blockingly.
         """
-        collectloop = CollectLoop(self._handle)
-        updatesloop = GetUpdatesLoop(self._bot,
-                                     lambda update:
-                                         collectloop.input_queue.put(_extract_message(update)[1]))
-                                         # feed messages to collect loop
+        self._collectloop = CollectLoop(self._handle)
+        self._updatesloop = GetUpdatesLoop(self._bot,
+                                           lambda update:
+                                           self._collectloop.input_queue.put(_extract_message(update)[1]),
+                                           *args, **kwargs)
         # feed events to collect loop
-        self._bot.scheduler.on_event(collectloop.input_queue.put)
+        self._bot.scheduler.on_event(self._collectloop.input_queue.put)
         self._bot.scheduler.run_as_thread()
 
-        updatesloop.run_as_thread(*args, **kwargs)
-        collectloop.run_forever()  # blocking
+        # self._updatesloop.run_as_thread(*args, **kwargs)
+        self._updatesloop.start()
+        self._collectloop.start()  # blocking --> not anymore!
+
+    def stop_threads(self):
+        try:
+            self._collectloop.stop()
+            self._updatesloop.stop()
+            self._bot.scheduler.stop()
+            # self._collectloop = None
+            # self._updatesloop = None
+        except BaseException as e:
+            print("Can't stop threads that weren't started [%s]" % str(e))
+            raise
 
 
-class Webhook(RunForeverAsThread):
-    def __init__(self, bot, handle=None):
+class Webhook(finiteloop.StoppableDaemon):
+    def __init__(self, bot, handle=None, *args, **kwargs):
+        super(Webhook, self).__init__(*args, **kwargs)
         self._bot = bot
         self._collectloop = CollectLoop(_infer_handler_function(bot, handle))
 
@@ -161,23 +204,29 @@ class Webhook(RunForeverAsThread):
         self._bot.scheduler.on_event(self._collectloop.input_queue.put)
         self._bot.scheduler.run_as_thread()
 
-        self._collectloop.run_forever()
+        self._collectloop.start()
 
     def feed(self, data):
         update = _dictify(data)
         self._collectloop.input_queue.put(_extract_message(update)[1])
 
+    def stop(self):
+        self._collectloop.stop()
+        super(Webhook, self).stop()
 
-class Orderer(RunForeverAsThread):
-    def __init__(self, on_ordered_update):
+
+class Orderer(finiteloop.StoppableDaemon):
+    def __init__(self, on_ordered_update, maxhold=3, *args, **kwargs):
+        super(Orderer, self).__init__(*args, **kwargs)
         self._on_ordered_update = on_ordered_update
         self._inqueue = queue.Queue()
+        self._maxhold = maxhold
 
     @property
     def input_queue(self):
         return self._inqueue
 
-    def run_forever(self, maxhold=3):
+    def run(self):
         def handle(update):
             self._on_ordered_update(update)
             return update['update_id']
@@ -185,10 +234,10 @@ class Orderer(RunForeverAsThread):
         # Here is the re-ordering mechanism, ensuring in-order delivery of updates.
         max_id = None                 # max update_id passed to callback
         buffer = collections.deque()  # keep those updates which skip some update_id
-        qwait = None                  # how long to wait for updates,
+        qwait = 5                  # how long to wait for updates,
                                       # because buffer's content has to be returned in time.
 
-        while 1:
+        while not self._shutdown.isSet():
             try:
                 update = self._inqueue.get(block=True, timeout=qwait)
 
@@ -220,7 +269,7 @@ class Orderer(RunForeverAsThread):
                         buffer[update['update_id'] - max_id - 1] = update
                     else:
                         # buffer too short, lengthen it
-                        expire = time.time() + maxhold
+                        expire = time.time() + self._maxhold
                         for a in range(nbuf, update['update_id']-max_id-1):
                             buffer.append(expire)  # put expiry time in gaps
                         buffer.append(update)
@@ -234,7 +283,7 @@ class Orderer(RunForeverAsThread):
 
                 # some buffer contents have to be handled
                 # flush buffer until a non-expired time is encountered
-                while 1:
+                while not self._shutdown.isSet():       # TODO: maybe replace with self._shutdown.isSet() ??
                     try:
                         if type(buffer[0]) is dict:
                             max_id = handle(buffer.popleft())
@@ -250,28 +299,30 @@ class Orderer(RunForeverAsThread):
             except:
                 traceback.print_exc()
             finally:
-                try:
-                    # don't wait longer than next expiry time
-                    qwait = buffer[0] - time.time()
-                    if qwait < 0:
-                        qwait = 0
-                except IndexError:
+                qwait = 5
+                # try:
+                #     # don't wait longer than next expiry time
+                #     qwait = buffer[0] - time.time()
+                #     if qwait < 0:
+                #         qwait = 0
+                # except IndexError:
                     # buffer empty, can wait forever
-                    qwait = None
+
 
                 # debug message
                 # print ('Buffer:', str(buffer), ', To Wait:', qwait, ', Max ID:', max_id)
 
 
-class OrderedWebhook(RunForeverAsThread):
-    def __init__(self, bot, handle=None):
+class OrderedWebhook(finiteloop.StoppableDaemon):
+    def __init__(self, bot, handle=None, maxhold=3, *args, **kwargs):
+        super(OrderedWebhook, self).__init__(*args, **kwargs)
         self._bot = bot
         self._collectloop = CollectLoop(_infer_handler_function(bot, handle))
         self._orderer = Orderer(lambda update:
-                                    self._collectloop.input_queue.put(_extract_message(update)[1]))
-                                    # feed messages to collect loop
+                                self._collectloop.input_queue.put(_extract_message(update)[1]),
+                                maxhold=maxhold)
 
-    def run_forever(self, *args, **kwargs):
+    def run(self):  # args moved to c'tor!
         """
         :type maxhold: float
         :param maxhold:
@@ -288,8 +339,14 @@ class OrderedWebhook(RunForeverAsThread):
         self._bot.scheduler.on_event(self._collectloop.input_queue.put)
         self._bot.scheduler.run_as_thread()
 
-        self._orderer.run_as_thread(*args, **kwargs)
-        self._collectloop.run_forever()
+        self._orderer.start()
+        self._collectloop.start()
+
+        self._shutdown.wait()
+
+        self._collectloop.stop()
+        self._orderer.stop()
+        self._bot.scheduler.stop()
 
     def feed(self, data):
         """
