@@ -55,11 +55,17 @@ $(document).ready(function () {
                 }
             }
             else if (data.data.action == "AppletRemoved") {
-                alert('Applet Removed.');
+                $("#comfirm_delete").foundation('open');
+                setTimeout(function () {
+                    $("#comfirm_delete").foundation('close');
+                }, 1200);
                 $('#' + data.data.data).remove();
             }
             else if (data.data.action == "AppletAdded") {
-                alert('Applet Added.');
+                $("#comfirm_added").foundation('open');
+                setTimeout(function () {
+                    $("#comfirm_added").foundation('close');
+                }, 1200);
             }
             else if (data.data.action == "MessageResponse") {
                 console.log(data.data.data);
@@ -86,7 +92,6 @@ $(document).ready(function () {
         command.find('.expression').val(expression);
         command.find('.sound').val(sound);
         command.uniqueId();
-        console.log(command.find('.type').val())
         data = {
             'id': command.attr('id'),
             'command-id': command.attr('command-id'),
@@ -126,16 +131,7 @@ $(document).ready(function () {
         this.Applet_categorie = Applet_categorie;
         this.Applet_logo = Applet_logo;
         this.appletDelete = function (data) {
-            if (confirm('Are you sure you want to delete this applet?')) {
-                data = {
-                    'applet-id': data['Applet_id']
-                }
-                conn.send(JSON.stringify({
-                    action: "deleteapplet",
-                    data: data
-                }));
-            }
-
+            $("#popup_delete").foundation('open').data('id', data['Applet_id']);
         }
     }
 
@@ -328,8 +324,16 @@ $(document).ready(function () {
                 Stop();
             }
         }
-
-
+        viewModel.deleteApplet = function () {
+            var id = $("#popup_delete").data('id');
+            data = {
+                'applet-id': id
+            }
+            conn.send(JSON.stringify({
+                action: "deleteapplet",
+                data: data
+            }));
+        }
 
         viewModel.addApplet = function (form) {
 

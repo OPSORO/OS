@@ -3,8 +3,7 @@
 <!-- <script src="/site_media/static/js/....js"></script> -->
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script src="http://knockoutjs.com/downloads/knockout-3.4.2.js"></script>
-<link rel="stylesheet" type="text/css" href="/apps/opa/static/css/animate.min.css"> 
-{% endblock %}
+<link rel="stylesheet" type="text/css" href="/apps/opa/static/css/animate.min.css"> {% endblock %}
 
 <!-- These sidebars can be removed by removing the block tags -->
 {% block sidebar_right %}{% endblock %} {% block app_content %}
@@ -129,9 +128,11 @@
 											<!--/ko-->
 											<select class="expression" data-bind='options: Command_expressions,value: Command_selectedReaction,event: {change:commandOptionsChanged}'> </select>
 											<div class="tts-div">
-												<input class="tts" id="tts" type="checkbox" data-bind='checked: Command_saySomething,event: {change:commandOptionsChanged}' />
+												<input class="tts" id="tts" type="checkbox" data-bind='checked: Command_saySomething,event: {change:commandOptionsChanged}'
+												/>
 												<label for="tts">Speak</label>
-												<input class="playSound" id="playSound" type="checkbox" data-bind='checked: Command_displaySoundOptions,event: {change:commandOptionsChanged}' />
+												<input class="playSound" id="playSound" type="checkbox" data-bind='checked: Command_displaySoundOptions,event: {change:commandOptionsChanged}'
+												/>
 												<label for="playSound">Play sound</label>
 											</div>
 											<select class="sound animated flipInY" data-bind='options: Command_sounds,value: Command_selectedSound,visible: Command_displaySoundOptions,event: {change:commandOptionsChanged}'> </select>
@@ -213,6 +214,24 @@
 	<div class="content">
 		<h4>Are you sure you want to delete this applet?</h4>
 	</div>
+	<div class="popup-footer">
+		<button class="button alert" data-close>Cancel</button>
+		<button class="button" data-close data-bind="click: deleteApplet">Ok</button>
+	</div>
+</div>
+
+<div id="comfirm_delete" class="reveal pop" data-reveal data-animation="fade-in" data-animation-out="fade-out">
+	<div class="pop-content">
+		<h4><span class="pop-comfirm fa fa-trash-o animated bounceIn"></span><h4>
+		<h4>Deleted applet</h4>
+	</div>
+</div>
+
+<div id="comfirm_added" class="reveal pop" data-reveal data-animation="fade-in" data-animation-out="fade-out">
+	<div class="pop-content">
+		<h4><span class="pop-comfirm fa fa-plus animated bounceIn"></span><h4>
+		<h4>Added applet</h4>
+	</div>
 </div>
 
 <div id="popup_window" class="reveal" data-reveal data-animation-in="fade-in" data-animation-out="fade-out">
@@ -226,9 +245,9 @@
 				<div class="step-header">
 					<h2>Step 1: Sign in to IFTTT and go to the maker platform</h2>
 				</div>
-				<div class="step-content">
-				<a href="https://ifttt.com/login?return_to=partners_landing" class="button-orange">Sign in</a>
-				<a href="https://platform.ifttt.com/" class="button-orange">Ifttt platform</a>
+				<div class="step-content center-popup">
+					<a href="https://ifttt.com/login?return_to=partners_landing" class="button-orange">Sign in</a>
+					<a href="https://platform.ifttt.com/" class="button-orange">Ifttt platform</a>
 				</div>
 				<div class="step-footer">
 					<p class="next">Step 2 <i class="fa fa-chevron-right" aria-hidden="true"></i></p>
