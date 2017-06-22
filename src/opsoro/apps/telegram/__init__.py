@@ -171,7 +171,7 @@ data = {}
 data['messages'] = []
 #mls = None
 
-def emojis(text):
+def emojis(text,swearword):
     if('\U' in text):
         if(text.startswith('\U')):
             print(text)
@@ -214,7 +214,7 @@ def emojis(text):
                     #time.sleep(5)
     else:
         textonly = text
-        Sound.say_tts(textonly)
+        Sound.say_tts(swearword)
 
 
 def loop(api_key):
@@ -292,7 +292,7 @@ def loop(api_key):
                                     #print data
                                     #datamessages['message'] = text
                                     #print(json_data)
-                                    emojis(originaltext)
+                                    emojis(originaltext,text)
 
                                 elif(text == '/start'):
                                     print 'moet checken of toegelaten'
@@ -344,7 +344,7 @@ def loop(api_key):
                                         #datamessages['message'] = text
                                         #print(json_data)
 
-                                        emojis(originaltext)
+                                        emojis(originaltext,text)
 
                                     elif(text == '/start'):
                                         print 'moet checken of toegelaten'
