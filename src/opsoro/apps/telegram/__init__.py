@@ -51,7 +51,7 @@ def constrain(n, minn, maxn): return max(min(maxn, n), minn)
 get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 
 config = {
-    'full_name':            'Telegram',
+    'full_name':            'Chatbot',
     'author':               'howest',
     'icon':                 'fa-commenting-o',
     'color':                'orange',
