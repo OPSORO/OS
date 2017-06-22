@@ -51,7 +51,7 @@ def constrain(n, minn, maxn): return max(min(maxn, n), minn)
 get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 
 config = {
-    'full_name':            'Chatbot',
+    'full_name':            'Telegram',
     'author':               'howest',
     'icon':                 'fa-commenting-o',
     'color':                'orange',
@@ -153,6 +153,12 @@ def setup_pages(opsoroapp):
         json_data = readFile('settinglist.json')
         return jsonify(json.loads(json_data))
 
+    @telegram_bp.route('/getLastMessages', methods=['GET'])
+    def getLastMessages():
+
+        json_data = readFile('messages.json')
+        return jsonify(json.loads(json_data))
+
     def writeFile(jsonFile, data):
 
         global mls
@@ -175,15 +181,15 @@ def emojis(text,swearword):
     if('\U' in text):
         if(text.startswith('\U')):
             print(text)
-            emojitext = text.split(' ')
+            emojitext = text.split('\\')
             print emojitext
             lengthemojitext = len(emojitext)
             print lengthemojitext
             for y in range(0,lengthemojitext):
-                if('\\U0001f' in emojitext[y]):
+                if('U0001' in emojitext[y]):
                     print('emoji')
-                    print emojitext[y][5:]
-                    Expression.set_emotion_unicode(emojitext[y][5:])
+                    print emojitext[y][4:]
+                    Expression.set_emotion_unicode(emojitext[y][4:])
                     time.sleep(1)
                 else:
                     print('text')
@@ -237,6 +243,7 @@ def loop(api_key):
                         if result["message"]["text"] != '/start':
                             result["message"]["text"] = scanSwearWordsInText(result["message"]["text"])
                         text = result["message"]["text"]
+                        time = result["message"]["date"]
                         firstname = result["message"]["from"]["first_name"]
                         lastname = result["message"]["from"]["last_name"]
                         userid = result["message"]["from"]["id"]
@@ -277,11 +284,13 @@ def loop(api_key):
                                         #print 'hopsaaa'
 
                                         #pass
-                                    data['messages'].append({
+                                    data['messages'].insert(0,{
                                     'first_name' : firstname,
+                                    'last_name' : lastname,
                                     'message' : text,
-                                    "update_id" : update_id,
-                                    "maxid" : maxid
+                                    'time' : time
+                                    #"update_id" : update_id,
+                                    #"maxid" : maxid
                                     })
 
                                     send_data("messageIncomming", result)
@@ -328,11 +337,13 @@ def loop(api_key):
                                             #print 'hopsaaa'
 
                                             #pass
-                                        data['messages'].append({
+                                        data['messages'].insert(0,{
                                         'first_name' : firstname,
+                                        'last_name' : lastname,
                                         'message' : text,
-                                        "update_id" : update_id,
-                                        "maxid" : maxid
+                                        'time' : time
+                                        #"update_id" : update_id,
+                                        #"maxid" : maxid
                                         })
 
                                         send_data("messageIncomming", result)
@@ -392,10 +403,6 @@ def getTelegramApiKey():
         API_KEY = settingsList['settings']['apiKey']
 
     print(API_KEY)
-
-    # 371183808:AAH4HHCDqNkmCEavf5oxI-9wG27DNoY-m_E
-    # 407630254:AAHlEzsDH8N_N1d9NlWFZMsbNebGUKWaEqk
-
     return API_KEY;
 
 def setup(opsoroapp):
