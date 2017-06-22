@@ -3,6 +3,39 @@
 	var GeneralTelegram = function(){
 
 		var self = this;
+		var items = 15;
+
+		self.loadLastMessages = function(){
+
+			$.get('/apps/telegram/getLastMessages', function( data ) {
+				if (data != "{}") {
+					var json_data = data;
+					//console.log(GlobalcontactsDataJSON);
+					 $.each(json_data.messages, function(idx, line){
+						 if (idx < items) {
+						 	var date = new Date(line.time*1000);
+							var datetime =  date.getDate() + '/' + (date.getMonth()+1) + '/' + date.getFullYear();
+							var hours = date.getHours();
+							var minutes = "0" + date.getMinutes();
+							var seconds = "0" + date.getSeconds();
+							var formattedTime = hours + ":" + minutes.substr(-2) + ":" + seconds.substr(-2);
+
+							var name = line.first_name + " " + line.last_name;
+								$('#messages').append('<div class="chatbox chatbox_you">'+
+									'<div class="bubblebox">'+
+										'<span class="chatname">'+name+'</span>'+
+										 '<div class="bubble you">'+line.message+'</div>'+
+										'<span class="time">'+formattedTime+'</span>'+
+									'</div>'+
+									'<span class="bubble_head"></span>'+
+									'<!--<a href="#" class="repeat"></a>-->'+
+								'</div>')
+							}
+					 });
+				 }
+			});
+		};
+
 		app_socket_handler = function(data) {
 			switch (data.action) {
 				case "messageIncomming":
@@ -14,7 +47,7 @@
 
 				var contactsName, cotnactsLastname;
 				var contactsNotExist = true;
-				console.log(message);
+				//console.log(message);
 
 				$.get('/apps/telegram/getcontacts', function( data ) {
 					if (data != "{}") {
@@ -61,24 +94,29 @@
 					// 	'</div>'
 					// 	); // unshifts -> pusht naar eerste element
 					// }else{
-						console.log("person");
+						//console.log("person");
 						$('#messages').prepend('<div class="chatbox chatbox_you">'+
 							'<div class="bubblebox">'+
 								'<span class="chatname">'+name+'</span>'+
 								 '<div class="bubble you">'+message+'</div>'+
-								'<span class="time">'+datetime+'</span>'+
+								'<span class="time">'+formattedTime+'</span>'+
 							'</div>'+
 							'<span class="bubble_head"></span>'+
 							'<!--<a href="#" class="repeat"></a>-->'+
 						'</div>'
 						); // unshifts -> pusht naar eerste element
 					//}
+					console.log($('.chatbox').length);
+					for( var i=0; i< $('.chatbox').length - items; i++){
+					     $('.chatbox').eq(-1).remove();
+					}
 
 	      	console.log(data)
 				}
       	break;
     	default:
 			}
+
 			return;
 	}}
 
@@ -436,6 +474,7 @@
 		model.contacts().loadContacts();
 		model.bans().loadbans();
 		model.settings().loadApiKey()
+		model.general().loadLastMessages();
 	}
 
 	loadingNew = function(){
