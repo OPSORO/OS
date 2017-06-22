@@ -11,12 +11,12 @@ import threading
 import json
 import sys
 import time
-import telepot
-from telepot.loop import MessageLoop
+#import telepot
+#from telepot.loop import MessageLoop
 from pprint import pprint
-#from opsoro.telepot import loop
-#from opsoro.telepot.loop import MessageLoop
-#from opsoro.telepot import *
+from opsoro.telepot import loop
+from opsoro.telepot.loop import MessageLoop
+from opsoro.telepot import *
 from opsoro.telepot import Bot
 from opsoro.apps.blacklist import scanSwearWordsInText
 from opsoro.apps.blacklist import scanSwearWordsInText
@@ -171,6 +171,52 @@ data = {}
 data['messages'] = []
 #mls = None
 
+def emojis(text):
+    if('\U' in text):
+        if(text.startswith('\U')):
+            print(text)
+            emojitext = text.split(' ')
+            print emojitext
+            lengthemojitext = len(emojitext)
+            print lengthemojitext
+            for y in range(0,lengthemojitext):
+                if('\\U0001f' in emojitext[y]):
+                    print('emoji')
+                    print emojitext[y][5:]
+                    Expression.set_emotion_unicode(emojitext[y][5:])
+                    time.sleep(1)
+                else:
+                    print('text')
+                    print(emojitext[y])
+                    Sound.say_tts(emojitext[y])
+                    print ('test')
+
+        else:
+            print('text + emoji')
+            print(text)
+            emojitext = text.split('\U')
+            print(emojitext)
+            lengthemojitext = len(emojitext)
+            print lengthemojitext
+            for y in range(0,lengthemojitext):
+                print y
+                if('000' in emojitext[y]):
+                    print('emoji')
+                    print emojitext[y][3:]
+                    Expression.set_emotion_unicode(emojitext[y][3:])
+                    time.sleep(5)
+
+                else:
+                    print('text')
+                    print emojitext[y]
+                    Sound.say_tts(emojitext[y])
+                    print ('test')
+                    #time.sleep(5)
+    else:
+        textonly = text
+        Sound.say_tts(textonly)
+
+
 def loop(api_key):
 
             localApiKey = ''
@@ -186,8 +232,10 @@ def loop(api_key):
                     u.close
                     update_ids = []
                     for result in z['result']:
-                        #if result["message"]["text"] != '/start':
-                            #result["message"]["text"] = scanSwearWordsInText(result["message"]["text"])
+                        originaltext = result["message"]["text"]
+                        originaltext = originaltext.encode('unicode_escape')
+                        if result["message"]["text"] != '/start':
+                            result["message"]["text"] = scanSwearWordsInText(result["message"]["text"])
                         text = result["message"]["text"]
                         firstname = result["message"]["from"]["first_name"]
                         lastname = result["message"]["from"]["last_name"]
@@ -244,51 +292,8 @@ def loop(api_key):
                                     #print data
                                     #datamessages['message'] = text
                                     #print(json_data)
+                                    emojis(originaltext)
 
-                                    if('\U' in text):
-                                        if(text.startswith('\U')):
-                                            print(text)
-                                            emojitext = text.split(' ')
-                                            print emojitext
-                                            lengthemojitext = len(emojitext)
-                                            print lengthemojitext
-                                            for y in range(0,lengthemojitext):
-                                                if('\\U0001f' in emojitext[y]):
-                                                    print('emoji')
-                                                    print emojitext[y][5:]
-                                                    Expression.set_emotion_unicode(emojitext[y][5:])
-                                                    time.sleep(1)
-                                                else:
-                                                    print('text')
-                                                    print(emojitext[y])
-                                                    Sound.say_tts(emojitext[y])
-                                                    print ('test')
-
-                                        else:
-                                            print('text + emoji')
-                                            print(text)
-                                            emojitext = text.split('\U')
-                                            print(emojitext)
-                                            lengthemojitext = len(emojitext)
-                                            print lengthemojitext
-                                            for y in range(0,lengthemojitext):
-                                                print y
-                                                if('000' in emojitext[y]):
-                                                    print('emoji')
-                                                    print emojitext[y][3:]
-                                                    Expression.set_emotion_unicode(emojitext[y][3:])
-                                                    time.sleep(5)
-
-                                                else:
-                                                    print('text')
-                                                    print emojitext[y]
-                                                    Sound.say_tts(emojitext[y])
-                                                    print ('test')
-                                                    #time.sleep(5)
-
-                                    else:
-                                        textonly = text
-                                        Sound.say_tts(textonly)
                                 elif(text == '/start'):
                                     print 'moet checken of toegelaten'
                                         #pass
@@ -339,49 +344,8 @@ def loop(api_key):
                                         #datamessages['message'] = text
                                         #print(json_data)
 
-                                        if('\U' in text):
-                                            if(text.startswith('\U')):
-                                                print(text)
-                                                emojitext = text.split(' ')
-                                                print emojitext
-                                                lengthemojitext = len(emojitext)
-                                                print lengthemojitext
-                                                for y in range(0,lengthemojitext):
-                                                    if('\\U0001f' in emojitext[y]):
-                                                        print('emoji')
-                                                        print emojitext[y][5:]
-                                                        Expression.set_emotion_unicode(emojitext[y][5:])
-                                                        time.sleep(1)
-                                                    else:
-                                                        print('text')
-                                                        print(emojitext[y])
-                                                        #Sound.say_tts(emojitext[y])
-                                                        print ('test')
+                                        emojis(originaltext)
 
-                                            else:
-                                                print('text + emoji')
-                                                print(text)
-                                                emojitext = text.split('\U000')
-                                                print(emojitext)
-                                                lengthemojitext = len(emojitext)
-                                                print lengthemojitext
-                                                for y in range(0,lengthemojitext):
-                                                    print y
-                                                    if('1f' in emojitext[y]):
-                                                        print('emoji')
-                                                        print emojitext[y]
-                                                        Expression.set_emotion_unicode(emojitext[y])
-
-                                                    else:
-                                                        print('text')
-                                                        print emojitext[y]
-                                                        #Sound.say_tts(emojitext[y])
-                                                        print ('test')
-
-
-                                        else:
-                                            textonly = text
-                                            #Sound.say_tts(textonly)
                                     elif(text == '/start'):
                                         print 'moet checken of toegelaten'
                                             #pass
@@ -392,11 +356,11 @@ def loop(api_key):
 
 
 
-                bot = telepot.Bot(localApiKey)
-                # global mls
-                # mls = MessageLoop(bot,handle)
-                # mls.start_threads()
-                MessageLoop(bot,handle).run_as_thread()
+                bot = Bot(localApiKey)
+                global mls
+                mls = MessageLoop(bot,handle)
+                mls.start_threads()
+                #MessageLoop(bot,handle).run_as_thread()
 
 def readFile(jsonFile):
 
@@ -453,5 +417,5 @@ def stop(opsoroapp):
     # # global MessageLoop
     # StoppableThread.stop(opsoroapp)
     # print("stop")
-    #mls.stop_threads()
-     pass
+    mls.stop_threads()
+     #pass
