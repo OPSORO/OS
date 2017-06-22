@@ -3,7 +3,7 @@
 	var GeneralTelegram = function(){
 
 		var self = this;
-		var items = 3;
+		var items = 10;
 
 		self.loadLastMessages = function(){
 
@@ -63,57 +63,58 @@
 					 }
 				});
 
-				$.delay(1000);
-				//name
-				if (contactsNotExist && message == "/start" ) {
+				setTimeout(function(){
 
-						model.popup().newContact(firstname, lastname, id);
-				}else if( message == "/start" ){
+					//name
+					if (contactsNotExist && message == "/start" ) {
+
+							model.popup().newContact(firstname, lastname, id);
+					}else if( message == "/start" ){
 
 
-					// do nothing
-				}else{
-					//convert timestamp to readable time and date
-	        var date = new Date(timestamp*1000);
-	        var datetime =  date.getDate() + '/' + (date.getMonth()+1) + '/' + date.getFullYear();
-	        var hours = date.getHours();
-	        var minutes = "0" + date.getMinutes();
-	        var seconds = "0" + date.getSeconds();
-	        var formattedTime = hours + ":" + minutes.substr(-2) + ":" + seconds.substr(-2);
+						// do nothing
+					}else{
+						//convert timestamp to readable time and date
+		        var date = new Date(timestamp*1000);
+		        var datetime =  date.getDate() + '/' + (date.getMonth()+1) + '/' + date.getFullYear();
+		        var hours = date.getHours();
+		        var minutes = "0" + date.getMinutes();
+		        var seconds = "0" + date.getSeconds();
+		        var formattedTime = hours + ":" + minutes.substr(-2) + ":" + seconds.substr(-2);
 
-	        var name = firstname + " " + lastname;
-	      	//$('#messages').prepend('<div id="message"><p>'+message+'</p><p id="name">'+name+'</p><p id="date">'+datetime+'</p></div>'); // unshifts -> pusht naar eerste element
-					// if ("bot" == "robot") {
-					// 	console.log("robot");
-					// 	$('#messages').prepend('<div class="chatbox chatbox_me">'+
-					// 		'<div class="bubblebox">'+
-					// 			'<span class="chatname">'+name+'</span>'+
-					// 			 '<div class="bubble me">'+message+'</div>'+
-					// 			'<span class="time">'+datetime+'</span>'+
-					// 		'</div>'+
-					// 		'<span class="bubble_head"></span>'+
-					// 	'</div>'
-					// 	); // unshifts -> pusht naar eerste element
-					// }else{
-						//console.log("person");
-						$('#messages').prepend('<div class="chatbox chatbox_you">'+
-							'<div class="bubblebox">'+
-								'<span class="chatname">'+name+'</span>'+
-								 '<div class="bubble you">'+message+'</div>'+
-								'<span class="time">'+formattedTime+'</span>'+
-							'</div>'+
-							'<span class="bubble_head"></span>'+
-							'<!--<a href="#" class="repeat"></a>-->'+
-						'</div>'
-						); // unshifts -> pusht naar eerste element
-					//}
-					console.log($('.chatbox').length);
-					for( var i=0; i< $('.chatbox').length - items; i++){
-					     $('.chatbox').eq(-1).remove();
+		        var name = firstname + " " + lastname;
+		      	//$('#messages').prepend('<div id="message"><p>'+message+'</p><p id="name">'+name+'</p><p id="date">'+datetime+'</p></div>'); // unshifts -> pusht naar eerste element
+						// if ("bot" == "robot") {
+						// 	console.log("robot");
+						// 	$('#messages').prepend('<div class="chatbox chatbox_me">'+
+						// 		'<div class="bubblebox">'+
+						// 			'<span class="chatname">'+name+'</span>'+
+						// 			 '<div class="bubble me">'+message+'</div>'+
+						// 			'<span class="time">'+datetime+'</span>'+
+						// 		'</div>'+
+						// 		'<span class="bubble_head"></span>'+
+						// 	'</div>'
+						// 	); // unshifts -> pusht naar eerste element
+						// }else{
+							//console.log("person");
+							$('#messages').prepend('<div class="chatbox chatbox_you">'+
+								'<div class="bubblebox">'+
+									'<span class="chatname">'+name+'</span>'+
+									 '<div class="bubble you">'+message+'</div>'+
+									'<span class="time">'+formattedTime+'</span>'+
+								'</div>'+
+								'<span class="bubble_head"></span>'+
+								'<!--<a href="#" class="repeat"></a>-->'+
+							'</div>'
+							); // unshifts -> pusht naar eerste element
+						//}
+						//console.log($('.chatbox').length);
+						for( var i=0; i< $('.chatbox').length - items; i++){
+						     $('.chatbox').eq(-1).remove();
+						}
+
 					}
-
-	      	console.log(data)
-				}
+				}, 500);
       	break;
     	default:
 			}
