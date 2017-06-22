@@ -200,7 +200,7 @@
 		self.save = function(){
 
 			$( "#error_contacts").empty();
-			if (self.conName().length < 20 && self.lastname().length < 20 ) {
+			if ((self.conName().length != '' && self.lastname().length != '' ) && (self.conName().length < 20 && self.lastname().length < 20) ) {
 
 				var data_line = {
 			    name : self.conName(),
