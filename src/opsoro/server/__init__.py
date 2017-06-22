@@ -108,6 +108,7 @@ class Server(object):
       IOLoop.instance().start()
     except KeyboardInterrupt:
       print_info('Keyboard interupt')
+      self.at_exit()
 
   def shutdown(self):
     logging.info("Stopping server")
