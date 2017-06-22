@@ -142,6 +142,21 @@ def setup_pages(server):
         }
         Users.send_app_data(config['formatted_name'], "AppletAdded", response)
     
+    #save command
+    @server.app_socket_message('savecommand')
+    def saveCommand(conn, data):
+        filename = os.path.join(app_bp.static_folder+'/json/', 'Commands.json')      
+        with open(filename, 'r') as read_file:
+                json_data = json.load(read_file)
+                json_data['Commands'].append(data['data']['command'])   
+        with open(filename, 'w') as write_file:
+            write_file.write(json.dumps(json_data))
+        
+        response = {
+            'data': "Command added..."
+        }
+        Users.send_app_data(config['formatted_name'], "CommandAdded", response)
+    
     #remove applet
     @server.app_socket_message('deleteapplet')
     def deleteApplet(conn,data):
@@ -162,7 +177,26 @@ def setup_pages(server):
         }
         Users.send_app_data(config['formatted_name'], "AppletRemoved", response)
 
-    
+    #remove command
+    @server.app_socket_message('deletecommand')
+    def deleteCommand(conn,data):
+        removed_command = data['data']['command-id']
+        filename = os.path.join(app_bp.static_folder+'/json/', 'Commands.json')
+        with open(filename, 'r') as read_file:
+            json_data = json.load(read_file)
+            commands = json_data['Commands']
+            for command in xrange(len(commands)):
+                if commands[command]["Command_id"] == removed_command:
+                    commands.pop(command)
+                    break
+            json_data['Commands'] = commands
+        with open(filename, 'w') as write_file:
+            write_file.write(json.dumps(json_data))
+        response = {
+            'data': removed_command
+        }
+        Users.send_app_data(config['formatted_name'], "CommandRemoved", response)
+
     #toevoegen van command via websocket
     @server.app_socket_message('command')
     def socket_command(conn, data):
@@ -285,7 +319,7 @@ def CommandLoop():
                 data = {
                      "value1": command['command-message']
                 }
-                requests.post("https://maker.ifttt.com/trigger/"+command['command-eventname']+"/with/key/b4mn_DZW0F-ERF-VIpE3r",data)  
+                requests.post("https://maker.ifttt.com/trigger/"+command['command-eventname']+"/with/key/"+command['command-makerkey'],data)  
             if command['command-hasTTS']:
                 Sound.wait_for_sound()
                 Sound.say_tts(command['command-say'])

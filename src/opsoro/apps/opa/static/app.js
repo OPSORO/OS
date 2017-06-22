@@ -1,14 +1,37 @@
 $(document).ready(function () {
 
+    console.log("Coded by Ruben Verschuere, Mathias Haeck & Sander Vervaeke");
     $("#slideshow > div:gt(0)").hide();
+    $("#slideshowCommand > div:gt(0)").hide();
 
-    $('.next').click(function () {
-        $('#slideshow > div:first')
-            .fadeOut(0)
-            .next()
-            .fadeIn(0)
-            .end()
-            .appendTo('#slideshow');
+    var vorigeDiv = $('#slideshow > div:first');
+    var vorigeCommandDiv = $('#slideshowCommand > div:first');
+
+    $('.next').click(function (e) {
+        if ($(this).closest('.step').parent().attr('id') == "slideshow") {
+            $('#slideshow > div').css('display', 'none');
+            $(this).closest('.step').next().css('display', 'flex')
+            vorigeDiv = $(this).closest('.step');
+        }
+        else {
+            $('#slideshowCommand > div').css('display', 'none');
+            $(this).closest('.step').next().css('display', 'flex')
+            vorigeCommandDiv = $(this).closest('.step');
+        }
+    })
+
+
+    $('.previous').click(function () {
+        if ($(this).closest('.step').parent().attr('id') == "slideshow") {
+            $('#slideshow > div').css('display', 'none');
+            vorigeDiv.css('display', 'flex');
+            vorigeDiv = vorigeDiv.prev();
+        }
+        else {
+            $('#slideshowCommand > div').css('display', 'none');
+            vorigeCommandDiv.css('display', 'flex');
+            vorigeCommandDiv = vorigeCommandDiv.prev();
+        }
     })
 
     //Websockets
@@ -67,6 +90,19 @@ $(document).ready(function () {
                     $("#comfirm_added").foundation('close');
                 }, 1200);
             }
+            else if (data.data.action == "CommandAdded") {
+                $("#comfirm_addedCommand").foundation('open');
+                setTimeout(function () {
+                    $("#comfirm_addedCommand").foundation('close');
+                }, 1200);
+            }
+            else if (data.data.action == "CommandRemoved") {
+                $("#comfirm_deleteCommand").foundation('open');
+                setTimeout(function () {
+                    $("#comfirm_deleteCommand").foundation('close');
+                }, 1200);
+                $('#' + data.data.data).remove();
+            }
             else if (data.data.action == "MessageResponse") {
                 console.log(data.data.data);
             }
@@ -98,11 +134,12 @@ $(document).ready(function () {
             'command-message': command.find('.message').val(),
             'command-type': command.find('.type').val(),
             'command-eventname': command.find('.eventname').val(),
-            'command-expression': expression,
+            'command-expression': command.find('.expression').val(),
             'command-hasTTS': command.find('.tts').is(':checked'),
             'command-say': command.find('.say').val(),
             'command-hasSound': command.find('.playSound').is(':checked'),
-            'command-sound': command.find('.sound').val()
+            'command-sound': command.find('.sound').val(),
+            'command-makerkey': command.find('.makerkey').val()
         }
 
         conn.send(JSON.stringify({
@@ -136,7 +173,7 @@ $(document).ready(function () {
     }
 
     function Command(Command_id, Command_name, Command_color, Command_description, Command_uses
-        , Command_type, Command_eventname, Command_customizeable, Command_expressions, Command_selectedReaction, Command_say
+        , Command_type, Command_eventname, Command_makerkey, Command_customizeable, Command_expressions, Command_selectedReaction, Command_say
         , Command_saySomething, Command_sounds, Command_selectedSound, Command_displaySoundOptions, Command_displayOptions, Command_message) {
         this.Command_id = Command_id;
         this.Command_name = Command_name;
@@ -145,10 +182,11 @@ $(document).ready(function () {
         this.Command_uses = Command_uses;
         this.Command_type = Command_type;
         this.Command_eventname = Command_eventname;
+        this.Command_makerkey = Command_makerkey;
         this.Command_customizeable = Command_customizeable;
+        this.Command_say = Command_say;
         this.Command_expressions = Command_expressions;
         this.Command_selectedReaction = ko.observable(Command_selectedReaction);
-        this.Command_say = Command_say;
         this.Command_saySomething = Command_saySomething;
         this.Command_sounds = Command_sounds;
         this.Command_selectedSound = ko.observable(Command_selectedSound);
@@ -170,7 +208,8 @@ $(document).ready(function () {
                 'command-hasTTS': command.find('.tts').is(':checked'),
                 'command-say': command.find('.say').val(),
                 'command-hasSound': command.find('.playSound').is(':checked'),
-                'command-sound': command.find('.sound').val()
+                'command-sound': command.find('.sound').val(),
+                'command-makerkey': command.find('.makerkey').val()
             }
             //als de localstorage entry al bestaat vervang deze
             if (exists) {
@@ -181,6 +220,9 @@ $(document).ready(function () {
             }
 
         }
+        this.commandDelete = function (data) {
+            $("#popup_deleteCommand").foundation('open').data('id', data['Command_id']);
+        }
 
     }
 
@@ -190,6 +232,16 @@ $(document).ready(function () {
         this.NewApplet_url = ko.observable('');
         this.NewApplet_categorie = ko.observable('');
         this.NewApplet_logo = ko.observable('');
+    }
+
+    function NewCommand() {
+        this.NewCommand_name = ko.observable('');
+        this.NewCommand_description = ko.observable('');
+        this.NewCommand_uses = ko.observable('');
+        this.NewCommand_eventname = ko.observable('');
+        this.NewCommand_makerkey = ko.observable('');
+        this.NewCommand_say = ko.observable('');
+        this.NewCommand_Customizeable = ko.observable();
     }
 
     function findIndexOfKey(searchKey) {
@@ -206,6 +258,8 @@ $(document).ready(function () {
     var listOfExpressions = [];
     var listOfSounds = [];
     var queue = [];
+
+    var makerKey;
 
     $.when(
         $.get("/apps/opa/getapplets", function (data) {
@@ -239,7 +293,7 @@ $(document).ready(function () {
                     console.log();
                     listOfCommands.push(new Command(item.Command_id, item.Command_name, item.Command_color
                         , item.Command_description, item.Command_uses, item.Command_type,
-                        item.Command_eventname, item.Command_customizeable, listOfExpressions,
+                        item.Command_eventname, item.Command_makerkey, item.Command_customizeable, listOfExpressions,
                         storedValues['command-expression'], item.Command_say, storedValues['command-hasTTS'],
                         listOfSounds, storedValues['command-sound'], storedValues['command-hasSound'],
                         false, storedValues['command-message']));
@@ -247,7 +301,7 @@ $(document).ready(function () {
                 else {
                     listOfCommands.push(new Command(item.Command_id, item.Command_name, item.Command_color
                         , item.Command_description, item.Command_uses, item.Command_type,
-                        item.Command_eventname, item.Command_customizeable, listOfExpressions,
+                        item.Command_eventname, item.Command_makerkey, item.Command_customizeable, listOfExpressions,
                         "neutral", item.Command_say, true, listOfSounds, "1_kamelenrace.wav", false, false, ""));
                 }
             });
@@ -278,6 +332,12 @@ $(document).ready(function () {
             commandQuery: ko.observable(""),
             appletQuery: ko.observable(""),
             newApplet: NewApplet,
+            newCommand: NewCommand,
+            availableCommandTypes: ko.observableArray([
+                "robot",
+                "ifttt"
+            ]),
+            selectedCommandType: ko.observable(),
             colorpicker: ko.observable('orange'),
 
             applet_zin1: ko.observable(''),
@@ -333,6 +393,56 @@ $(document).ready(function () {
                 action: "deleteapplet",
                 data: data
             }));
+        }
+        viewModel.deleteCommand = function () {
+            var id = $("#popup_deleteCommand").data('id');
+            data = {
+                'command-id': id
+            }
+            conn.send(JSON.stringify({
+                action: "deletecommand",
+                data: data
+            }));
+        }
+        viewModel.addCommand = function (form) {
+            var unique_id = new Date().getTime();
+            if (!viewModel.newCommand.NewCommand_Customizeable) {
+                viewModel.newCommand.NewCommand_Customizeable = false;
+            } 
+            var uses;
+            if (!viewModel.newCommand.NewCommand_uses){
+                viewModel.newCommand.NewCommand_uses = "Opsoro"
+            }
+            var a = new Command(
+                unique_id,
+                viewModel.newCommand.NewCommand_name,
+                viewModel.colorpicker(),
+                viewModel.newCommand.NewCommand_description,
+                viewModel.newCommand.NewCommand_uses,
+                viewModel.selectedCommandType,
+                viewModel.newCommand.NewCommand_eventname,
+                viewModel.newCommand.NewCommand_makerkey,
+                viewModel.newCommand.NewCommand_Customizeable,
+                listOfExpressions,
+                "neutral",
+                viewModel.newCommand.NewCommand_say,
+                true,
+                listOfSounds,
+                "1_kamelenrace.wav",
+                false,
+                false,
+                ""
+            )
+            localStorage.setItem("makerKey", viewModel.newCommand.NewCommand_makerkey); //save makerkey
+            viewModel.commands.push(a);
+            data = {
+                'command': a
+            }
+            conn.send(JSON.stringify({
+                action: "savecommand",
+                data: data
+            }));
+
         }
 
         viewModel.addApplet = function (form) {
@@ -411,19 +521,29 @@ $(document).ready(function () {
             }
         };
 
-        viewModel.commandQuery.subscribe(viewModel.search);
-        ko.applyBindings(viewModel);
-
         viewModel.showPopup = function () {
             $("#popup_window").foundation('open');
-
+        };
+        viewModel.showCommandPopup = function () {
+            $("#commandPopup_window").foundation('open');
         };
         viewModel.closePopup = function () {
             $("#popup_window").foundation('close');
         };
+        viewModel.closeCommandPopup = function () {
+            $("#commandPopup_window").foundation('close');
+        };
+
+        viewModel.commandQuery.subscribe(viewModel.search);
+        ko.applyBindings(viewModel);
+
+
 
         $('#addApplet').removeClass('hidden');
         $('#addApplet').appendTo('#appletsGrid');
+
+        $('#addCommand').removeClass('hidden');
+        $('#addCommand').appendTo('#cmdgrid');
 
 
         document.getElementById("copyButton").addEventListener("click", function () {

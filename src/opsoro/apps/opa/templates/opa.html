@@ -136,9 +136,11 @@
 												<label for="playSound">Play sound</label>
 											</div>
 											<select class="sound animated flipInY" data-bind='options: Command_sounds,value: Command_selectedSound,visible: Command_displaySoundOptions,event: {change:commandOptionsChanged}'> </select>
+											<span class="command-delete fa fa-trash-o" data-bind="click: commandDelete"></span>
 											<input type="hidden" data-bind="value: Command_say" class="say"></input>
 											<input type="hidden" data-bind="value: Command_type" class="type"></input>
 											<input type="hidden" data-bind="value: Command_eventname" class="eventname"></input>
+											<input type="hidden" data-bind="value: Command_makerkey" class="makerkey"></input>
 										</div>
 										<div class="animated flipInY" data-bind="visible: !Command_displayOptions()">
 											<p data-bind="text: Command_message"></p>
@@ -194,7 +196,15 @@
 <!-- Add applet -->
 <div id="addApplet" class="hidden">
 	<a data-bind="click: showPopup">
-		<div class="addApplet">
+		<div class="addElement">
+			<span class="fa fa-plus" aria-hidden="true"></span>
+		</div>
+	</a>
+</div>
+<!-- add command -->
+<div id="addCommand" class="hidden">
+	<a data-bind="click: showCommandPopup">
+		<div class="addElement">
 			<span class="fa fa-plus" aria-hidden="true"></span>
 		</div>
 	</a>
@@ -220,20 +230,160 @@
 	</div>
 </div>
 
+<div id="popup_deleteCommand" class="reveal" data-reveal data-animation-in="fade-in" data-animation-out="fade-out">
+	<div class="titlebar">
+		<button class="close-button" data-close aria-label="Close" type="button"><span class="fa fa-close"></span></button>
+		<span class="fa fa-exclamation-triangle"></span> Remove Command
+	</div>
+	<div class="content">
+		<h4>Are you sure you want to delete this command?</h4>
+	</div>
+	<div class="popup-footer">
+		<button class="button alert" data-close>Cancel</button>
+		<button class="button" data-close data-bind="click: deleteCommand">Ok</button>
+	</div>
+</div>
+
 <div id="comfirm_delete" class="reveal pop" data-reveal data-animation="fade-in" data-animation-out="fade-out">
 	<div class="pop-content">
-		<h4><span class="pop-comfirm fa fa-trash-o animated bounceIn"></span><h4>
-		<h4>Deleted applet</h4>
+		<h4><span class="pop-comfirm pop-comfirm-alert fa fa-trash-o animated bounceIn"></span>
+			<h4>
+				<h4>Deleted applet</h4>
 	</div>
 </div>
 
 <div id="comfirm_added" class="reveal pop" data-reveal data-animation="fade-in" data-animation-out="fade-out">
 	<div class="pop-content">
-		<h4><span class="pop-comfirm fa fa-plus animated bounceIn"></span><h4>
-		<h4>Added applet</h4>
+		<h4><span class="pop-comfirm fa fa-plus animated bounceIn"></span>
+			<h4>
+				<h4>Added applet</h4>
 	</div>
 </div>
 
+<div id="comfirm_deleteCommand" class="reveal pop" data-reveal data-animation="fade-in" data-animation-out="fade-out">
+	<div class="pop-content">
+		<h4><span class="pop-comfirm pop-comfirm-alert fa fa-trash-o animated bounceIn"></span>
+			<h4>
+				<h4>Deleted command</h4>
+	</div>
+</div>
+
+<div id="comfirm_addedCommand" class="reveal pop" data-reveal data-animation="fade-in" data-animation-out="fade-out">
+	<div class="pop-content">
+		<h4><span class="pop-comfirm fa fa-plus animated bounceIn"></span>
+			<h4>
+				<h4>Added command</h4>
+	</div>
+</div>
+
+<!-- Command popup window -->
+<div id="commandPopup_window" class="reveal" data-reveal data-animation-in="fade-in" data-animation-out="fade-out">
+	<div class="titlebar">
+		<button class="close-button" data-close aria-label="Close" type="button"><span class="fa fa-close"></span></button>
+		<span class="fa fa-cogs"></span> Create Command
+	</div>
+	<div class="content">
+		<div id="slideshowCommand">
+			<div class="step">
+				<div class="step-header">
+					<h2>Step 1: Sign in to IFTTT and go to the maker platform</h2>
+				</div>
+				<div class="step-content center-popup">
+					<a href="https://ifttt.com/login?return_to=partners_landing" class="button-orange">Sign in</a>
+					<a href="https://platform.ifttt.com/" class="button-orange">Ifttt platform</a>
+				</div>
+				<div class="step-footer">
+					<p></p>
+					<p class="next">Step 2 <i class="fa fa-chevron-right" aria-hidden="true"></i></p>
+				</div>
+			</div>
+			<div class="step">
+				<div class="step-header">
+					<h2>Step 2: Create a new private applet</h2>
+				</div>
+				<div class="step-content">
+					<ul>
+						<li>1. Choose <span class="text-bold">Maker Webhook </span> as trigger</li>
+						<li>2. Select <span class="text-bold">receive a web request </span> for the webhook</li>
+						<li>
+							3. Next up <span class="text-bold">give your event a name</span> by typing it in the default value for the event name
+							field. Leave the field label to default.<span class="text-muted">If you're not sure what to name your event skip this step and go to step 5 first.
+							It's better to give your event a name according to the action you pick.
+							</span>
+						</li>
+						<li>4. <span class="text-bold">Copy</span> the eventname to your clipboard you'll need it later.</li>
+						<li>5. Last but not least you can<span class="text-bold">Choose an action</span> also give your applet a title and description</li>
+						<li>6. <span class="text-bold">Save</span></li>
+					</ul>
+				</div>
+				<div class="step-footer">
+					<p class="previous"> <i class="fa fa-chevron-left" aria-hidden="true"></i> Step 1 </p>
+					<p class="next">Step 3 <i class="fa fa-chevron-right" aria-hidden="true"></i></p>
+				</div>
+			</div>
+			<div class="step">
+				<div class="step-header">
+					<h2>Step 3: Add Command to robot </h2>
+				</div>
+				<div class="step-content">
+					<form data-bind="submit: addCommand">
+						
+						
+						<p class="orange text-bold">Give your command a name.</p>
+						<input type="text" placeholder="Command name.." data-bind="textInput: newCommand.NewCommand_name">
+
+						<p class="orange text-bold">Define your speech command.</p>
+						<input type="text" placeholder="Speech command.." data-bind="textInput: newCommand.NewCommand_description">
+						<p class="text-muted">Example: if you fill in "Hello Robot" for example you can activate this command by saying "Hello Robot" in speech recognition.</p>
+						
+						<p class="orange text-bold">Select a command type.</p>
+						<select data-bind="options: availableCommandTypes,value: selectedCommandType"></select>
+						<p class="text-muted">Note: do you want to use ifttt or a robot command</p>
+
+						<!-- DO NOT DELETE next commentary it's part of the code'-->
+
+						<!-- ko  if: selectedCommandType() == "ifttt" -->
+							<p class="orange text-bold">Enter your maker event name.</p>
+							<input type="text" placeholder="Command event name.." data-bind="textInput: newCommand.NewCommand_eventname">
+							<p class="text-muted">Note: you copied this earlier so it should be in your clipboard</p>
+
+							<p class="orange text-bold">Enter your maker key.</p>
+							<input type="text" placeholder="Enter your maker key.." data-bind="textInput: newCommand.NewCommand_makerkey">
+							<p class="text-muted">Note: You can find your maker key under documentation <a class="text-bold" href="https://ifttt.com/maker_webhooks">here</a></p>
+
+							<p class="orange text-bold">What service do you use?</p>
+							<input type="text" placeholder="What service do you use.." data-bind="textInput: newCommand.NewCommand_uses">
+							
+							<p class="orange text-bold">Can you pass a custom message to ifttt</p>
+							<input id="newCommandMessage" class="animated bounceIn" type="checkbox" data-bind='checked: newCommand.NewCommand_Customizeable'
+							/>
+							<label for="newCommandMessage" class="animated bounceIn">Value1</label>
+						<!--/ko-->
+
+						<p class="orange text-bold">What does the robot say when you use this command</p>
+						<input type="text" placeholder="What does the robot say.." data-bind="textInput: newCommand.NewCommand_say">
+						<!-- ko  if: selectedCommandType() == "ifttt" -->
+						<p class="text-muted">
+							Hint: you are passing a value to ifttt. If the value is a song for example, you want to enter something like "play song"
+							here.
+						</p>
+						<!--/ko-->
+						<p class="orange text-bold">Pick a color for your applet</p>
+						<input type="text" placeholder="e.g.,#000000,red" data-bind="textInput: colorpicker">
+						<div class="colorpicker" data-bind="style: { 'background-color': colorpicker }"></div>
+						<button class="button applet-submit" data-close="" type="submit">Add Applet</button>
+					</form>
+				</div>
+				<div class="step-footer">
+					<p class="previous"> <i class="fa fa-chevron-left" aria-hidden="true"></i> Step 2 </p>
+					<p></p>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- applet popup window -->
 <div id="popup_window" class="reveal" data-reveal data-animation-in="fade-in" data-animation-out="fade-out">
 	<div class="titlebar">
 		<button class="close-button" data-close aria-label="Close" type="button"><span class="fa fa-close"></span></button>
@@ -244,12 +394,15 @@
 			<div class="step">
 				<div class="step-header">
 					<h2>Step 1: Sign in to IFTTT and go to the maker platform</h2>
+					<p class="text-muted">Note: If you are already logged in you can skip this step.</p>
 				</div>
 				<div class="step-content center-popup">
+
 					<a href="https://ifttt.com/login?return_to=partners_landing" class="button-orange">Sign in</a>
 					<a href="https://platform.ifttt.com/" class="button-orange">Ifttt platform</a>
 				</div>
 				<div class="step-footer">
+					<p></p>
 					<p class="next">Step 2 <i class="fa fa-chevron-right" aria-hidden="true"></i></p>
 				</div>
 			</div>
@@ -273,6 +426,7 @@
 
 				</div>
 				<div class="step-footer">
+					<p class="previous"> <i class="fa fa-chevron-left" aria-hidden="true"></i> Step 1 </p>
 					<p class="next">Step 3 <i class="fa fa-chevron-right" aria-hidden="true"></i></p>
 				</div>
 			</div>
@@ -308,6 +462,7 @@
 
 				</div>
 				<div class="step-footer">
+					<p class="previous"> <i class="fa fa-chevron-left" aria-hidden="true"></i> Step 2 </p>
 					<p class="next">Step 4 <i class="fa fa-chevron-right" aria-hidden="true"></i></p>
 				</div>
 			</div>
@@ -319,7 +474,7 @@
 					<form data-bind="submit: addApplet">
 						<input type="text" placeholder="Applet name.." data-bind="textInput: newApplet.NewApplet_name">
 						<input type="text" placeholder="Applet id.." data-bind="textInput: newApplet.NewApplet_url">
-						<p class="text-muted">Note: The applet id can you find on the page of your private applet on the ifttt platform</p>
+						<p class="text-muted">Note: You can find the applet id on your private applets page of the ifttt platform</p>
 						<input type="text" placeholder="e.g.,#000000,red" data-bind="textInput: colorpicker">
 						<div class="colorpicker" data-bind="style: { 'background-color': colorpicker }">
 						</div>
@@ -328,7 +483,8 @@
 					</form>
 				</div>
 				<div class="step-footer">
-					<p class="next">Step 1 <i class="fa fa-chevron-right" aria-hidden="true"></i></p>
+					<p class="previous"> <i class="fa fa-chevron-left" aria-hidden="true"></i> Step 4 </p>
+					<p></p>
 				</div>
 			</div>
 		</div>
