@@ -11,8 +11,6 @@ import threading
 import json
 import sys
 import time
-#import telepot
-#from telepot.loop import MessageLoop
 from pprint import pprint
 from opsoro.telepot import loop
 from opsoro.telepot.loop import MessageLoop
@@ -29,9 +27,7 @@ from opsoro.console_msg import *
 from opsoro.expression import Expression
 from opsoro.hardware import Hardware
 from opsoro.robot import Robot
-# from opsoro.stoppable_thread import StoppableThread
 from opsoro.users import Users
-#from twx.botapi import TelegramBot
 
 
 try:
@@ -177,50 +173,95 @@ data = {}
 data['messages'] = []
 #mls = None
 
+#functie voor te bepalen of het bericht een emoji bevat
 def emojis(text,swearword):
+     #dit kijkt of er daadwerkelijk een emoji in het bericht zit
     if('\U' in text):
+         #begint de tekst met een emoji?
         if(text.startswith('\U')):
             print(text)
+            #bij meerdere emojis worden deze ook gesplit
             emojitext = text.split('\\')
             print emojitext
             lengthemojitext = len(emojitext)
             print lengthemojitext
+             #de verschillende emojis uitbeelden maar niet uitspreken
             for y in range(0,lengthemojitext):
                 if('U0001' in emojitext[y]):
                     print('emoji')
                     print emojitext[y][4:]
                     Expression.set_emotion_unicode(emojitext[y][4:])
-                    time.sleep(1)
+                    #tussen elke emoji 2seconden wachten
+                    time.sleep(2)
+                 #tekst wordt uitgesproken
                 else:
                     print('text')
                     print(emojitext[y])
                     Sound.say_tts(emojitext[y])
                     print ('test')
-
+ #de else wordt uitgevoerd wanneer het bericht start met een letter en een emoji bevat
         else:
             print('text + emoji')
             print(text)
+            #de tekst en emoji van elkaar splitsen
             emojitext = text.split('\U')
             print(emojitext)
             lengthemojitext = len(emojitext)
             print lengthemojitext
             for y in range(0,lengthemojitext):
                 print y
+                 #de verschillende emojis uitbeelden maar niet uitspreken
                 if('000' in emojitext[y]):
                     print('emoji')
                     print emojitext[y][3:]
                     Expression.set_emotion_unicode(emojitext[y][3:])
-                    time.sleep(5)
-
+                     #tussen elke emoji 2 seconden wachten
+                    time.sleep(2)
+                #tekst wordt uitgesproken
                 else:
                     print('text')
                     print emojitext[y]
                     Sound.say_tts(emojitext[y])
                     print ('test')
                     #time.sleep(5)
+    #deze else wordt uitgevoerd wanneer het bericht enkel tekst bevat
     else:
         textonly = text
         Sound.say_tts(swearword)
+
+def sendmessages(firstname,lastname,text,time,result,originaltext):
+    #kijken of de gebruiker wel in de contactenlijst zit
+    with open('src/opsoro/apps/telegram/static/contacts.json') as data_file:
+        dict = json.load(data_file)
+        lengte = len(dict["contacts"])
+
+    for x in range(0, lengte):
+        contactsName = dict["contacts"][x]["name"]
+        lastnaamke = dict["contacts"][x]["lastname"]
+        print dict["contacts"][x]
+        if firstname in dict["contacts"][x].values() and lastname in dict["contacts"][x].values():
+
+            data['messages'].insert(0,{
+            'first_name' : firstname,
+            'last_name' : lastname,
+            'message' : text,
+            'time' : time
+            })
+             #data versturen naar js
+            send_data("messageIncomming", result)
+            #berichten wegschrijven naar de messages.json
+            with open('src/opsoro/apps/telegram/static/messages.json','w') as outfile:
+                json.dump(data,outfile)
+
+            emojis(originaltext,text)
+         #als het bericht '/start' is, kijken of het een nieuwe gebruiker is
+        elif(text == '/start'):
+            print 'moet checken of toegelaten'
+                #pass
+             #doorsturen naar js
+            send_data("messageIncomming", result)
+        else:
+            print 'gebruiker niet toegelaten'
 
 
 def loop(api_key):
@@ -230,16 +271,21 @@ def loop(api_key):
                 localApiKey = api_key
             else:
                 localApiKey = getTelegramApiKey()
-
+             #als de API key niet leeg is deze functie uitvoeren
             if localApiKey != '':
+                 #de handle functie haalt onze berichten op
                 def handle(msg):
+                     #berichten worden opgehaald van deze link wat de dynamische API key bevat
                     u = urllib.urlopen('https://api.telegram.org/bot'+localApiKey+'/getUpdates')
                     z = json.load(u)
                     u.close
                     update_ids = []
+                     #alle nodige informatie ophalen van de telegram link
                     for result in z['result']:
                         originaltext = result["message"]["text"]
+                         #de emojis omzetten naar unicode
                         originaltext = originaltext.encode('unicode_escape')
+                         #kijken of het bericht niet '/start' is, want dat wil zeggen dat het een nieuwe gebruiker is
                         if result["message"]["text"] != '/start':
                             result["message"]["text"] = scanSwearWordsInText(result["message"]["text"])
                         text = result["message"]["text"]
@@ -248,130 +294,32 @@ def loop(api_key):
                         lastname = result["message"]["from"]["last_name"]
                         userid = result["message"]["from"]["id"]
                         print userid
-                        #print lastname
                         update_id = result["update_id"]
-                        #print text
                         text = text.encode('unicode_escape')
                         update_ids.append(int(result["update_id"]))
                         maxid = max(update_ids);
 
-                    #print bericht
-                    #print 'swearwords'
-                        #print(maxid);
+                        #de lijst met geblokkeerde personen ophalen
                         with open('src/opsoro/apps/telegram/static/banlist.json') as ban_file:
                             dictBan = json.load(ban_file)
                             lengteban = len(dictBan["bans"])
+                         #wanneer er geen geblokkerde personen zijn deze functie uitvoeren
                         if lengteban == 0:
                             print 'Banlist is leeg ERROR'
-                            with open('src/opsoro/apps/telegram/static/contacts.json') as data_file:
-                                dict = json.load(data_file)
-                                lengte = len(dict["contacts"])
-                                #print lengte
-                                    #print lengte
+                            sendmessages(firstname,lastname,text,time,result,originaltext)
 
-                                    #print lengtetotaal
-                            for x in range(0, lengte):
-                                    #print 'numberssss'
-                                contactsName = dict["contacts"][x]["name"]
-                                lastnaamke = dict["contacts"][x]["lastname"]
-                                    #print naamke
-                                print dict["contacts"][x]
-                                    #print firstname
-                                if firstname in dict["contacts"][x].values() and lastname in dict["contacts"][x].values():
-                                    #print 'yes'
-                                    #print result
-                                    #if (text == "/start"):
-                                        #print 'hopsaaa'
-
-                                        #pass
-                                    data['messages'].insert(0,{
-                                    'first_name' : firstname,
-                                    'last_name' : lastname,
-                                    'message' : text,
-                                    'time' : time
-                                    #"update_id" : update_id,
-                                    #"maxid" : maxid
-                                    })
-
-                                    send_data("messageIncomming", result)
-
-                                    with open('src/opsoro/apps/telegram/static/messages.json','w') as outfile:
-                                        json.dump(data,outfile)
-
-                                    #print data
-                                    #datamessages['message'] = text
-                                    #print(json_data)
-                                    emojis(originaltext,text)
-
-                                elif(text == '/start'):
-                                    print 'moet checken of toegelaten'
-                                        #pass
-                                    send_data("messageIncomming", result)
-                                else:
-                                    print 'gebruiker niet toegelaten'
                         else:
-                            for y in range(0, lengteban):
-                                BanID = dictBan["bans"][y]["banId"]
-                            if str(userid) in str(BanID):
-                                print 'De persoon is geblokkeerd'
-                            else:
-                                print 'Gebruiker is toegelaten'
-                                with open('src/opsoro/apps/telegram/static/contacts.json') as data_file:
-                                    dict = json.load(data_file)
-                                    lengte = len(dict["contacts"])
-                                    #print lengte
-                                        #print lengte
-
-                                        #print lengtetotaal
-                                for x in range(0, lengte):
-                                        #print 'numberssss'
-                                    contactsName = dict["contacts"][x]["name"]
-                                    lastname = dict["contacts"][x]["lastname"]
-                                        #print naamke
-                                    print dict["contacts"][x]
-                                        #print firstname
-                                    if firstname in dict["contacts"][x].values() and lastname in dict["contacts"][x].values():
-                                        #print 'yes'
-                                        #print result
-                                        #if (text == "/start"):
-                                            #print 'hopsaaa'
-
-                                            #pass
-                                        data['messages'].insert(0,{
-                                        'first_name' : firstname,
-                                        'last_name' : lastname,
-                                        'message' : text,
-                                        'time' : time
-                                        #"update_id" : update_id,
-                                        #"maxid" : maxid
-                                        })
-
-                                        send_data("messageIncomming", result)
-
-                                        with open('src/opsoro/apps/telegram/static/messages.json','w') as outfile:
-                                            json.dump(data,outfile)
-
-                                        #print data
-                                        #datamessages['message'] = text
-                                        #print(json_data)
-
-                                        emojis(originaltext,text)
-
-                                    elif(text == '/start'):
-                                        print 'moet checken of toegelaten'
-                                            #pass
-                                        send_data("messageIncomming", result)
-                                    else:
-                                        print 'gebruiker niet toegelaten'
+                            sendmessages(firstname,lastname,text,time,result,originaltext)
 
 
 
-
+                #het bot api ophalen
                 bot = Bot(localApiKey)
                 global mls
+                 # de MessageLoop is een functie uit de telepot library wat berichten ophaald
                 mls = MessageLoop(bot,handle)
+                 # als thread laten werken zodat hij blijft berichten ophalen
                 mls.start_threads()
-                #MessageLoop(bot,handle).run_as_thread()
 
 def readFile(jsonFile):
 
@@ -410,19 +358,13 @@ def setup(opsoroapp):
 
 
 def start(opsoroapp):
-    #global loop_t
-    # # global MessageLoop
-    #loop_t = StoppableThread(target=loop)
+     #API key ophalen bij de start
     api_key  = getTelegramApiKey()
+    #de loop starten bij start
     loop(api_key)
-     #pass
 
 def stop(opsoroapp):
-    #global mls
-    #global loop_t
-    #loop_t.stop()
-    # # global MessageLoop
-    # StoppableThread.stop(opsoroapp)
-    # print("stop")
+    global mls
+
+    #bij afsluiten van onze applicatie de MessageLoop thread stoppen
     mls.stop_threads()
-     #pass
