@@ -270,8 +270,34 @@ This function has to be a new tread because of the "wait_for_sound" function
  ```
 
  ## Autoloop
- ### Backend
- To make the autoloop work we use a boolean that knows when it's running. After a tweet is played it checks the value and sends a socket to the client side who then sends a new playtweet command to the server.
+
+### Front-end
+
+In the front-end we start by looping through all the tweets collected. For each tweet, we post it to the back-end. The back-end will play the sound in a **stoppable thread** and call `wait_for_sound()`. When it's done, it'll let the front-end know by using the socket handler.
+
+        app_socket_handler = function(data) {
+          switch (data.action) {
+            ...
+            case "autoLoopTweepyNext":
+              if (model.selectedVoiceLine() != undefined) {
+                model.selectedVoiceLine().isPlaying(false);
+                model.selectedVoiceLine().hasPlayed(true);
+
+                model.autoLoopTweepyRun()
+              }
+              break;
+            ...
+          }
+        };
+
+Everytime this happens, `autoLoopTweepyNext()` will increment an index. We use this index to send the next sound to the back-end and let it wait for it to end. And on and on ... You can stop the auto loop at any time.
+
+### Back-end
+
+import opsoro/sound lib in .py
+`from opsoro.sound import Sound`
+
+ To make the autoloop work we use a boolean that knows when it's running. After a tweet is played it checks the value and sends a socket to the client side who then sends a new playtweet command back to the server.
 
 ## Close connections from client
 Because we work with streams it's possible there is an open connection with twitter when closing the browser. To avoid tweepy is still running we use an ajax function ".unload()". Here we send the action "stopTweepy" to disconnect the stream.

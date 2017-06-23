@@ -172,7 +172,7 @@ class MyStreamListener(tweepy.StreamListener):
             if playing == False:
                 playTweet(dataToSend)
                 newTweet = False
-    def on_error(slef, status_code):
+    def on_error(self, status_code):
         print_info("Tweepy error: " + status_code)
 
 

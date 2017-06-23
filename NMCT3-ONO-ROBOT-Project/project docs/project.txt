@@ -2,6 +2,6 @@
 
 TODO
 - kosten raming in document en ppt ==> Thibaud
-- md files samen gooien ==> die van auguste nog
-- persoonlijke meningen ==> enkel auguste
-- auguste code pushen naar github
+- md files samen gooien ==> die van auguste nog (v)
+- persoonlijke meningen ==> enkel auguste (v)
+- auguste code pushen naar github (v)
