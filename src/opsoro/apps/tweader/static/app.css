@@ -1,44 +1,49 @@
-.tts-switch
-{
-    display: inline;
-}
-.tts-switch label
-{
-    background-color: #4d4d4d;
-}
-
-.tts-switch input:checked + label
-{
-    background-color: #4d4d4d;
-}
-
-.tts-switch .switch-tts
-{
-    position: absolute;
-    top: -.5rem;
-    right: .6rem;
-
-    pointer-events: none;
-
-    color: #fff;
-}
-
-.tts-switch .switch-wav
-{
-    position: absolute;
-    top: -.5rem;
-    left: .6rem;
-
-    pointer-events: none;
-
-    color: #fff;
-}
 a {
     text-decoration: none;
     font-weight: normal;
     color: #2ba6cb;
 }
-/*Speech bubble*/
+
+.upper-section {
+    margin: 50px auto;
+    border: lightGray dashed thick;
+    padding: 75px 150px;
+    -webkit-border-radius: 5px;
+     -moz-border-radius: 5px;
+                border-radius: 5px;
+}
+.upper-section .form {
+    margin: auto;
+}
+
+.upper-section button {
+    width: 49.7%;
+    text-transform: uppercase;
+    font-weight: bold;
+    padding: 30px;
+}
+.upper-section .keyword-input {
+
+}
+.box {
+    display: block;
+    width: 100%;
+    text-align: center;
+}
+.big-icon {
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+.icon-span-small {
+  margin-top: 5px;
+  display: block;
+}
+.tweet-section {
+    margin-top: 50px;
+    padding-left: -20px; 
+    padding-right: -20px;
+}
+/* Speech bubble */
 .bubble
 {
     font-size: .8rem;
@@ -159,10 +164,7 @@ a {
     padding-top: .15rem;
     padding-left: .15rem;
 }
-#voicelines .voiceline.locked
-{
-    margin-left: 1rem;
-}
+
 .voiceline.locked .avatar > div, .avatar img
 {
     width: 3rem;
@@ -257,24 +259,6 @@ a {
 .voiceline.unlocked .avatar
 {
     left: 2rem;
-}
-.voiceline.locked .gripper
-{
-    display: none;
-}
-.voiceline.unlocked .gripper
-{
-    position: absolute;
-    top: 1.5rem;
-    left: -.5rem;
-
-    width: 2rem;
-    height: 2.5rem;
-
-    cursor: move;
-
-    background: url('gripper.png') no-repeat;
-    background-size: 100%;
 }
 
 #voicelines .voiceline.locked form
@@ -393,24 +377,4 @@ a {
 
     text-align: center;
 }
-.left-column
-{
-    position: relative;
 
-    float: left;
-
-    width: 22rem;
-    padding-right: 1rem;
-}
-.right-column
-{
-    position: relative;
-
-    float: left;
-
-    min-width: 50%;
-
-    border-width: 1px;
-    border-color: #888;
-    border-left-style: dashed;
-}

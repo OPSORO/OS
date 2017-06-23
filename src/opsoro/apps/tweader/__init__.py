@@ -8,7 +8,7 @@ import shutil
 import time
 from exceptions import RuntimeError
 from functools import partial
-
+import threading
 import yaml
 from flask import (Blueprint, flash, redirect, render_template, request,
                    send_from_directory, url_for)
@@ -38,7 +38,7 @@ import json
 import time
 
 config = {
-    'full_name':            'Sociono',
+    'full_name':            'Tweader',
     'icon':                 'fa-hashtag',
     'color':                'blue',
     'difficulty':           1,
@@ -55,7 +55,6 @@ get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 
 dof_positions = {}
 
-sociono_t = None
 autoRead = None # globals -> can be decalerd in called methodes
 loop_T = None # loop var for Stoppable Thread
 loop_PlayTweet = None # loop that plays playArray
@@ -63,6 +62,8 @@ autolooping = None
 Emoticons = []
 lang = 'en' #lang that needs to be played
 tweetArrayToPlay = [] #tweet array that needs to be played
+playing = False
+newTweet = False
 
 access_token = '141268248-yAGsPydKTDgkCcV0RZTPc5Ff7FGE41yk5AWF1dtN'
 access_token_secret = 'UalduP04BS4X3ycgBJKn2QJymMhJUbNfQZlEiCZZezW6V'
@@ -85,15 +86,15 @@ def send_data(action, data):
 
 
 def setup_pages(opsoroapp):
-    sociono_bp = Blueprint(config['formatted_name'], __name__, template_folder='templates', static_folder='static')
+    tweader_bp = Blueprint(config['formatted_name'], __name__, template_folder='templates', static_folder='static')
 
-    @sociono_bp.route('/', methods=['GET'])
+    @tweader_bp.route('/', methods=['GET'])
     @opsoroapp.app_view
     def index():
         data = {'actions': {}, 'emotions': [], 'sounds': []}
         return opsoroapp.render_template(config['formatted_name'] + '.html', **data)
 
-    @sociono_bp.route('/', methods=['POST'])
+    @tweader_bp.route('/', methods=['POST'])
     @opsoroapp.app_view
     def post():
         data = {'actions': {}, 'emotions': [], 'sounds': []} # Overbodig ...
@@ -138,15 +139,18 @@ def setup_pages(opsoroapp):
 
         return opsoroapp.render_template(config['formatted_name'] + '.html', **data)
 
-    opsoroapp.register_app_blueprint(sociono_bp)
+    opsoroapp.register_app_blueprint(tweader_bp)
 
 def playTweet(tweepyDataModel):
+    global playing
+    global newTweet
     global loop_PlayTweet
     if not loop_PlayTweet == None:
         loop_PlayTweet.stop()
         print_info('zou ook moeten stoppen')
     global lang
     global tweetArrayToPlay
+    playing = True
     lang = tweepyDataModel['text']['lang']
     tweetArrayToPlay = getPlayArray(tweepyDataModel)
     loop_PlayTweet = StoppableThread(target=asyncReadTweet) #start playing Tweet
@@ -154,15 +158,20 @@ def playTweet(tweepyDataModel):
 
 #getting new tweet
 class MyStreamListener(tweepy.StreamListener):
-
+    global playing
+    global newTweet
     def on_status(self, status):
+        newTweet = True
         if(status == "stopIt"):
             return False
         dataToSend = processJson(status)
         if dataToSend['text']['filtered'] != None:
             send_data('dataFromTweepy', dataToSend)
         if autoRead == True:
-            playTweet(dataToSend)
+            print_info(playing)
+            if playing == False:
+                playTweet(dataToSend)
+                newTweet = False
     def on_error(slef, status_code):
         print_info("Tweepy error: " + status_code)
 
@@ -195,6 +204,7 @@ def stopTwitter():
     if myStream != None:
         myStream.disconnect()
         myStream.running = False
+        #myStream._thread
         #stream closes after one mor response from twitter
         #myStreamListener.on_status("stopIt")
         print_info("twitter stop")
@@ -274,6 +284,7 @@ def asyncReadTweet():
     global tweetArrayToPlay
     global lang
     global autolooping
+    global playing
     while not loop_PlayTweet.stopped():
         for item in tweetArrayToPlay:
             if item[0] == 'txt':
@@ -285,7 +296,7 @@ def asyncReadTweet():
         print_info(autolooping)
         if autolooping == 1:
             send_action("autoLoopTweepyNext")
-        print_info('normaal stopped')
+        playing = False
 
 
 

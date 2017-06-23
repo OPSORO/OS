@@ -32,9 +32,12 @@
 			</div>
 			<button class="button round info" data-bind="css: { success: !isStreaming(), alert: isStreaming() }, click: toggleStreaming, enable: loggedIn() && facebookID()">
 				<i class="fa" aria-hidden="true" data-bind="css: {'fa-play' : !isStreaming(), 'fa-stop' : isStreaming()}"></i>
-				<span class="text" data-bind="text: !isStreaming() && facebookID() ? 'Start Stream' : 'Stop Stream'"></span>
+				<span class="icon-span-small" data-bind="enable:  facebookID(), text: !isStreaming() ? 'Start Reading' : 'Stop Reading'"></span>
+				<span class="icon-span-small" data-bind="visible: selectedType() && (selectedType().type == 'isPage')"> Page Posts</span>
+				<span class="icon-span-small" data-bind="visible: selectedType() && (selectedType().type == 'isVideo')"> Video Comments</span>
+				<span class="icon-span-small" data-bind="visible: selectedType() && (selectedType().type == 'isPost')"> Post Comments</span>
 			</button>
-	</div>
+		</div>
 		<div class="startnew" data-bind="visible: !isNewVideo()">
 			<button class="button info" data-bind="click: startNewLiveStream, enable: loggedIn() && !isStreaming()"> <!-- haakjes voor observables en functions die direct mogen uitgevoerd worden?? -->
 				<i class="fa fa-plus big-icon" aria-hidden="true"></i>
@@ -46,26 +49,26 @@
 		<div class="iframe-container" data-bind="visible: selectedType().type=='isVideo', html: embedIframe">
 
 		</div>
-		<div data-bind="css:{rightside:selectedType().type=='isVideo'}">
+
+		<div class="stats" data-bind="css:{rightside:selectedType().type=='isVideo',leftside:selectedType().type=='isPost'}">
 			<p style="float:left" data-bind="visible: selectedType().type=='isVideo'">Views: <span data-bind="text: views"></span></p>
 			<p data-bind="visible: selectedType().type=='isVideo' || selectedType().type=='isPost'">Likes: <span data-bind="text: likes()"></span></p>
 		</div>
 
 		<div data-bind="css:{ centralised:selectedType().type=='isPost', 'rightside commentscontainer':selectedType().type=='isVideo'},visible: comments().length > 0 && (selectedType().type == 'isPost' || selectedType().type == 'isVideo'), sortable: { data: comments, options: {handle: '.gripper', axis: 'y', opacity: 0.75} }">
 			<div id="voicelines" class="bubble">
-				<div>
-					<span class="voiceline locked name" data-bind="text: from.name"></span>
-				</div>
-				<div class="voiceline locked">
-					<p class="commentsElement" data-bind="text: message"></p>
-				</div>
-				<div class="voiceline locked">
-					<a data-bind="attr: { href: permalink_url }" target="_blank">https://facebook.com/...</a>
-				</div>
+				<a data-bind="attr: { href: permalink_url }" target="_blank">
+					<div >
+						<span class="voiceline locked name" data-bind="text: from.name"></span>
+					</div>
+					<div class="voiceline locked">
+						<p class="commentsElement" data-bind="text: message"></p>
+					</div>
+				</a>
 			</div>
 		</div>
 
-		<!-- If no comments use this div --> 
+		<!-- If no comments use this div -->
 		<div data-bind="css:{ centralised:selectedType().type=='isPost', 'rightside commentscontainer':selectedType().type=='isVideo'},visible: isStreaming() && comments().length <= 0 && (selectedType().type == 'isPost' || selectedType().type == 'isVideo')">
 			<div id="voicelines" class="bubble">
 				<div>
@@ -80,20 +83,22 @@
 		<!-- For the page's posts -->
 		<div class="centralised" data-bind="sortable: { data: pagePosts, options: {handle: '.gripper', axis: 'y', opacity: 0.75} }, visible: isStreaming() && pagePosts().length > 0">
 			<div id="voicelines" class="bubble">
-				<div>
-					<span class="voiceline locked name" data-bind="text: story"></span>
-				</div>
-				<div class="voiceline locked">
-					<span data-bind="text: message"></span>
-				</div>
-				<div>
-					<small>Post ID: <a data-bind="attr: { href: permalink_url }, text: id" target="_blank"></a></small>
-				</div>
+				<a data-bind="attr: { href: permalink_url }" target="_blank">
+					<div>
+						<span class="voiceline locked name no-indent" data-bind="text: story"></span>
+					</div>
+					<div class="voiceline locked no-indent">
+						<span data-bind="text: message"></span>
+					</div>
+					<div>
+						<small style="margin-top: 15px;"><a data-bind="click: $root.setIdByFacebookPost.bind($data, id)" target="_blank">Click here to read the comments of this post!</a></small>
+					</div>
+				</a>
 			</div>
 		</div>
 
 		<div class="togglebox">
-			<label data-bind="visible: selectedType().type == 'isPost' || selectedType().type == 'isVideo' || selectedType().type == 'isPage'"><input type="checkbox" data-bind="checked: autoRead"/> Auto read comments</label>
+			<label data-bind="visible: selectedType().type == 'isPost' || selectedType().type == 'isVideo' || selectedType().type == 'isPage'"><input type="checkbox" data-bind="checked: autoRead"/> Start reading automatically</label>
 			<label data-bind="visible: selectedType().type == 'isVideo'"><input type="checkbox" data-bind="checked: reactToLikes"/> React to likes </label>
 			<p data-bind="visible: selectedType().type == 'isPost' || selectedType().type == 'isVideo'">Reaction to comment: <select data-bind="options: availableEmotions, optionsText: 'name', value: selectedEmotion"></select></p>
 		</div>

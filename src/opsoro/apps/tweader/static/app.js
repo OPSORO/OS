@@ -14,7 +14,7 @@ $(document).ready(function(){
 		$.ajax({
 			dataType: 'json',
 			type: 'POST',
-			url: '/apps/sociono/',
+			url: '/apps/tweader/',
 			data: {action: action, data: data },
 			success: function(data){
 				if (!data.success) {
@@ -100,12 +100,11 @@ $(document).ready(function(){
 
 		//change autoread when streaming
 		self.toggleAutoRead = function(){
-			console.log("in functie");
 			if(self.isStreaming()){
 				//only send when streaming
 				sendPost('toggleAutoRead', {});
-				console.log("autoreadSend");
 			}
+			self.autoRead(!self.autoRead());
 		}
 
 		self.addTweetLine = function(data){
@@ -126,6 +125,7 @@ $(document).ready(function(){
 				searchField = socialID.value;
 				self.voiceLines.removeAll();
 			}
+			if(self.autoLooping())  self.toggleAutoLoopTweepy();
 			sendPost('startTweepy', JSON.stringify({socialID: socialID.value, autoRead: self.autoRead()}));
 			self.isStreaming(!self.isStreaming()); //change streaming status
 

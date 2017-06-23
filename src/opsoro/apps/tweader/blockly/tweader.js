@@ -5,7 +5,7 @@ Blockly.Blocks['sociono_get_tweet'] = {
   init: function() {
     this.appendValueInput("value")
         .setCheck(null)
-        .appendField("get a single tweet based on hashtag ");
+        .appendField("read a single tweet with hashtag ");
     this.setInputsInline(true);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
@@ -22,7 +22,7 @@ Blockly.Lua['sociono_get_tweet'] = function(block) {
 Blockly.Blocks['sociono_stop_stream'] = {
   init: function() {
     this.appendDummyInput()
-        .appendField("stop twitter stream");
+        .appendField("stop all");
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setColour(230);
@@ -36,14 +36,12 @@ Blockly.Lua['sociono_stop_stream'] = function(block) {
 };
 Blockly.Blocks['start_streamreader_loop'] = {
   init: function() {
-    this.appendValueInput("streamreader_filter")
-        .setCheck("String")
-        .appendField("start streamreader and filter by:");
     this.appendValueInput("amount")
         .setCheck("Number")
-        .appendField("for");
-    this.appendDummyInput()
-        .appendField("times");
+        .appendField("read number of tweets:");
+    this.appendValueInput("streamreader_filter")
+        .setCheck("String")
+        .appendField(" with hashtag");
     this.setInputsInline(true);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
