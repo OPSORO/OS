@@ -1,0 +1,53 @@
+{
+  "voice_lines": [
+    {
+      "emotion": "Happy",
+      "output": {
+        "type": "tts",
+        "data": "Hallo"
+      }
+    },
+    {
+      "emotion": "Neutral",
+      "output": {
+        "type": "tts",
+        "data": "Ik ben Ono"
+      }
+    },
+    {
+      "emotion": "Wink",
+      "output": {
+        "type": "tts",
+        "data": "Ik hou van grappen maken"
+      }
+    },
+    {
+      "emotion": "Surprised",
+      "output": {
+        "type": "wav",
+        "data": "fart-01.wav"
+      }
+    },
+    {
+      "emotion": "Disgusted",
+      "output": {
+        "type": "tts",
+        "data": "Wie was dat?"
+      }
+    },
+    {
+      "emotion": "Happy",
+      "output": {
+        "type": "tts",
+        "data": "Oei, ik was het!"
+      }
+    },
+    {
+      "emotion": "Laughing",
+      "output": {
+        "type": "tts",
+        "data": "Hahaha"
+      }
+    }
+  ]
+}

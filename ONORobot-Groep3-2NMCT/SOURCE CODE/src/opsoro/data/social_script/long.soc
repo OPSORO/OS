@@ -1,0 +1,781 @@
+{
+  "voice_lines": [
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "happy",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "laughing",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    }
+  ]
+}

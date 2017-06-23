@@ -1,0 +1,299 @@
+a {
+	text-decoration: none;
+    font-weight: normal;
+}
+
+a:hover {
+	text-decoration: none;
+    font-weight: normal;
+    color: inherit!important;
+}
+
+small > a {
+    text-decoration: none;
+    font-weight: normal;
+    color: #2ba6cb;
+}
+
+small > a:hover {
+    text-decoration: underline;
+    color: #2ba6cb!important;
+}
+
+button, button > span {
+	text-transform: uppercase!important;
+}
+
+.lower-section > .stats > p {
+	margin-top: 1.5rem!important;
+	font-size: 1.3rem;
+	font-weight: bold;
+}
+.upper-section{
+	margin-bottom: 50px;
+	width: 100%;
+	padding: 20px;
+	text-align: center;
+}
+.upper-section > .button{
+	font-family: "Avenir Next";
+	width: 200px;
+	height: 200px;
+	-webkit-border-radius: 100px;
+		 -moz-border-radius: 100px;
+					border-radius: 100px;
+}
+.big-icon{
+	font-size: 3rem;
+	margin-bottom: 15px;
+}
+.icon-span-small{
+  margin-top: 5px;
+  display: block;
+}
+.upper-section > .button > span, .icon-span{
+	display: block;
+	font-weight: bold;
+	font-size: 1.5rem;
+	text-transform: capitalize;
+}
+.middle-section input[type="text"], .middle-section select{
+	margin-left: 0.5rem;
+	width: 65%;
+	display: inline-block;
+}
+.start-stream{
+	border: lightGray dashed thick;
+	padding: 40px;
+	padding-bottom: 20px!important;
+	float: left;
+	display: block;
+	width: 60%;
+	-webkit-border-radius: 5px;
+		 -moz-border-radius: 5px;
+					border-radius: 5px;
+}
+
+.start-stream .fa {
+	font-size: 2rem;
+	margin-bottom: 10px;
+}
+
+.start-stream button {
+	font-family: "Avenir Next";
+	width: 100%;
+	font-size: 1rem;
+	color: #fff!important;
+	font-weight: bold!important;
+}
+
+.startnew {
+	display: inline-block;
+	width: 40%;
+	text-align: center;
+	margin-top: 50px;
+}
+.startnew button {
+	font-family: "Avenir Next";
+	width: 200px;
+	height: 200px;
+	-webkit-border-radius: 100px;
+		 -moz-border-radius: 100px;
+					border-radius: 100px;
+}
+.lower-section{
+	padding-top: 10px
+	margin-bottom: 50px;
+}
+input[type="text"] {
+	margin-left: 0.5rem;
+	width: 40%;
+	display: inline-block;
+}
+label > input[type="checkbox"]{
+	top: 0.25rem;
+	position: relative;
+}
+iframe {
+	max-width: 750px;
+	max-height: 425px;
+}
+select {
+	display: inline-block;
+	width: 40%;
+	margin-left: 0.5rem;
+}
+.fixed_width{
+	width: 30%;
+	display: inline-block;
+}
+.fixed_width > span{
+}
+.appbody span{
+	width: 30%;
+}
+.iframe-container {
+	max-height: 425px;
+	max-width: 750px;
+	float: left;
+	margin-top: 2rem;
+}
+.block {
+	display: block;
+}
+.centralised{
+	font-size: 1.3rem;
+	display: block;
+	float: left;
+	width: 100%;
+	overflow-y: scroll;
+	height: auto;
+	max-height: 390px;
+	font-weight: normal;
+	margin-bottom: 10px;
+	margin-top: 20px;
+	padding-right: 5px;
+}
+.rightside {
+	font-size: 1.3rem;
+	font-weight: bold;
+	display: inline-block;
+	float: right;
+	width: 32%;
+	margin: 0 0.5em 0 0.5em;
+	padding: 0 0.5em;
+	height:35px;
+}
+.rightside p{
+	display: inline-block;
+	float: right;
+	margin: 0;
+}
+.leftside{
+  margin-top: 50px;
+}
+.leftside p{
+	font-size: 1.3rem;
+	font-weight: bold;
+}
+.commentscontainer{
+	padding: 0.5em;
+	width: 32%;
+	overflow: hidden;
+	height: auto;
+	max-height: 402px;
+	font-weight: normal;
+	margin-top: 1rem;
+}
+.commentsElement{
+	display: block;
+	width: 100%;
+	word-wrap: break-word;
+	font-weight: normal!important;
+}
+.togglebox {
+	display: block;
+	width: 99.3%;
+	float: left;
+	padding-top: 0.5em;
+}
+.togglebox p {
+	display: inline-block;
+	float: right;
+	width: 30%;
+	font-weight: normal;
+  	font-size: 0.875rem;
+  	margin-top: 0!important;
+
+}
+.togglebox > select{
+	width: 30%;
+	float: right;
+}
+.togglebox label{
+	display: inline-block;
+	margin: 0.5em 0.5em 0.5em 0.5em;
+	padding: 0.5em 0.5em 0.5em 0.5em;
+	/*background-color: yellow;*/
+}
+/*facebook messages*/
+.voiceline.locked
+{
+    min-height: 2rem;
+    margin-bottom: 0rem;
+}
+.no-indent{
+	margin-left: 0!important;
+}
+#voicelines .voiceline.locked
+{
+
+}
+#voicelines .voiceline.locked.name
+{
+	font-style: italic;
+	font-weight: bold;
+}
+/*comment bubble*/
+.bubble
+{
+    font-size: .9rem;
+
+    position: relative;
+    margin-bottom: .25rem;
+	padding: 1rem;
+	height: auto;
+	overflow-y:auto;
+
+    -webkit-border-radius: .5rem;
+       -moz-border-radius: .5rem;
+            border-radius: .5rem;
+    background: #ddd;
+}
+
+.bubble .fa
+{
+    color: #4d4d4d;
+}
+/*add a bit of responsiveness*/
+@media screen and (max-width: 1000px) {
+	.rightside {
+		display: block;
+		width: 100%;
+		margin: 0 auto;
+	}
+	.bubble
+	{
+	    font-size: .9rem;
+
+	    position: relative;
+	    margin-bottom: .25rem;
+			padding: 0.5rem;
+			height: auto;
+			overflow-y:auto;
+
+	    -webkit-border-radius: .5rem;
+	       -moz-border-radius: .5rem;
+	            border-radius: .5rem;
+	    background: #ddd;
+	}
+	.rightside p{
+		display: inline-block;
+		float: right;
+		margin: 0;
+	}
+	.commentscontainer{
+		display: block;
+		padding: 0.5em;
+		margin: 0 auto;
+		width: 100%;
+		overflow: auto;
+		height: auto;
+		max-height: 402px;
+		font-weight: normal;
+	}
+	.togglebox p {
+		display: block;
+		width: 30%
+	}
+}

@@ -1,0 +1,13 @@
+<block type="social_response_facebook"></block>
+<block type="social_response_twitter">
+  <value name="VALENCE">
+    <block type="math_number">
+      <field name="NUM">0.75</field>
+    </block>
+  </value>
+  <value name="AROUSAL">
+    <block type="math_number">
+      <field name="NUM">0.25</field>
+    </block>
+  </value>
+</block>

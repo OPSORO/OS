@@ -1,0 +1,57 @@
+{% extends "app_base.html" %}
+
+{% block app_content %}
+	<div class="upper-section">
+		<div class="form">
+			<div class="voiceline locked">
+				<h3>Enter a twitter hashtag or keyword:</h3>
+				<input type="text" class="keyword-input" placeholder="Enter a search term" id="socialID" data-bind="value: $root.socialID">
+				<button class="button" data-bind="click: $root.toggleTweepy, css: {success : !isStreaming(), alert : isStreaming()}">
+					<i class="big-icon fa " data-bind="css: { 'fa-play': !$root.isStreaming(), 'fa-close': $root.isStreaming() }"></i>
+					<span class="text icon-span-small" data-bind="text: !$root.isStreaming() ? '{{ _('Start Fetching') }}' : '{{ _('Stop Fetching') }}' "></span>
+				</button>
+				<button class="button " data-bind="click: $root.toggleAutoLoopTweepy, enable: !$root.autoRead(), css: { info: $root.autoLooping() <= 0, warning: $root.autoLooping() > 0 }">
+					<i class="big-icon fa " data-bind="css: { 'fa-close': $root.autoLooping(), 'fa-refresh': ! $root.autoLooping() }"></i>
+					<span class="text icon-span-small" data-bind="text: $root.autoLooping() > 0 ? '{{ _('Stop Repeating') }}' : '{{ _('Start Repeating') }}'"></span>
+				</button>
+				<div data-bind="visible:!$root.autoLooping()" class="box">
+					<input type="checkbox" id="toggleAutoRead" data-bind="checked: $root.autoRead(), event: {change: toggleAutoRead}"/>
+					<label for="toggleAutoRead"> Toggle Auto Read</label>
+				</div>
+			</div>
+		</div>
+		<div id="voicelines" class="tweet-section" data-bind="sortable: { data: voiceLines, options: {handle: '.gripper', axis: 'y', opacity: 0.75} }">
+			<div class="voiceline locked">
+				<div class="avatar">
+					<a data-bind="attr: { href: url}" target="_blank">
+						<img data-bind="attr: { src: picture }"/>
+					</a>
+				</div>
+				<div class="content">
+					<span class="bubble" data-bind="html: contentPreview"></span>
+				</div>
+				<div class="playbutton" data-bind="css: {active: isPlaying, used: hasPlayed}">
+					<div class="bg"></div>
+					<a href="#" class="button" data-bind="click: pressPlay">
+						<span class="fa fa-fw" data-bind="css: {'fa-play': !isPlaying(), 'fa-stop': isPlaying()}"></span>
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}
+
+		{% block app_scripts %}
+
+			<script src="/static/js/vendor/jquery-ui-sortable/jquery-ui.js"></script>
+			<script src="/static/js/knockout-sortable.min.js"></script>
+
+			<script>
+				var action_data = {{ actions|tojson|safe }};
+				var emotions_data = {{ emotions|tojson|safe }};
+				var sounds_data = {{ sounds|tojson|safe }};
+			</script>
+			<script src="/static/js/sockjs.min.js"></script>
+			<script src="/static/js/vendor/jquery-ui-touch/jquery.ui.touch-punch.min.js"></script>
+
+		{% endblock %}

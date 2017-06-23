@@ -1,0 +1,46 @@
+{
+  "voice_lines": [
+    {
+      "emotion": "Neutral",
+      "output": {
+        "type": "tts",
+        "data": "Hi guys, welcome back"
+      }
+    },
+    {
+      "emotion": "Happy",
+      "output": {
+        "type": "tts",
+        "data": "I'm feeling great today how about you?"
+      }
+    },
+    {
+      "emotion": "Surprised",
+      "output": {
+        "type": "wav",
+        "data": "fart-01.wav"
+      }
+    },
+    {
+      "emotion": "Afraid",
+      "output": {
+        "type": "tts",
+        "data": "Oh i'm sorry... Hi hi"
+      }
+    },
+    {
+      "emotion": "Happy",
+      "output": {
+        "type": "tts",
+        "data": "How are you all feeling today?"
+      }
+    },
+    {
+      "emotion": "Neutral",
+      "output": {
+        "type": "tts",
+        "data": "Oh that's nice to hear"
+      }
+    }
+  ]
+}

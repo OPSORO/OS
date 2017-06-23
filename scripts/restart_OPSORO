@@ -1,3 +1,0 @@
-#!/bin/sh
-
-sudo bash /home/pi/OPSORO/OS/scripts/restart_opsoro_service

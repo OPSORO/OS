@@ -1,0 +1,44 @@
+<!-- <div class="actionbar">
+	{% if savefileview %}
+		<div class="actionBarItem">
+			<a href="#" class="action btnSaveFileAs">
+				<span class="fa fa-save"></span>
+				<br/>
+				<span class="text">Save</span>
+			</a>
+		</div>
+	{% endif %}
+
+	<div class="actionBarItem spacer"></div>
+	<div class="actionBarItem"></div>
+
+</div> -->
+<div class="foldercontent">
+	{% if files %}
+		{% for file in files | sort %}
+			<div class="file browseritem button btnOpenFile" data-path="{{ file }}">
+				<!-- <a href="#" class="button btnDeleteFile"><span class="fa fa-trash"></span></a> -->
+
+				<!-- {% if savefileview %}
+					<a href="#" class="button btnSaveFile info" title="Save file">
+						<span class="fa fa-save"></span>
+					</a>
+				{% else %} -->
+					<!-- <a href="#" class="button btnOpenFile success" title="Open file"> -->
+				<span class="icon fa fa-file-text"></span>
+					<!-- </a> -->
+				<!-- {% endif %} -->
+
+				<span class="filename browseritemname">
+					{{ file }}
+				</span>
+
+				<!-- <div class="browseritemoptions">
+					<a href="#" class="button btnDeleteFile" title="Delete file">
+						<span class="fa fa-trash"></span>
+					</a>
+				</div> -->
+			</div>
+		{% endfor %}
+	{% endif %}
+</div>

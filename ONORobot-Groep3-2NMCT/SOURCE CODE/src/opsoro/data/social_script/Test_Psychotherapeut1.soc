@@ -1,0 +1,123 @@
+{
+  "voice_lines": [
+    {
+      "emotion": "Happy",
+      "output": {
+        "type": "tts",
+        "data": "hello Bram how are you today"
+      }
+    },
+    {
+      "emotion": "Neutral",
+      "output": {
+        "type": "tts",
+        "data": "i've heared what happened with you "
+      }
+    },
+    {
+      "emotion": "Sad",
+      "output": {
+        "type": "wav",
+        "data": "smb_powerup.wav"
+      }
+    },
+    {
+      "emotion": "Angry",
+      "output": {
+        "type": "tts",
+        "data": "how was your week"
+      }
+    },
+    {
+      "emotion": "Neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "Neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "Neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "Neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "Neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "Neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "Neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "Neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "Neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "Neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "Neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "Neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    },
+    {
+      "emotion": "Neutral",
+      "output": {
+        "type": "tts",
+        "data": ""
+      }
+    }
+  ]
+}

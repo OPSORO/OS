@@ -1,0 +1,96 @@
+{% extends "app_base.html" %}
+
+{% block app_head %}
+
+{% endblock %}
+
+{% block app_content %}
+{% if config %}
+	{% for module in config %}
+		{% for dof in module.dofs %}
+			{% if dof.servo and dof.servo.pin >= 0 %}
+				<div class="sliderrow row">
+					<!-- <div class="small-12 columns hide-for-medium-up"><strong>{{ dof.name|upper }}</strong></div> -->
+					<div class="medium-5 large-3 columns">
+						<strong>{{ module.name|upper + ': ' + dof.name|upper }}</strong><br>
+						<span class="note row">
+							<div class="small-3 medium-12 large-12 columns"><strong>Pin:</strong> {{ dof.servo.pin|int }}</div>
+							<div class="small-4 medium-12 large-12 columns"><strong>DOF:</strong> <span data-dof>0</span></div>
+							<div class="small-5 medium-12 large-12 columns"><strong>Servo:</strong> <span data-us>0</span> &micro;s</div>
+						</span>
+					</div>
+					<div class="medium-7 large-9 columns">
+						<div class="row numberstop">
+							<div class="small-3 text-left columns">-1.0</div>
+							<div class="small-6 text-center columns">0.0</div>
+							<div class="small-3 text-right columns">+1.0</div>
+						</div>
+						<div class="slider" data-slider data-initial-start="0" data-start="-1.01" data-end="1" data-step="0.01" data-modulename="{{ module.name }}"	data-dofname="{{ dof.name }}"	data-dofmin="{{ dof.servo.min|int }}"	data-dofmid="{{ dof.servo.mid|int }}"	data-dofmax="{{ dof.servo.max|int }}">
+							<span class="slider-handle" data-slider-handle role="slider" tabindex="0"></span>
+						  <span class="slider-fill" data-slider-fill></span>
+							<input type="hidden">
+						</div>
+						<div class="row numbersbottom">
+							<div class="small-3 text-left columns">{{ dof.servo.mid|int + dof.servo.min|int }} &micro;s</div>
+							<div class="small-6 text-center columns">{{ dof.servo.mid }} &micro;s</div>
+							<div class="small-3 text-right columns">{{ dof.servo.mid|int + dof.servo.max|int }} &micro;s</div>
+						</div>
+					</div>
+				</div>
+			{% endif %}
+		{% endfor %}
+	{% endfor %}
+{% endif %}
+
+{% endblock %}
+
+{% block app_scripts %}
+<script src="/static/js/sockjs.min.js"></script>
+<script src="/static/js/numeral.min.js"></script>
+<script>
+	$(document).ready(function(){
+		// Setup websocket connection.
+		app_socket_handler = function(data) {
+      switch (data.action) {
+				case "error":
+					showMainError(data.message);
+					break;
+			}
+		};
+
+		let _slider_changed = function(){
+			let dofpos = $(this).find(".slider-handle").attr("aria-valuenow");
+			if( dofpos != $(this).data("lastpos") ){
+				let dofmin = $(this).data("dofmin");
+				let dofmid = $(this).data("dofmid");
+				let dofmax = $(this).data("dofmax");
+				let dofus = dofmid;
+
+				$(this).closest(".sliderrow").find("[data-dof]").html(numeral(dofpos).format("+0.00"));
+
+				if(dofpos < 0){
+					dofus += (-dofpos) * dofmin
+				}else if(dofpos > 0){
+					dofus += (dofpos) * dofmax
+				}
+				$(this).closest(".sliderrow").find("[data-us]").html(numeral(dofus).format("0"));
+				if(connReady){
+					console.log("SET " + $(this).data("dofname") + " TO POS " + dofpos);
+					conn.send(JSON.stringify({
+						action: "setDofPos",
+						dof_name: $(this).data("dofname"),
+						module_name: $(this).data("modulename"),
+						pos: dofpos
+					}));
+				}
+
+				$(this).data("lastpos", dofpos);
+			}
+		};
+
+		$(".slider").on("moved.zf.slider", _slider_changed);
+		$(".slider").on("changed.zf.slider", _slider_changed);
+
+	});
+</script>
+{% endblock %}

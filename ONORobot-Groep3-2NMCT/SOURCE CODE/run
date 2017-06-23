@@ -1,0 +1,11 @@
+#!/usr/bin/env python
+
+import os
+import sys
+
+basedir = os.path.dirname(os.path.realpath(__file__))
+# insert opsoro src system path to enable calling opsoro classes
+sys.path.insert(0, os.path.join(basedir, "src"))
+
+import opsoro
+opsoro.main()

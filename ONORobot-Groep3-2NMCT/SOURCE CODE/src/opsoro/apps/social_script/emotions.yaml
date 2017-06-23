@@ -1,0 +1,97 @@
+# List of emotions
+- name:  Neutral
+  image: neutral.png
+  emotion:
+    r:     0.0
+    phi:   0.0
+
+- name:  Laughing
+  image: laughing.png
+  emotion:
+    r:     1.0
+    phi:   35.0
+
+- name:  Happy
+  image: happy.png
+  emotion:
+    r:     1.0
+    phi:   18.0
+
+- name:  Sad
+  image: sad.png
+  emotion:
+    r:     1.0
+    phi:   200.0
+
+- name:  Angry
+  image: angry.png
+  emotion:
+    r:     1.0
+    phi:   153.0
+
+- name:  Surprised
+  image: surprised.png
+  emotion:
+    r:     1.0
+    phi:   90.0
+
+- name:  Afraid
+  image: afraid.png
+  emotion:
+    r:     1.0
+    phi:   125.0
+
+- name:  Disgusted
+  image: disgusted.png
+  emotion:
+    r:     1.0
+    phi:   172.0
+
+- name:  Tired
+  image: tired.png
+  emotion:
+    r:     1.0
+    phi:   270.0
+
+# - name:  Wink
+#   image: wink.png
+#   emotion:
+#     r:     1.0
+#     phi:   35.0
+#   custom:
+#     - dofname: r_eb_inner
+#       pos: 0.3
+#     - dofname: r_eb_outer
+#       pos: -0.1
+#     - dofname: r_e_lid
+#       pos: 0.3
+#
+# - name:  Question
+#   image: questioning.png
+#   custom:
+#     - dofname: r_eb_inner
+#       pos: 0.74
+#     - dofname: r_eb_outer
+#       pos: 0.42
+#     - dofname: r_e_ver
+#       pos: 0.61
+#     - dofname: r_e_hor
+#       pos: -0.27
+#     - dofname: r_e_lid
+#       pos: 1.0
+#     - dofname: m_l
+#       pos: -0.01
+#     - dofname: m_mid
+#       pos: -0.01
+#     - dofname: m_r
+#       pos: -1.0
+#     - dofname: l_e_lid
+#       pos: 0.63
+#     - dofname: l_e_ver
+#       pos: 0.61
+#     - dofname: l_e_hor
+#       pos: 0.26
+#     - dofname: l_eb_inner
+#       pos: -1.0
+#     - dofname: l_eb_outer
+#       pos: -0.03

@@ -1,0 +1,3 @@
+<block type="sociono_get_tweet"></block>
+<block type="sociono_stop_stream"></block>
+<block type="start_streamreader_loop"></block>

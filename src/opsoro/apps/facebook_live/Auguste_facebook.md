@@ -1,1 +1,0 @@
-### app_scope_id <> usable user id dus pages gaan niet Jammmer !!!! ??? Extra FB call for user data

@@ -1,0 +1,27 @@
+{% extends "site_base.html" %}
+
+
+{% block topbar_base %}{% endblock %}
+
+{% block app %}
+	<div id="virtualModelDiv" >
+		<div class="" id="model_screen"></div>
+		<div class="robot_sound" style="text-align: center; margin-top: -2rem;"></div>
+	</div>
+{% endblock %}
+
+{% block app_scripts %}
+	<script>
+		var virtual_robot = true
+		specs 					= {{ specs|tojson|safe }};
+		svg_codes 			= {{ svg_codes|tojson|safe }};
+		configs 				= {{ configs|tojson|safe }};
+	</script>
+
+	<script src="/static/js/svg/svg.min.js?ver={{ version }}"></script>
+	<script src="/static/js/svg/svg.draggable.min.js?ver={{ version }}"></script>
+	<script src="/static/js/robot/model_minimal.js?ver={{ version }}"></script>
+	{% for module in modules %}
+		<script src="/static/modules/{{ module }}/{{ module }}.js?ver={{ version }}"></script>
+	{% endfor %}
+{% endblock %}

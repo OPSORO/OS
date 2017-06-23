@@ -1,0 +1,17 @@
+#!/bin/sh
+
+FOLDER=/home/pi/OPSORO/OS/
+SERVICE=opsoro
+STARTFILE=run
+
+# Stop service
+sudo service $SERVICE stop
+
+# Make sure we can run the python script
+sudo chmod +x $FOLDER$STARTFILE
+
+# Start service
+sudo service $SERVICE start
+sleep .5
+# Check service status
+sudo service $SERVICE status

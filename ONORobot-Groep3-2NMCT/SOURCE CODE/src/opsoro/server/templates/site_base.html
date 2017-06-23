@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block styles %}
+	{% include "_styles.html" %}
+
+	{% block default_app_styles %}{% endblock %}
+	{% block app_styles %}{% endblock %}
+{% endblock %}
+
+{% block extra_head_base %}
+	<link rel="icon" href="/static/images/logo/opsoro_icon_dark.png">
+	{% include "_head_scripts.html" %}
+	{% block app_head %}{% endblock %}
+	{% block extra_head %}{% endblock %}
+{% endblock %}
+
+{% block topbar_base %}
+	{% include "_systembar.html" %}
+{% endblock %}
+
+{% block body %}
+	<div class="actionbar {% block actionbar_class %}{% endblock %}">{% block app_toolbar %}{% endblock %}</div>
+	<div id="errors">
+		{% with messages = get_flashed_messages(category_filter = ["message"]) %}
+		{% if messages %}
+			{% for message in messages %}
+				<div class="callout secondary radius" data-closable>
+					{{ message }}
+					<button class='close-button text-right' aria-label='Dismiss' type='button' data-close><span aria-hidden='true'>&times;</span></button>
+				</div>
+			{% endfor %}
+		{% endif %}
+		{% endwith %}
+		{% with messages = get_flashed_messages(category_filter = ["error"]) %}
+		{% if messages %}
+			{% for message in messages %}
+				<div class="callout alert radius" data-closable>
+					{{ message }}
+					<button class='close-button text-right' aria-label='Dismiss' type='button' data-close><span aria-hidden='true'>&times;</span></button>
+				</div>
+			{% endfor %}
+		{% endif %}
+		{% endwith %}
+		{% with messages = get_flashed_messages(category_filter = ["success"]) %}
+		{% if messages %}
+			{% for message in messages %}
+				<div class="callout success radius" data-closable>
+					{{ message }}
+					<button class='close-button text-right' aria-label='Dismiss' type='button' data-close><span aria-hidden='true'>&times;</span></button>
+				</div>
+			{% endfor %}
+		{% endif %}
+		{% endwith %}
+	</div>
+	{% block app %}
+		<div class="sidebar-left">{% block sidebar_left %}{% endblock %}</div>
+
+		<div class="app-body">{% block app_body %}{% endblock %}</div>
+
+		<div class="sidebar-right">{% block sidebar_right %}{% endblock %}</div>
+	{% endblock %}
+{% endblock %}
+
+{% block footer %}
+	{% include "_footer.html" %}
+{% endblock %}
+
+{% block scripts %}
+	{% include "_body_scripts.html" %}
+
+	{% block default_app_scripts %}{% endblock %}
+	{% block app_scripts %}{% endblock %}
+{% endblock %}
+
+{% block extra_body_base %}
+
+	{% block extra_body %}{% endblock %}
+
+	{% block modals %}
+		<div class="reveal-background" style="position: fixed;"></div>
+		{% include "_modals.html" %}
+		{% block app_modals %}{% endblock %}
+		{% block extra_modals %}{% endblock %}
+	{% endblock %}
+{% endblock %}

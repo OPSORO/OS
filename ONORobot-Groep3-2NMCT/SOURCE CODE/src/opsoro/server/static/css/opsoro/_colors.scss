@@ -1,0 +1,58 @@
+$green        : #00E58B;
+$orange       : #FFAF19;
+$red          : #FF517E;
+$blue         : #0095FF;
+$yellow       : #FFF222;
+$purple       : #8200E5;
+$white        : #FFF;
+$black        : #000;
+$gray_lighter : #F2F2F2;
+$gray_light   : #C7C8C9;
+$gray         : #DDD;
+$gray_dark    : #313334; //27292a
+$gray_darker  : #1C1D1D; //27292a
+
+$colors: (
+  green               : $green, //22b472
+  green_dark          : #22774D,
+  blue                : $blue, //36c9ff
+  orange              : $orange,
+  red                 : $red,
+  yellow              : $yellow,
+  purple              : $purple,
+  gray_lighter        : $gray_lighter,
+  gray_light          : $gray_light,
+  gray                : $gray,
+  gray_dark           : $gray_dark, //27292a
+  gray_darker         : $gray_darker, //27292a
+  white               : $white,
+  button_icon         : $white,
+  button_text         : $white,
+  button_background   : $gray_dark,
+  global_text         : #27292a,
+  global_background   : $white,
+  statusbar_text      : $gray_dark,
+  statusbar_text_hover: $black,
+  statusbar_background: $gray_lighter,
+  actionbar_text      : $white,
+  actionbar_text_hover: $gray_lighter,
+  actionbar_background: $gray,
+  reveal_text         : $gray_dark,
+  reveal_text_hover   : $black,
+  reveal_background   : $white,
+  reveal_red          : $red,
+  reveal_green        : #22774D,
+  alert_button        : $red,
+  default_button      : $blue,
+  success_button      : $green,
+  slider_handle       : $blue,
+);
+
+@function color($key) {
+  @if map-has-key($colors, $key) {
+    @return map-get($colors, $key);
+  }
+
+  @warn "Unknown `#{$key}` in $colors.";
+  @return #000;
+}
