@@ -1,0 +1,45 @@
+{% extends "app_base.html" %}
+{% block app_head %}
+
+	<!-- <script src="/site_media/static/js/....js"></script> -->
+
+{% endblock %}
+{% block app_toolbar %}{% endblock %}
+
+<!-- These sidebars can be removed by removing the block tags -->
+{% block sidebar_left %}{% endblock %}
+{% block sidebar_right %}{% endblock %}
+
+{% block app_content %}
+	<fieldset>
+		<legend>
+			<span class="fa fa-facebook"></span> Facebook</legend>
+	</fieldset>
+	<fieldset>
+		<legend>
+			<span class="fa fa-twitter"></span> Twitter</legend>
+			<div>
+				<form>
+
+				</form>
+			</div>
+	</fieldset>
+	{% if not online %}
+		<!-- Content in this section is not displayed online, only on the robot. For example: it is a perfect place to put controls that access hardware stuff, which is not available online. -->
+	{% endif %}
+
+{% endblock %}
+{% block app_scripts %}
+
+	<script>
+		// var action_data = {{ actions|tojson|safe }};
+
+		// var data = {{ data|tojson|safe }};
+	</script>
+
+	<!-- <script src="/site_media/static/js/....js"></script> -->
+
+{% endblock %}
+{% block app_modals %}
+
+{% endblock %}

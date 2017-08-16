@@ -1,26 +1,30 @@
+import glob
+import os
+import time
+from functools import partial
+
 from flask import Blueprint, render_template, request, send_from_directory
 from werkzeug import secure_filename
-from functools import partial
-import os
-import glob
-import time
-import lupa
+
+from opsoro.robot import Robot
+
+# import lupa
 from .scripthost import ScriptHost
 
-config = {'full_name': 'Lua Scripting',
-          'icon': 'fa-terminal',
-          'color': '#36c9ff',
-          'allowed_background': True,
-          'robot_state': 1}
+config = {
+    'full_name':            'Lua Scripting',
+    'author':               'OPSORO',
+    'icon':                 'fa-terminal',
+    'color':                'orange',
+    'difficulty':           7,
+    'tags':                 ['lua', 'code', 'script'],
+    'allowed_background':   True,
+    'multi_user':           False,
+    'connection':           Robot.Connection.OFFLINE,
+    'activation':           Robot.Activation.AUTO
+}
 config['formatted_name'] = config['full_name'].lower().replace(' ', '_')
 
-# robot_state:
-# 0: Manual start/stop
-# 1: Start robot automatically (alive feature according to preferences)
-# 2: Start robot automatically and enable alive feature
-# 3: Start robot automatically and disable alive feature
-
-clientconn = None
 sh = None
 script = ''
 script_name = None
@@ -30,58 +34,37 @@ get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 
 
 def add_console(message, color='#888888', icon=None):
-    global clientconn
-    if clientconn:
-        clientconn.send_data('addConsole', {'message': message,
-                                            'color': color,
-                                            'icon': icon})
+    Users.send_app_data(config['formatted_name'], 'addConsole', {'message': message, 'color': color, 'icon': icon})
 
 
 def send_started():
-    global clientconn
-    if clientconn:
-        clientconn.send_data('scriptStarted', {})
+    Users.send_app_data(config['formatted_name'], 'scriptStarted', {})
 
 
 def send_stopped():
-    global clientconn
-    if clientconn:
-        clientconn.send_data('scriptStopped', {})
+    Users.send_app_data(config['formatted_name'], 'scriptStopped', {})
 
 
 def init_ui():
-    global clientconn
-    if clientconn:
-        clientconn.send_data('initUI', {})
+    Users.send_app_data(config['formatted_name'], 'initUI', {})
 
 
 def ui_add_button(name, caption, icon, toggle=False):
-    global clientconn
-    if clientconn:
-        clientconn.send_data('UIAddButton', {'name': name,
-                                             'caption': caption,
-                                             'icon': icon,
-                                             'toggle': toggle})
+    Users.send_app_data(config['formatted_name'], 'UIAddButton', {'name': name, 'caption': caption, 'icon': icon, 'toggle': toggle})
 
 
 def ui_add_key(key):
-    global clientconn
     global sh
-    if clientconn:
-        valid_keys = ['up', 'down', 'left', 'right', 'space']
-        valid_keys += list('abcdefghijklmnopqrstuvwxyz')
-        if key in valid_keys:
-            clientconn.send_data('UIAddKey', {'key': key})
-        else:
-            sh.generate_lua_error('Invalid key: %s' % key)
+    valid_keys = ['up', 'down', 'left', 'right', 'space']
+    valid_keys += list('abcdefghijklmnopqrstuvwxyz')
+    if key in valid_keys:
+        Users.send_app_data(config['formatted_name'], 'UIAddKey', {'key': key})
+    else:
+        sh.generate_lua_error('Invalid key: %s' % key)
 
 
 def setup_pages(opsoroapp):
-    luascripting_bp = Blueprint(
-        config['formatted_name'],
-        __name__,
-        template_folder='templates',
-        static_folder='static')
+    luascripting_bp = Blueprint(config['formatted_name'], __name__, template_folder='templates', static_folder='static')
 
     @luascripting_bp.route('/', methods=['GET'])
     @opsoroapp.app_view
@@ -103,7 +86,7 @@ def setup_pages(opsoroapp):
             data['actions'][action] = request.args.get('param', None)
 
         if sh.is_running:
-            data['script'] = script  #sh._script
+            data['script'] = script  # sh._script
         else:
             with open(get_path('static/boilerplate.lua'), 'r') as f:
                 data['script'] = f.read()
@@ -146,16 +129,6 @@ def setup_pages(opsoroapp):
         else:
             return {'status': 'error',
                     'message': 'There is no active script to stop.'}
-
-    @opsoroapp.app_socket_connected
-    def s_connected(conn):
-        global clientconn
-        clientconn = conn
-
-    @opsoroapp.app_socket_disconnected
-    def s_disconnected(conn):
-        global clientconn
-        clientconn = None
 
     @opsoroapp.app_socket_message('keyDown')
     def s_key_down(conn, data):

@@ -46,7 +46,7 @@
 
     margin-top: -1rem;
     margin-bottom: .5rem;
-    margin-left: 1.1rem;
+    margin-left: .7rem;
     padding: .5rem;
     padding-right: .75rem;
 
@@ -128,6 +128,12 @@
     width: 35rem;
     min-height: 10rem;
 }
+#PickEmotionModal .column-block
+{
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0;
+}
 
 .voiceline .avatar,
 #PickEmotionModal .avatar
@@ -139,9 +145,16 @@
     width: 5.5rem;
     height: 5.5rem;
     padding: .25rem;
+    margin: 0 auto;
 
-    border: 2px solid #ddd;
+    /*border: 2px solid #ddd;*/
     border-radius: 50%;
+
+    cursor: pointer;
+}
+.voiceline .avatar .emoji,
+#PickEmotionModal .avatar .emoji {
+  font-size: 5rem;
 }
 
 #PickEmotionModal .avatar
@@ -153,6 +166,7 @@
     font-size: .8rem;
     font-weight: bold;
 
+    margin: 0;
     margin-top: .25rem;
     padding: 0 .5rem;
 
@@ -185,10 +199,13 @@
     width: 3.5rem;
     height: 3.5rem;
     margin: 0;
-    margin-bottom: .5rem;
-    margin-left: .5rem;
+    /*margin-bottom: .5rem;
+    margin-left: .5rem;*/
     padding-top: .15rem;
-    padding-left: .15rem;
+    padding-left: .1rem;
+}
+.voiceline.locked .avatar .emoji {
+  font-size: 3.3rem;
 }
 #voicelines .voiceline.locked
 {
@@ -242,7 +259,8 @@
     padding-top: 1rem;
 
     border-radius: 50%;
-    background-color: #43ac6a;
+    /*background-color: #43ac6a;*/
+    background-color: transparent;
 }
 
 .voiceline .playbutton a span
@@ -258,22 +276,23 @@
 
 .voiceline .playbutton a:hover
 {
-    background-color: #368a55;
+    /*background-color: #368a55;*/
+    /*background-color: transparent;*/
 }
 
 .voiceline .playbutton.used .bg
 {
-    background: #ddd;
+    background: #aaa;
 }
 
 .voiceline .playbutton.used a
 {
-    background: #b2afa1;
+    /*background: #b2afa1;*/
 }
 
 .voiceline .playbutton.used a:hover
 {
-    background-color: #545454;
+    /*background-color: #545454;*/
 }
 
 .voiceline .playbutton.active .bg
@@ -288,24 +307,24 @@
     border-right: .6rem solid rgba(34, 181, 115, .41);
     border-bottom: .6rem solid rgba(34, 181, 115, .41);
     border-left: .6rem solid rgba(34, 181, 115, .7);
-    background: #fff;
+    background: #b2afa1;
 }
 
 .voiceline .playbutton.active a
 {
-    background: #43ac6a;
+    /*background: #43ac6a;*/
 }
 
 .voiceline .playbutton.active a:hover
 {
-    background-color: #368a55;
+    /*background-color: #368a55;*/
 }
 
 .voiceline .content
 {
     margin-right: 3rem;
     margin-left: 4rem;
-    padding: 1.25rem 0 0 0;
+    padding: .85rem 0 0 0;
 }
 
 .voiceline.unlocked .content
@@ -384,7 +403,7 @@
 {
     height: 2rem;
     margin-left: .5rem;
-    padding: .25rem 1rem;
+    padding: .4rem 1rem;
 }
 
 #fixedavatars
@@ -431,7 +450,7 @@
     font-size: .8rem;
 
     position: absolute;
-    top: .2rem;
+    top: .8rem;
     left: 4.5rem;
 
     width: 60%;

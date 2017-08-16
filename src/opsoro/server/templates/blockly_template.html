@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<style>
+	html, body {
+		background-color: #fff;
+		margin: 0;
+		padding: 0;
+		overflow: hidden;
+		height: 100%;
+	}
+	.blocklySvg {
+		height: 100%;
+		width: 100%;
+	}
+	</style>
+</head>
+<body>
+	<xml id="toolbox" style="display: none">
+		<category name="General" id="catGeneral">
+			<block type="general_onsetup"></block>
+			<block type="general_onloop"></block>
+			<block type="general_onquit"></block>
+			<block type="general_sleep">
+				<value name="TIME">
+					<block type="math_number">
+						<field name="NUM">2.0</field>
+					</block>
+				</value>
+			</block>
+			<block type="general_seconds"></block>
+		</category>
+		<category name="Interface" id="catInterface">
+			<block type="interface_init"></block>
+			<block type="interface_addbutton"></block>
+			<block type="interface_addtogglebutton"></block>
+			<block type="interface_addkey"></block>
+			<block type="interface_addkey2"></block>
+			<block type="interface_buttonpress"></block>
+			<block type="interface_keypress"></block>
+			<block type="interface_is_key_pressed"></block>
+			<block type="interface_is_button_pressed"></block>
+		</category>
+		<category name="Robot" id="catRobot">
+			<category name="Sound" id="catSound">
+				<block type="sound_saytts"></block>
+				<block type="sound_play"></block>
+			</category>
+			<category name="Hardware" id="catHardware">
+				<block type="hardware_ledonoff"></block>
+				<block type="hardware_readanalog"></block>
+			</category>
+			<category name="Servo" id="catServo">
+				<!-- <block type="servo_init"></block> -->
+				<!-- <block type="servo_enabledisable"></block> -->
+				<block type="dof_set">
+					<value name="VALUE">
+						<block type="math_number">
+							<field name="NUM">0.5</field>
+						</block>
+					</value>
+				</block>
+				<block type="servo_set">
+					<value name="POS">
+						<block type="math_number">
+							<field name="NUM">1500</field>
+						</block>
+					</value>
+				</block>
+			</category>
+			<category name="Expression" id="catExpression">
+				<!-- <block type="expression_update"></block> -->
+				<block type="expression_setekman"></block>
+				<block type="expression_setva">
+					<value name="VALENCE">
+						<block type="math_number">
+							<field name="NUM">0.75</field>
+						</block>
+					</value>
+					<value name="AROUSAL">
+						<block type="math_number">
+							<field name="NUM">0.25</field>
+						</block>
+					</value>
+				</block>
+				<block type="expression_setrphi">
+					<value name="PHI">
+						<block type="math_number">
+							<field name="NUM">90</field>
+						</block>
+					</value>
+					<value name="R">
+						<block type="math_number">
+							<field name="NUM">0.80</field>
+						</block>
+					</value>
+				</block>
+			</category>
+			<category name="Touch" id="catTouch">
+				<block type="touch_init"></block>
+				<block type="touch_etouched"></block>
+			</category>
+			<category name="NeoPixels" id="catNeoPixels">
+				<block type="neo_init"></block>
+				<block type="neo_brightness">
+					<value name="BRIGHTNESS">
+						<block type="math_number">
+							<field name="NUM">128</field>
+						</block>
+					</value>
+				</block>
+				<block type="neo_update"></block>
+				<block type="neo_setpixel">
+					<value name="PIXEL">
+						<block type="math_number">
+							<field name="NUM">5</field>
+						</block>
+					</value>
+				</block>
+				<block type="neo_setrange">
+					<value name="START">
+						<block type="math_number">
+							<field name="NUM">3</field>
+						</block>
+					</value>
+					<value name="END">
+						<block type="math_number">
+							<field name="NUM">8</field>
+						</block>
+					</value>
+				</block>
+				<block type="neo_setall"></block>
+			</category>
+		</category>
+		<sep></sep>
+		{% if apps_blockly %}
+			<category name="Apps" id="catApps">
+				{% for blockly_app in apps_blockly %}
+					<category name="{{ apps_blockly[blockly_app]['name'] }}" id="catApps_{{ blockly_app }}">
+						{{ apps_blockly[blockly_app]['xml']|safe }}
+					</category>
+				{% endfor %}
+			</category>
+			<sep></sep>
+		{% endif %}
+		<category name="Logic" id="catLogic">
+			<block type="controls_if"></block>
+			<block type="logic_compare"></block>
+			<block type="logic_operation"></block>
+			<block type="logic_negate"></block>
+			<block type="logic_boolean"></block>
+			<block type="logic_null"></block>
+			<block type="logic_ternary"></block>
+		</category>
+		<category name="Loops" id="catLoops">
+			<block type="controls_repeat_ext">
+				<value name="TIMES">
+					<block type="math_number">
+						<field name="NUM">10</field>
+					</block>
+				</value>
+			</block>
+			<block type="controls_whileUntil"></block>
+			<block type="controls_for">
+				<value name="FROM">
+					<block type="math_number">
+						<field name="NUM">1</field>
+					</block>
+				</value>
+				<value name="TO">
+					<block type="math_number">
+						<field name="NUM">10</field>
+					</block>
+				</value>
+				<value name="BY">
+					<block type="math_number">
+						<field name="NUM">1</field>
+					</block>
+				</value>
+			</block>
+			<block type="controls_forEach"></block>
+			<block type="controls_flow_statements"></block>
+		</category>
+		<category name="Math" id="catMath">
+			<block type="math_number"></block>
+			<block type="math_arithmetic"></block>
+			<block type="math_single"></block>
+			<block type="math_trig"></block>
+			<block type="math_constant"></block>
+			<block type="math_number_property"></block>
+			<block type="math_change">
+				<value name="DELTA">
+					<block type="math_number">
+						<field name="NUM">1</field>
+					</block>
+				</value>
+			</block>
+			<block type="math_round"></block>
+			<block type="math_on_list"></block>
+			<block type="math_modulo"></block>
+			<block type="math_constrain">
+				<value name="LOW">
+					<block type="math_number">
+						<field name="NUM">1</field>
+					</block>
+				</value>
+				<value name="HIGH">
+					<block type="math_number">
+						<field name="NUM">100</field>
+					</block>
+				</value>
+			</block>
+			<block type="math_random_int">
+				<value name="FROM">
+					<block type="math_number">
+						<field name="NUM">1</field>
+					</block>
+				</value>
+				<value name="TO">
+					<block type="math_number">
+						<field name="NUM">100</field>
+					</block>
+				</value>
+			</block>
+			<block type="math_random_float"></block>
+		</category>
+		<category name="Text" id="catText">
+			<block type="text"></block>
+			<block type="text_join"></block>
+			<block type="text_append">
+				<value name="TEXT">
+					<block type="text"></block>
+				</value>
+			</block>
+			<block type="text_length"></block>
+			<block type="text_isEmpty"></block>
+			<block type="text_indexOf">
+				<value name="VALUE">
+					<block type="variables_get">
+						<field name="VAR" class="textVar">...</field>
+					</block>
+				</value>
+			</block>
+			<block type="text_charAt">
+				<value name="VALUE">
+					<block type="variables_get">
+						<field name="VAR" class="textVar">...</field>
+					</block>
+				</value>
+			</block>
+			<block type="text_getSubstring">
+				<value name="STRING">
+					<block type="variables_get">
+						<field name="VAR" class="textVar">...</field>
+					</block>
+				</value>
+			</block>
+			<block type="text_changeCase"></block>
+			<block type="text_trim"></block>
+			<block type="text_print"></block>
+			<block type="text_prompt_ext">
+				<value name="TEXT">
+					<block type="text"></block>
+				</value>
+			</block>
+		</category>
+		<category name="Lists" id="catLists">
+			<block type="lists_create_empty"></block>
+			<block type="lists_create_with"></block>
+			<block type="lists_repeat">
+				<value name="NUM">
+					<block type="math_number">
+						<field name="NUM">5</field>
+					</block>
+				</value>
+			</block>
+			<block type="lists_length"></block>
+			<block type="lists_isEmpty"></block>
+			<block type="lists_indexOf">
+				<value name="VALUE">
+					<block type="variables_get">
+						<field name="VAR" class="listVar">...</field>
+					</block>
+				</value>
+			</block>
+			<block type="lists_getIndex">
+				<value name="VALUE">
+					<block type="variables_get">
+						<field name="VAR" class="listVar">...</field>
+					</block>
+				</value>
+			</block>
+			<block type="lists_setIndex">
+				<value name="LIST">
+					<block type="variables_get">
+						<field name="VAR" class="listVar">...</field>
+					</block>
+				</value>
+			</block>
+			<block type="lists_getSublist">
+				<value name="LIST">
+					<block type="variables_get">
+						<field name="VAR" class="listVar">...</field>
+					</block>
+				</value>
+			</block>
+		</category>
+		<category name="Variables" id="catVariables" custom="VARIABLE"></category>
+		<category name="Functions" id="catFunctions" custom="PROCEDURE"></category>
+	</xml>
+
+	<script src="/static/js/vendor/jquery.js"></script>
+	<script>
+		var soundlist = [
+			{% if soundfiles %}
+				{% for soundfile in soundfiles %}
+					["{{ soundfile }}", "{{ soundfile }}"]{% if not loop.last %},{% endif %}
+				{% endfor %}
+			{% else %}
+				["No sounds found!", "NOSOUND"]
+			{% endif %}
+		];
+		var expressionlist = [
+			{% if expressions %}
+				{% for expression in expressions %}
+					["{{ expression.name }}", "{{ expression.name }}"]{% if not loop.last %},{% endif %}
+				{% endfor %}
+			{% else %}
+				["No expressions found!", "NOEXPRESSIONS"]
+			{% endif %}
+		];
+		var doflist = [
+			{% if configs %}
+				{% for mod in configs['modules'] %}
+					{% if mod.dofs %}
+						{% for dof in mod.dofs %}
+							["{{ mod.name + ' ' + dof.name }}", "{{ mod.name + ' ' + dof.name }}"]{% if not loop.last %},{% endif %}
+						{% endfor %}
+						{% if not loop.last %},{% endif %}
+					{% endif %}
+				{% endfor %}
+			{% else %}
+				["No dofs found!", "NODOFS"]
+			{% endif %}
+		];
+	</script>
+	<script src="/static/js/blockly/blockly_compressed.js"></script>
+	<script src="/static/js/blockly/blocks_compressed.js"></script>
+	<script src="/static/js/blockly/msg/js/en.js"></script>
+	<script src="/static/js/blockly/lua_compressed.js"></script>
+
+  <script src="/static/js/blockly/custom_blocks/general.js"></script>
+	<script src="/static/js/blockly/custom_blocks/interface.js"></script>
+	<script src="/static/js/blockly/custom_blocks/sound.js"></script>
+	<script src="/static/js/blockly/custom_blocks/hardware.js"></script>
+	<script src="/static/js/blockly/custom_blocks/servo.js"></script>
+	<script src="/static/js/blockly/custom_blocks/expression.js"></script>
+	<script src="/static/js/blockly/custom_blocks/touch.js"></script>
+	<script src="/static/js/blockly/custom_blocks/neopixel.js"></script>
+
+	<script>
+		{% for blockly_app in apps_blockly %}
+			{{ apps_blockly[blockly_app]['js']|safe }}
+		{% endfor %}
+	</script>
+
+	<script>
+		$(document).ready(function() {
+			Blockly.BlockSvg.START_HAT = true;
+			var workspace = Blockly.inject(document.body, {
+				toolbox: document.getElementById('toolbox'),
+				grid: {
+					spacing: 20,
+					length: 1,
+					colour: '#555',
+					snap: true
+				},
+				zoom: {
+					controls: true,
+					wheel: true,
+					startScale: 1.0,
+					maxScale: 3,
+					minScale: 0.3,
+					scaleSpeed: 1.2
+				},
+				trashcan: true
+			});
+			window.parent.blocklyLoaded(Blockly, workspace); // Let the top-level application know that Blockly is ready
+		});
+	</script>
+</body>
+</html>

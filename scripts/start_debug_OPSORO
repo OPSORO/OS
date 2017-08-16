@@ -1,4 +1,4 @@
 #!/bin/sh
 
 sudo service opsoro stop
-sudo python /home/pi/OPSORO/OS/run
+sudo python /opsoro/os/run

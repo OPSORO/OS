@@ -1,161 +1,70 @@
-#!/usr/bin/python
-import re
-import smbus
+from opsoro.hardware.spi import SPI
 
-# ===========================================================================
-# I2C Class
-# ===========================================================================
+# > I2C                      IN  OUT
+CMD_I2C_DETECT      = 20  # 1   1    Test if there's a device at addr
+CMD_I2C_READ8       = 21  # 2   1    Read byte
+CMD_I2C_WRITE8      = 22  # 3   0    Write byte
+CMD_I2C_READ16      = 23  # 2   2    Read 2 bytes
+CMD_I2C_WRITE16     = 24  # 4   0    Write 2 bytes
+
 
 class I2C(object):
+    # > I2C
+    def detect(self, addr):
+        """
+        Returns True if an I2C device is found at a particular address.
 
-  @staticmethod
-  def getPiRevision():
-    "Gets the version number of the Raspberry Pi board"
-    # Revision list available at: http://elinux.org/RPi_HardwareHistory#Board_Revision_History
-    try:
-      with open('/proc/cpuinfo', 'r') as infile:
-        for line in infile:
-          # Match a line of the form "Revision : 0002" while ignoring extra
-          # info in front of the revsion (like 1000 when the Pi was over-volted).
-          match = re.match('Revision\s+:\s+.*(\w{4})$', line)
-          if match and match.group(1) in ['0000', '0002', '0003']:
-            # Return revision 1 if revision ends with 0000, 0002 or 0003.
-            return 1
-          elif match:
-            # Assume revision 2 if revision ends with any other 4 chars.
-            return 2
-        # Couldn't find the revision, assume revision 0 like older code for compatibility.
-        return 0
-    except:
-      return 0
+        :param int addr:   address of the I2C device.
 
-  @staticmethod
-  def getPiI2CBusNumber():
-    # Gets the I2C bus number /dev/i2c#
-    return 1 if I2C.getPiRevision() > 1 else 0
+        :return:         I2C device detected
+        :rtype:          bool
+        """
+        return SPI.command(CMD_I2C_DETECT, params=[addr], returned=1)[0] == 1
 
-  def __init__(self, address, busnum=-1, debug=False):
-    self.address = address
-    # By default, the correct I2C bus is auto-detected using /proc/cpuinfo
-    # Alternatively, you can hard-code the bus version below:
-    # self.bus = smbus.SMBus(0); # Force I2C0 (early 256MB Pi's)
-    # self.bus = smbus.SMBus(1); # Force I2C1 (512MB Pi's)
-    self.bus = smbus.SMBus(busnum if busnum >= 0 else I2C.getPiI2CBusNumber())
-    self.debug = debug
+    def read8(self, addr, reg):
+        """
+        Read a Byte from an I2C device.
 
-  def reverseByteOrder(self, data):
-    "Reverses the byte order of an int (16-bit) or long (32-bit) value"
-    # Courtesy Vishal Sapre
-    byteCount = len(hex(data)[2:].replace('L','')[::2])
-    val       = 0
-    for i in range(byteCount):
-      val    = (val << 8) | (data & 0xff)
-      data >>= 8
-    return val
+        :param int addr:    address of the I2C device.
+        :param int reg:     register address in the I2C device
 
-  def errMsg(self):
-    #print "Error accessing 0x%02X: Check your I2C address" % self.address
-    return -1
+        :return:         what is the function returning?
+        :rtype:          var
+        """
+        return SPI.command(CMD_I2C_READ8, params=[addr, reg], returned=1)[0]
 
-  def write8(self, reg, value):
-    "Writes an 8-bit value to the specified register/address"
-    try:
-      self.bus.write_byte_data(self.address, reg, value)
-      if self.debug:
-        print "I2C: Wrote 0x%02X to register 0x%02X" % (value, reg)
-    except IOError, err:
-      return self.errMsg()
+    def write8(self, addr, reg, data):
+        """
+        Write a Byte to an I2C device.
 
-  def write16(self, reg, value):
-    "Writes a 16-bit value to the specified register/address pair"
-    try:
-      self.bus.write_word_data(self.address, reg, value)
-      if self.debug:
-        print ("I2C: Wrote 0x%02X to register pair 0x%02X,0x%02X" %
-         (value, reg, reg+1))
-    except IOError, err:
-      return self.errMsg()
+        :param int addr:    address of the I2C device.
+        :param int reg:     register address in the I2C device
+        :param var data:    Byte to send
+        """
+        SPI.command(CMD_I2C_WRITE8, params=[addr, reg, data])
 
-  def writeRaw8(self, value):
-    "Writes an 8-bit value on the bus"
-    try:
-      self.bus.write_byte(self.address, value)
-      if self.debug:
-        print "I2C: Wrote 0x%02X" % value
-    except IOError, err:
-      return self.errMsg()
+    def read16(self, addr, reg):
+        """
+        Read 2 bytes from an I2C device.
 
-  def writeList(self, reg, list):
-    "Writes an array of bytes using I2C format"
-    try:
-      if self.debug:
-        print "I2C: Writing list to register 0x%02X:" % reg
-        print list
-      self.bus.write_i2c_block_data(self.address, reg, list)
-    except IOError, err:
-      return self.errMsg()
+        :param int addr:    address of the I2C device.
+        :param int reg:     register address in the I2C device
 
-  def readList(self, reg, length):
-    "Read a list of bytes from the I2C device"
-    try:
-      results = self.bus.read_i2c_block_data(self.address, reg, length)
-      if self.debug:
-        print ("I2C: Device 0x%02X returned the following from reg 0x%02X" %
-         (self.address, reg))
-        print results
-      return results
-    except IOError, err:
-      return self.errMsg()
+        :return:         2 Bytes
+        :rtype:          var
+        """
+        data = SPI.command(CMD_I2C_READ16, params=[addr, reg], returned=2)
+        return (data[0] << 8) | data[1]
 
-  def readU8(self, reg):
-    "Read an unsigned byte from the I2C device"
-    try:
-      result = self.bus.read_byte_data(self.address, reg)
-      if self.debug:
-        print ("I2C: Device 0x%02X returned 0x%02X from reg 0x%02X" %
-         (self.address, result & 0xFF, reg))
-      return result
-    except IOError, err:
-      return self.errMsg()
+    def write16(self, addr, reg, data):
+        """
+        Write 2 bytes to an I2C device.
 
-  def readS8(self, reg):
-    "Reads a signed byte from the I2C device"
-    try:
-      result = self.bus.read_byte_data(self.address, reg)
-      if result > 127: result -= 256
-      if self.debug:
-        print ("I2C: Device 0x%02X returned 0x%02X from reg 0x%02X" %
-         (self.address, result & 0xFF, reg))
-      return result
-    except IOError, err:
-      return self.errMsg()
+        :param int addr:    address of the I2C device.
+        :param int reg:     register address in the I2C device
+        :param var data:    Bytes to send
+        """
+        val1 = (data & 0xFF00) >> 8
+        val2 = (data & 0x00FF)
 
-  def readU16(self, reg, little_endian=True):
-    "Reads an unsigned 16-bit value from the I2C device"
-    try:
-      result = self.bus.read_word_data(self.address,reg)
-      # Swap bytes if using big endian because read_word_data assumes little
-      # endian on ARM (little endian) systems.
-      if not little_endian:
-        result = ((result << 8) & 0xFF00) + (result >> 8)
-      if (self.debug):
-        print "I2C: Device 0x%02X returned 0x%04X from reg 0x%02X" % (self.address, result & 0xFFFF, reg)
-      return result
-    except IOError, err:
-      return self.errMsg()
-
-  def readS16(self, reg, little_endian=True):
-    "Reads a signed 16-bit value from the I2C device"
-    try:
-      result = self.readU16(reg,little_endian)
-      if result > 32767: result -= 65536
-      return result
-    except IOError, err:
-      return self.errMsg()
-
-if __name__ == '__main__':
-  try:
-    bus = I2C(address=0)
-    print "Default I2C bus is accessible"
-  except:
-    print "Error accessing default I2C bus"
+        SPI.command(CMD_I2C_WRITE16, params=[addr, reg, val1, val2])

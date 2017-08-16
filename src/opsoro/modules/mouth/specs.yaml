@@ -1,0 +1,15 @@
+type: mouth
+
+size:
+  width: 121
+  height: 38
+
+dofs:
+  - name: rotation left
+    servo:
+      min: 250
+      max: -250
+  - name: rotation right
+    servo:
+      min: 250
+      max: -250

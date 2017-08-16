@@ -1,0 +1,9 @@
+type: turn
+
+size:
+  width: 57
+  height: 19
+
+dofs:
+  - name: rotation
+    servo:

@@ -19,13 +19,14 @@
 {% endblock %}
 
 {% block body %}
+	<div class="actionbar {% block actionbar_class %}{% endblock %}">{% block app_toolbar %}{% endblock %}</div>
 	<div id="errors">
 		{% with messages = get_flashed_messages(category_filter = ["message"]) %}
 		{% if messages %}
 			{% for message in messages %}
-				<div data-alert class="alert-box secondary radius">
+				<div class="callout secondary radius" data-closable>
 					{{ message }}
-					<a href="#" class="close">&times;</a>
+					<button class='close-button text-right' aria-label='Dismiss' type='button' data-close><span aria-hidden='true'>&times;</span></button>
 				</div>
 			{% endfor %}
 		{% endif %}
@@ -33,9 +34,9 @@
 		{% with messages = get_flashed_messages(category_filter = ["error"]) %}
 		{% if messages %}
 			{% for message in messages %}
-				<div data-alert class="alert-box alert radius">
+				<div class="callout alert radius" data-closable>
 					{{ message }}
-					<a href="#" class="close">&times;</a>
+					<button class='close-button text-right' aria-label='Dismiss' type='button' data-close><span aria-hidden='true'>&times;</span></button>
 				</div>
 			{% endfor %}
 		{% endif %}
@@ -43,20 +44,21 @@
 		{% with messages = get_flashed_messages(category_filter = ["success"]) %}
 		{% if messages %}
 			{% for message in messages %}
-				<div data-alert class="alert-box success radius">
+				<div class="callout success radius" data-closable>
 					{{ message }}
-					<a href="#" class="close">&times;</a>
+					<button class='close-button text-right' aria-label='Dismiss' type='button' data-close><span aria-hidden='true'>&times;</span></button>
 				</div>
 			{% endfor %}
 		{% endif %}
 		{% endwith %}
 	</div>
-	<div class="actionbar">{% block app_toolbar %}{% endblock %}</div>
-	<div class="sidebar_left">{% block sidebar_left %}{% endblock %}</div>
+	{% block app %}
+		<div class="sidebar-left">{% block sidebar_left %}{% endblock %}</div>
 
-	<div class="app_body">{% block app_body %}{% endblock %}</div>
+		<div class="app-body">{% block app_body %}{% endblock %}</div>
 
-	<div class="sidebar_right">{% block sidebar_right %}{% endblock %}</div>
+		<div class="sidebar-right">{% block sidebar_right %}{% endblock %}</div>
+	{% endblock %}
 {% endblock %}
 
 {% block footer %}
@@ -75,7 +77,7 @@
 	{% block extra_body %}{% endblock %}
 
 	{% block modals %}
-		<div class="reveal-modal-bg" style="position: fixed;"></div>
+		<div class="reveal-background" style="position: fixed;"></div>
 		{% include "_modals.html" %}
 		{% block app_modals %}{% endblock %}
 		{% block extra_modals %}{% endblock %}

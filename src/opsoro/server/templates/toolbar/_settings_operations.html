@@ -1,0 +1,45 @@
+<!-- <div class="filebox">
+    <span data-bind="visible: IsModified()" class="fa fa-asterisk"></span>
+</div> -->
+<a href="#" class="action" data-bind="click: saveSettings">
+    <span class="fa fa-save"></span><br/>
+    <span class="text">{{ _('Save') }}</span>
+</a>
+
+<a href="#" class="action" data-bind="click: undoSettings">
+    <span class="fa fa-undo"></span><br/>
+    <span class="text">{{ _('Undo changes') }}</span>
+</a>
+
+<!-- <a href="#" class="action" data-bind="click: restoreSettings">
+    <span class="fa fa-refresh"></span><br/>
+    <span class="text">{{ _('Restore defaults') }}</span>
+</a> -->
+
+
+<div class="spacer"></div>
+
+<script>
+
+    // IsModified = function () {
+    //     if ($(".filebox .fa-asterisk").css("display") == "none") {
+    //         return false
+    //     }
+    //     return true;
+    // };
+
+    // Config parameters ----------------------------------------------------------------------------------
+    var saveSettings = function () {
+        $('form').submit();
+        return;
+    };
+    var undoSettings = function () {
+        location.reload();
+        return;
+    };
+    var restoreSettings = function () {
+        return;
+    };
+    // ----------------------------------------------------------------------------------------------------
+
+</script>

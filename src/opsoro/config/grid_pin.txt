@@ -1,0 +1,17 @@
+eye_right:
+  pupil_horizontal: servo pin: 0,
+  pupil_vertical: servo pin: 1,
+  eyelid_closure: servo pin": 2,
+
+eyebrow_right: servo pin: 4,
+
+mouth:
+  right_rotation: servo pin: 5,
+  left_rotation: servo pin: 10,
+
+eyebrow_left: servo pin: 11,
+
+eye_left:
+  pupil_horizontal: servo pin: 15,
+  pupil_vertical: servo pin: 14,
+  eyelid_closure: servo pin": 13,

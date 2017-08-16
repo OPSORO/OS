@@ -3,10 +3,13 @@
 {% block body_class %}app{% endblock %}
 
 {% block default_app_styles %}
-	<link rel="stylesheet" href="static/app.css"/>
+	<link rel="stylesheet" href="static/app.css?ver={{ version }}"/>
 {% endblock %}
 
 {% block app_head %}{% endblock %}
+
+
+{% block actionbar_class %}background_{{ app.color }}{% endblock %}
 
 {% block status_text_comment %}{{ app.name }}{% endblock %}
 
@@ -15,5 +18,8 @@
 {% endblock %}
 
 {% block default_app_scripts %}
-	<script src="static/app.js"></script>
+	<script src="static/app.js?ver={{ version }}"></script>
+	<script>
+		app_data = {{ app|tojson|safe }};
+	</script>
 {% endblock %}

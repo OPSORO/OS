@@ -53,40 +53,10 @@
 		</div>
 	</fieldset>
 
-	<!-- {% with messages = get_flashed_messages(category_filter = ["message"]) %}
-	{% if messages %}
-		{% for message in messages %}
-			<div data-alert class="alert-box secondary radius">
-				{{ message }}
-				<a href="#" class="close">&times;</a>
-			</div>
-		{% endfor %}
-	{% endif %}
-	{% endwith %}
-	{% with messages = get_flashed_messages(category_filter = ["error"]) %}
-	{% if messages %}
-		{% for message in messages %}
-			<div data-alert class="alert-box alert radius">
-				{{ message }}
-				<a href="#" class="close">&times;</a>
-			</div>
-		{% endfor %}
-	{% endif %}
-	{% endwith %}
-	{% with messages = get_flashed_messages(category_filter = ["success"]) %}
-	{% if messages %}
-		{% for message in messages %}
-			<div data-alert class="alert-box success radius">
-				{{ message }}
-				<a href="#" class="close">&times;</a>
-			</div>
-		{% endfor %}
-	{% endif %}
-	{% endwith %} -->
 {% endblock %}
 {% block app_scripts %}
 
-	<script src="/static/js/jquery-ui-sortable/jquery-ui.js"></script>
+	<script src="/static/js/vendor/jquery-ui-sortable/jquery-ui.js"></script>
 	<script src="/static/js/knockout-sortable.min.js"></script>
 	<script>
 		var prefsJson = {

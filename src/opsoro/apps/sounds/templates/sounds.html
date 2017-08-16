@@ -1,6 +1,6 @@
 {% extends "app_base.html" %}
 
-{% block head %}
+{% block app_head %}
 
 <script src="static/recorderjs/audiodisplay.js"></script>
 <script src="static/recorderjs/recorder.js"></script>
@@ -8,38 +8,6 @@
 {% endblock %}
 
 {% block app_content %}
-<!-- <div id="errors">
-	{% with messages = get_flashed_messages(category_filter=["message"]) %}
-		{% if messages %}
-			{% for message in messages %}
-				<div data-alert class="alert-box secondary radius">
-					{{ message }}
-					<a href="#" class="close">&times;</a>
-				</div>
-			{% endfor %}
-		{% endif %}
-	{% endwith %}
-	{% with messages = get_flashed_messages(category_filter=["error"]) %}
-		{% if messages %}
-			{% for message in messages %}
-				<div data-alert class="alert-box alert radius">
-					{{ message }}
-					<a href="#" class="close">&times;</a>
-				</div>
-			{% endfor %}
-		{% endif %}
-	{% endwith %}
-	{% with messages = get_flashed_messages(category_filter=["success"]) %}
-		{% if messages %}
-			{% for message in messages %}
-				<div data-alert class="alert-box success radius">
-					{{ message }}
-					<a href="#" class="close">&times;</a>
-				</div>
-			{% endfor %}
-		{% endif %}
-	{% endwith %}
-</div> -->
 
 <fieldset>
 	<legend><span class="fa fa-upload"></span> Upload file</legend>
@@ -101,7 +69,7 @@
 	{% for soundfile in soundfiles %}
 		<span class="file" data-soundfile="{{ soundfile }}">
 			<a href="#" class="button btnDelSnd"><span class="fa fa-trash"></span></a>
-			<a href="#" class="button btnPlaySnd"><span class="fa fa-play"></span></a>
+			<a href="" class="button btnPlaySnd"><span class="fa fa-play"></span></a>
 			<span class="filename">{{ soundfile }}</span><br>
 		</span>
 	{% endfor %}

@@ -1,8 +1,10 @@
-from opsoro.hardware import Hardware
 from opsoro.console_msg import *
 from opsoro.dof import DOF
+from opsoro.hardware import Hardware
 
-constrain = lambda n, minn, maxn: max(min(maxn, n), minn)
+
+def constrain(n, minn, maxn): return max(min(maxn, n), minn)
+
 
 class Servo(DOF):
     def config(self, pin=None, min_range=0, mid_pos=1500, max_range=0):
@@ -21,23 +23,16 @@ class Servo(DOF):
         self.pin = int(pin)
         # self.dofname = dofname
         self.mid_pos = int(constrain(int(mid_pos), min_value, max_value))
-        self.min_range = int(
-            constrain(
-                int(min_range), min_value - self.mid_pos, max_value -
-                self.mid_pos))
-        self.max_range = int(
-            constrain(
-                int(max_range), min_value - self.mid_pos, max_value -
-                self.mid_pos))
+        self.min_range = int(constrain(int(min_range), min_value - self.mid_pos, max_value - self.mid_pos))
+        self.max_range = int(constrain(int(max_range), min_value - self.mid_pos, max_value - self.mid_pos))
         self.position = int(self.mid_pos)
 
         # print_info(self.__repr__())
 
     def __repr__(self):
-        return "Servo(pin=%d, min_range=%d, mid_pos=%d, max_range=%d)" % (
-            self.pin, self.min_range, self.mid_pos, self.max_range)
+        return "Servo(pin=%d, min_range=%d, mid_pos=%d, max_range=%d)" % (self.pin, self.min_range, self.mid_pos, self.max_range)
 
-    def to_us(self, dof_value = None):
+    def to_us(self, dof_value=None):
         """
         Converts DOF pos to microseconds.
 
@@ -80,8 +75,8 @@ class Servo(DOF):
 
         # print_info('Servo: pin: %i, pos: %f' % (self.pin, self.position))
 
-        if self.pin is not None:
+        if self.pin is not None and self.pin >= 0:
             with Hardware.lock:
-                Hardware.servo_set(self.pin, self.position)
+                Hardware.Servo.set(self.pin, self.position)
                 # return True
         return dof_animation_changed

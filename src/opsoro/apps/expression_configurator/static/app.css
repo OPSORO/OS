@@ -1,0 +1,115 @@
+.model {
+	padding: 0;
+	margin-top: -30px;
+}
+.config-settings {
+	margin-top: 0;
+	padding: 0;
+}
+.expressions {
+	margin-top: 0rem;
+	padding: 0 0 0 1rem;
+	/*height: 20rem;*/
+	/*border: 1px solid silver;*/
+	height: 100%;
+}
+.expression {
+	margin: 0 0 .5rem;
+	padding: 0;
+	/*border: 1rem solid transparent;*/
+	background-color: transparent;
+	color: #000;
+	cursor: pointer;
+	height: 100%;
+}
+.expression:hover {
+	color: #000;
+	background-color: #B0FFCB;
+}
+.selected,
+.selected:hover {
+	background-color: #00E58B;
+}
+.expression .emoji {
+	margin: .3rem .3rem 0;
+}
+.text {
+	font-size: .9rem;
+	display: inline-block;
+	width: 100%;
+	padding: .3rem;
+	margin: 0;
+}
+.expression .text {
+
+}
+.eicon {
+	padding: 0.5rem 0;
+	margin: 0;
+}
+.eicon .emoji {
+	margin: 0;
+}
+.add-button {
+	margin: .5rem 0 0;
+	padding: .5rem 1.3rem;
+	color: #00E58B;
+	background-color: transparent;
+}
+.change-button {
+	border: 1px solid silver;
+}
+.change-button:hover .text {
+	background-color: #333;
+}
+.change-button .text {
+	background-color: #666;
+	color: #FFF;
+}
+.add-button span {
+	padding: 0;
+	margin: 0;
+	width: 3rem;
+	height: 3rem;
+	font-size: 3rem;
+	border: 1px solid silver;
+	border-radius: 1.5rem;
+	display: block;
+	background-color: transparent;
+}
+.add-button:hover {
+	background-color: transparent;
+}
+.add-button:hover span {
+	color: #FFF;
+	background-color: #00E58B;
+}
+.module-settings {
+	padding: 0 .5rem 0 0;
+}
+.module-settings select {
+	padding: 0 1.5rem 0 .1rem;
+	font-size: .9rem;
+	height: 1.5rem;
+	margin: 0;
+}
+.module-settings input {
+	padding: 0;
+	font-size: .9rem;
+	height: 1.5rem;
+	margin: 0;
+}
+.module-settings .slider {
+	margin: .5rem .5rem 0 0;
+}
+.dof-settings {
+	font-size: .85rem;
+	border-bottom: 1px solid silver;
+	padding: .5rem 0;
+}
+.dof-settings:last-child {
+	border-style: none;
+}
+.settings-item {
+	padding: 0;
+}

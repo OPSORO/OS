@@ -1,10 +1,11 @@
-from opsoro.dof.servo import Servo
-from opsoro.dof import DOF
-from opsoro.console_msg import *
-
 import time
 
-constrain = lambda n, minn, maxn: max(min(maxn, n), minn)
+from opsoro.console_msg import *
+from opsoro.dof import DOF
+from opsoro.dof.servo import Servo
+
+
+def constrain(n, minn, maxn): return max(min(maxn, n), minn)
 
 
 class Module(object):
@@ -15,10 +16,10 @@ class Module(object):
         :param dict data:   configuration data to setup the module
         """
         self.name = ""
+
         self.position = {}
         self.size = {}
         self.dofs = {}
-        # self.servos = []
 
         if data is not None:
             self.load_module(data)
@@ -52,19 +53,43 @@ class Module(object):
                 updated = True
         return updated
 
-    def set_dof_value(self, dof_name, dof_value, anim_time=-1):
+    def set_dof_value(self, dof_name, value, anim_time=-1):
         """
-        Apply poly values r and phi to the module and calculate dof values
+        Set the value of a dof with the given name. If no name is provided, all dofs are set with the given value.
 
         :param string dof_name:     name of the DOF
-        :param string dof_value:    value to set the DOF
+        :param float value:         value to set the DOF
         :param int anim_time:       animation time in ms
         """
         if dof_name is None:
             for name, dof in self.dofs.iteritems():
-                dof.set_value(dof_value, anim_time)
+                dof.set_value(value, anim_time)
         else:
-            self.dofs[dof_name].set_value(dof_value, anim_time)
+            self.dofs[dof_name].set_value(value, anim_time)
+
+    def set_dof(self, tags=[], value=0, anim_time=-1):
+        """
+        Set the value of a dof with the given tags. If no tags are provided, all dofs are set with the given value.
+
+        :param list tags:           name of the DOF
+        :param float value:         value to set the DOF
+        :param int anim_time:       animation time in ms
+        """
+        if type(tags) is not type([]):
+            try:
+                tags = tags.split(' ')
+            except Exception as e:
+                print_warning('Unknow tag format. Unable to split unicode.')
+
+        for name, dof in self.dofs.iteritems():
+            all_tags = True
+            for tag in tags:
+                if tag not in dof.tags:
+                    all_tags = False
+                    break
+
+            if all_tags:
+                dof.set_value(value, anim_time)
 
     def load_module(self, data):
         """
@@ -80,13 +105,10 @@ class Module(object):
         self.position = {}
         self.size = {}
 
-        if 'canvas' in data:
-            canvas_data = data['canvas']
+        if 'grid' in data:
+            canvas_data = data['grid']
             self.position['x'] = canvas_data['x']
             self.position['y'] = canvas_data['y']
-
-            self.size['width'] = canvas_data['width']
-            self.size['height'] = canvas_data['height']
             self.size['rotation'] = canvas_data['rotation']
 
         if 'dofs' in data:
@@ -100,12 +122,8 @@ class Module(object):
 
                 neutral = 0.0
                 poly = None
-                if 'mapping' in dof_data:
-                    mapping_data = dof_data['mapping']
-                    if 'neutral' in mapping_data:
-                        neutral = mapping_data['neutral']
-                    if 'poly' in mapping_data:
-                        poly = mapping_data['poly']
+                if 'poly' in dof_data:
+                    poly = dof_data['poly']
 
                 dof = None
                 if 'servo' in dof_data:
@@ -118,6 +136,11 @@ class Module(object):
                                    servo_data['max'], )
                 else:
                     dof = DOF(dof_name, neutral, poly)
+
+                # Add type and name as tags
+                dof.tags.extend(data['type'].split(' '))
+                dof.tags.extend(self.name.split(' '))
+                dof.tags.extend(dof_name.split(' '))
 
                 self.dofs[dof.name] = dof
 
