@@ -1,36 +1,38 @@
-# OnoSW
-OnoSW is the software framework for [OPSORO](http://www.opsoro.be/), to be used in conjunction with [Ono2](https://github.com/cesarvandevelde/Ono2) and [OnoHAT](https://github.com/cesarvandevelde/OnoHAT).
+# OPSORO OS
+The OPSORO OS is the software framework for [OPSORO](http://www.opsoro.be/), to be used in conjunction with [Ono2](https://github.com/cesarvandevelde/Ono2) and [OPSORO HAT](https://github.com/OPSORO/HAT).
 
 # Hardware Requirements
-- Raspberry Pi 1 model B+ | Raspberry Pi 2 model B | Raspberry Pi 3
-- [OnoHAT](https://github.com/cesarvandevelde/OnoHAT)
+- Raspberry Pi 1 model B+ | Raspberry Pi 2 model B | Raspberry Pi 3 (all)
+- [OPSORO HAT](https://github.com/OPSORO/HAT)
 - WiFi dongle that supports AP-mode (e.g. [WiPi](http://be.farnell.com/element14/wipi/dongle-wifi-usb-for-raspberry/dp/2133900?ost=wipi&categoryId=700000005571))
 - Separate power supplies for logic (5V 2A) and servos (5V 10A), these can be connected directly to the OnoHAT
 
 # Installation
-1. Start with a fresh Raspbian install
-2. Copy the contents the folder /OnoSW/ to /home/pi/OnoSW/
-3. Copy the contents the folder /Scripts/ to /home/pi/Scripts/
-4. Update your system
-
+1. Start with a fresh Raspbian or ubuntu install
+2. Update your system
     ```
     sudo apt-get update
     sudo apt-get upgrade
     ```
-5. Install Python development files, Avahi daemon, LuaJIT
 
+3. Install Python development files, Avahi daemon, LuaJIT, git
     ```
     sudo apt-get install python2.7-dev avahi-daemon libluajit-5.1-dev git
     ```
 
-6. Install PIP
+4. Create OPSORO folder and Download Source code
+    ```
+    mkdir /OPSORO
+    git clone https://github.com/opsoro/os.git
+    ```
 
+5. Install PIP
     ```
     sudo apt-get install python-setuptools
     sudo easy_install pip
     ```
 
-7. [Compile and install LibYAML](http://pyyaml.org/wiki/LibYAML)  
+6. [Compile and install LibYAML](http://pyyaml.org/wiki/LibYAML)  
     Or run following command:  
     ```
     sudo apt-get install python-yaml
@@ -38,12 +40,18 @@ OnoSW is the software framework for [OPSORO](http://www.opsoro.be/), to be used 
 
     This step is not strictly necessary, but will result in a massive speedup when parsing config files. The python version of PyYAML takes well over 3 seconds to parse the configs, the C version takes only a fraction of that.
 
-8. Install Python packages (flask, flask-login, pyyaml, pluginbase, sockjs-tornado, simplejson, lupa, numpy, scipy, spidev)
+
+7. Install Python packages (flask, flask-login, pyyaml, pluginbase, sockjs-tornado, simplejson, lupa, numpy, scipy, spidev)
 
     ```
-    sudo pip install flask flask-login pyyaml pluginbase sockjs-tornado simplejson lupa numpy spidev gitpython flask-babel noise pyserial enum enum34 requests tweepy
-    sudo apt-get install -y python-smbus i2c-tools
-    sudo apt-get install -y python-scipy
+    sudo pip install flask flask-login pyyaml pluginbase sockjs-tornado simplejson lupa numpy gitpython flask-babel noise pyserial enum enum34 requests tweepy -U
+    sudo apt-get install -y python-smbus i2c-tools -U
+    sudo apt-get install -y python-scipy -U
+    ```
+
+8. Install spidev (not needed for testing without shield)
+    ```
+    sudo pip install spidev
     ```
 
 9. Enable SPI and I2C
@@ -245,10 +253,10 @@ OnoSW is the software framework for [OPSORO](http://www.opsoro.be/), to be used 
     sudo ./setup_opsoro
     ```
 
-OnoSW and its dependencies should now all be installed and working. Reboot the Raspberry Pi to test. Please let us know if any steps are missing!
+The OPSORO OS and its dependencies should now all be installed and working. Reboot the Raspberry Pi to test. Please let us know if any steps are missing!
 
 # Use
-If everything was configured correctly, the Raspberry Pi should create a WiFi hotspot (OPSORO_Robot) at startup (Default password: opsoro123). This network lets access the robot's web interface. Once connected to the network, open a browser and go to http://opsoro.local. If you configured the DHCP and DNS server correctly http://play.opsoro.be should also work. You will be presented with a login screen, the default password is: opsoro123. The main interface lets you control the robot through a number of apps.
+If everything was configured correctly, the Raspberry Pi should create a WiFi hotspot (OPSORO_Robot) at startup (Default password: opsoro123). This network lets access the robot's web interface. Once connected to the network, open a browser and go to http://opsoro.local or http://192.168.42.1. If you configured the DHCP and DNS server correctly http://play.opsoro.be should also work. You will be presented with a login screen, the default password is: opsoro123. The main interface lets you control the robot through a number of apps.
 
 ### Notes:
 - Be sure to properly shut down the operating system! Cutting power without performing a proper shutdown can corrupt the file system on the SD card, requiring a reinstall.
@@ -256,7 +264,7 @@ If everything was configured correctly, the Raspberry Pi should create a WiFi ho
 - If the Raspberry Pi is connected to the internet via ethernet, the hotspot will also allow internet access. Additionally, the web interface will be accessible from the parent network using the opsoro.local address.
 - Only one user can be logged into the software. This is to prevent conflicting commands from multiple clients. It is possible to overwrite this behaviour inside apps, if desired.
 - The code from the visual programming app is currently executed in the browser, which then sends raw commands to the web server. This causes minor bugs, which is why future versions will run the generated code on the server.
-- To create custom apps, please look at the examples in /OnoSW/apps/. Apps are self-contained within their folder inside /apps/, and are automatically detected and activated by the software.
+- To create custom apps, please look at the examples in the apps folder. Apps are self-contained within their folder inside /apps/, and are automatically detected and activated by the software.
 
 
 # More info
@@ -264,6 +272,6 @@ More information about this project can be found on [our website](http://www.ops
 Also be sure to check out the [main repository](http://www.github.com/cesarvandevelde/ono2), which contains all the mechanical design files.  
 If you have any questions concerning this project, feel free to contact us at info [at] opsoro [dot] be
 
-Copyright (C) 2016 OPSORO.
+Copyright (C) 2017 OPSORO.
 
 This work is licensed under a [Creative Commons Attribution-ShareAlike 4.0 International License](http://creativecommons.org/licenses/by-sa/4.0/).
