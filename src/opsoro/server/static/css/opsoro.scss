@@ -252,7 +252,7 @@ fieldset {
   }
 }
 
-.nav {
+nav {
   width: 100%;
 
   img {
@@ -515,11 +515,13 @@ fieldset {
   }
 
   ul {
-    text-align: center;
+    text-align: right;
     margin: 0;
 
     li {
       margin: 0;
+      list-style: none;
+      display: inline-block;
       // margin-left: 1.5rem;
       &:last-child {
         .icon {

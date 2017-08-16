@@ -7,14 +7,16 @@ This module defines the interface for loading and saving the configuration files
    :show-inheritance:
 """
 
-from __future__ import division
-from __future__ import with_statement
+from __future__ import division, with_statement
 
-import sys
 import os
+import sys
 from functools import partial
 
 import yaml
+
+from opsoro.console_msg import *
+
 try:
     from yaml import CLoader as Loader, CDumper as Dumper
 except ImportError:
@@ -22,13 +24,13 @@ except ImportError:
 
 get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 
-from opsoro.console_msg import *
 # from opsoro.stoppable_thread import StoppableThread
 # from opsoro.hardware import Hardware
 # from opsoro.preferences import Preferences
 
 # Modules
 # from opsoro.module import *
+
 
 class _Configuration(object):
     def __init__(self):
@@ -86,6 +88,9 @@ class _Configuration(object):
             print_warning("Could not save config/preferences.yaml")
 
     def save(self, filename):
+        """
+        """
         pass
+
 
 Configuration = _Configuration()

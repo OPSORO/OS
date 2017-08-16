@@ -124,7 +124,7 @@ class _Updater(object):
         # Create file to let deamon know it has to update before starting the server
         # file = open(self.dir + 'update.var', 'w+')
 
-        backup_dir = '/home/pi/OPSORO/backup/'
+        backup_dir = '/opsoro/backup/'
 
         print('Updating...')
         if os.path.exists(backup_dir):

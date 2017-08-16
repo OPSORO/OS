@@ -7,10 +7,12 @@ This module defines the interface for communicating with the TTS libraries.
    :show-inheritance:
 """
 
+import hashlib
 import os
 import string
-from functools import partial
 import subprocess
+from functools import partial
+
 from opsoro.preferences import Preferences
 
 get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
@@ -26,15 +28,16 @@ class _TTS(object):
         self.gender = "f"  # "m"
         self.delay = "5"
         self.speed = "180"
+        self.cache_folder = "/tmp/opsorotts"
 
     def create(self, text):
         """
-		Takes a string of text, converts it using the PicoTTS engine, and plays it.
-		Wave files are buffered in /tmp/OnoTTS/<text>.wav.
-		First call blocks while PicoTTS generates the .wav, this may take about a second.
-		Subsequent calls of the same text return immediately.
-		If you wish to avoid this, sound files can be generated on beforehand by
-		using generate_only=True.
+        Takes a string of text, converts it using the PicoTTS engine, and plays it.
+        Wave files are buffered in /tmp/OnoTTS/<text>.wav.
+        First call blocks while PicoTTS generates the .wav, this may take about a second.
+        Subsequent calls of the same text return immediately.
+        If you wish to avoid this, sound files can be generated on beforehand by
+        using generate_only=True.
 
         :param string text:         text to convert to speech
 
@@ -44,16 +47,16 @@ class _TTS(object):
 
         def format_filename(s):
             """
-			Take a string and return a valid filename constructed from the string.
-			Uses a whitelist approach: any characters not present in valid_chars are
-			removed. Also spaces are replaced with underscores.
+            Take a string and return a valid filename constructed from the string.
+            Uses a whitelist approach: any characters not present in valid_chars are
+            removed. Also spaces are replaced with underscores.
 
-			Note: this method may produce invalid filenames such as ``, `.` or `..`
-			When I use this method I prepend a date string like '2009_01_15_19_46_32_'
-			and append a file extension like '.txt', so I avoid the potential of using
-			an invalid filename.
+            Note: this method may produce invalid filenames such as ``, `.` or `..`
+            When I use this method I prepend a date string like '2009_01_15_19_46_32_'
+            and append a file extension like '.txt', so I avoid the potential of using
+            an invalid filename.
 
-			Taken from: https://gist.github.com/seanh/93666
+            Taken from: https://gist.github.com/seanh/93666
 
             :param string s:  text to convert to a valid filename
 
@@ -66,16 +69,16 @@ class _TTS(object):
                 ' ', '_')  # I don't like spaces in filenames.
             return filename
 
-        if not os.path.exists("/tmp/OpsoroTTS/"):
-            os.makedirs("/tmp/OpsoroTTS/")
+        if not os.path.exists(self.cache_folder):
+            os.makedirs(self.cache_folder)
 
-        filename = format_filename(text)
+        filename = hashlib.sha1(format_filename(text))
 
         # Max length of filename is 255 chars
-        if len(filename) >= 250:
-            filename = filename[:250]
-        full_path = os.path.join(
-            get_path("/tmp/OpsoroTTS/"), filename + ".wav")
+
+        # if len(filename) >= 250:
+        #     filename = filename[:250]
+        full_path = os.path.join(get_path(self.cache_folder), filename + ".wav")
 
         if os.path.isfile(full_path):
             # Sound file already exists
@@ -114,7 +117,8 @@ class _TTS(object):
         :param int speed:           speed in words-per-minute
         """
         text = "\"" + text + "\""
-        subprocess.call(["espeak", "-v", language + "+" + gender + "3", "-g",
-                         delay, "-s", speed, "-w", file_path, text])
+        subprocess.call(["espeak", "-v", language + "+" + gender + "3", "-g", delay, "-s", speed, "-w", file_path, text])
+
+
 # Global instance that can be accessed by apps and scripts
 TTS = _TTS()

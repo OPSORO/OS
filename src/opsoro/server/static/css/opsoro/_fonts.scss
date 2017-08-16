@@ -25,7 +25,8 @@ $fonts: (
 }
 @font-face {
     font-family: 'EmojiOne';
-    src: url('../fonts/emojione-svg.woff2') format('truetype');
+    src:  url('../fonts/emojione-svg.woff2') format('woff2'),
+          url('../fonts/emojione-svg.woff') format('woff');
     font-weight: 700;
     font-style: normal;
 }

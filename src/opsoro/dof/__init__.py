@@ -1,5 +1,6 @@
 # from opsoro.hardware import Hardware
 import math
+import random
 import time
 
 from scipy import interpolate
@@ -117,7 +118,7 @@ class DOF(object):
 
     def set_value(self, dof_value=0, anim_time=-1, is_overlay=False, update_last_set_time=True):
         """
-        Sets the dof value.
+        Sets the dof value. If the dof value is 2 or larger, set it to a random value.
 
         :param float dof_value:             new value of the dof.
         :param float anim_time:             time for the servo to move from previous dof to the new dof (-1: animation will be based on dof differences).
@@ -125,7 +126,8 @@ class DOF(object):
         :param bool update_last_set_time:   update the last set timer of the dof.
         """
         # print_info('Set value: %d, time: %i' % (dof_value, anim_time))
-
+        if dof_value >= 2:
+            dof_value = random.uniform(-1, 1)
         dof_value = float(constrain(float(dof_value), -1.0, 1.0))
         self.to_value = dof_value
 

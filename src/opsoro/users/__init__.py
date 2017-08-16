@@ -45,6 +45,11 @@ class _Users(object):
         self.app_change_handler = None
 
     def setup(self, flaskapp):
+        """
+        Setup login managers
+
+        :param object flaskapp: current flask app
+        """
         # Setup login manager
         self.login_manager = LoginManager()
         self.login_manager.init_app(flaskapp)
@@ -53,21 +58,33 @@ class _Users(object):
         self.setup_loaders()
 
     def login_guest(self):
+        """
+        Set current user as guest user.
+        """
         usr = usertypes.Guest()
         login_user(usr, remember=False)
         self.users[usr.id] = usr
 
     def login_admin(self):
+        """
+        Set current user as admin user.
+        """
         usr = usertypes.Admin()
         login_user(usr, remember=False)
         self.users[usr.id] = usr
 
     def login_play(self):
+        """
+        Set current user as online user.
+        """
         usr = usertypes.Play()
         login_user(usr, remember=False)
         self.users[usr.id] = usr
 
     def logout(self):
+        """
+        Log out current user. Send refresh command to all connections of this user.
+        """
         # send message to all instances of the user
         self.broadcast_data('refresh', {}, current_user.sockets)
         # remove user from list
@@ -78,6 +95,9 @@ class _Users(object):
         logout_user()
 
     def logout_others(self):
+        """
+        Log out all other users and send message to them that they have been logged out. Admin only.
+        """
         if current_user is None or not current_user.is_authenticated or not current_user.is_admin:
             return
 
@@ -93,6 +113,13 @@ class _Users(object):
         self.broadcast_message('You have been logged out by an admin.', socks)
 
     def send_app_data(self, appname, action, data={}):
+        """
+        Send data from an app to the user.
+
+        :param string appname:      name of the sending app
+        :param string action:       action to perform
+        :param dict data:           dictionary with data
+        """
         for sock in self.sockets:
             if sock.activeapp == appname:
                 data['action'] = action
@@ -100,6 +127,13 @@ class _Users(object):
                 return
 
     def broadcast_data(self, action, data={}, sockets=None):
+        """
+        Send data to certain receivers. If socks is None, send data to all connected.
+
+        :param string action:       action to perform
+        :param dict data:           dictionary with data
+        :param list socks:          list of receivers
+        """
         sender = None
 
         if sockets:
@@ -111,14 +145,29 @@ class _Users(object):
             sender.pop().broadcast_data(action, data, sockets)
 
     def broadcast_robot(self, data={}, save_last=False):
+        """
+        Send data to a connection that is a virtual model.
+
+        :param dict data:           dictionary with data
+        :param bool save_last:      save this data as last data send
+        """
         if save_last:
             self.last_robot_data = data
         self.broadcast_data('robot', data, self.robot_sockets)
 
     def broadcast_message(self, message='', sockets=None):
+        """
+        Send message to certain receivers. If socks is None, send message to all connected.
+
+        :param string message:      message to send
+        :param list socks:          list of receivers
+        """
         self.broadcast_data('info', {'type': 'popup', 'text': message}, sockets)
 
     def setup_loaders(self):
+        """
+
+        """
         @self.login_manager.user_loader
         def load_user(token):
             if token in self.users:
@@ -140,6 +189,9 @@ class SocketConnection(SockJSConnection):
     sockets = set()
 
     def __init__(self, *args, **kwargs):
+        """
+
+        """
         super(SocketConnection, self).__init__(*args, **kwargs)
         self._authenticated = False
         self.activeapp = None
@@ -147,6 +199,11 @@ class SocketConnection(SockJSConnection):
         self.robot = False
 
     def on_message(self, msg):
+        """
+        Triggers when a socket message is received.
+
+        :param string msg:  received message
+        """
         # Attempt to decode JSON
         try:
             message = json.loads(msg)
@@ -189,11 +246,19 @@ class SocketConnection(SockJSConnection):
                     Users.sockjs_message_cb[self.activeapp][action](self, message)
 
     def on_open(self, info):
+        """
+        New socket connection. Add user to list
+
+        :param string info:     extra data
+        """
         # Connect callback is triggered when socket is authenticated.
         Users.sockets.add(self)
         self.update_users()
 
     def on_close(self):
+        """
+        Closed socket connection. Update users, active apps, robots.
+        """
         if self._token is not None and self._token in Users.users:
             usr = Users.users.get(self._token)
             usr.sockets.discard(self)
@@ -206,22 +271,44 @@ class SocketConnection(SockJSConnection):
         self.update_users()
 
     def send_error(self, message):
-        return self.send(json.dumps({'action': 'error', 'status': 'error', 'message': message}))
+        """
+        Send error message to current connection.
+
+        :param string message:  error message to send
+        """
+        self.send(json.dumps({'action': 'error', 'status': 'error', 'message': message}))
 
     def send_data(self, action, data):
+        """
+        Send data to current connection.
+
+        :param string action:    action to perform
+        :param dict data:        data to send
+        """
         msg = {'action': action, 'status': 'success'}
         msg.update(data)
 
-        return self.send(json.dumps(msg))
+        self.send(json.dumps(msg))
 
     def broadcast_data(self, action, data, socks=None):
+        """
+        Send data to certain receivers. If socks is None, send data to all connected.
+
+        :param string action:   action to perform
+        :param dict data:       dictionary with data
+        :param list socks:      list of receivers
+        """
         msg = {'action': action, 'status': 'success'}
         msg.update(data)
         if socks is None:
             socks = Users.sockets
-        return self.broadcast(socks, json.dumps(msg))
+        self.broadcast(socks, json.dumps(msg))
 
     def update_users(self):
+        """
+        Send message to all connection containing:
+            - User count
+        """
         # Print current client count
         self.broadcast_data('users', {'count': (len(Users.users))})
 

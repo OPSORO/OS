@@ -24,7 +24,7 @@ get_path = partial(os.path.join, os.path.abspath(os.path.dirname(__file__)))
 class _Apps(object):
     def __init__(self):
         """
-        Apps class.
+        Apps class. Does everything with and from the apps.
 
         """
 
@@ -47,6 +47,14 @@ class _Apps(object):
         # self.sockjs_disconnect_cb = {}
 
     def start(self, appname):
+        """
+        Start a certain app.
+
+        :param string appname:   name of the app
+
+        :return:    True if the app has been started
+        :rtype:     bool
+        """
         if appname in self.active_apps:
             # already activated
             if not self.apps[appname].config['multi_user']:
@@ -82,6 +90,11 @@ class _Apps(object):
         return True
 
     def stop(self, appname):
+        """
+        Stop a certain app.
+
+        :param string appname:   name of the app
+        """
         app_count = 0
         for sock in Users.sockets:
             if sock.activeapp == appname:
@@ -102,6 +115,9 @@ class _Apps(object):
             Robot.stop()
 
     def refresh_active(self):
+        """
+        Reload all active apps, to check wether or not they are still openened by a user, or are allowed to run in the background.
+        """
         act_apps = []
         locked_apps = []
         for sock in Users.sockets:
@@ -125,6 +141,9 @@ class _Apps(object):
         Users.broadcast_data('apps', {'active': running_apps, 'locked': locked_apps})
 
     def stop_all(self):
+        """
+        Stop all apps.
+        """
         for appname in self.active_apps:
             print_appstopped(appname)
             try:
@@ -138,31 +157,85 @@ class _Apps(object):
             Robot.stop()
 
     def register_app_blueprint(self, bp):
+        """
+        Registers the blueprints of apps
+
+        :param obj bp:   blueprint of an app
+        """
         assert self.apps_can_register_bp, "Apps can only register blueprints at setup!"
 
         prefix = "/apps/" + self.current_bp_app
         self.server.flaskapp.register_blueprint(bp, url_prefix=prefix)
 
     def app_view(self, f):
+        """
+        Show the view of an app.
+
+        :param obj f:   function
+
+        :return:    App view
+        :rtype:     obj
+        """
         return self.server.app_view(f)
 
     def app_api(self, f):
+        """
+        App api access
+
+        :param obj f:   function
+
+        :return:    app_api interface
+        :rtype:     obj
+        """
         return self.server.app_api(f)
 
     def render_template(self, template, **kwargs):
+        """
+        Look function to make the eye look at some point in space.
+
+        :param obj template:    template
+        :param obj kwargs:      kwargs
+
+        :return:    rendered template
+        :rtype:     obj
+        """
         return self.server.render_template(template, **kwargs)
 
     def app_socket_connected(self, f):
+        """
+        Socket with app established.
+
+        :param obj f:   function
+
+        :return:    f
+        :rtype:     obj
+        """
         # appname = f.__module__.split(".")[-1]
         # self.sockjs_connect_cb[appname] = f
         return f
 
     def app_socket_disconnected(self, f):
+        """
+        Socket with app broken.
+
+        :param obj f:   function
+
+        :return:    f
+        :rtype:     obj
+        """
         # appname = f.__module__.split(".")[-1]
         # self.sockjs_disconnect_cb[appname] = f
         return f
 
     def app_socket_message(self, action=""):
+        """
+        Message for app received.
+
+        :param string action:   action to perform
+
+        :return:    inner function
+        :rtype:     function
+        """
         def inner(f):
             appname = f.__module__.split(".")[-1]
             # Create new dict for app if necessary
@@ -173,6 +246,14 @@ class _Apps(object):
         return inner
 
     def register_apps(self, server):
+        """
+        Register apps inside the apps folder. Run there setup and add them to the app list.
+
+        :param obj server:   server object for callbacks
+
+        :return:    list of apps
+        :rtype:     liist
+        """
         self.server = server
         apps_layout = []
         with open(get_path('../config/apps_layout.yaml')) as f:

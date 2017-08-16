@@ -43,6 +43,7 @@ class _Robot(object):
         AUTO = 1     # 1: Start robot automatically (alive feature according to preferences)
         AUTO_ALIVE = 2     # 2: Start robot automatically and enable alive feature
         AUTO_NOT_ALIVE = 3     # 3: Start robot automatically and disable alive feature
+        AUTO_ECO = 4     # 3: Start robot automatically and disable alive feature
 
     class Connection(IntEnum):
         OFFLINE = 0         # 0: No online capability

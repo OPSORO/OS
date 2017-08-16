@@ -2348,7 +2348,7 @@
 
 @font-face {
   font-family: 'EmojiOne';
-  src: url("../fonts/emojione-svg.woff2") format("truetype");
+  src: url("../fonts/emojione-svg.woff2") format("woff2"), url("../fonts/emojione-svg.woff") format("woff");
   font-weight: 700;
   font-style: normal; }
 
@@ -2556,18 +2556,18 @@ fieldset {
 .tabs-content .content {
   padding-top: 0; }
 
-.nav {
+nav {
   width: 100%; }
-  .nav img {
+  nav img {
     float: left; }
-  .nav ul {
+  nav ul {
     float: right; }
-    .nav ul li {
+    nav ul li {
       float: left;
       margin: 1rem;
       list-style-type: none; }
-      .nav ul li a,
-      .nav ul li a:visited {
+      nav ul li a,
+      nav ul li a:visited {
         font-size: 1rem;
         font-weight: bold;
         text-decoration: none;
@@ -2766,10 +2766,12 @@ fieldset {
       #header_play input[type=text]:focus:-ms-input-placeholder {
         color: #313334; }
   #header_play ul {
-    text-align: center;
+    text-align: right;
     margin: 0; }
     #header_play ul li {
-      margin: 0; }
+      margin: 0;
+      list-style: none;
+      display: inline-block; }
   #header_play .icon {
     margin: 0.6rem 0.5rem 0 0;
     font-size: 2.4rem; }

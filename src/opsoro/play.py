@@ -10,6 +10,9 @@ PLAY_URL = 'https://opsoro.be/'
 
 class _Play(object):
     def __init__(self):
+        """
+
+        """
         self.uuid = None
         self.token = None
         self.username = None
@@ -17,6 +20,12 @@ class _Play(object):
         pass
 
     def is_online(self):
+        """
+        Check online state
+
+        :return:         True if the robot is connected to the internet
+        :rtype:          bool
+        """
         try:
             data = urllib.urlopen(PLAY_URL)
             return True
@@ -24,6 +33,15 @@ class _Play(object):
             return False
 
     def login(self, username=None, password=None):
+        """
+        Login user with username and password to the online platform.
+
+        :param string username:    username of the user
+        :param string password:    password of the user
+
+        :return:         True if user is successfully logged in
+        :rtype:          bool
+        """
         if username is not None:
             self.username = username
         if password is not None:

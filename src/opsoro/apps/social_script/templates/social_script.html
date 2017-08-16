@@ -85,41 +85,42 @@
 			<a href="#" id="btnAdd" class="button round info" data-bind="click: $root.addLine">
 				<span class="fa fa-plus"></span>
 				<span class="text">
-					{{ _('Add Line') }}</span>
+					{{ _('Add Line') }}
+				</span>
 			</a>
 		</div>
 	</div>
 {% endblock %}
 
-		{% block app_scripts %}
+{% block app_scripts %}
 
-			<script src="/static/js/vendor/jquery-ui-sortable/jquery-ui.js"></script>
-			<script src="/static/js/knockout-sortable.min.js"></script>
+	<script src="/static/js/vendor/jquery-ui-sortable/jquery-ui.js"></script>
+	<script src="/static/js/knockout-sortable.min.js"></script>
 
-			<script>
-				var action_data = {{ actions|tojson|safe }};
-				var emotions_data = {{ emotions|tojson|safe }};
-				var sounds_data = {{ sounds|tojson|safe }};
-				console.log(emotions_data);
-			</script>
-			<script src="/static/js/sockjs.min.js"></script>
-			<script src="/static/js/vendor/jquery-ui-touch/jquery.ui.touch-punch.min.js"></script>
+	<script>
+		var action_data = {{ actions|tojson|safe }};
+		var emotions_data = {{ emotions|tojson|safe }};
+		var sounds_data = {{ sounds|tojson|safe }};
+		console.log(emotions_data);
+	</script>
+	<script src="/static/js/sockjs.min.js"></script>
+	<script src="/static/js/vendor/jquery-ui-touch/jquery.ui.touch-punch.min.js"></script>
 
-		{% endblock %}
+{% endblock %}
 
-		{% block app_modals %}
+{% block app_modals %}
 
-			<div id="PickEmotionModal" class="reveal" data-reveal data-animation-in="fade-in" data-animation-out="fade-out">
-				<div class="content">
-					<div class="row small-up-5" data-bind="foreach: emotions">
-					  <div class="column column-block">
-							<div class="avatar" data-bind="click: $root.changeEmotion">
-								<span class="emoji" data-bind="html: '&#x' + filename + ';'"></span>
-							</div>
-							<div class="row text-center avatarcaption" data-bind="text: name"></div>
-					  </div>
+	<div id="PickEmotionModal" class="reveal" data-reveal data-animation-in="fade-in" data-animation-out="fade-out">
+		<div class="content">
+			<div class="row small-up-5" data-bind="foreach: emotions">
+			  <div class="column column-block">
+					<div class="avatar" data-bind="click: $root.changeEmotion">
+						<span class="emoji" data-bind="html: '&#x' + filename + ';'"></span>
 					</div>
-				</div>
+					<div class="row text-center avatarcaption" data-bind="text: name"></div>
+			  </div>
 			</div>
+		</div>
+	</div>
 
-		{% endblock %}
+{% endblock %}

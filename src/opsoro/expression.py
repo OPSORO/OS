@@ -11,6 +11,7 @@ from __future__ import with_statement
 
 import math
 import os
+import random
 from functools import partial
 
 import cmath
@@ -41,6 +42,9 @@ class _Expression(object):
     def set_emotion_e(self, e=0 + 0j, anim_time=-1):
         """
         Set an emotion with complex number e, within a certain time.
+
+        :param complex e:       complex number e
+        :param float anim_time: time to set the emotion
         """
         # Print data to log
         # print_info("Emotion; e: " + str(e) + ", time: " + str(anim_time))
@@ -59,6 +63,10 @@ class _Expression(object):
     def set_emotion_val_ar(self, valence, arousal, anim_time=-1):
         """
         Set an emotion with valence and arousal, within a certain time.
+
+        :param float valence:       valence
+        :param float arousal:       arousal
+        :param float anim_time: time to set the emotion
         """
         # Print data to log
         # print_info("Set Emotion; valence: " + str(valence) + ", arousal: " +
@@ -78,6 +86,11 @@ class _Expression(object):
     def set_emotion_r_phi(self, r, phi, degrees=False, anim_time=-1):
         """
         Set an emotion with r and phi, within a certain time.
+
+        :param float r:         radius of the circumplex
+        :param float phi:       angle of the circumplex
+        :param bool degrees:    is convertion to radians needed?
+        :param float anim_time: time to set the emotion
         """
         # Print data to log
         # print_info("Set Emotion; r: " + str(r) + ", phi: " + str(phi) +
@@ -97,6 +110,12 @@ class _Expression(object):
         Robot.apply_poly(r, phi, anim_time)
 
     def update(self):
+        """
+        Old function, not used in new system
+
+        :return:         nothing
+        :rtype:          None
+        """
         # Still here for backwards compatibility
         # This is done automatically
         return
@@ -104,12 +123,18 @@ class _Expression(object):
     def get_emotion_complex(self):
         """
         Returns current emotion as a complex number
+
+        :return:         current emotion
+        :rtype:          complex
         """
         return self._emotion
 
     def set_emotion_name(self, name, anim_time=-1):
         """
         Set an emotion with name if defined in expression list, within a certain time.
+
+        :param string name:       name of the emotion to set
+        :param float anim_time:   time to set the emotion
         """
 
         e = 0 + 0j
@@ -127,6 +152,9 @@ class _Expression(object):
     def set_emotion_icon(self, icon, anim_time=-1):
         """
         Set an emotion with icon if defined in expression list, within a certain time.
+
+        :param string icon:       name of the icon to set
+        :param float anim_time:   time to set the emotion
         """
 
         e = 0 + 0j
@@ -144,6 +172,9 @@ class _Expression(object):
     def set_emotion_index(self, index, anim_time=-1):
         """
         Set an emotion with index in defined expression list, within a certain time.
+
+        :param integer index:   index of the emotion in the list of emotions
+        :param float anim_time: time to set the emotion
         """
 
         e = 0 + 0j
@@ -164,6 +195,19 @@ class _Expression(object):
             # send dofs directly to the robot
             Robot.set_dof_list(exp['dofs'], anim_time)
 
+    def set_emotion_random(self, all_random=True, anim_time=-1):
+        """
+        Set an emotion with random index in defined expression list, within a certain time. Or set all dofs to a random position between -1 and 1.
+
+        :param bool all_random:     all dofs random or not
+        :param float anim_time:     time to set the emotion
+        """
+
+        if all_random:
+            Robot.set_dof([], 2, anim_time)
+        else:
+            self.set_emotion_index(random.randint(0, self.expressions), anim_time)
+
     def set_config(self, config=None):
         if config is not None and len(config) > 0:
             save_new_config = (self.expressions != config)
@@ -176,6 +220,15 @@ class _Expression(object):
         return self.expressions
 
     def load_config(self, file_name='robot_expressions.conf'):
+        """
+        Load expressions from a expressions configurations file
+
+        :param string file_name:    name of the config file
+
+        :return:         True if file is successfully loaded
+        :rtype:          bool
+        """
+
         # Load modules from file
         if file_name is None:
             return False
@@ -200,6 +253,14 @@ class _Expression(object):
         return True
 
     def save_config(self, file_name='robot_expressions.conf'):
+        """
+        Save the current expressions configurations
+
+        :param string file_name:    name of the config file
+
+        :return:         True if file is successfully saved
+        :rtype:          bool
+        """
         # Save modules to json file
         if file_name is None:
             return False
