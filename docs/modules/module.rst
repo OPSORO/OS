@@ -42,12 +42,12 @@ opsoro.module.mouth
     :show-inheritance:
 
 
-.. _sec-modules-module-rotation:
+.. _sec-modules-module-turn:
 
-opsoro.module.rotation
+opsoro.module.turn
 -----------------------------
 
-.. automodule:: opsoro.module.rotation
+.. automodule:: opsoro.module.turn
     :members:
     :undoc-members:
     :show-inheritance:

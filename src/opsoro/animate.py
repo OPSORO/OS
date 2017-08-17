@@ -1,3 +1,12 @@
+"""
+This module defines the interface for animating an expression.
+
+.. autoclass:: Animate
+   :members:
+   :undoc-members:
+   :show-inheritance:
+"""
+
 from __future__ import division
 
 import time
