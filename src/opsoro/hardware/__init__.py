@@ -1,6 +1,6 @@
 """
 This module defines the interface for communicating with the shield.
-.. autoclass:: _Hardware
+.. automodule:: hardware
    :members:
    :undoc-members:
    :show-inheritance:

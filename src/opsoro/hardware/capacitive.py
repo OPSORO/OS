@@ -1,6 +1,6 @@
 """
 This module defines the interface for communicating with the capacitive sensors.
-.. autoclass:: Capacitive
+.. automodule:: hardware.capacitive
    :members:
    :undoc-members:
    :show-inheritance:
