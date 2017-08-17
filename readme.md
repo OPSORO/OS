@@ -1,6 +1,8 @@
 # OPSORO OS
 The OPSORO OS is the software framework for [OPSORO](http://www.opsoro.be/), to be used in conjunction with [Ono2](https://github.com/cesarvandevelde/Ono2) and [OPSORO HAT](https://github.com/OPSORO/HAT).
 
+[![Documentation Status](https://readthedocs.org/projects/wikiopsoro/badge/?version=master)](http://docs.opsoro.be/en/master/?badge=master)
+
 # Hardware Requirements
 - Raspberry Pi 1 model B+ | Raspberry Pi 2 model B | Raspberry Pi 3 (all)
 - [OPSORO HAT](https://github.com/OPSORO/HAT)
