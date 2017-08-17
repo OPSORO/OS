@@ -1,12 +1,3 @@
-"""
-This module defines the interface for communicating with the dummy hardware.
-.. autoclass:: Dummy_Hardware
-   :members:
-   :undoc-members:
-   :show-inheritance:
-"""
-
-
 class Dummy_Hardware(object):
     def __init__(self):
         """

@@ -1,11 +1,3 @@
-"""
-This module defines the interface for communicating with the I2C.
-.. autoclass:: I2C
-   :members:
-   :undoc-members:
-   :show-inheritance:
-"""
-
 from opsoro.hardware.spi import SPI
 
 # > I2C                      IN  OUT

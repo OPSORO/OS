@@ -1,11 +1,3 @@
-"""
-This module defines the interface for communicating with the capacitive sensors.
-.. autoclass:: Capacitive
-   :members:
-   :undoc-members:
-   :show-inheritance:
-"""
-
 from opsoro.hardware.spi import SPI
 
 # > CAPACITIVE TOUCH         IN  OUT

@@ -1,10 +1,12 @@
 """
-This module defines the interface for communicating with the SPI.
+This module defines the interface for communicating with SPI.
+
 .. autoclass:: _SPI
    :members:
    :undoc-members:
    :show-inheritance:
 """
+
 # SPI COMMANDS
 
 CMD_READ = 2  # 0   ?    Return result from previous command

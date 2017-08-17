@@ -1,11 +1,3 @@
-"""
-This module defines the interface for communicating with the analog sensors.
-.. autoclass:: Analog
-   :members:
-   :undoc-members:
-   :show-inheritance:
-"""
-
 from opsoro.hardware.spi import SPI
 
 # > ANALOG                   IN  OUT

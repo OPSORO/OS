@@ -1,10 +1,3 @@
-"""
-This module defines the interface for communicating with neopixels.
-.. autoclass:: Neopixel
-   :members:
-   :undoc-members:
-   :show-inheritance:
-"""
 from opsoro.hardware.spi import SPI
 
 # > NEOPIXEL                IN  OUT

@@ -1,5 +1,6 @@
 """
 This module defines the interface for communicating with serial.
+
 .. autoclass:: _Serial
    :members:
    :undoc-members:

@@ -1,11 +1,3 @@
-"""
-This module defines the interface of debugging the spi.
-.. autoclass:: SpiDev
-   :members:
-   :undoc-members:
-   :show-inheritance:
-"""
-
 from opsoro.console_msg import print_spi
 
 
