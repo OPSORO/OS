@@ -1,6 +1,6 @@
 """
 This module defines the interface for communicating with the shield.
-.. automodule:: hardware
+.. automodule:: opsoro.hardware
    :members:
    :undoc-members:
    :show-inheritance:

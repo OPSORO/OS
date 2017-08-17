@@ -1,6 +1,6 @@
 """
 This module defines the interface for communicating with the analog sensors.
-.. automodule:: hardware.analog
+.. automodule:: opsoro.hardware.analog
    :members:
    :undoc-members:
    :show-inheritance:
