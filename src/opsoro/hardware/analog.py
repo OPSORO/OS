@@ -1,6 +1,6 @@
 """
 This module defines the interface for communicating with the analog sensors.
-.. module:: analog
+.. autoclass:: Analog
    :members:
    :undoc-members:
    :show-inheritance:

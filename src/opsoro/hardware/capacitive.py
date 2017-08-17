@@ -1,6 +1,6 @@
 """
 This module defines the interface for communicating with the capacitive sensors.
-.. automodule:: opsoro.hardware.capacitive
+.. autoclass:: Capacitive
    :members:
    :undoc-members:
    :show-inheritance:
