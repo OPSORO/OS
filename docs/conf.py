@@ -22,7 +22,6 @@ import sys
 # -- Copyright date ------------------------------------------------
 from datetime import date
 
-import enum
 # Mock import modules:
 # sudo apt-get install python-mock
 import mock
