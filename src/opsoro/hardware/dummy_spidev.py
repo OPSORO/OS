@@ -1,4 +1,13 @@
+"""
+This module defines the interface of debugging the spi.
+.. autoclass:: SpiDev
+   :members:
+   :undoc-members:
+   :show-inheritance:
+"""
+
 from opsoro.console_msg import print_spi
+
 
 class SpiDev(object):
     def __init__(self):
@@ -6,10 +15,10 @@ class SpiDev(object):
         self.max_speed_hz = 0
         print_spi('No SPI installed, using dummy class')
 
-    def open(self,*args):
+    def open(self, *args):
         # print_spi('open: {}'.format(args))
         pass
 
-    def xfer2(self,*args):
+    def xfer2(self, *args):
         # print_spi('transfer: {}'.format(args))
         pass

@@ -1,3 +1,12 @@
+"""
+This module defines the interface for the request handling.
+
+.. autoclass:: RHandler
+   :members:
+   :undoc-members:
+   :show-inheritance:
+"""
+
 import base64
 import glob
 import os

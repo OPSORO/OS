@@ -1,3 +1,11 @@
+"""
+This module defines the interface for communicating with serial.
+.. autoclass:: _Serial
+   :members:
+   :undoc-members:
+   :show-inheritance:
+"""
+
 import glob
 
 import serial as pyserial
@@ -17,7 +25,7 @@ class _Serial(object):
 
     def scan(self):
         """
-        Scan for serial ports.
+        Scan for serial ports. And save them in ports variable.
         """
         visible_ports = glob.glob('/dev/ttyACM[0-9]*')
         self.ports = []

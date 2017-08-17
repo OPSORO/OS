@@ -1,5 +1,18 @@
-import time
+"""
+This module defines the interface for communicating with the shield.
+.. autoclass:: _Hardware
+   :members:
+   :undoc-members:
+   :show-inheritance:
+"""
+
 import threading
+import time
+
+from spi import SPI
+from usb_serial import Serial
+
+from . import analog, capacitive, i2c, neopixel, servo
 
 # > GENERAL                  IN  OUT
 CMD_NOP = 0  # 0   0    No operation
@@ -9,15 +22,6 @@ CMD_RESET = 3  # 0   0    Reset the ATmega328
 CMD_LEDON = 4  # 0   0    Turn LED on
 CMD_LEDOFF = 5  # 0   0    Turn LED off
 
-
-from spi import SPI
-from usb_serial import Serial
-
-from . import analog
-from . import capacitive
-from . import i2c
-from . import neopixel
-from . import servo
 
 class _Hardware(object):
     def __init__(self):
@@ -29,13 +33,13 @@ class _Hardware(object):
         self.lock = threading.Lock()
 
         # self.analog =
-        self.Analog     = analog.Analog()
+        self.Analog = analog.Analog()
         self.Capacitive = capacitive.Capacitive()
-        self.I2C        = i2c.I2C()
-        self.Neopixel   = neopixel.Neopixel()
-        self.Servo      = servo.Servo()
-        self.SPI        = SPI
-        self.Serial     = Serial
+        self.I2C = i2c.I2C()
+        self.Neopixel = neopixel.Neopixel()
+        self.Servo = servo.Servo()
+        self.SPI = SPI
+        self.Serial = Serial
 
     def __del__(self):
         pass
@@ -61,6 +65,7 @@ class _Hardware(object):
     def led_off(self):
         """Turns status LED off."""
         SPI.command(CMD_LEDOFF)
+
 
 # Global instance that can be accessed by apps and scripts
 Hardware = _Hardware()

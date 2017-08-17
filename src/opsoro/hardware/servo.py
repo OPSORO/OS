@@ -1,3 +1,11 @@
+"""
+This module defines the interface for communicating with servos.
+.. autoclass:: Servo
+   :members:
+   :undoc-members:
+   :show-inheritance:
+"""
+
 from opsoro.hardware.spi import SPI
 
 # > SERVO                    IN  OUT
