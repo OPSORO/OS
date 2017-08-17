@@ -12,7 +12,6 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
-sys.path.insert(0, os.path.abspath('../src/'))
 
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
@@ -26,6 +25,9 @@ from datetime import date
 # Mock import modules:
 # sudo apt-get install python-mock
 import mock
+
+sys.path.insert(0, os.path.abspath('../src/'))
+
 
 MOCK_MODULES = ['smbus', 'spidev', 'flask', 'flask.ctx', 'flask_login',
                 'flask_babel', 'werkzeug.exceptions', 'werkzeug', 'sockjs',
