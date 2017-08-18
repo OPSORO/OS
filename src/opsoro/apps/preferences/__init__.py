@@ -20,8 +20,8 @@ config = {
     'tags':                 ['settings', 'setup'],
     'allowed_background':   False,
     'multi_user':           False,
-    'connection':           Robot.Connection.OFFLINE,
-    'activation':           Robot.Activation.MANUAL
+    'connection':           0,
+    'activation':           0
 }
 config['formatted_name'] = config['full_name'].lower().replace(' ', '_')
 # dof_positions = {}

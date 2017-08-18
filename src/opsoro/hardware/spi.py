@@ -1,13 +1,24 @@
+"""
+This module defines the interface for communicating with SPI.
+
+.. autoclass:: _SPI
+   :members:
+   :undoc-members:
+   :show-inheritance:
+"""
+
 # SPI COMMANDS
 
-CMD_READ                = 2  # 0   ?    Return result from previous command
-CMD_RESET               = 3  # 0   0    Reset the ATmega328
+CMD_READ = 2  # 0   ?    Return result from previous command
+CMD_RESET = 3  # 0   0    Reset the ATmega328
 
 import time
+
 try:
     import spidev
 except ImportError:
     import dummy_spidev as spidev
+
 
 class _SPI(object):
     def __init__(self):
@@ -25,15 +36,15 @@ class _SPI(object):
         # Causing the ATmega328 to miss SPI interrupts
         # Touch app shows spikes at 250kHz, but not at 122kHz.
 
-        #self.spi.max_speed_hz = 50000 # 50kHz
-        #self.spi.max_speed_hz = 500000 # 500kHz
-        #self.spi.max_speed_hz = 250000 # 250kHz
+        # self.spi.max_speed_hz = 50000 # 50kHz
+        # self.spi.max_speed_hz = 500000 # 500kHz
+        # self.spi.max_speed_hz = 250000 # 250kHz
         self.spi.max_speed_hz = 122000  # 122kHz
 
     def command(self, cmd, params=None, returned=0, delay=0):
         """
-		Send a command over the SPI bus to the ATmega328.
-		Optionally reads the result buffer and returns those Bytes.
+                Send a command over the SPI bus to the ATmega328.
+                Optionally reads the result buffer and returns those Bytes.
 
         :param string cmd:    spi command
         :param strin params:  parameters for the command

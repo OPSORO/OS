@@ -12,7 +12,7 @@ opsoro.hardware
 .. _sec-modules-hardware-analog:
 
 opsoro.hardware.analog
--------------------
+----------------------
 
 .. automodule:: opsoro.hardware.analog
     :members:
@@ -23,7 +23,7 @@ opsoro.hardware.analog
 .. _sec-modules-hardware-capacitive:
 
 opsoro.hardware.capacitive
--------------------
+--------------------------
 
 .. automodule:: opsoro.hardware.capacitive
     :members:
@@ -34,7 +34,7 @@ opsoro.hardware.capacitive
 .. _sec-modules-hardware-dummy_spidev:
 
 opsoro.hardware.dummy_spidev
--------------------
+----------------------------
 
 .. automodule:: opsoro.hardware.dummy_spidev
     :members:
@@ -56,7 +56,7 @@ opsoro.hardware.i2c
 .. _sec-modules-hardware-neopixel:
 
 opsoro.hardware.neopixel
--------------------
+------------------------
 
 .. automodule:: opsoro.hardware.neopixel
     :members:
@@ -67,9 +67,20 @@ opsoro.hardware.neopixel
 .. _sec-modules-hardware-servo:
 
 opsoro.hardware.servo
--------------------
+---------------------
 
 .. automodule:: opsoro.hardware.servo
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+.. _sec-modules-hardware-spi:
+
+opsoro.hardware.spi
+-------------------
+
+.. automodule:: opsoro.hardware.spi
     :members:
     :undoc-members:
     :show-inheritance:
@@ -78,20 +89,9 @@ opsoro.hardware.servo
 .. _sec-modules-hardware-usb_serial:
 
 opsoro.hardware.usb_serial
--------------------
+--------------------------
 
-.. automodule:: opsoro.hardware.usb_serial
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-
-.. _sec-modules-hardware-test_hardware:
-
-opsoro.hardware.test_hardware
--------------------
-
-.. automodule:: opsoro.hardware.test_hardware
+.. autoclass:: opsoro.hardware.usb_serial
     :members:
     :undoc-members:
     :show-inheritance:

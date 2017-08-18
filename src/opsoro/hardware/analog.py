@@ -1,9 +1,9 @@
 from opsoro.hardware.spi import SPI
 
-
 # > ANALOG                   IN  OUT
-CMD_ANA_GET         = 100  # 1   2    Read an analog channel
-CMD_ANA_GETALL      = 101  # 0   8    Read all analog channels
+CMD_ANA_GET = 100  # 1   2    Read an analog channel
+CMD_ANA_GETALL = 101  # 0   8    Read all analog channels
+
 
 class Analog(object):
     # > ANALOG

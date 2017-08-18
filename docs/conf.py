@@ -12,22 +12,29 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
-# If extensions (or modules to document with autodoc) are in another directory,
-# add these directories to sys.path here. If the directory is relative to the
+
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-import os, sys
-sys.path.insert(0, os.path.abspath('../src/'))
+import os
+# If extensions (or modules to document with autodoc) are in another directory,
+# add these directories to sys.path here. If the directory is relative to the
+import sys
+# -- Copyright date ------------------------------------------------
+from datetime import date
 
 # Mock import modules:
 # sudo apt-get install python-mock
-import mock, sys
+import mock
+
+sys.path.insert(0, os.path.abspath('../src/'))
+
+
 MOCK_MODULES = ['smbus', 'spidev', 'flask', 'flask.ctx', 'flask_login',
                 'flask_babel', 'werkzeug.exceptions', 'werkzeug', 'sockjs',
                 'sockjs.tornado', 'tornado', 'tornado.log', 'tornado.wsgi',
                 'tornado.ioloop', 'tornado.web', 'tornado.httpserver',
                 'random', 'subprocess', 'base64', 'pluginbase', 'lupa',
-                'numpy', 'scipy', 'git', 'noise']
+                'numpy', 'scipy', 'git', 'noise', 'serial', 'pyserial', 'yaml']
 for mod_name in MOCK_MODULES:
     sys.modules[mod_name] = mock.Mock()
 
@@ -36,8 +43,6 @@ for mod_name in MOCK_MODULES:
 # m = mox.Mox()
 # m.StubOutWithMock(np, '__getitem__')
 
-# -- Copyright date ------------------------------------------------
-from datetime import date
 
 year_since = 2016
 year_current = date.today().year
@@ -135,6 +140,7 @@ def setup(app):
     app.connect("autodoc-skip-member", skip)
 
 # -- Options for HTMLHelp output ------------------------------------------
+
 
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'OPSOROdoc'

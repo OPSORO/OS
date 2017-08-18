@@ -1,3 +1,12 @@
+"""
+This module defines the interface for the Server.
+
+.. autoclass:: Server
+   :members:
+   :undoc-members:
+   :show-inheritance:
+"""
+
 import atexit
 import base64
 import logging

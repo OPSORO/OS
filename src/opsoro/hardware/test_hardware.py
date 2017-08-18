@@ -10,8 +10,8 @@ class Dummy_Hardware(object):
 
     def spi_command(self, cmd, params=None, returned=0, delay=0):
         """
-		Send a command over the SPI bus to the ATmega328.
-		Optionally reads the result buffer and returns those Bytes.
+                Send a command over the SPI bus to the ATmega328.
+                Optionally reads the result buffer and returns those Bytes.
 
         :param string cmd:    spi command
         :param strin params:  parameters for the command
@@ -121,8 +121,8 @@ class Dummy_Hardware(object):
 
     def servo_set(self, channel, pos):
         """
-		Set the position of one servo.
-		Pos in us, 500 to 2500
+                Set the position of one servo.
+                Pos in us, 500 to 2500
 
         :param int channel: channel of the servo
         :param int pos:     position of the servo (500 to 2500)
@@ -169,22 +169,22 @@ class Dummy_Hardware(object):
 
     def cap_get_baseline_data(self):
         """
-		Get list of electrode baseline data.
-		Result is 10 bits, but the 2 least significant bits are set to 0.
+                Get list of electrode baseline data.
+                Result is 10 bits, but the 2 least significant bits are set to 0.
 
         :return:        electrode baseline data (10 bits).
         :rtype:         list
-		"""
+                """
         return []
 
     def cap_get_touched(self):
         """
-		Returns the values of the touch registers,
-		each bit corresponds to one electrode.
+                Returns the values of the touch registers,
+                each bit corresponds to one electrode.
 
         :return:        values of the touch registers,
         :rtype:         list
-		"""
+                """
         return []
 
     def cap_set_gpio_pinmode(self, gpio, pinmode):
@@ -198,12 +198,12 @@ class Dummy_Hardware(object):
 
     def cap_read_gpio(self):
         """
-		Returns the status of all GPIO channels,
-		each bit corresponds to one gpio channel.
+                Returns the status of all GPIO channels,
+                each bit corresponds to one gpio channel.
 
         :return:         status of all GPIO channels.
         :rtype:          list
-		"""
+                """
         return []
 
     def cap_write_gpio(self, gpio, data):
@@ -226,16 +226,16 @@ class Dummy_Hardware(object):
 
     def neo_enable(self):
         """
-		Turns on the NeoPixel MOSFET, enabling the NeoPixels.
-		Data is lost when pixels are disabled, so call neo_show() again afterwards.
-		"""
+                Turns on the NeoPixel MOSFET, enabling the NeoPixels.
+                Data is lost when pixels are disabled, so call neo_show() again afterwards.
+                """
         pass
 
     def neo_disable(self):
         """
-		Turns off the NeoPixel MOSFET, disabling the NeoPixels.
-		Data is lost when pixels are disabled.
-		"""
+                Turns off the NeoPixel MOSFET, disabling the NeoPixels.
+                Data is lost when pixels are disabled.
+                """
         pass
 
     def neo_set_brightness(self, brightness):
@@ -353,6 +353,7 @@ class Dummy_Hardware(object):
         else:
             pos_list = [us for i in range(16)]
             self.servo_set_all(pos_list)
+
 
 # Global instance that can be accessed by apps and scripts
 Hardware = Dummy_Hardware()

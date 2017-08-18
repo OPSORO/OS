@@ -1,6 +1,8 @@
 # OPSORO OS
 The OPSORO OS is the software framework for [OPSORO](http://www.opsoro.be/), to be used in conjunction with [Ono2](https://github.com/cesarvandevelde/Ono2) and [OPSORO HAT](https://github.com/OPSORO/HAT).
 
+[![Documentation Status](https://readthedocs.org/projects/wikiopsoro/badge/?version=master)](http://docs.opsoro.be/en/master/?badge=master)
+
 # Hardware Requirements
 - Raspberry Pi 1 model B+ | Raspberry Pi 2 model B | Raspberry Pi 3 (all)
 - [OPSORO HAT](https://github.com/OPSORO/HAT)
@@ -41,18 +43,25 @@ The OPSORO OS is the software framework for [OPSORO](http://www.opsoro.be/), to 
     This step is not strictly necessary, but will result in a massive speedup when parsing config files. The python version of PyYAML takes well over 3 seconds to parse the configs, the C version takes only a fraction of that.
 
 
-7. Install Python packages (flask, flask-login, pyyaml, pluginbase, sockjs-tornado, simplejson, lupa, numpy, scipy, spidev)
+7. Install Python packages (flask, flask-login, pyyaml, pluginbase, sockjs-tornado, simplejson, lupa, numpy, scipy, spidev, gitpython, flask-babel, noise, pyserial, requests, tweepy)
 
     ```
-    sudo pip install flask flask-login pyyaml pluginbase sockjs-tornado simplejson lupa numpy gitpython flask-babel noise pyserial enum enum34 requests tweepy -U
+    sudo pip install flask flask-login pyyaml pluginbase sockjs-tornado simplejson lupa numpy gitpython flask-babel noise pyserial requests tweepy -U
     sudo apt-get install -y python-smbus i2c-tools -U
-    sudo apt-get install -y python-scipy -U
     ```
+    Install scipy
+      ```
+      sudo pip install scipy -U
+      ```
+      OR
+      ```
+      sudo apt-get install -y python-scipy -U
+      ```
 
-8. Install spidev (not needed for testing without shield)
-    ```
-    sudo pip install spidev
-    ```
+    Install spidev (not needed for testing without shield)
+      ```
+      sudo pip install spidev -U
+      ```
 
 9. Enable SPI and I2C
 

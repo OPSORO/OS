@@ -41,8 +41,8 @@ config = {
     'tags':                 [''],
     'allowed_background':   False,
     'multi_user':           True,
-    'connection':           Robot.Connection.OFFLINE,
-    'activation':           Robot.Activation.AUTO
+    'connection':           0,
+    'activation':           1
 }
 config['formatted_name'] = config['full_name'].lower().replace(' ', '_')
 

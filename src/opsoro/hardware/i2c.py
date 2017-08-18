@@ -1,11 +1,11 @@
 from opsoro.hardware.spi import SPI
 
 # > I2C                      IN  OUT
-CMD_I2C_DETECT      = 20  # 1   1    Test if there's a device at addr
-CMD_I2C_READ8       = 21  # 2   1    Read byte
-CMD_I2C_WRITE8      = 22  # 3   0    Write byte
-CMD_I2C_READ16      = 23  # 2   2    Read 2 bytes
-CMD_I2C_WRITE16     = 24  # 4   0    Write 2 bytes
+CMD_I2C_DETECT = 20  # 1   1    Test if there's a device at addr
+CMD_I2C_READ8 = 21  # 2   1    Read byte
+CMD_I2C_WRITE8 = 22  # 3   0    Write byte
+CMD_I2C_READ16 = 23  # 2   2    Read 2 bytes
+CMD_I2C_WRITE16 = 24  # 4   0    Write 2 bytes
 
 
 class I2C(object):

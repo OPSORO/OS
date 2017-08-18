@@ -1,18 +1,17 @@
 from opsoro.hardware.spi import SPI
 
-
 # > NEOPIXEL                IN  OUT
-CMD_NEO_INIT        = 80  # 1   0    Init Neopixel
-CMD_NEO_ENABLE      = 81  # 0   0    Turn on MOSFET
-CMD_NEO_DISABLE     = 82  # 0   0    Turn off MOSFET
-CMD_NEO_SETBRIGHT   = 83  # 1   0    Set brightness
-CMD_NEO_SHOW        = 84  # 0   0    Show pixels
-CMD_NEO_SET         = 85  # 4   0    Set single pixel
-CMD_NEO_SETRANGE    = 86  # 5   0    Set range of pixels
-CMD_NEO_SETALL      = 87  # 3   0    Set all pixels
-CMD_NEO_SETHSV      = 88  # 4   0    Set single pixel HSV
+CMD_NEO_INIT = 80  # 1   0    Init Neopixel
+CMD_NEO_ENABLE = 81  # 0   0    Turn on MOSFET
+CMD_NEO_DISABLE = 82  # 0   0    Turn off MOSFET
+CMD_NEO_SETBRIGHT = 83  # 1   0    Set brightness
+CMD_NEO_SHOW = 84  # 0   0    Show pixels
+CMD_NEO_SET = 85  # 4   0    Set single pixel
+CMD_NEO_SETRANGE = 86  # 5   0    Set range of pixels
+CMD_NEO_SETALL = 87  # 3   0    Set all pixels
+CMD_NEO_SETHSV = 88  # 4   0    Set single pixel HSV
 CMD_NEO_SETRANGEHSV = 89  # 5   0    Set range of pixels HSV
-CMD_NEO_SETALLHSV   = 90  # 3   0    Set all pixels HSV
+CMD_NEO_SETALLHSV = 90  # 3   0    Set all pixels HSV
 
 
 class Neopixel(object):
@@ -27,16 +26,16 @@ class Neopixel(object):
 
     def enable(self):
         """
-    	Turns on the NeoPixel MOSFET, enabling the NeoPixels.
-    	Data is lost when pixels are disabled, so call show() again afterwards.
-    	"""
+        Turns on the NeoPixel MOSFET, enabling the NeoPixels.
+        Data is lost when pixels are disabled, so call show() again afterwards.
+        """
         SPI.command(CMD_NEO_ENABLE)
 
     def disable(self):
         """
-    	Turns off the NeoPixel MOSFET, disabling the NeoPixels.
-    	Data is lost when pixels are disabled.
-    	"""
+        Turns off the NeoPixel MOSFET, disabling the NeoPixels.
+        Data is lost when pixels are disabled.
+        """
         SPI.command(CMD_NEO_DISABLE)
 
     def set_brightness(self, brightness):
