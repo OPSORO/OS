@@ -12,7 +12,6 @@ import os
 import time
 from functools import partial
 
-from enum import IntEnum
 from flask_login import current_user
 
 from opsoro.console_msg import *
@@ -38,17 +37,17 @@ MODULES = {'eye': Eye, 'turn': Turn, 'mouth': Mouth}
 
 
 class _Robot(object):
-    class Activation(IntEnum):
-        MANUAL = 0     # 0: Manual start/stop
-        AUTO = 1     # 1: Start robot automatically (alive feature according to preferences)
-        AUTO_ALIVE = 2     # 2: Start robot automatically and enable alive feature
-        AUTO_NOT_ALIVE = 3     # 3: Start robot automatically and disable alive feature
-        AUTO_ECO = 4     # 3: Start robot automatically and disable alive feature
-
-    class Connection(IntEnum):
-        OFFLINE = 0         # 0: No online capability
-        PARTLY = 1         # 1: Needs online for extras, but works without
-        ONLINE = 2         # 2: Requires to be online to work
+    # class Activation(IntEnum):
+    #     MANUAL = 0     # 0: Manual start/stop
+    #     AUTO = 1     # 1: Start robot automatically (alive feature according to preferences)
+    #     AUTO_ALIVE = 2     # 2: Start robot automatically and enable alive feature
+    #     AUTO_NOT_ALIVE = 3     # 3: Start robot automatically and disable alive feature
+    #     AUTO_ECO = 4     # 3: Start robot automatically and disable alive feature
+    #
+    # class Connection(IntEnum):
+    #     OFFLINE = 0         # 0: No online capability
+    #     PARTLY = 1         # 1: Needs online for extras, but works without
+    #     ONLINE = 2         # 2: Requires to be online to work
 
     def __init__(self):
         self.modules = {}

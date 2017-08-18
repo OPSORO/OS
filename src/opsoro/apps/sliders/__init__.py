@@ -24,8 +24,8 @@ config = {
     'tags':                 ['sliders', 'dofs'],
     'allowed_background':   False,
     'multi_user':           False,
-    'connection':           Robot.Connection.OFFLINE,
-    'activation':           Robot.Activation.AUTO_NOT_ALIVE,
+    'connection':           0,
+    'activation':           3,
 }
 config['formatted_name'] = config['full_name'].lower().replace(' ', '_')
 

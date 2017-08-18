@@ -66,8 +66,8 @@ class _Apps(object):
         else:
             if appname in self.apps:
                 # robot activation:
-                if self.apps[appname].config['activation'] >= Robot.Activation.AUTO:
-                    if self.apps[appname].config['activation'] == Robot.Activation.AUTO_NOT_ALIVE:
+                if self.apps[appname].config['activation'] >= 1:
+                    if self.apps[appname].config['activation'] == 3:
                         Robot.start(False)
                     else:
                         Robot.start()
@@ -273,8 +273,8 @@ class _Apps(object):
                               'tags': [''],
                               'allowed_background': False,
                               'multi_user': False,
-                              'connection': Robot.Connection.OFFLINE,
-                              'activation': Robot.Activation.MANUAL}
+                              'connection': 0,
+                              'activation': 0}
 
             if not hasattr(plugin, "config"):
                 plugin.config = default_config

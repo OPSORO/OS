@@ -22,8 +22,8 @@ config = {
     'tags':                 ['visual', 'programming', 'blockly'],
     'allowed_background':   True,
     'multi_user':           False,
-    'connection':           Robot.Connection.OFFLINE,
-    'activation':           Robot.Activation.AUTO
+    'connection':           0,
+    'activation':           1
 }
 config['formatted_name'] = config['full_name'].lower().replace(' ', '_')
 
