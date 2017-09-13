@@ -10,7 +10,7 @@ The OPSORO OS is the software framework for [OPSORO](http://www.opsoro.be/), to 
 - Separate power supplies for logic (5V 2A) and servos (5V 10A), these can be connected directly to the OnoHAT
 
 # Installation
-1. Start with a fresh Raspbian or ubuntu install
+1. Start with a fresh Raspbian or Ubuntu install
 2. Update your system
     ```
     sudo apt-get update
@@ -22,9 +22,9 @@ The OPSORO OS is the software framework for [OPSORO](http://www.opsoro.be/), to 
     sudo apt-get install python2.7-dev avahi-daemon libluajit-5.1-dev git
     ```
 
-4. Create OPSORO folder and Download Source code
+4. Create OPSORO folder and download the source code
     ```
-    mkdir /OPSORO
+    sudo mkdir /opsoro
     git clone https://github.com/opsoro/os.git
     ```
 
@@ -43,10 +43,10 @@ The OPSORO OS is the software framework for [OPSORO](http://www.opsoro.be/), to 
     This step is not strictly necessary, but will result in a massive speedup when parsing config files. The python version of PyYAML takes well over 3 seconds to parse the configs, the C version takes only a fraction of that.
 
 
-7. Install Python packages (flask, flask-login, pyyaml, pluginbase, sockjs-tornado, simplejson, lupa, numpy, scipy, spidev, gitpython, flask-babel, noise, pyserial, requests, tweepy)
+7. Install Python packages (flask, flask-login, pyyaml, pluginbase, sockjs-tornado, simplejson, lupa, numpy, scipy, spidev, gitpython, flask-babel, noise, pyserial, requests, tweepy, cv2, imutils)
 
     ```
-    sudo pip install flask flask-login pyyaml pluginbase sockjs-tornado simplejson lupa numpy gitpython flask-babel noise pyserial requests tweepy -U
+    sudo pip install flask flask-login pyyaml pluginbase sockjs-tornado simplejson lupa numpy gitpython flask-babel noise pyserial requests tweepy cv2 imutils -U
     sudo apt-get install -y python-smbus i2c-tools -U
     ```
     Install scipy
