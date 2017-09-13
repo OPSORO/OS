@@ -72,7 +72,7 @@ class _TTS(object):
         if not os.path.exists(self.cache_folder):
             os.makedirs(self.cache_folder)
 
-        filename = hashlib.sha1(format_filename(text))
+        filename = str(hashlib.sha1(format_filename(text)))
 
         # Max length of filename is 255 chars
 
