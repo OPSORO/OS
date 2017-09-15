@@ -7,7 +7,7 @@ var select_dof = function(index) {
   self.name_formatted = ko.observable(virtualModel.selected_module.dofs[self.index].name_formatted);
 
   self.pin_value = ko.observable(virtualModel.selected_module.dofs[self.index].servo.pin);
-  self.pin = ko.pureComputed({
+  self.pin = ko.computed({
     read: function () {
       return self.pin_value();
     },
@@ -22,7 +22,7 @@ var select_dof = function(index) {
   });
 
   self.mid_value = ko.observable(virtualModel.selected_module.dofs[self.index].servo.mid);
-  self.mid = ko.pureComputed({
+  self.mid = ko.computed({
     read: function () {
       return self.mid_value();
     },
@@ -36,7 +36,7 @@ var select_dof = function(index) {
   });
 
   self.min_value = ko.observable(virtualModel.selected_module.dofs[self.index].servo.min);
-  self.min = ko.pureComputed({
+  self.min = ko.computed({
     read: function () {
       return self.min_value();
     },
@@ -50,7 +50,7 @@ var select_dof = function(index) {
   });
 
   self.max_value = ko.observable(virtualModel.selected_module.dofs[self.index].servo.max);
-  self.max = ko.pureComputed({
+  self.max = ko.computed({
     read: function () {
       return self.max_value();
     },
@@ -111,6 +111,19 @@ var select_module = function() {
 
 };
 
+var PinModel = function(name, pin) {
+  var self = this;
+
+  self.name = name;
+  self.pin = pin;
+
+  self.disabled = ko.computed(function(){
+    // Quick fix...
+    // TODO: Check all modules and update accordingly
+    return false;
+  });
+};
+
 var AppModel = function() {
   var self = this;
   // Setup link with virtual model
@@ -127,19 +140,27 @@ var AppModel = function() {
   virtualModel.change_handler = self.change_handler;
 
   self.available_servos = ko.observableArray();
-  self.available_servos.push({ 'name': 'Not connected', 'pin': -1, 'class': '', 'disabled': false });
+  // self.available_servos.push({ 'name': 'Not connected', 'pin': -1, 'class': '', 'disabled': false });
+  // for (var i = 0; i < 16; i++) {
+  //   self.available_servos.push({ 'name': 'Pin ' + i, 'pin': i, 'class': 'pin' + i, 'disabled': false });
+  // }
+  self.available_servos.push(new PinModel("Not connected", -1));
   for (var i = 0; i < 16; i++) {
-    self.available_servos.push({ 'name': 'Pin ' + i, 'pin': i, 'class': 'pin' + i, 'disabled': false });
+    self.available_servos.push(new PinModel("Pin " + i, i));
   }
+
+  self.servo_option_disable = function(option, item) {
+    ko.applyBindingsToNode(option, {disable: item ? item.disabled : false}, item);
+  };
 
   self.update_servo_pins = function(old_value, new_value) {
     if (new_value >= 0) {
-      self.available_servos()[new_value + 1]['disabled'] = true;
-      $('.' + self.available_servos()[new_value + 1]['class']).attr('disabled', '');
+      //self.available_servos()[new_value + 1]['disabled'] = true;
+      //$('.' + self.available_servos()[new_value + 1]['class']).attr('disabled', '');
     }
     if (old_value >= 0) {
-      self.available_servos()[old_value + 1]['disabled'] = false;
-      $('.' + self.available_servos()[old_value + 1]['class']).removeAttr('disabled');
+      //self.available_servos()[old_value + 1]['disabled'] = false;
+      //$('.' + self.available_servos()[old_value + 1]['class']).removeAttr('disabled');
     }
   };
 
@@ -177,7 +198,7 @@ var AppModel = function() {
       for (var j = 0; j < mod.dofs.length; j++) {
         var dof = mod.dofs[j];
         if (dof.servo.pin >= 0) {
-          self.available_servos()[dof.servo.pin + 1].disabled = true;
+          //self.available_servos()[dof.servo.pin + 1].disabled = true;
         }
       }
     }

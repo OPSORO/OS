@@ -55,8 +55,16 @@
 											<span data-bind="text: name"></span>
 										</div>
 										<div class="settings-item small-5 large-6 columns">
-											<select data-bind="value: pin, valueUpdate: 'input', foreach: $root.available_servos">
+											<!-- <select data-bind="value: pin, valueUpdate: 'input', foreach: $root.available_servos">
 												<option data-bind="text: $data.name, value: $data.pin, css: $data.class, attr: $data.disabled ? { 'disabled': '' } : { }"></option>
+											</select> -->
+											<select data-bind="
+												value: pin,
+												valueUpdate: 'input',
+												options: $root.available_servos,
+												optionsText: 'name',
+												optionsValue: 'pin',
+												optionsAfterRender: $root.servo_option_disable">
 											</select>
 										</div>
 									</div>
